@@ -36,6 +36,26 @@
     border-radius: 8px;
     text-align: center;
   }
+  #progressInfo {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 1.1em;
+    color: #0078d7;
+  }
+  #progressBar {
+    width: 100%;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  #progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    transition: width 0.3s ease;
+    width: 10%;
+  }
   #guessForm {
     display: flex;
     justify-content: center;
@@ -88,6 +108,17 @@
     border-radius: 4px;
     box-shadow: 0 0 3px #aaa;
     font-size: 0.95em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #historyList li.correct {
+    background: #c8e6c9;
+    color: #2e7d32;
+  }
+  #historyList li.incorrect {
+    background: #ffcdd2;
+    color: #c62828;
   }
   #streak {
     text-align: center;
@@ -124,11 +155,30 @@
     font-weight: bold;
     margin: 20px 0;
   }
+  #newGameBtn {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  #newGameBtn:hover {
+    background: #f57c00;
+  }
 </style>
 </head>
 <body>
 <h1>Geodle 🌍</h1>
 <div id="worldMap"></div>
+<div id="progressInfo">
+  <div>Clue <span id="currentClue">1</span> of 10</div>
+  <div id="progressBar">
+    <div id="progressFill"></div>
+  </div>
+</div>
 <div id="clueBox">Loading clue...</div>
 <form id="guessForm">
   <input type="text" id="guessInput" placeholder="Type your guess here" autocomplete="off" />
@@ -143,69 +193,309 @@
 <div id="endScreen">
   <div id="resultMsg"></div>
   <button id="shareBtn">Share My Score</button>
+  <button id="newGameBtn">New Game</button>
 </div>
 <div id="dailyLimitMsg" style="display:none;">
   You've already played today! Come back tomorrow 👀
 </div>
 <script>
-// Sample geography data - replace with your actual data source
+// Enhanced geography data with progressive clues
 const geographyData = [
   {
     answer: "FRANCE",
-    clue: "This European country is famous for the Eiffel Tower and croissants"
+    clues: [
+      "This country is located in Europe",
+      "The last letter of this country's name is 'E'",
+      "This country has a temperate climate with mild winters",
+      "It's famous for its wine and cheese production",
+      "The capital city is Paris",
+      "This country is known for the Eiffel Tower and croissants",
+      "French is the official language",
+      "The Louvre Museum is located here",
+      "It's part of the European Union and uses the Euro",
+      "This country is FRANCE"
+    ]
   },
   {
     answer: "JAPAN",
-    clue: "Island nation in East Asia known for sushi and cherry blossoms"
+    clues: [
+      "This country is located in Asia",
+      "The last letter of this country's name is 'N'",
+      "This country experiences frequent earthquakes",
+      "It's an island nation in the Pacific Ocean",
+      "The capital city is Tokyo",
+      "This country is famous for sushi and ramen",
+      "Japanese is the official language",
+      "Mount Fuji is located in this country",
+      "The country consists of four main islands",
+      "This country is JAPAN"
+    ]
   },
   {
     answer: "EGYPT",
-    clue: "Home to the Great Pyramid of Giza and the Sphinx"
+    clues: [
+      "This country is located in Africa",
+      "The last letter of this country's name is 'T'",
+      "This country has a hot, desert climate",
+      "It's famous for ancient monuments and pharaohs",
+      "The capital city is Cairo",
+      "The Nile River flows through this country",
+      "Arabic is the official language",
+      "The Great Pyramid of Giza is located here",
+      "This country connects Africa and Asia via the Suez Canal",
+      "This country is EGYPT"
+    ]
   },
   {
     answer: "BRAZIL",
-    clue: "Largest country in South America, famous for the Amazon rainforest"
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'L'",
+      "This country has a tropical climate in most regions",
+      "It's the largest country in its continent",
+      "The capital city is Brasília",
+      "This country is famous for football (soccer) and Carnival",
+      "Portuguese is the official language",
+      "The Amazon rainforest covers much of this country",
+      "Rio de Janeiro and São Paulo are major cities",
+      "This country is BRAZIL"
+    ]
   },
   {
     answer: "AUSTRALIA",
-    clue: "Continent and country known for kangaroos and the Sydney Opera House"
-  },
-  {
-    answer: "SINGAPORE",
-    clue: "Small island city-state in Southeast Asia known for its gardens and food"
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'A'",
+      "This country has diverse climates from tropical to desert",
+      "It's both a country and a continent",
+      "The capital city is Canberra",
+      "This country is famous for unique wildlife like kangaroos",
+      "English is the official language",
+      "The Great Barrier Reef is located here",
+      "Sydney and Melbourne are major cities",
+      "This country is AUSTRALIA"
+    ]
   },
   {
     answer: "CANADA",
-    clue: "Second largest country in the world, famous for maple syrup"
+    clues: [
+      "This country is located in North America",
+      "The last letter of this country's name is 'A'",
+      "This country has cold winters and mild summers",
+      "It's the second largest country in the world by area",
+      "The capital city is Ottawa",
+      "This country is famous for maple syrup and hockey",
+      "English and French are official languages",
+      "Niagara Falls is partially located in this country",
+      "Toronto and Vancouver are major cities",
+      "This country is CANADA"
+    ]
   },
   {
     answer: "INDIA",
-    clue: "South Asian country home to the Taj Mahal and Bollywood"
+    clues: [
+      "This country is located in Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a monsoon climate with hot summers",
+      "It's the most populous country in the world",
+      "The capital city is New Delhi",
+      "This country is famous for the Taj Mahal and Bollywood",
+      "Hindi and English are official languages",
+      "The Ganges River is sacred in this country",
+      "Mumbai and Kolkata are major cities",
+      "This country is INDIA"
+    ]
+  },
+  {
+    answer: "GERMANY",
+    clues: [
+      "This country is located in Europe",
+      "The last letter of this country's name is 'Y'",
+      "This country has a temperate climate with cold winters",
+      "It's the most populous country in the European Union",
+      "The capital city is Berlin",
+      "This country is famous for beer and the Oktoberfest",
+      "German is the official language",
+      "The Brandenburg Gate is located here",
+      "Munich and Hamburg are major cities",
+      "This country is GERMANY"
+    ]
+  },
+  {
+    answer: "ITALY",
+    clues: [
+      "This country is located in Europe",
+      "The last letter of this country's name is 'Y'",
+      "This country has a Mediterranean climate",
+      "It's shaped like a boot on the map",
+      "The capital city is Rome",
+      "This country is famous for pizza and pasta",
+      "Italian is the official language",
+      "The Colosseum is located here",
+      "Venice and Florence are major cities",
+      "This country is ITALY"
+    ]
+  },
+  {
+    answer: "SPAIN",
+    clues: [
+      "This country is located in Europe",
+      "The last letter of this country's name is 'N'",
+      "This country has a Mediterranean climate",
+      "It's located on the Iberian Peninsula",
+      "The capital city is Madrid",
+      "This country is famous for flamenco and bullfighting",
+      "Spanish is the official language",
+      "The Sagrada Familia is located in Barcelona",
+      "Seville and Valencia are major cities",
+      "This country is SPAIN"
+    ]
+  },
+  {
+    answer: "RUSSIA",
+    clues: [
+      "This country is located in Europe and Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has extremely cold winters",
+      "It's the largest country in the world by area",
+      "The capital city is Moscow",
+      "This country is famous for vodka and the Kremlin",
+      "Russian is the official language",
+      "The Trans-Siberian Railway crosses this country",
+      "St. Petersburg is another major city",
+      "This country is RUSSIA"
+    ]
+  },
+  {
+    answer: "CHINA",
+    clues: [
+      "This country is located in Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has diverse climates from tropical to desert",
+      "It's the most populous country in the world",
+      "The capital city is Beijing",
+      "This country is famous for the Great Wall",
+      "Mandarin Chinese is the official language",
+      "The Yangtze River flows through this country",
+      "Shanghai and Guangzhou are major cities",
+      "This country is CHINA"
+    ]
+  },
+  {
+    answer: "MEXICO",
+    clues: [
+      "This country is located in North America",
+      "The last letter of this country's name is 'O'",
+      "This country has a tropical and desert climate",
+      "It's located south of the United States",
+      "The capital city is Mexico City",
+      "This country is famous for tacos and Day of the Dead",
+      "Spanish is the official language",
+      "Ancient Mayan ruins are found here",
+      "Cancun and Guadalajara are major cities",
+      "This country is MEXICO"
+    ]
+  },
+  {
+    answer: "THAILAND",
+    clues: [
+      "This country is located in Asia",
+      "The last letter of this country's name is 'D'",
+      "This country has a tropical climate",
+      "It's located in Southeast Asia",
+      "The capital city is Bangkok",
+      "This country is famous for pad thai and temples",
+      "Thai is the official language",
+      "It's known as the 'Land of Smiles'",
+      "Phuket and Chiang Mai are popular destinations",
+      "This country is THAILAND"
+    ]
+  },
+  {
+    answer: "ARGENTINA",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'A'",
+      "This country has diverse climates from tropical to cold",
+      "It's the second largest country in South America",
+      "The capital city is Buenos Aires",
+      "This country is famous for tango and beef",
+      "Spanish is the official language",
+      "The Andes Mountains run along its western border",
+      "It's known for its wine production",
+      "This country is ARGENTINA"
+    ]
+  },
+  {
+    answer: "NORWAY",
+    clues: [
+      "This country is located in Europe",
+      "The last letter of this country's name is 'Y'",
+      "This country has a cold climate with long winters",
+      "It's known for its fjords and mountains",
+      "The capital city is Oslo",
+      "This country is famous for the Northern Lights",
+      "Norwegian is the official language",
+      "It's part of Scandinavia",
+      "This country has a very long coastline",
+      "This country is NORWAY"
+    ]
   }
 ];
 
 let currentQuestion = null;
+let currentClueIndex = 0;
 let guessHistory = [];
 let gameEnded = false;
-let maxGuesses = 6;
+let currentStreak = 0;
 
 // Initialize the game
 function initGame() {
   // Initialize the world map
   initWorldMap();
   
-  // Get random question for today (you can make this date-based later)
+  // Get random question
   const randomIndex = Math.floor(Math.random() * geographyData.length);
   currentQuestion = geographyData[randomIndex];
+  currentClueIndex = 0;
+  guessHistory = [];
+  gameEnded = false;
   
-  // Display the clue
-  document.getElementById('clueBox').textContent = currentQuestion.clue;
+  // Display the first clue
+  updateClueDisplay();
+  updateProgressBar();
+  
+  // Reset UI
+  document.getElementById('guessInput').disabled = false;
+  document.getElementById('guessButton').disabled = false;
+  document.getElementById('guessInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('historyList').innerHTML = '';
+  document.getElementById('endScreen').style.display = 'none';
   
   // Set up form submission
   document.getElementById('guessForm').addEventListener('submit', handleGuess);
   
   // Focus on input
   document.getElementById('guessInput').focus();
+  
+  // Load streak from localStorage
+  currentStreak = parseInt(localStorage.getItem('geodleStreak') || '0');
+  updateStreakDisplay();
+}
+
+function updateClueDisplay() {
+  document.getElementById('currentClue').textContent = currentClueIndex + 1;
+  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+}
+
+function updateProgressBar() {
+  const progress = ((currentClueIndex + 1) / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function updateStreakDisplay() {
+  document.getElementById('streak').textContent = `🔥 Streak: ${currentStreak}`;
 }
 
 // Initialize Leaflet world map
@@ -256,19 +546,33 @@ function handleGuess(e) {
   
   if (!guess) return;
   
-  // Add to history
-  guessHistory.push(guess);
-  
   // Check if correct
-  if (guess === currentQuestion.answer) {
+  const isCorrect = guess === currentQuestion.answer;
+  
+  // Add to history
+  guessHistory.push({
+    text: guess,
+    correct: isCorrect,
+    clueNumber: currentClueIndex + 1
+  });
+  
+  if (isCorrect) {
     showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
+    currentStreak++;
+    localStorage.setItem('geodleStreak', currentStreak.toString());
+    updateStreakDisplay();
     endGame(true);
   } else {
-    showFeedback(`❌ ${guess} is not correct. Try again!`, 'red');
-    
-    // Check if out of guesses
-    if (guessHistory.length >= maxGuesses) {
+    if (currentClueIndex < 9) {
+      currentClueIndex++;
+      updateClueDisplay();
+      updateProgressBar();
+      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
+    } else {
       showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
+      currentStreak = 0;
+      localStorage.setItem('geodleStreak', '0');
+      updateStreakDisplay();
       endGame(false);
     }
   }
@@ -292,7 +596,11 @@ function updateHistoryDisplay() {
   
   guessHistory.forEach((guess, index) => {
     const li = document.createElement('li');
-    li.textContent = `${index + 1}. ${guess}`;
+    li.className = guess.correct ? 'correct' : 'incorrect';
+    li.innerHTML = `
+      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
+      <span>${guess.correct ? '✓' : '✗'}</span>
+    `;
     historyList.appendChild(li);
   });
 }
@@ -306,7 +614,7 @@ function endGame(won) {
   const resultMsg = document.getElementById('resultMsg');
   
   if (won) {
-    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" in ${guessHistory.length} tries!`;
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
   } else {
     resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
   }
@@ -315,13 +623,15 @@ function endGame(won) {
   
   // Set up share button
   document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
 }
 
 function shareScore() {
-  const won = guessHistory[guessHistory.length - 1] === currentQuestion.answer;
+  const won = guessHistory.some(guess => guess.correct);
+  const cluesUsed = won ? currentClueIndex + 1 : 10;
   const scoreText = won ? 
-    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${guessHistory.length}/${maxGuesses} tries!` :
-    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in ${maxGuesses} tries. Can you?`;
+    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Streak: ${currentStreak}` :
+    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
   
   if (navigator.share) {
     navigator.share({
