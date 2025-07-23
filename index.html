@@ -6,7 +6,6 @@
 <title>Geodle - Daily Geography Clue Game</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="data.js"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -214,6 +213,20 @@
     font-size: 0.9em;
     color: #666;
   }
+  #createDataBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 6px;
+    margin: 10px auto;
+    display: block;
+  }
+  #createDataBtn:hover {
+    background: #218838;
+  }
 </style>
 </head>
 <body>
@@ -235,6 +248,7 @@
 <div id="streak">🏆 Total Wins: 0</div>
 <button id="resetBtn">🔄 Reset Game</button>
 <button id="resetWinsBtn">🏆 Reset Win Count</button>
+<button id="createDataBtn">📝 Create Sample Data File</button>
 <div id="history">
   <h3>Guess History</h3>
   <ul id="historyList"></ul>
@@ -250,10 +264,58 @@
 <div id="loadingError">
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
+  <p>Click "Create Sample Data File" to see the expected format.</p>
 </div>
 
 <script>
-
+// Sample data structure - this would be loaded from data.js
+const sampleGeographyData = [
+  {
+    answer: "FRANCE",
+    clues: [
+      "This country is famous for the Eiffel Tower",
+      "It's known for its wine and cheese",
+      "The capital city is Paris",
+      "It borders Spain to the south",
+      "The official language is French",
+      "It's located in Western Europe",
+      "Home to the Louvre Museum",
+      "Famous for croissants and baguettes",
+      "Has the French Riviera on its coast",
+      "Napoleon Bonaparte was from here"
+    ]
+  },
+  {
+    answer: "JAPAN",
+    clues: [
+      "This island nation is famous for sushi",
+      "Mount Fuji is located here",
+      "The capital is Tokyo",
+      "Known for cherry blossoms (sakura)",
+      "Home to anime and manga culture",
+      "Famous for bullet trains (shinkansen)",
+      "Located in East Asia",
+      "Has a rich samurai history",
+      "Known for technology companies like Nintendo",
+      "The currency is the yen"
+    ]
+  },
+  {
+    answer: "BRAZIL",
+    clues: [
+      "This country is famous for carnival celebrations",
+      "The Amazon rainforest covers much of it",
+      "Portuguese is the official language",
+      "Home to Christ the Redeemer statue",
+      "The capital is Brasília",
+      "Famous for football (soccer) players",
+      "Located in South America",
+      "Rio de Janeiro is a major city here",
+      "Known for coffee production",
+      "The largest country in South America"
+    ]
+  }
+];
 
 let currentQuestion = null;
 let currentClueIndex = 0;
@@ -261,15 +323,16 @@ let guessHistory = [];
 let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
+let geographyData = [];
 
-// Load and save win count from localStorage
+// Load win count from memory (since localStorage isn't available)
 function loadWinCount() {
-  const savedWins = localStorage.getItem('geodle_total_wins');
-  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+  totalWins = 0; // Reset each session
 }
 
 function saveWinCount() {
-  localStorage.setItem('geodle_total_wins', totalWins.toString());
+  // In a real implementation, this would save to localStorage
+  // localStorage.setItem('geodle_total_wins', totalWins.toString());
 }
 
 function resetWinCount() {
@@ -277,20 +340,24 @@ function resetWinCount() {
   saveWinCount();
 }
 
+// Try to load external data, fall back to sample data
+function loadGeographyData() {
+  // Check if external geographyData exists
+  if (typeof window.geographyData !== 'undefined' && Array.isArray(window.geographyData)) {
+    geographyData = window.geographyData;
+    return true;
+  }
+  
+  // Fall back to sample data
+  geographyData = sampleGeographyData;
+  console.log('Using sample data. To use custom data, create a data.js file with geographyData array.');
+  return true;
+}
+
 // Check if data is loaded and validate it
 function validateData() {
-  if (typeof geographyData === 'undefined') {
-    console.error('geographyData is not defined.');
-    return false;
-  }
-  
-  if (!Array.isArray(geographyData)) {
-    console.error('geographyData should be an array.');
-    return false;
-  }
-  
-  if (geographyData.length === 0) {
-    console.error('geographyData array is empty.');
+  if (!Array.isArray(geographyData) || geographyData.length === 0) {
+    console.error('geographyData array is empty or not an array.');
     return false;
   }
   
@@ -306,8 +373,8 @@ function validateData() {
 
 // Initialize the game
 function initGame() {
-  // Validate data first
-  if (!validateData()) {
+  // Load and validate data
+  if (!loadGeographyData() || !validateData()) {
     document.getElementById('loadingError').style.display = 'block';
     document.getElementById('guessInput').disabled = true;
     document.getElementById('guessButton').disabled = true;
@@ -324,7 +391,7 @@ function initGame() {
   }
   initWorldMap();
   
-  // Get random question from external data
+  // Get random question from data
   const randomIndex = Math.floor(Math.random() * geographyData.length);
   currentQuestion = geographyData[randomIndex];
   currentClueIndex = 0;
@@ -375,60 +442,66 @@ function updateWinDisplay() {
 
 // Initialize Leaflet world map with improved settings
 function initWorldMap() {
-  worldMap = L.map('worldMap', {
-    center: [20, 0], // Centered to show most continents
-    zoom: 2, // Good zoom level to see the whole world
-    minZoom: 1, // Allow zooming out to see the whole world
-    maxZoom: 10, // Allow zooming in for detail
-    zoomControl: true, // Enable zoom controls
-    dragging: true, // Enable dragging
-    scrollWheelZoom: true, // Enable scroll wheel zoom
-    doubleClickZoom: true, // Enable double-click zoom
-    touchZoom: true, // Enable touch zoom for mobile
-    worldCopyJump: true, // Handle world wrapping nicely
-    maxBounds: [[-90, -180], [90, 180]], // Constrain to world bounds
-    maxBoundsViscosity: 0.5 // Allow some bouncing at edges
-  });
-
-  // Use a more colorful and detailed map style
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 18,
-    noWrap: false // Allow the map to wrap around
-  }).addTo(worldMap);
-
-  // Add some visual flair with markers for major cities around the world
-  const majorCities = [
-    { name: 'New York', coords: [40.7128, -74.0060] },
-    { name: 'London', coords: [51.5074, -0.1278] },
-    { name: 'Tokyo', coords: [35.6762, 139.6503] },
-    { name: 'Sydney', coords: [-33.8688, 151.2093] },
-    { name: 'Singapore', coords: [1.3521, 103.8198] },
-    { name: 'São Paulo', coords: [-23.5505, -46.6333] },
-    { name: 'Cairo', coords: [30.0444, 31.2357] },
-    { name: 'Mumbai', coords: [19.0760, 72.8777] },
-    { name: 'Moscow', coords: [55.7558, 37.6176] },
-    { name: 'Lagos', coords: [6.5244, 3.3792] },
-    { name: 'Mexico City', coords: [19.4326, -99.1332] },
-    { name: 'Beijing', coords: [39.9042, 116.4074] }
-  ];
-
-  majorCities.forEach(city => {
-    L.circleMarker(city.coords, {
-      radius: 4,
-      fillColor: '#ff7800',
-      color: '#000',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(worldMap).bindTooltip(city.name, {
-      permanent: false,
-      direction: 'top'
+  try {
+    worldMap = L.map('worldMap', {
+      center: [20, 0],
+      zoom: 2,
+      minZoom: 1,
+      maxZoom: 10,
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: true,
+      doubleClickZoom: true,
+      touchZoom: true,
+      worldCopyJump: true,
+      maxBounds: [[-90, -180], [90, 180]],
+      maxBoundsViscosity: 0.5
     });
-  });
 
-  // Fit the map to show the whole world initially
-  worldMap.fitWorld();
+    // Use OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 18,
+      noWrap: false
+    }).addTo(worldMap);
+
+    // Add major cities as visual reference points
+    const majorCities = [
+      { name: 'New York', coords: [40.7128, -74.0060] },
+      { name: 'London', coords: [51.5074, -0.1278] },
+      { name: 'Tokyo', coords: [35.6762, 139.6503] },
+      { name: 'Sydney', coords: [-33.8688, 151.2093] },
+      { name: 'Singapore', coords: [1.3521, 103.8198] },
+      { name: 'São Paulo', coords: [-23.5505, -46.6333] },
+      { name: 'Cairo', coords: [30.0444, 31.2357] },
+      { name: 'Mumbai', coords: [19.0760, 72.8777] },
+      { name: 'Moscow', coords: [55.7558, 37.6176] },
+      { name: 'Lagos', coords: [6.5244, 3.3792] }
+    ];
+
+    majorCities.forEach(city => {
+      L.circleMarker(city.coords, {
+        radius: 4,
+        fillColor: '#ff7800',
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(worldMap).bindTooltip(city.name, {
+        permanent: false,
+        direction: 'top'
+      });
+    });
+
+    // Ensure the map displays properly
+    setTimeout(() => {
+      worldMap.invalidateSize();
+    }, 100);
+
+  } catch (error) {
+    console.error('Error initializing map:', error);
+    document.getElementById('worldMap').innerHTML = '<div style="text-align: center; padding: 50px; color: #666;">Map loading error. Please refresh the page.</div>';
+  }
 }
 
 function handleGuess(e) {
@@ -441,7 +514,7 @@ function handleGuess(e) {
   if (!guess) return;
   
   // Check if correct
-  const isCorrect = guess === currentQuestion.answer;
+  const isCorrect = guess === currentQuestion.answer.toUpperCase();
   
   // Add to history
   guessHistory.push({
@@ -505,7 +578,7 @@ function endGame(won) {
   const resultMsg = document.getElementById('resultMsg');
   
   if (won) {
-    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${https://2048-unblocked.netlify.app/currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
   } else {
     resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
   }
@@ -527,23 +600,118 @@ function shareScore() {
       url: window.location.href
     });
   } else {
-    // Fallback - copy to clipboard
+    // Fallback - copy to clipboard or show alert
     if (navigator.clipboard) {
       navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
       alert('Score copied to clipboard!');
     } else {
-      // Even simpler fallback
       alert('Share this: ' + scoreText);
     }
   }
 }
 
+function createSampleDataFile() {
+  const dataContent = `// data.js - Geography data for Geodle game
+// Add this file to the same directory as your index.html
+
+const geographyData = [
+  {
+    answer: "FRANCE",
+    clues: [
+      "This country is famous for the Eiffel Tower",
+      "It's known for its wine and cheese",
+      "The capital city is Paris",
+      "It borders Spain to the south",
+      "The official language is French",
+      "It's located in Western Europe",
+      "Home to the Louvre Museum",
+      "Famous for croissants and baguettes",
+      "Has the French Riviera on its coast",
+      "Napoleon Bonaparte was from here"
+    ]
+  },
+  {
+    answer: "JAPAN",
+    clues: [
+      "This island nation is famous for sushi",
+      "Mount Fuji is located here",
+      "The capital is Tokyo",
+      "Known for cherry blossoms (sakura)",
+      "Home to anime and manga culture",
+      "Famous for bullet trains (shinkansen)",
+      "Located in East Asia",
+      "Has a rich samurai history",
+      "Known for technology companies like Nintendo",
+      "The currency is the yen"
+    ]
+  },
+  {
+    answer: "BRAZIL",
+    clues: [
+      "This country is famous for carnival celebrations",
+      "The Amazon rainforest covers much of it",
+      "Portuguese is the official language",
+      "Home to Christ the Redeemer statue",
+      "The capital is Brasília",
+      "Famous for football (soccer) players",
+      "Located in South America",
+      "Rio de Janeiro is a major city here",
+      "Known for coffee production",
+      "The largest country in South America"
+    ]
+  },
+  {
+    answer: "AUSTRALIA",
+    clues: [
+      "This country is also a continent",
+      "Home to kangaroos and koalas",
+      "The Sydney Opera House is located here",
+      "Known for the Great Barrier Reef",
+      "The capital is Canberra",
+      "Located in Oceania",
+      "Famous for the Outback desert region",
+      "English is the primary language",
+      "Melbourne and Sydney are major cities",
+      "Known for surfing and beach culture"
+    ]
+  },
+  {
+    answer: "EGYPT",
+    clues: [
+      "Home to the ancient pyramids",
+      "The Nile River flows through it",
+      "The Sphinx is located here",
+      "Cairo is the capital city",
+      "Located in North Africa",
+      "Arabic is the official language",
+      "Known for ancient pharaohs",
+      "Has the Suez Canal",
+      "Borders the Mediterranean Sea",
+      "Famous for mummies and hieroglyphics"
+    ]
+  }
+];
+
+// Make it available globally
+window.geographyData = geographyData;`;
+
+  const blob = new Blob([dataContent], { type: 'text/javascript' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.js';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showFeedback('📝 Sample data.js file downloaded! Place it in the same folder as your HTML file.', '#28a745');
+}
+
 // Start the game when page loads
 document.addEventListener('DOMContentLoaded', function() {
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
+  // Initialize the game
+  initGame();
   
   // Set up event listeners
   document.getElementById('guessForm').addEventListener('submit', handleGuess);
@@ -557,6 +725,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('shareBtn').addEventListener('click', shareScore);
   document.getElementById('newGameBtn').addEventListener('click', initGame);
+  document.getElementById('createDataBtn').addEventListener('click', createSampleDataFile);
 });
 </script>
 </body>
