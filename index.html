@@ -264,6 +264,16 @@
 <div id="loadingError">
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
+  <p><strong>To fix this:</strong></p>
+  <ol style="text-align: left; max-width: 400px; margin: 10px auto;">
+    <li>Make sure your data.js file is in the same folder as your HTML file</li>
+    <li>Add this line in your HTML head section, after the Leaflet script:<br>
+        <code style="background: #f0f0f0; padding: 2px 4px;">&lt;script src="data.js"&gt;&lt;/script&gt;</code>
+    </li>
+    <li>Make sure your data.js file ends with:<br>
+        <code style="background: #f0f0f0; padding: 2px 4px;">window.geographyData = geographyData;</code>
+    </li>
+  </ol>
   <p>Click "Create Sample Data File" to see the expected format.</p>
 </div>
 
@@ -345,12 +355,23 @@ function loadGeographyData() {
   // Check if external geographyData exists
   if (typeof window.geographyData !== 'undefined' && Array.isArray(window.geographyData)) {
     geographyData = window.geographyData;
+    console.log(`✅ Loaded ${geographyData.length} countries from data.js`);
+    showFeedback(`📊 Loaded ${geographyData.length} countries from your data.js file!`, '#28a745');
+    return true;
+  }
+  
+  // Check if geographyData is defined globally (alternative loading method)
+  if (typeof geographyData !== 'undefined' && Array.isArray(geographyData)) {
+    console.log(`✅ Loaded ${geographyData.length} countries from global geographyData`);
+    showFeedback(`📊 Loaded ${geographyData.length} countries from your data.js file!`, '#28a745');
     return true;
   }
   
   // Fall back to sample data
   geographyData = sampleGeographyData;
-  console.log('Using sample data. To use custom data, create a data.js file with geographyData array.');
+  console.log('⚠️ Using sample data. To use custom data, make sure data.js is loaded properly.');
+  console.log('💡 Make sure to add <script src="data.js"></script> in your HTML head section');
+  showFeedback('⚠️ Using sample data (3 countries). Check console for loading tips.', '#ff9800');
   return true;
 }
 
