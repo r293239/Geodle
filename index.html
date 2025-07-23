@@ -6,6 +6,7 @@
 <title>Geodle - Daily Geography Clue Game</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data.js"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -252,54 +253,7 @@
 </div>
 
 <script>
-// Sample geography data for demo purposes
-const geographyData = [
-  {
-    answer: "JAPAN",
-    clues: [
-      "This island nation is located in East Asia",
-      "It's famous for sushi, anime, and cherry blossoms",
-      "The capital city is one of the world's largest metropolitan areas",
-      "This country hosted the 2020 Summer Olympics (held in 2021)",
-      "It consists of four main islands: Honshu, Hokkaido, Kyushu, and Shikoku",
-      "Mount Fuji is this country's highest peak and cultural symbol",
-      "It's known for advanced technology and bullet trains",
-      "The currency is the yen",
-      "This country is in the Pacific Ring of Fire",
-      "The capital starts with 'T' and has about 14 million people"
-    ]
-  },
-  {
-    answer: "BRAZIL",
-    clues: [
-      "This is the largest country in South America",
-      "Portuguese is the official language here",
-      "It's famous for the Amazon rainforest",
-      "The capital was purpose-built in the 1960s",
-      "This country is known for football (soccer) and has won the World Cup 5 times",
-      "Christ the Redeemer statue overlooks one of its major cities",
-      "It borders every South American country except Chile and Ecuador",
-      "The currency is the real",
-      "It's home to the world's largest river by volume",
-      "Rio de Janeiro and São Paulo are major cities here"
-    ]
-  },
-  {
-    answer: "AUSTRALIA",
-    clues: [
-      "This country is also a continent",
-      "It's located in the Southern Hemisphere",
-      "The capital city is not the largest city",
-      "This country is famous for unique wildlife like kangaroos and koalas",
-      "It's surrounded by the Pacific and Indian Oceans",
-      "The Great Barrier Reef is located off its northeast coast",
-      "The currency is the dollar (same name as US currency)",
-      "It's known for the Sydney Opera House",
-      "The majority of the population lives along the eastern and southeastern coasts",
-      "Canberra is the capital, but Sydney and Melbourne are larger cities"
-    ]
-  }
-];
+
 
 let currentQuestion = null;
 let currentClueIndex = 0;
@@ -308,15 +262,14 @@ let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
 
-// Load and save win count from localStorage (disabled for demo)
+// Load and save win count from localStorage
 function loadWinCount() {
-  // For demo purposes, we'll use a variable instead of localStorage
-  totalWins = 0;
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
 }
 
 function saveWinCount() {
-  // Would save to localStorage in a real implementation
-  console.log('Win count would be saved:', totalWins);
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
 }
 
 function resetWinCount() {
@@ -552,7 +505,7 @@ function endGame(won) {
   const resultMsg = document.getElementById('resultMsg');
   
   if (won) {
-    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${https://2048-unblocked.netlify.app/currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
   } else {
     resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
   }
@@ -587,8 +540,10 @@ function shareScore() {
 
 // Start the game when page loads
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize the game
-  initGame();
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
   
   // Set up event listeners
   document.getElementById('guessForm').addEventListener('submit', handleGuess);
