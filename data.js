@@ -633,7 +633,7 @@ const geographyData = [
     ]
   },
   {
-    answer: "NEWZEALAND",
+    answer: "NEW ZEALAND",
     clues: [
       "This country is located in Oceania",
       "The last letter of this country's name is 'D'",
@@ -648,7 +648,7 @@ const geographyData = [
     ]
   },
   {
-    answer: "SOUTHAFRICA",
+    answer: "SOUTH AFRICA",
     clues: [
       "This country is located at the southern tip of Africa",
       "The last letter of this country's name is 'A'",
@@ -680,7 +680,7 @@ const geographyData = [
   {
     answer: "NIGERIA",
     clues: [
-      "This country is located in West Africa",
+      "This country is located in Central Africa",
       "The last letter of this country's name is 'A'",
       "This country has a tropical climate",
       "It's the most populous country in Africa",
