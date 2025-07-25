@@ -17,6 +17,22 @@ const geographyData = [
       "This country is FRANCE"
     ]
   },
+  
+  {
+    answer: "FIJI",
+    clues: [
+      "This country is located in the South Pacific Ocean",
+      "The last letter of this country's name is 'I'",
+      "This country has a tropical oceanic climate",
+      "It's known as the capital of soft coral capital of the world",
+      "The capital city is Suva",
+      "This country is known for the stunning beaches, crystal-clear waters, and vibrant coral reefs",
+      "Fijian is the official language",
+      "Many Fijians and indians live here",
+      "It uses the Fijian dollar",
+      "This country is FIJI"
+    ]
+  },
   {
     answer: "JAPAN",
     clues: [
