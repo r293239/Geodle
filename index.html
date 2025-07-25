@@ -530,5 +530,49 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('newGameBtn').addEventListener('click', initGame);
 });
 </script>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sticky Help Button</title>
+  <style>
+    #help-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      z-index: 9999;
+      transition: background-color 0.3s ease;
+    }
+
+    #help-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Your page content goes here -->
+
+  <!-- Sticky Help Button -->
+  <a id="help-button" 
+     href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+     target="_blank" 
+     rel="noopener noreferrer">
+    Help Us Improve
+  </a>
+
+</body>
+</html>
+
 </body>
 </html>
