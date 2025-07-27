@@ -17,7 +17,1373 @@ const geographyData = [
       "This country is FRANCE"
     ]
   },
-  
+  // Additional countries to paste into the middle of geographyData array
+  {
+    answer: "BANGLADESH",
+    clues: [
+      "This country is located in South Asia",
+      "The last letter of this country's name is 'H'",
+      "This country has a tropical monsoon climate",
+      "It's one of the most densely populated countries in the world",
+      "The capital city is Dhaka",
+      "This country is famous for its textile industry and river deltas",
+      "Bengali is the official language",
+      "The Ganges and Brahmaputra rivers flow through this country",
+      "It gained independence from Pakistan in 1971",
+      "This country is BANGLADESH"
+    ]
+  },
+  {
+    answer: "PAKISTAN",
+    clues: [
+      "This country is located in South Asia",
+      "The last letter of this country's name is 'N'",
+      "This country has diverse climates from desert to alpine",
+      "It was created during the partition of British India",
+      "The capital city is Islamabad",
+      "This country is famous for the K2 mountain and cricket",
+      "Urdu and English are official languages",
+      "The Indus River flows through this country",
+      "Karachi and Lahore are major cities",
+      "This country is PAKISTAN"
+    ]
+  },
+  {
+    answer: "SOUTH KOREA",
+    clues: [
+      "This country is located in East Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate with four seasons",
+      "It occupies the southern half of a peninsula",
+      "The capital city is Seoul",
+      "This country is famous for K-pop, kimchi, and technology companies",
+      "Korean is the official language",
+      "Samsung and LG are from this country",
+      "It's separated from its northern neighbor by a DMZ",
+      "This country is SOUTH KOREA"
+    ]
+  },
+  {
+    answer: "NORTH KOREA",
+    clues: [
+      "This country is located in East Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's one of the most isolated countries in the world",
+      "The capital city is Pyongyang",
+      "This country is known for its strict government control",
+      "Korean is the official language",
+      "It shares borders with China and Russia",
+      "The country is separated from the south by a DMZ",
+      "This country is NORTH KOREA"
+    ]
+  },
+  {
+    answer: "IRAN",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has an arid and semi-arid climate",
+      "It was formerly known as Persia",
+      "The capital city is Tehran",
+      "This country is famous for Persian carpets and ancient ruins",
+      "Persian (Farsi) is the official language",
+      "It has large oil and natural gas reserves",
+      "Isfahan and Shiraz are historic cities",
+      "This country is IRAN"
+    ]
+  },
+  {
+    answer: "IRAQ",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'Q'",
+      "This country has a hot, arid desert climate",
+      "It's part of ancient Mesopotamia, the 'cradle of civilization'",
+      "The capital city is Baghdad",
+      "This country is famous for the Tigris and Euphrates rivers",
+      "Arabic is the official language",
+      "It has significant oil reserves",
+      "Babylon was located in this country",
+      "This country is IRAQ"
+    ]
+  },
+  {
+    answer: "SAUDI ARABIA",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'A'",
+      "This country has a hot, arid desert climate",
+      "It occupies most of the Arabian Peninsula",
+      "The capital city is Riyadh",
+      "This country is famous for being the birthplace of Islam",
+      "Arabic is the official language",
+      "Mecca and Medina are located here",
+      "It has the world's largest oil reserves",
+      "This country is SAUDI ARABIA"
+    ]
+  },
+  {
+    answer: "AFGHANISTAN",
+    clues: [
+      "This country is located in Central Asia",
+      "The last letter of this country's name is 'N'",
+      "This country has an arid to semi-arid climate",
+      "It's known as the 'graveyard of empires'",
+      "The capital city is Kabul",
+      "This country is landlocked and mountainous",
+      "Dari and Pashto are official languages",
+      "The Hindu Kush mountain range runs through it",
+      "It has been involved in many historical conflicts",
+      "This country is AFGHANISTAN"
+    ]
+  },
+  {
+    answer: "MYANMAR",
+    clues: [
+      "This country is located in Southeast Asia",
+      "The last letter of this country's name is 'R'",
+      "This country has a tropical monsoon climate",
+      "It was formerly known as Burma",
+      "The capital city is Naypyidaw",
+      "This country is famous for its golden pagodas and temples",
+      "Burmese is the official language",
+      "The Irrawaddy River flows through this country",
+      "Yangon (Rangoon) is the largest city",
+      "This country is MYANMAR"
+    ]
+  },
+  {
+    answer: "CAMBODIA",
+    clues: [
+      "This country is located in Southeast Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's famous for the ancient temple complex Angkor Wat",
+      "The capital city is Phnom Penh",
+      "This country was once the center of the Khmer Empire",
+      "Khmer is the official language",
+      "The Mekong River flows through this country",
+      "Siem Reap is a major tourist destination",
+      "This country is CAMBODIA"
+    ]
+  },
+  {
+    answer: "LAOS",
+    clues: [
+      "This country is located in Southeast Asia",
+      "The last letter of this country's name is 'S'",
+      "This country has a tropical climate",
+      "It's the only landlocked country in Southeast Asia",
+      "The capital city is Vientiane",
+      "This country is known for Buddhist temples and French colonial architecture",
+      "Lao is the official language",
+      "The Mekong River forms much of its western border",
+      "Luang Prabang is a UNESCO World Heritage site",
+      "This country is LAOS"
+    ]
+  },
+  {
+    answer: "NEPAL",
+    clues: [
+      "This country is located in South Asia",
+      "The last letter of this country's name is 'L'",
+      "This country has diverse climates from tropical to arctic",
+      "It's home to Mount Everest, the world's highest peak",
+      "The capital city is Kathmandu",
+      "This country is famous for the Himalayas and Sherpa people",
+      "Nepali is the official language",
+      "It's landlocked between two large countries",
+      "Buddha was born in this country",
+      "This country is NEPAL"
+    ]
+  },
+  {
+    answer: "SRI LANKA",
+    clues: [
+      "This country is located in South Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's an island nation south of India",
+      "The capital city is Colombo",
+      "This country is famous for tea, cinnamon, and beautiful beaches",
+      "Sinhala and Tamil are official languages",
+      "It was formerly known as Ceylon",
+      "The country has a distinctive teardrop shape",
+      "This country is SRI LANKA"
+    ]
+  },
+  {
+    answer: "UZBEKISTAN",
+    clues: [
+      "This country is located in Central Asia",
+      "The last letter of this country's name is 'N'",
+      "This country has an arid continental climate",
+      "It's doubly landlocked (surrounded by landlocked countries)",
+      "The capital city is Tashkent",
+      "This country is famous for the Silk Road cities of Samarkand and Bukhara",
+      "Uzbek is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The Aral Sea is partially located here",
+      "This country is UZBEKISTAN"
+    ]
+  },
+  {
+    answer: "KAZAKHSTAN",
+    clues: [
+      "This country is located in Central Asia",
+      "The last letter of this country's name is 'N'",
+      "This country has a continental climate with extreme temperatures",
+      "It's the world's largest landlocked country",
+      "The capital city is Nur-Sultan (formerly Astana)",
+      "This country is famous for oil, gas, and the Baikonur Cosmodrome",
+      "Kazakh and Russian are official languages",
+      "It's the ninth largest country in the world",
+      "Almaty is the largest city and former capital",
+      "This country is KAZAKHSTAN"
+    ]
+  },
+  {
+    answer: "ALGERIA",
+    clues: [
+      "This country is located in North Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a hot, arid climate",
+      "It's the largest country in Africa by area",
+      "The capital city is Algiers",
+      "This country is famous for the Sahara Desert and Mediterranean coast",
+      "Arabic is the official language",
+      "It was a French colony until 1962",
+      "Most of the country is covered by desert",
+      "This country is ALGERIA"
+    ]
+  },
+  {
+    answer: "SUDAN",
+    clues: [
+      "This country is located in North Africa",
+      "The last letter of this country's name is 'N'",
+      "This country has a hot, arid climate",
+      "The Blue and White Nile rivers meet in this country",
+      "The capital city is Khartoum",
+      "This country was the largest in Africa before South Sudan's independence",
+      "Arabic is the official language",
+      "It has ancient Nubian pyramids",
+      "The country split into two in 2011",
+      "This country is SUDAN"
+    ]
+  },
+  {
+    answer: "TUNISIA",
+    clues: [
+      "This country is located in North Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a Mediterranean climate along the coast",
+      "It's the smallest country in North Africa",
+      "The capital city is Tunis",
+      "This country is famous for ancient Carthage ruins",
+      "Arabic is the official language",
+      "The Arab Spring began in this country in 2010",
+      "It has both Mediterranean beaches and Saharan desert",
+      "This country is TUNISIA"
+    ]
+  },
+  {
+    answer: "SENEGAL",
+    clues: [
+      "This country is located in West Africa",
+      "The last letter of this country's name is 'L'",
+      "This country has a tropical climate",
+      "It almost completely surrounds another small country",
+      "The capital city is Dakar",
+      "This country is famous for the Dakar Rally and teranga (hospitality)",
+      "French is the official language",
+      "It's known for its vibrant music and art scene",
+      "The country is located on the Atlantic coast",
+      "This country is SENEGAL"
+    ]
+  },
+  {
+    answer: "CAMEROON",
+    clues: [
+      "This country is located in Central Africa",
+      "The last letter of this country's name is 'N'",
+      "This country has diverse climates from tropical to semi-arid",
+      "It's shaped roughly like a triangle",
+      "The capital city is Yaoundé",
+      "This country is famous for Mount Cameroon and diverse cultures",
+      "French and English are official languages",
+      "It's known as 'Africa in miniature' due to its diversity",
+      "Douala is the largest city and economic center",
+      "This country is CAMEROON"
+    ]
+  },
+  {
+    answer: "MADAGASCAR",
+    clues: [
+      "This country is located off the coast of Africa",
+      "The last letter of this country's name is 'R'",
+      "This country has a tropical climate",
+      "It's the fourth largest island in the world",
+      "The capital city is Antananarivo",
+      "This country is famous for unique wildlife like lemurs",
+      "Malagasy and French are official languages",
+      "It separated from mainland Africa millions of years ago",
+      "90% of its wildlife is found nowhere else on Earth",
+      "This country is MADAGASCAR"
+    ]
+  },
+  {
+    answer: "TANZANIA",
+    clues: [
+      "This country is located in East Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's home to Mount Kilimanjaro, Africa's highest peak",
+      "The capital city is Dodoma",
+      "This country is famous for the Serengeti and wildlife safaris",
+      "Swahili and English are official languages",
+      "It includes the islands of Zanzibar",
+      "The Great Migration occurs here annually",
+      "This country is TANZANIA"
+    ]
+  },
+  {
+    answer: "UGANDA",
+    clues: [
+      "This country is located in East Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's landlocked and known as the 'Pearl of Africa'",
+      "The capital city is Kampala",
+      "This country is famous for mountain gorillas and Lake Victoria",
+      "English is the official language",
+      "The source of the White Nile is located here",
+      "It's home to the Rwenzori Mountains",
+      "This country is UGANDA"
+    ]
+  },
+  {
+    answer: "RWANDA",
+    clues: [
+      "This country is located in East Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a temperate tropical highland climate",
+      "It's known as the 'Land of a Thousand Hills'",
+      "The capital city is Kigali",
+      "This country is famous for mountain gorillas and rapid development",
+      "Kinyarwanda, French, and English are official languages",
+      "It's one of the smallest countries in mainland Africa",
+      "The country has made remarkable progress since the 1990s",
+      "This country is RWANDA"
+    ]
+  },
+  {
+    answer: "ZAMBIA",
+    clues: [
+      "This country is located in Southern Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's landlocked and rich in copper",
+      "The capital city is Lusaka",
+      "This country is famous for Victoria Falls on the Zambezi River",
+      "English is the official language",
+      "It's known for its wildlife parks and copper mining",
+      "The country was formerly called Northern Rhodesia",
+      "This country is ZAMBIA"
+    ]
+  },
+  {
+    answer: "ZIMBABWE",
+    clues: [
+      "This country is located in Southern Africa",
+      "The last letter of this country's name is 'E'",
+      "This country has a tropical climate",
+      "It's landlocked and known for ancient stone ruins",
+      "The capital city is Harare",
+      "This country is famous for Victoria Falls and Great Zimbabwe ruins",
+      "English is the official language",
+      "It was formerly called Southern Rhodesia",
+      "The country shares Victoria Falls with its northern neighbor",
+      "This country is ZIMBABWE"
+    ]
+  },
+  {
+    answer: "BOTSWANA",
+    clues: [
+      "This country is located in Southern Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has a semi-arid climate",
+      "It's landlocked and largely covered by the Kalahari Desert",
+      "The capital city is Gaborone",
+      "This country is famous for diamonds and the Okavango Delta",
+      "Setswana and English are official languages",
+      "It's one of Africa's most stable democracies",
+      "The country is known for excellent wildlife conservation",
+      "This country is BOTSWANA"
+    ]
+  },
+  {
+    answer: "NAMIBIA",
+    clues: [
+      "This country is located in Southern Africa",
+      "The last letter of this country's name is 'A'",
+      "This country has an arid desert climate",
+      "It's home to the Namib Desert, one of the world's oldest",
+      "The capital city is Windhoek",
+      "This country is famous for sand dunes and diamond mining",
+      "English is the official language",
+      "It gained independence from South Africa in 1990",
+      "The Skeleton Coast is located here",
+      "This country is NAMIBIA"
+    ]
+  },
+  {
+    answer: "CHILE",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'E'",
+      "This country has diverse climates from desert to polar",
+      "It's a long, narrow country along the Pacific coast",
+      "The capital city is Santiago",
+      "This country is famous for wine and copper mining",
+      "Spanish is the official language",
+      "The Atacama Desert is located here",
+      "Valparaíso is a major port city",
+      "This country is CHILE"
+    ]
+  },
+  {
+    answer: "URUGUAY",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'Y'",
+      "This country has a temperate climate",
+      "It's one of the smallest countries in South America",
+      "The capital city is Montevideo",
+      "This country is famous for beef, wine, and football",
+      "Spanish is the official language",
+      "It's located between two much larger countries",
+      "The country is known for its progressive social policies",
+      "This country is URUGUAY"
+    ]
+  },
+  {
+    answer: "BOLIVIA",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'A'",
+      "This country has diverse climates from tropical to polar",
+      "It's one of only two landlocked countries in South America",
+      "The capital cities are Sucre and La Paz",
+      "This country is famous for the Salar de Uyuni salt flats",
+      "Spanish is the official language",
+      "It's home to Lake Titicaca, the world's highest navigable lake",
+      "The country is rich in natural resources, especially lithium",
+      "This country is BOLIVIA"
+    ]
+  },
+  {
+    answer: "PARAGUAY",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'Y'",
+      "This country has a subtropical climate",
+      "It's one of only two landlocked countries in South America",
+      "The capital city is Asunción",
+      "This country is famous for the Guaraní people and yerba mate",
+      "Spanish and Guaraní are official languages",
+      "The Paraguay River divides the country",
+      "It's known for the Itaipu Dam",
+      "This country is PARAGUAY"
+    ]
+  },
+  {
+    answer: "GUYANA",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's the only English-speaking country in South America",
+      "The capital city is Georgetown",
+      "This country is famous for Kaieteur Falls and gold mining",
+      "English is the official language",
+      "It's located on the northern coast of South America",
+      "The country has significant bauxite and gold reserves",
+      "This country is GUYANA"
+    ]
+  },
+  {
+    answer: "SURINAME",
+    clues: [
+      "This country is located in South America",
+      "The last letter of this country's name is 'E'",
+      "This country has a tropical climate",
+      "It's the smallest country in South America",
+      "The capital city is Paramaribo",
+      "This country is famous for its diverse population and rainforests",
+      "Dutch is the official language",
+      "It was formerly known as Dutch Guiana",
+      "The country has significant bauxite reserves",
+      "This country is SURINAME"
+    ]
+  },
+  {
+    answer: "FRENCH GUIANA",
+    clues: [
+      "This territory is located in South America",
+      "The last letter of this territory's name is 'A'",
+      "This territory has a tropical climate",
+      "It's an overseas territory of a European country",
+      "The capital city is Cayenne",
+      "This territory is famous for the Guiana Space Centre",
+      "French is the official language",
+      "It's located on the northern coast of South America",
+      "The European Space Agency launches rockets from here",
+      "This territory is FRENCH GUIANA"
+    ]
+  },
+  {
+    answer: "CUBA",
+    clues: [
+      "This country is located in the Caribbean",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's the largest island in the Caribbean",
+      "The capital city is Havana",
+      "This country is famous for cigars, salsa music, and vintage cars",
+      "Spanish is the official language",
+      "It's known for its communist government since 1959",
+      "Santiago de Cuba is another major city",
+      "This country is CUBA"
+    ]
+  },
+  {
+    answer: "HAITI",
+    clues: [
+      "This country is located in the Caribbean",
+      "The last letter of this country's name is 'I'",
+      "This country has a tropical climate",
+      "It occupies the western third of an island",
+      "The capital city is Port-au-Prince",
+      "This country is famous for voodoo culture and French colonial history",
+      "French and Haitian Creole are official languages",
+      "It was the first black republic in the world",
+      "The country shares an island with another nation",
+      "This country is HAITI"
+    ]
+  },
+  {
+    answer: "DOMINICAN REPUBLIC",
+    clues: [
+      "This country is located in the Caribbean",
+      "The last letter of this country's name is 'C'",
+      "This country has a tropical climate",
+      "It occupies the eastern two-thirds of an island",
+      "The capital city is Santo Domingo",
+      "This country is famous for merengue music, baseball, and beaches",
+      "Spanish is the official language",
+      "It shares an island with its western neighbor",
+      "The country is a popular tourist destination",
+      "This country is DOMINICAN REPUBLIC"
+    ]
+  },
+  {
+    answer: "COSTA RICA",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's known for having no standing army",
+      "The capital city is San José",
+      "This country is famous for biodiversity and eco-tourism",
+      "Spanish is the official language",
+      "It's located between Nicaragua and Panama",
+      "The country is known for coffee production",
+      "This country is COSTA RICA"
+    ]
+  },
+  {
+    answer: "PANAMA",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It connects North and South America",
+      "The capital city is Panama City",
+      "This country is famous for the Panama Canal",
+      "Spanish is the official language",
+      "It's the narrowest country in Central America",
+      "The canal connects the Atlantic and Pacific oceans",
+      "This country is PANAMA"
+    ]
+  },
+  {
+    answer: "GUATEMALA",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's known for ancient Mayan ruins",
+      "The capital city is Guatemala City",
+      "This country is famous for Tikal and Lake Atitlán",
+      "Spanish is the official language",
+      "It's the most populous country in Central America",
+      "The country has many active volcanoes",
+      "This country is GUATEMALA"
+    ]
+  },
+  {
+    answer: "HONDURAS",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'S'",
+      "This country has a tropical climate",
+      "It has coastlines on both the Caribbean and Pacific",
+      "The capital city is Tegucigalpa",
+      "This country is famous for Mayan ruins at Copán",
+      "Spanish is the official language",
+      "It's bordered by Guatemala, El Salvador, and Nicaragua",
+      "The country exports bananas and coffee",
+      "This country is HONDURAS"
+    ]
+  },
+  {
+    answer: "NICARAGUA",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's the largest country in Central America",
+      "The capital city is Managua",
+      "This country is famous for Lake Nicaragua and volcanoes",
+      "Spanish is the official language",
+      "It's located between Honduras and Costa Rica",
+      "The country has both Pacific and Caribbean coastlines",
+      "This country is NICARAGUA"
+    ]
+  },
+  {
+    answer: "EL SALVADOR",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'R'",
+      "This country has a tropical climate",
+      "It's the smallest country in Central America",
+      "The capital city is San Salvador",
+      "This country is famous for pupusas and coffee",
+      "Spanish is the official language",
+      "It's the only Central American country without a Caribbean coast",
+      "The country is known for its volcanic landscape",
+      "This country is EL SALVADOR"
+    ]
+  },
+  {
+    answer: "BELIZE",
+    clues: [
+      "This country is located in Central America",
+      "The last letter of this country's name is 'E'",
+      "This country has a tropical climate",
+      "It's the only English-speaking country in Central America",
+      "The capital city is Belmopan",
+      "This country is famous for the Blue Hole and Mayan ruins",
+      "English is the official language",
+      "It was formerly known as British Honduras",
+      "The country has the second-largest barrier reef in the world",
+      "This country is BELIZE"
+    ]
+  },
+  {
+    answer: "CZECH REPUBLIC",
+    clues: [
+      "This country is located in Central Europe",
+      "The last letter of this country's name is 'C'",
+      "This country has a continental climate",
+      "It's landlocked and known for its medieval architecture",
+      "The capital city is Prague",
+      "This country is famous for beer, castles, and crystal",
+      "Czech is the official language",
+      "It was part of Czechoslovakia until 1993",
+      "The country is known for its spa towns",
+      "This country is CZECH REPUBLIC"
+    ]
+  },
+  {
+    answer: "SLOVAKIA",
+    clues: [
+      "This country is located in Central Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's landlocked and mountainous",
+      "The capital city is Bratislava",
+      "This country is famous for castles and folk traditions",
+      "Slovak is the official language",
+      "It was part of Czechoslovakia until 1993",
+      "The High Tatras mountains are located here",
+      "This country is SLOVAKIA"
+    ]
+  },
+  {
+    answer: "HUNGARY",
+    clues: [
+      "This country is located in Central Europe",
+      "The last letter of this country's name is 'Y'",
+      "This country has a continental climate",
+      "It's landlocked and known for thermal baths",
+      "The capital city is Budapest",
+      "This country is famous for goulash and the Danube River",
+      "Hungarian is the official language",
+      "Lake Balaton is located here",
+      "The country has a unique non-Indo-European language",
+      "This country is HUNGARY"
+    ]
+  },
+  {
+    answer: "ROMANIA",
+    clues: [
+      "This country is located in Eastern Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's famous for Dracula legends and medieval castles",
+      "The capital city is Bucharest",
+      "This country is known for the Carpathian Mountains and Transylvania",
+      "Romanian is the official language",
+      "The Danube River forms much of its southern border",
+      "Bran Castle is associated with the Dracula legend",
+      "This country is ROMANIA"
+    ]
+  },
+  {
+    answer: "BULGARIA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's known for rose oil production and Black Sea beaches",
+      "The capital city is Sofia",
+      "This country is famous for yogurt and the Cyrillic alphabet",
+      "Bulgarian is the official language",
+      "The Balkan Mountains run through the center",
+      "It's one of the oldest countries in Europe",
+      "This country is BULGARIA"
+    ]
+  },
+  {
+    answer: "CROATIA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a Mediterranean and continental climate",
+      "It has a distinctive crescent shape",
+      "The capital city is Zagreb",
+      "This country is famous for the Adriatic coast and Dubrovnik",
+      "Croatian is the official language",
+      "It gained independence from Yugoslavia in 1991",
+      "The country has over 1,000 islands",
+      "This country is CROATIA"
+    ]
+  },
+  {
+    answer: "SERBIA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's landlocked and located in the Balkans",
+      "The capital city is Belgrade",
+      "This country is famous for its monasteries and folk music",
+      "Serbian is the official language",
+      "It was part of Yugoslavia until its breakup",
+      "The Danube and Sava rivers meet in the capital",
+      "This country is SERBIA"
+    ]
+  },
+  {
+    answer: "BOSNIA AND HERZEGOVINA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's located in the heart of the Balkans",
+      "The capital city is Sarajevo",
+      "This country is famous for the 1984 Winter Olympics and diverse cultures",
+      "Bosnian, Croatian, and Serbian are official languages",
+      "It was part of Yugoslavia until the 1990s",
+      "The country has a complex ethnic composition",
+      "This country is BOSNIA AND HERZEGOVINA"
+    ]
+  },
+  {
+    answer: "SLOVENIA",
+    clues: [
+      "This country is located in Central Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has an alpine and Mediterranean climate",
+      "It's small and borders the Adriatic Sea",
+      "The capital city is Ljubljana",
+      "This country is famous for Lake Bled and caves",
+      "Slovenian is the official language",
+      "It was part of Yugoslavia until 1991",
+      "The country is known for its green landscapes",
+      "This country is SLOVENIA"
+    ]
+  },
+  {
+    answer: "MONTENEGRO",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'O'",
+      "This country has a Mediterranean climate along the coast",
+      "It's a small mountainous country on the Adriatic",
+      "The capital city is Podgorica",
+      "This country is famous for dramatic mountains and medieval towns",
+      "Montenegrin is the official language",
+      "It gained independence from Serbia in 2006",
+      "The name means 'Black Mountain'",
+      "This country is MONTENEGRO"
+    ]
+  },
+  {
+    answer: "NORTH MACEDONIA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's landlocked in the Balkans",
+      "The capital city is Skopje",
+      "This country is famous for Lake Ohrid and ancient history",
+      "Macedonian is the official language",
+      "It was part of Yugoslavia until 1991",
+      "The country changed its name in 2019",
+      "This country is NORTH MACEDONIA"
+    ]
+  },
+  {
+    answer: "ALBANIA",
+    clues: [
+      "This country is located in Southeast Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a Mediterranean climate",
+      "It's located on the Adriatic and Ionian seas",
+      "The capital city is Tirana",
+      "This country is famous for bunkers and mountain landscapes",
+      "Albanian is the official language",
+      "It was isolated under communist rule until 1991",
+      "The country is known for its hospitality tradition",
+      "This country is ALBANIA"
+    ]
+  },
+  {
+    answer: "KOSOVO",
+    clues: [
+      "This territory is located in Southeast Europe",
+      "The last letter of this territory's name is 'O'",
+      "This territory has a continental climate",
+      "It's a disputed territory in the Balkans",
+      "The capital city is Pristina",
+      "This territory is famous for medieval monasteries",
+      "Albanian and Serbian are official languages",
+      "It declared independence from Serbia in 2008",
+      "Recognition of this territory is disputed internationally",
+      "This territory is KOSOVO"
+    ]
+  },
+  {
+    answer: "MOLDOVA",
+    clues: [
+      "This country is located in Eastern Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's landlocked between two larger countries",
+      "The capital city is Chișinău",
+      "This country is famous for wine production",
+      "Romanian is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The country is known for its wine cellars",
+      "This country is MOLDOVA"
+    ]
+  },
+  {
+    answer: "BELARUS",
+    clues: [
+      "This country is located in Eastern Europe",
+      "The last letter of this country's name is 'S'",
+      "This country has a continental climate",
+      "It's landlocked and known as Europe's last dictatorship",
+      "The capital city is Minsk",
+      "This country is famous for forests and Soviet-era architecture",
+      "Belarusian and Russian are official languages",
+      "It was part of the Soviet Union until 1991",
+      "The country is heavily forested",
+      "This country is BELARUS"
+    ]
+  },
+  {
+    answer: "LITHUANIA",
+    clues: [
+      "This country is located in Northern Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate",
+      "It's one of the three Baltic states",
+      "The capital city is Vilnius",
+      "This country is famous for amber and basketball",
+      "Lithuanian is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The country has a Baltic Sea coastline",
+      "This country is LITHUANIA"
+    ]
+  },
+  {
+    answer: "LATVIA",
+    clues: [
+      "This country is located in Northern Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a maritime climate",
+      "It's one of the three Baltic states",
+      "The capital city is Riga",
+      "This country is famous for Art Nouveau architecture",
+      "Latvian is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The country has extensive forests and beaches",
+      "This country is LATVIA"
+    ]
+  },
+  {
+    answer: "ESTONIA",
+    clues: [
+      "This country is located in Northern Europe",
+      "The last letter of this country's name is 'A'",
+      "This country has a maritime climate",
+      "It's the northernmost of the three Baltic states",
+      "The capital city is Tallinn",
+      "This country is famous for digital innovation and medieval towns",
+      "Estonian is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The country is one of the most digitally advanced in the world",
+      "This country is ESTONIA"
+    ]
+  },
+  {
+    answer: "GEORGIA",
+    clues: [
+      "This country is located in the Caucasus region",
+      "The last letter of this country's name is 'A'",
+      "This country has diverse climates from subtropical to alpine",
+      "It's located at the crossroads of Europe and Asia",
+      "The capital city is Tbilisi",
+      "This country is famous for wine, hospitality, and ancient churches",
+      "Georgian is the official language",
+      "It was part of the Soviet Union until 1991",
+      "The country is considered the birthplace of wine",
+      "This country is GEORGIA"
+    ]
+  },
+  {
+    answer: "ARMENIA",
+    clues: [
+      "This country is located in the Caucasus region",
+      "The last letter of this country's name is 'A'",
+      "This country has a highland continental climate",
+      "It's landlocked in the South Caucasus",
+      "The capital city is Yerevan",
+      "This country is famous for Mount Ararat views and ancient monasteries",
+      "Armenian is the official language",
+      "It was the first nation to adopt Christianity as state religion",
+      "The country has a large diaspora worldwide",
+      "This country is ARMENIA"
+    ]
+  },
+  {
+    answer: "AZERBAIJAN",
+    clues: [
+      "This country is located in the Caucasus region",
+      "The last letter of this country's name is 'N'",
+      "This country has a semi-arid climate",
+      "It's located on the Caspian Sea",
+      "The capital city is Baku",
+      "This country is famous for oil, natural gas, and mud volcanoes",
+      "Azerbaijani is the official language",
+      "It's known as the 'Land of Fire'",
+      "The country has significant oil reserves in the Caspian Sea",
+      "This country is AZERBAIJAN"
+    ]
+  },
+  {
+    answer: "JORDAN",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has an arid desert climate",
+      "It's home to the ancient city of Petra",
+      "The capital city is Amman",
+      "This country is famous for Petra, the Dead Sea, and Wadi Rum",
+      "Arabic is the official language",
+      "It's a constitutional monarchy",
+      "The country is relatively stable in a turbulent region",
+      "This country is JORDAN"
+    ]
+  },
+  {
+    answer: "LEBANON",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has a Mediterranean climate",
+      "It's known as the 'Switzerland of the Middle East'",
+      "The capital city is Beirut",
+      "This country is famous for cedar trees and ancient Phoenician sites",
+      "Arabic is the official language",
+      "It has a diverse religious composition",
+      "The country is known for its cuisine and banking",
+      "This country is LEBANON"
+    ]
+  },
+  {
+    answer: "SYRIA",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'A'",
+      "This country has an arid and semi-arid climate",
+      "It's known for ancient cities and archaeological sites",
+      "The capital city is Damascus",
+      "This country is famous for Aleppo, Palmyra, and ancient history",
+      "Arabic is the official language",
+      "Damascus is one of the world's oldest continuously inhabited cities",
+      "The country has been affected by civil conflict since 2011",
+      "This country is SYRIA"
+    ]
+  },
+  {
+    answer: "YEMEN",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has a hot, arid climate",
+      "It's located on the Arabian Peninsula",
+      "The capital city is Sana'a",
+      "This country is famous for ancient architecture and frankincense",
+      "Arabic is the official language",
+      "It controls the Bab el-Mandeb strait",
+      "The country has unique tower houses in its capital",
+      "This country is YEMEN"
+    ]
+  },
+  {
+    answer: "OMAN",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has a hot, arid climate",
+      "It's located on the Arabian Peninsula",
+      "The capital city is Muscat",
+      "This country is famous for frankincense and beautiful coastlines",
+      "Arabic is the official language",
+      "It's an absolute monarchy known for tolerance",
+      "The country has both desert and mountain landscapes",
+      "This country is OMAN"
+    ]
+  },
+  {
+    answer: "UNITED ARAB EMIRATES",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'S'",
+      "This country has a hot, arid desert climate",
+      "It's a federation of seven emirates",
+      "The capital city is Abu Dhabi",
+      "This country is famous for Dubai, oil wealth, and modern architecture",
+      "Arabic is the official language",
+      "Dubai and Abu Dhabi are major cities",
+      "The country is known for luxury and innovation",
+      "This country is UNITED ARAB EMIRATES"
+    ]
+  },
+  {
+    answer: "QATAR",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'R'",
+      "This country has a hot, arid climate",
+      "It's a small peninsula in the Persian Gulf",
+      "The capital city is Doha",
+      "This country is famous for natural gas wealth and hosting the 2022 World Cup",
+      "Arabic is the official language",
+      "It has one of the world's highest GDPs per capita",
+      "The country is known for Al Jazeera news network",
+      "This country is QATAR"
+    ]
+  },
+  {
+    answer: "KUWAIT",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'T'",
+      "This country has a hot, arid climate",
+      "It's a small country on the Persian Gulf",
+      "The capital city is Kuwait City",
+      "This country is famous for oil wealth and the Gulf War",
+      "Arabic is the official language",
+      "It was invaded by Iraq in 1990",
+      "The country has significant oil reserves",
+      "This country is KUWAIT"
+    ]
+  },
+  {
+    answer: "BAHRAIN",
+    clues: [
+      "This country is located in the Middle East",
+      "The last letter of this country's name is 'N'",
+      "This country has a hot, arid climate",
+      "It's an island nation in the Persian Gulf",
+      "The capital city is Manama",
+      "This country is famous for pearls, oil, and the Formula 1 Grand Prix",
+      "Arabic is the official language",
+      "It's connected to Saudi Arabia by a causeway",
+      "The country is a major financial center",
+      "This country is BAHRAIN"
+    ]
+  },
+  {
+    answer: "MONGOLIA",
+    clues: [
+      "This country is located in East Asia",
+      "The last letter of this country's name is 'A'",
+      "This country has a continental climate with extreme temperatures",
+      "It's landlocked between two large countries",
+      "The capital city is Ulaanbaatar",
+      "This country is famous for nomadic culture and Genghis Khan",
+      "Mongolian is the official language",
+      "It's known for vast steppes and the Gobi Desert",
+      "The country has a strong tradition of horseback riding",
+      "This country is MONGOLIA"
+    ]
+  },
+  {
+    answer: "BHUTAN",
+    clues: [
+      "This country is located in South Asia",
+      "The last letter of this country's name is 'N'",
+      "This country has varied climates from subtropical to alpine",
+      "It's landlocked in the Himalayas",
+      "The capital city is Thimphu",
+      "This country is famous for Gross National Happiness and Buddhist culture",
+      "Dzongkha is the official language",
+      "It's the last remaining Buddhist kingdom",
+      "The country measures Gross National Happiness instead of GDP",
+      "This country is BHUTAN"
+    ]
+  },
+  {
+    answer: "MALDIVES",
+    clues: [
+      "This country is located in the Indian Ocean",
+      "The last letter of this country's name is 'S'",
+      "This country has a tropical climate",
+      "It's made up of 1,192 coral islands",
+      "The capital city is Malé",
+      "This country is famous for luxury resorts and crystal-clear waters",
+      "Dhivehi is the official language",
+      "It's the lowest-lying country in the world",
+      "The country is threatened by rising sea levels",
+      "This country is MALDIVES"
+    ]
+  },
+  {
+    answer: "BRUNEI",
+    clues: [
+      "This country is located in Southeast Asia",
+      "The last letter of this country's name is 'I'",
+      "This country has a tropical climate",
+      "It's a small wealthy nation on the island of Borneo",
+      "The capital city is Bandar Seri Begawan",
+      "This country is famous for oil wealth and Islamic architecture",
+      "Malay is the official language",
+      "It's an absolute monarchy ruled by a Sultan",
+      "The country has no personal income tax",
+      "This country is BRUNEI"
+    ]
+  },
+  {
+    answer: "EAST TIMOR",
+    clues: [
+      "This country is located in Southeast Asia",
+      "The last letter of this country's name is 'R'",
+      "This country has a tropical climate",
+      "It occupies the eastern half of an island",
+      "The capital city is Dili",
+      "This country is famous for being one of the world's newest nations",
+      "Tetum and Portuguese are official languages",
+      "It gained independence from Indonesia in 2002",
+      "The country is also known as Timor-Leste",
+      "This country is EAST TIMOR"
+    ]
+  },
+  {
+    answer: "PAPUA NEW GUINEA",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It occupies the eastern half of the world's second-largest island",
+      "The capital city is Port Moresby",
+      "This country is famous for cultural diversity and bird of paradise",
+      "English is the official language",
+      "It has over 800 languages spoken",
+      "The country is one of the most linguistically diverse in the world",
+      "This country is PAPUA NEW GUINEA"
+    ]
+  },
+  {
+    answer: "SOLOMON ISLANDS",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'S'",
+      "This country has a tropical climate",
+      "It's an island nation in the South Pacific",
+      "The capital city is Honiara",
+      "This country is famous for World War II history and diving",
+      "English is the official language",
+      "It consists of nearly 1,000 islands",
+      "The country was a major battleground in WWII",
+      "This country is SOLOMON ISLANDS"
+    ]
+  },
+  {
+    answer: "VANUATU",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'U'",
+      "This country has a tropical climate",
+      "It's an island nation known for active volcanoes",
+      "The capital city is Port Vila",
+      "This country is famous for bungee jumping origins and volcanoes",
+      "Bislama, English, and French are official languages",
+      "It consists of about 80 islands",
+      "The country is part of the Pacific Ring of Fire",
+      "This country is VANUATU"
+    ]
+  },
+  {
+    answer: "SAMOA",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's an island nation in the South Pacific",
+      "The capital city is Apia",
+      "This country is famous for traditional Polynesian culture",
+      "Samoan and English are official languages",
+      "It consists of two main islands",
+      "The country is known for its fa'a Samoa way of life",
+      "This country is SAMOA"
+    ]
+  },
+  {
+    answer: "TONGA",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's an island kingdom in the South Pacific",
+      "The capital city is Nuku'alofa",
+      "This country is famous for being the only Pacific island never colonized",
+      "Tongan and English are official languages",
+      "It's known as the 'Friendly Islands'",
+      "The country is a constitutional monarchy",
+      "This country is TONGA"
+    ]
+  },
+  {
+    answer: "PALAU",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'U'",
+      "This country has a tropical climate",
+      "It's a small island nation in the Pacific",
+      "The capital city is Ngerulmud",
+      "This country is famous for jellyfish lakes and pristine diving",
+      "Palauan and English are official languages",
+      "It consists of over 340 islands",
+      "The country is known for marine conservation",
+      "This country is PALAU"
+    ]
+  },
+  {
+    answer: "MICRONESIA",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'A'",
+      "This country has a tropical climate",
+      "It's officially called the Federated States of Micronesia",
+      "The capital city is Palikir",
+      "This country is famous for World War II wrecks and diving",
+      "English is the official language",
+      "It consists of four states across the Pacific",
+      "The country has over 600 islands",
+      "This country is MICRONESIA"
+    ]
+  },
+  {
+    answer: "MARSHALL ISLANDS",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'S'",
+      "This country has a tropical climate",
+      "It's a collection of atolls and islands in the Pacific",
+      "The capital city is Majuro",
+      "This country is famous for nuclear testing history and low elevation",
+      "Marshallese and English are official languages",
+      "It consists of 29 atolls and 5 islands",
+      "The country is threatened by rising sea levels",
+      "This country is MARSHALL ISLANDS"
+    ]
+  },
+  {
+    answer: "KIRIBATI",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'I'",
+      "This country has a tropical climate",
+      "It's made up of 33 atolls across the Pacific",
+      "The capital city is Tarawa",
+      "This country is famous for being spread across all four hemispheres",
+      "English and Gilbertese are official languages",
+      "It's one of the countries most threatened by climate change",
+      "The country straddles the equator and International Date Line",
+      "This country is KIRIBATI"
+    ]
+  },
+  {
+    answer: "NAURU",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'U'",
+      "This country has a tropical climate",
+      "It's the world's smallest island nation",
+      "The capital city is Yaren",
+      "This country is famous for phosphate mining and being car-free",
+      "Nauruan and English are official languages",
+      "It's the third-smallest country in the world by area",
+      "The country was once one of the wealthiest per capita due to mining",
+      "This country is NAURU"
+    ]
+  },
+  {
+    answer: "TUVALU",
+    clues: [
+      "This country is located in Oceania",
+      "The last letter of this country's name is 'U'",
+      "This country has a tropical climate",
+      "It's one of the smallest countries in the world",
+      "The capital city is Funafuti",
+      "This country is famous for its .tv internet domain and low elevation",
+      "Tuvaluan and English are official languages",
+      "It consists of nine coral atolls",
+      "The country is severely threatened by sea level rise",
+      "This country is TUVALU"
+    ]
+  },
+  // End of additional countries
   {
     answer: "FIJI",
     clues: [
