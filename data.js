@@ -1,5 +1,5 @@
 // countries-data.js
-// Geography data with progressive clues for 50+ countries
+// Geography data with progressive clues for all countries as of 2025
 
 const geographyData = [
   {
