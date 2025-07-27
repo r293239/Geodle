@@ -97,6 +97,26 @@
     font-weight: bold;
     margin: 10px 0;
   }
+  #pastHints {
+    margin-top: 10px;
+  }
+  #pastHints h3 {
+    margin-bottom: 6px;
+  }
+  #pastHintsList {
+    list-style: none;
+    padding-left: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  #pastHintsList li {
+    padding: 4px 8px;
+    background: #e8f4fd;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border-left: 3px solid #0078d7;
+  }
   #history {
     margin-top: 10px;
   }
@@ -233,6 +253,10 @@
 <div id="streak">🏆 Total Wins: 0</div>
 <button id="resetBtn">🔄 Reset Game</button>
 <button id="resetWinsBtn">🏆 Reset Win Count</button>
+<div id="pastHints">
+  <h3>Past Hints</h3>
+  <ul id="pastHintsList"></ul>
+</div>
 <div id="history">
   <h3>Guess History</h3>
   <ul id="historyList"></ul>
@@ -336,6 +360,7 @@ function initGame() {
   document.getElementById('guessInput').value = '';
   document.getElementById('feedback').textContent = '';
   document.getElementById('historyList').innerHTML = '';
+  document.getElementById('pastHintsList').innerHTML = '';
   document.getElementById('endScreen').style.display = 'none';
   
   // Focus on input
@@ -357,6 +382,19 @@ function resetGame() {
 function updateClueDisplay() {
   document.getElementById('currentClue').textContent = currentClueIndex + 1;
   document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+  updatePastHints();
+}
+
+function updatePastHints() {
+  const pastHintsList = document.getElementById('pastHintsList');
+  pastHintsList.innerHTML = '';
+  
+  // Show all hints up to current clue index
+  for (let i = 0; i <= currentClueIndex; i++) {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+    pastHintsList.appendChild(li);
+  }
 }
 
 function updateProgressBar() {
@@ -387,26 +425,7 @@ function initWorldMap() {
     maxZoom: 18
   }).addTo(worldMap);
 
-  // Add some visual flair with markers for major cities
-  const majorCities = [
-    { name: 'New York', coords: [40.7128, -74.0060] },
-    { name: 'London', coords: [51.5074, -0.1278] },
-    { name: 'Tokyo', coords: [35.6762, 139.6503] },
-    { name: 'Sydney', coords: [-33.8688, 151.2093] },
-    { name: 'Singapore', coords: [1.3521, 103.8198] },
-    { name: 'São Paulo', coords: [-23.5505, -46.6333] }
-  ];
 
-  majorCities.forEach(city => {
-    L.circleMarker(city.coords, {
-      radius: 4,
-      fillColor: '#ff7800',
-      color: '#000',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(worldMap);
-  });
 }
 
 function handleGuess(e) {
