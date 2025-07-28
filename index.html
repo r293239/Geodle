@@ -559,8 +559,7 @@
   Help Us Improve
 </a>
 
-<a title="Privacy-friendly Web Analytics" href="https://clicky.com/101489496"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
-<script async data-id="101489496" src="//static.getclicky.com/js"></script>
+
 
 <script>
 let currentQuestion = null;
@@ -927,22 +926,34 @@ function updateWinDisplay() {
 
 // Initialize Leaflet world map
 function initWorldMap() {
-  worldMap = L.map('worldMap', {
-    center: [20, 0],
-    zoom: 1,
-    minZoom: 1,
-    maxZoom: 10,
-    zoomControl: true,
-    dragging: true,
-    scrollWheelZoom: true,
-    doubleClickZoom: true,
-    touchZoom: true
-  });
+  try {
+    worldMap = L.map('worldMap', {
+      center: [20, 0],
+      zoom: 1,
+      minZoom: 1,
+      maxZoom: 10,
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: true,
+      doubleClickZoom: true,
+      touchZoom: true
+    });
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 18
-  }).addTo(worldMap);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 18
+    }).addTo(worldMap);
+    
+    // Force map to resize after initialization
+    setTimeout(() => {
+      if (worldMap) {
+        worldMap.invalidateSize();
+      }
+    }, 100);
+    
+  } catch (error) {
+    console.error('Map initialization error:', error);
+  }
 }
 
 function handleGuess(e) {
