@@ -233,6 +233,233 @@
     margin: 20px 0;
     display: none;
   }
+  
+  #help-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    z-index: 9999;
+    transition: background-color 0.3s ease;
+  }
+
+  #help-button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Hidden admin panel styles - super duper hidden */
+  .admin-secret-trigger {
+    position: fixed;
+    bottom: 2px;
+    left: 2px;
+    width: 8px;
+    height: 8px;
+    background: transparent;
+    border: none;
+    cursor: default;
+    opacity: 0;
+    z-index: 1;
+  }
+  
+  .admin-login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .admin-login-box {
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    text-align: center;
+    border: 1px solid #333;
+  }
+  
+  .admin-login-box h3 {
+    color: #00ff00;
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px #00ff00;
+  }
+  
+  .admin-login-input {
+    background: #000;
+    color: #00ff00;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    width: 200px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .admin-login-btn {
+    background: #003300;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    margin: 0 5px;
+  }
+  
+  .admin-login-btn:hover {
+    background: #00ff00;
+    color: #000;
+  }
+  
+  .admin-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    z-index: 100000;
+  }
+  
+  .admin-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    max-width: 600px;
+    width: 90%;
+    border: 1px solid #333;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+  }
+  
+  .admin-header h3 {
+    color: #00ff00;
+    margin: 0;
+    text-shadow: 0 0 10px #00ff00;
+  }
+  
+  .admin-close-btn {
+    background: #660000;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .admin-close-btn:hover {
+    background: #ff0000;
+    color: #000;
+  }
+  
+  .admin-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .admin-stat-card {
+    background: #000;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #333;
+  }
+  
+  .admin-stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+  }
+  
+  .admin-stat-label {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+  }
+  
+  .admin-reset-btn {
+    background: #660000;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 15px;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .admin-reset-btn:hover {
+    background: #ff0000;
+    color: #000;
+  }
+  
+  .admin-visitor-log {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    border: 1px solid #333;
+  }
+  
+  .admin-log-entry {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 5px;
+    padding: 3px;
+    background: #111;
+    border-radius: 3px;
+    border: 1px solid #222;
+  }
+  
+  .admin-log-entry .visitor-id {
+    color: #00ff00;
+  }
+  
+  .admin-log-entry .new-visitor {
+    color: #00aa00;
+  }
+  
+  .admin-log-entry .return-visitor {
+    color: #ffaa00;
+  }
 </style>
 </head>
 <body>
@@ -273,6 +500,68 @@
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
 </div>
+
+<!-- Super duper hidden admin trigger (invisible and tiny) -->
+<button class="admin-secret-trigger" onclick="showAdminLogin()"></button>
+
+<!-- Password login overlay -->
+<div class="admin-login-overlay" id="adminLoginOverlay">
+  <div class="admin-login-box">
+    <h3>🔒 SECURE ACCESS</h3>
+    <input type="password" class="admin-login-input" id="adminPassword" placeholder="Enter access code" />
+    <br>
+    <button class="admin-login-btn" onclick="checkAdminPassword()">ACCESS</button>
+    <button class="admin-login-btn" onclick="hideAdminLogin()">CANCEL</button>
+  </div>
+</div>
+
+<!-- Hidden admin panel -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-content">
+    <div class="admin-header">
+      <h3>🕵️ VISITOR ANALYTICS</h3>
+      <button class="admin-close-btn" onclick="hideAdminPanel()">✕ CLOSE</button>
+    </div>
+    
+    <div class="admin-stat-grid">
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminTotalVisitors">0</div>
+        <div class="admin-stat-label">TOTAL VISITS</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminUniqueVisitors">0</div>
+        <div class="admin-stat-label">UNIQUE VISITORS</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminReturnVisitors">0</div>
+        <div class="admin-stat-label">RETURN VISITS</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminTodayVisitors">0</div>
+        <div class="admin-stat-label">TODAY'S VISITS</div>
+      </div>
+    </div>
+    
+    <div>
+      <strong>RECENT ACTIVITY:</strong>
+      <div class="admin-visitor-log" id="adminVisitorLog"></div>
+    </div>
+    
+    <button class="admin-reset-btn" onclick="resetAdminStats()">🗑️ PURGE DATA</button>
+  </div>
+</div>
+
+<!-- Sticky Help Button -->
+<a id="help-button" 
+   href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+   target="_blank" 
+   rel="noopener noreferrer">
+  Help Us Improve
+</a>
+
+<a title="Privacy-friendly Web Analytics" href="https://clicky.com/101489496"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
+<script async data-id="101489496" src="//static.getclicky.com/js"></script>
+
 <script>
 let currentQuestion = null;
 let currentClueIndex = 0;
@@ -280,6 +569,236 @@ let guessHistory = [];
 let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
+
+// Hidden visitor tracking system
+class HiddenVisitorTracker {
+  constructor() {
+    this.storageKey = 'gd_va_data'; // Obfuscated key
+    this.sessionKey = 'gd_cs';
+    this.visitorKey = 'gd_vid';
+    this.passwordHash = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // SHA-256 of 'geodle2024'
+    this.init();
+  }
+  
+  init() {
+    this.data = this.loadData();
+    this.trackVisit();
+  }
+  
+  loadData() {
+    const stored = window.localStorage?.getItem(this.storageKey);
+    if (stored) {
+      try {
+        return JSON.parse(atob(stored)); // Base64 decode
+      } catch (e) {}
+    }
+    
+    return {
+      tv: 0, // total visits
+      uv: [], // unique visitors
+      vl: [], // visit log
+      fv: new Date().toISOString(), // first visit
+      lv: null // last visit
+    };
+  }
+  
+  saveData() {
+    if (!window.localStorage) return;
+    
+    try {
+      const encoded = btoa(JSON.stringify(this.data)); // Base64 encode
+      window.localStorage.setItem(this.storageKey, encoded);
+    } catch (e) {}
+  }
+  
+  generateVisitorId() {
+    return 'v_' + Math.random().toString(36).substr(2, 8) + '_' + Date.now().toString(36);
+  }
+  
+  getVisitorId() {
+    let visitorId = window.localStorage?.getItem(this.visitorKey);
+    if (!visitorId) {
+      visitorId = this.generateVisitorId();
+      if (window.localStorage) {
+        window.localStorage.setItem(this.visitorKey, visitorId);
+      }
+    }
+    return visitorId;
+  }
+  
+  isNewSession() {
+    const sessionId = window.sessionStorage?.getItem(this.sessionKey);
+    if (!sessionId) {
+      if (window.sessionStorage) {
+        window.sessionStorage.setItem(this.sessionKey, 'a');
+      }
+      return true;
+    }
+    return false;
+  }
+  
+  trackVisit() {
+    if (!this.isNewSession()) return;
+    
+    const visitorId = this.getVisitorId();
+    const now = new Date();
+    const isUnique = !this.data.uv.includes(visitorId);
+    
+    this.data.tv++;
+    if (isUnique) {
+      this.data.uv.push(visitorId);
+    }
+    this.data.lv = now.toISOString();
+    
+    this.data.vl.unshift({
+      i: visitorId.slice(-6),
+      t: now.toISOString(),
+      u: isUnique,
+      ua: (navigator.userAgent.slice(0, 30) + '...').replace(/[<>]/g, '')
+    });
+    
+    this.data.vl = this.data.vl.slice(0, 100);
+    this.saveData();
+  }
+  
+  async hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+  
+  async checkPassword(password) {
+    const hash = await this.hashPassword(password);
+    return hash === this.passwordHash;
+  }
+  
+  getStats() {
+    const today = new Date().toDateString();
+    const todayVisits = this.data.vl.filter(v => 
+      new Date(v.t).toDateString() === today
+    ).length;
+    
+    return {
+      totalVisitors: this.data.tv,
+      uniqueVisitors: this.data.uv.length,
+      returnVisitors: this.data.tv - this.data.uv.length,
+      todayVisitors: todayVisits,
+      recentVisits: this.data.vl.slice(0, 20)
+    };
+  }
+  
+  updateAdminDisplay() {
+    const stats = this.getStats();
+    
+    const elements = {
+      total: document.getElementById('adminTotalVisitors'),
+      unique: document.getElementById('adminUniqueVisitors'),
+      returns: document.getElementById('adminReturnVisitors'),
+      today: document.getElementById('adminTodayVisitors'),
+      log: document.getElementById('adminVisitorLog')
+    };
+    
+    if (elements.total) elements.total.textContent = stats.totalVisitors;
+    if (elements.unique) elements.unique.textContent = stats.uniqueVisitors;
+    if (elements.returns) elements.returns.textContent = stats.returnVisitors;
+    if (elements.today) elements.today.textContent = stats.todayVisitors;
+    
+    if (elements.log) {
+      elements.log.innerHTML = stats.recentVisits.map(visit => 
+        `<div class="admin-log-entry">
+          <span class="visitor-id">${visit.i}</span> - ${new Date(visit.t).toLocaleString()}
+          <span class="${visit.u ? 'new-visitor' : 'return-visitor'}">[${visit.u ? 'NEW' : 'RTN'}]</span>
+        </div>`
+      ).join('');
+    }
+  }
+  
+  reset() {
+    if (window.localStorage) {
+      window.localStorage.removeItem(this.storageKey);
+      window.localStorage.removeItem(this.visitorKey);
+    }
+    if (window.sessionStorage) {
+      window.sessionStorage.removeItem(this.sessionKey);
+    }
+    this.data = this.loadData();
+    this.updateAdminDisplay();
+  }
+}
+
+// Admin panel functions
+async function showAdminLogin() {
+  document.getElementById('adminLoginOverlay').style.display = 'flex';
+  document.getElementById('adminPassword').focus();
+}
+
+function hideAdminLogin() {
+  document.getElementById('adminLoginOverlay').style.display = 'none';
+  document.getElementById('adminPassword').value = '';
+}
+
+async function checkAdminPassword() {
+  const password = document.getElementById('adminPassword').value;
+  const isValid = await hiddenTracker.checkPassword(password);
+  
+  if (isValid) {
+    hideAdminLogin();
+    showAdminPanel();
+  } else {
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminPassword').style.background = '#440000';
+    setTimeout(() => {
+      document.getElementById('adminPassword').style.background = '#000';
+    }, 1000);
+  }
+}
+
+function showAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'block';
+  hiddenTracker.updateAdminDisplay();
+}
+
+function hideAdminPanel() {
+  document.getElementById('adminPanel').style.display = 'none';
+}
+
+function resetAdminStats() {
+  if (confirm('PURGE ALL VISITOR DATA? THIS CANNOT BE UNDONE.')) {
+    hiddenTracker.reset();
+    alert('DATA PURGED SUCCESSFULLY.');
+  }
+}
+
+// Close panels when clicking outside
+document.getElementById('adminPanel').addEventListener('click', function(e) {
+  if (e.target === this) hideAdminPanel();
+});
+
+document.getElementById('adminLoginOverlay').addEventListener('click', function(e) {
+  if (e.target === this) hideAdminLogin();
+});
+
+// Secret keyboard shortcut (Ctrl+Shift+Alt+H)
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.shiftKey && e.altKey && e.key === 'H') {
+    e.preventDefault();
+    showAdminLogin();
+  }
+});
+
+// Enter key in password field
+document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    checkAdminPassword();
+  }
+});
+
+// Initialize hidden tracker
+const hiddenTracker = new HiddenVisitorTracker();
 
 // Load and save win count from localStorage
 function loadWinCount() {
@@ -424,8 +943,6 @@ function initWorldMap() {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 18
   }).addTo(worldMap);
-
-
 }
 
 function handleGuess(e) {
@@ -550,52 +1067,3 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('shareBtn').addEventListener('click', shareScore);
   document.getElementById('newGameBtn').addEventListener('click', initGame);
 });
-</script>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sticky Help Button</title>
-  <style>
-    #help-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      text-decoration: none;
-      z-index: 9999;
-      transition: background-color 0.3s ease;
-    }
-
-    #help-button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Your page content goes here -->
-
-  <!-- Sticky Help Button -->
-  <a id="help-button" 
-     href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-     target="_blank" 
-     rel="noopener noreferrer">
-    Help Us Improve
-  </a>
-
-</body>
-</html>
-<a title="Privacy-friendly Web Analytics" href="https://clicky.com/101489496"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
-<script async data-id="101489496" src="//static.getclicky.com/js"></script>
-
-</body>
-</html>
