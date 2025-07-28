@@ -262,11 +262,17 @@
     left: 2px;
     width: 8px;
     height: 8px;
-    background: transparent;
+    background: rgba(128, 128, 128, 0.1); /* Very faint gray dot - barely visible */
     border: none;
     cursor: default;
-    opacity: 0;
+    opacity: 0.1;
     z-index: 1;
+    border-radius: 1px;
+  }
+  
+  .admin-secret-trigger:hover {
+    opacity: 0.2;
+    background: rgba(128, 128, 128, 0.2);
   }
   
   .admin-login-overlay {
