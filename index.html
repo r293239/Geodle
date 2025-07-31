@@ -422,10 +422,43 @@
     border-radius: 3px;
     border-left: 3px solid #3498db;
   }
+
+  .sync-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .sync-indicator.syncing {
+    background: #ffc107;
+    opacity: 1;
+  }
+
+  .sync-indicator.error {
+    background: #dc3545;
+    opacity: 1;
+  }
+
+  .sync-indicator.success {
+    background: #28a745;
+    opacity: 1;
+  }
 </style>
 </head>
 <body>
 <h1>Geodle 🌍</h1>
+
+<!-- Sync status indicator -->
+<div id="syncIndicator" class="sync-indicator">🔄 Syncing...</div>
+
 <div id="worldMap"></div>
 <div id="progressInfo">
   <div>Clue <span id="currentClue">1</span> of 10</div>
@@ -496,7 +529,7 @@
     <div id="syncStatus" class="sync-status" style="display: none;"></div>
     
     <div style="text-align: center; margin: 15px 0;">
-      <button class="sync-btn" onclick="syncData()">🔄 Sync Data</button>
+      <button class="sync-btn" onclick="manualSync()">🔄 Manual Sync</button>
       <button class="sync-btn" onclick="exportData()">📤 Export Data</button>
       <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
       <button class="sync-btn" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
@@ -534,12 +567,31 @@ let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
 
-// Cross-device syncing using GitHub Gist as free storage
+// GitHub token and configuration
+const GITHUB_TOKEN = 'ghp_4H2ShJn6Uc8qNqTSJ2xxs0q11tGHfD0xfa21';
+const SYNC_INTERVAL = 30000; // 30 seconds
+let autoSyncInterval = null;
+
+// Cross-device syncing using GitHub Gist with working authentication
 class CrossDeviceSync {
   constructor() {
     this.gistId = localStorage.getItem('sync_gist_id') || null;
     this.deviceId = this.getDeviceId();
-    this.lastSync = localStorage.getItem('last_sync') || 0;
+    this.lastSync = parseInt(localStorage.getItem('last_sync') || '0');
+    this.token = GITHUB_TOKEN;
+    this.isOnline = navigator.onLine;
+    
+    // Listen for online/offline events
+    window.addEventListener('online', () => {
+      this.isOnline = true;
+      this.showSyncStatus('🟢 Back online - resuming sync', 'success');
+      setTimeout(() => this.autoSync(), 1000);
+    });
+    
+    window.addEventListener('offline', () => {
+      this.isOnline = false;
+      this.showSyncStatus('🔴 Offline - sync paused', 'error');
+    });
   }
 
   getDeviceId() {
@@ -551,15 +603,36 @@ class CrossDeviceSync {
     return deviceId;
   }
 
+  showSyncStatus(message, type) {
+    const indicator = document.getElementById('syncIndicator');
+    if (!indicator) return;
+    
+    indicator.textContent = message;
+    indicator.className = `sync-indicator ${type}`;
+    indicator.style.opacity = '1';
+    
+    setTimeout(() => {
+      indicator.style.opacity = '0';
+    }, 3000);
+  }
+
   async createGist(data) {
+    if (!this.isOnline) {
+      return { success: false, error: 'Device is offline' };
+    }
+
     try {
+      this.showSyncStatus('🔄 Creating sync storage...', 'syncing');
+      
       const response = await fetch('https://api.github.com/gists', {
         method: 'POST',
         headers: {
+          'Authorization': `token ${this.token}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
         },
         body: JSON.stringify({
-          description: 'Geodle Cross-Device Data Sync',
+          description: 'Geodle Cross-Device Data Sync - Created ' + new Date().toISOString(),
           public: false,
           files: {
             'geodle-data.json': {
@@ -573,11 +646,14 @@ class CrossDeviceSync {
         const gist = await response.json();
         this.gistId = gist.id;
         localStorage.setItem('sync_gist_id', this.gistId);
+        this.showSyncStatus('✅ Sync storage created!', 'success');
         return { success: true, gistId: this.gistId };
       } else {
-        return { success: false, error: 'Failed to create sync storage' };
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create gist');
       }
     } catch (error) {
+      this.showSyncStatus('❌ Sync failed: ' + error.message, 'error');
       return { success: false, error: error.message };
     }
   }
@@ -587,11 +663,19 @@ class CrossDeviceSync {
       return await this.createGist(data);
     }
 
+    if (!this.isOnline) {
+      return { success: false, error: 'Device is offline' };
+    }
+
     try {
+      this.showSyncStatus('🔄 Syncing data...', 'syncing');
+      
       const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
         method: 'PATCH',
         headers: {
+          'Authorization': `token ${this.token}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
         },
         body: JSON.stringify({
           files: {
@@ -603,11 +687,14 @@ class CrossDeviceSync {
       });
 
       if (response.ok) {
+        this.showSyncStatus('✅ Data synced!', 'success');
         return { success: true };
       } else {
-        return { success: false, error: 'Failed to update sync data' };
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update gist');
       }
     } catch (error) {
+      this.showSyncStatus('❌ Sync failed: ' + error.message, 'error');
       return { success: false, error: error.message };
     }
   }
@@ -617,8 +704,17 @@ class CrossDeviceSync {
       return { success: false, error: 'No sync storage found' };
     }
 
+    if (!this.isOnline) {
+      return { success: false, error: 'Device is offline' };
+    }
+
     try {
-      const response = await fetch(`https://api.github.com/gists/${this.gistId}`);
+      const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+        headers: {
+          'Authorization': `token ${this.token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
       
       if (response.ok) {
         const gist = await response.json();
@@ -626,7 +722,8 @@ class CrossDeviceSync {
         const data = JSON.parse(content);
         return { success: true, data };
       } else {
-        return { success: false, error: 'Failed to fetch sync data' };
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch gist');
       }
     } catch (error) {
       return { success: false, error: error.message };
@@ -640,13 +737,15 @@ class CrossDeviceSync {
       deviceId: this.deviceId,
       deviceInfo: {
         userAgent: navigator.userAgent.slice(0, 100),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        url: window.location.href
       }
     };
 
     const result = await this.updateGist(syncData);
     if (result.success) {
-      localStorage.setItem('last_sync', Date.now().toString());
+      this.lastSync = Date.now();
+      localStorage.setItem('last_sync', this.lastSync.toString());
     }
     return result;
   }
@@ -654,13 +753,64 @@ class CrossDeviceSync {
   async syncDown() {
     const result = await this.getGistData();
     if (result.success) {
-      localStorage.setItem('last_sync', Date.now().toString());
+      this.lastSync = Date.now();
+      localStorage.setItem('last_sync', this.lastSync.toString());
     }
     return result;
   }
+
+  async autoSync() {
+    if (!this.isOnline) return;
+    
+    try {
+      // Check if remote data is newer
+      const remoteResult = await this.syncDown();
+      if (remoteResult.success) {
+        const remoteData = remoteResult.data;
+        const remoteLastSync = remoteData.lastSync || 0;
+        
+        // If remote data is newer, merge it
+        if (remoteLastSync > this.lastSync) {
+          await tracker.mergeData(remoteData);
+          tracker.saveData();
+          tracker.updateDisplay();
+          console.log('Auto-sync: Merged newer remote data');
+        }
+        
+        // Always sync up our current data
+        const localData = tracker.data;
+        await this.syncUp(localData);
+      }
+    } catch (error) {
+      console.log('Auto-sync error:', error.message);
+    }
+  }
+
+  startAutoSync() {
+    if (autoSyncInterval) {
+      clearInterval(autoSyncInterval);
+    }
+    
+    // Initial sync after a short delay
+    setTimeout(() => this.autoSync(), 2000);
+    
+    // Set up recurring sync
+    autoSyncInterval = setInterval(() => {
+      this.autoSync();
+    }, SYNC_INTERVAL);
+    
+    console.log('Auto-sync started - syncing every', SYNC_INTERVAL / 1000, 'seconds');
+  }
+
+  stopAutoSync() {
+    if (autoSyncInterval) {
+      clearInterval(autoSyncInterval);
+      autoSyncInterval = null;
+    }
+  }
 }
 
-// Enhanced visitor tracking system with cross-device sync
+// Enhanced visitor tracking system with auto-sync
 class VisitorTracker {
   constructor() {
     this.storageKey = 'site_visitor_data';
@@ -673,6 +823,9 @@ class VisitorTracker {
     this.data = this.loadData();
     this.trackVisit();
     this.updateDisplay();
+    
+    // Start auto-sync
+    this.sync.startAutoSync();
   }
   
   loadData() {
@@ -697,7 +850,13 @@ class VisitorTracker {
       visitLog: [],
       firstVisit: new Date().toISOString(),
       lastVisit: null,
-      devices: {}
+      devices: {},
+      gameStats: {
+        totalWins: 0,
+        gamesPlayed: 0,
+        winStreak: 0,
+        bestStreak: 0
+      }
     };
   }
   
@@ -825,18 +984,33 @@ class VisitorTracker {
     // Merge devices
     const mergedDevices = { ...(this.data.devices || {}), ...(remoteData.devices || {}) };
 
+    // Merge game stats
+    const mergedGameStats = {
+      totalWins: Math.max(this.data.gameStats?.totalWins || 0, remoteData.gameStats?.totalWins || 0),
+      gamesPlayed: Math.max(this.data.gameStats?.gamesPlayed || 0, remoteData.gameStats?.gamesPlayed || 0),
+      winStreak: Math.max(this.data.gameStats?.winStreak || 0, remoteData.gameStats?.winStreak || 0),
+      bestStreak: Math.max(this.data.gameStats?.bestStreak || 0, remoteData.gameStats?.bestStreak || 0)
+    };
+
     // Update data
     this.data = {
       ...this.data,
       totalVisits: Math.max(this.data.totalVisits || 0, remoteData.totalVisits || 0),
       uniqueVisitors: mergedVisitors,
       visitLog: mergedLogs,
-      firstVisit: this.data.firstVisit < remoteData.firstVisit ? 
-        this.data.firstVisit : remoteData.firstVisit,
-      lastVisit: this.data.lastVisit > remoteData.lastVisit ? 
-        this.data.lastVisit : remoteData.lastVisit,
-      devices: mergedDevices
+      firstVisit: (this.data.firstVisit && remoteData.firstVisit) ? 
+        (this.data.firstVisit < remoteData.firstVisit ? this.data.firstVisit : remoteData.firstVisit) : 
+        (this.data.firstVisit || remoteData.firstVisit),
+      lastVisit: (this.data.lastVisit && remoteData.lastVisit) ?
+        (this.data.lastVisit > remoteData.lastVisit ? this.data.lastVisit : remoteData.lastVisit) :
+        (this.data.lastVisit || remoteData.lastVisit),
+      devices: mergedDevices,
+      gameStats: mergedGameStats
     };
+
+    // Update the global totalWins variable and localStorage
+    totalWins = mergedGameStats.totalWins;
+    localStorage.setItem('geodle_total_wins', totalWins.toString());
   }
 
   updateSyncStatus(result) {
@@ -863,7 +1037,7 @@ class VisitorTracker {
       ...this.data,
       uniqueVisitors: Array.from(this.data.uniqueVisitors),
       exportDate: new Date().toISOString(),
-      version: '1.0'
+      version: '2.0'
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
@@ -920,7 +1094,8 @@ class VisitorTracker {
       returnVisitors: (this.data.totalVisits || 0) - this.data.uniqueVisitors.size,
       todayVisitors: todayVisits,
       recentVisits: (this.data.visitLog || []).slice(0, 10),
-      devices: Object.keys(this.data.devices || {}).length
+      devices: Object.keys(this.data.devices || {}).length,
+      gameStats: this.data.gameStats || { totalWins: 0, gamesPlayed: 0, winStreak: 0, bestStreak: 0 }
     };
   }
   
@@ -967,6 +1142,24 @@ class VisitorTracker {
       ).join('') || '<div style="text-align: center; color: #666;">No devices tracked yet</div>';
     }
   }
+
+  updateGameStats(won) {
+    if (!this.data.gameStats) {
+      this.data.gameStats = { totalWins: 0, gamesPlayed: 0, winStreak: 0, bestStreak: 0 };
+    }
+
+    this.data.gameStats.gamesPlayed++;
+    
+    if (won) {
+      this.data.gameStats.totalWins++;
+      this.data.gameStats.winStreak++;
+      this.data.gameStats.bestStreak = Math.max(this.data.gameStats.bestStreak, this.data.gameStats.winStreak);
+    } else {
+      this.data.gameStats.winStreak = 0;
+    }
+
+    this.saveData();
+  }
   
   reset() {
     if (localStorage) {
@@ -974,6 +1167,7 @@ class VisitorTracker {
       localStorage.removeItem('visitor_id');
       localStorage.removeItem('sync_gist_id');
       localStorage.removeItem('last_sync');
+      localStorage.removeItem('device_id');
     }
     if (sessionStorage) {
       sessionStorage.removeItem(this.sessionKey);
@@ -982,371 +1176,3 @@ class VisitorTracker {
     this.updateDisplay();
   }
 }
-
-// Global sync functions
-async function syncData() {
-  const result = await tracker.syncData();
-  tracker.updateDisplay();
-}
-
-async function importSyncData() {
-  const result = await tracker.importSyncData();
-  tracker.updateDisplay();
-}
-
-function exportData() {
-  tracker.exportData();
-}
-
-function importData(event) {
-  const file = event.target.files[0];
-  if (file) {
-    tracker.importData(file);
-  }
-  // Reset the file input
-  event.target.value = '';
-}
-
-// Admin panel functions
-function showAdminPanel() {
-  document.getElementById('adminPanel').style.display = 'block';
-  tracker.updateDisplay(); // Refresh stats when panel opens
-}
-
-function hideAdminPanel() {
-  document.getElementById('adminPanel').style.display = 'none';
-}
-
-function resetStats() {
-  if (confirm('Are you sure you want to reset all visitor statistics? This cannot be undone.')) {
-    tracker.reset();
-    alert('Statistics have been reset.');
-  }
-}
-
-// Close panel when clicking outside
-document.getElementById('adminPanel').addEventListener('click', function(e) {
-  if (e.target === this) {
-    hideAdminPanel();
-  }
-});
-
-// Keyboard shortcut (Ctrl/Cmd + Shift + V)
-document.addEventListener('keydown', function(e) {
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
-    e.preventDefault();
-    showAdminPanel();
-  }
-});
-
-// Initialize tracker
-const tracker = new VisitorTracker();
-
-// Update display every 30 seconds (in case of multiple tabs)
-setInterval(() => {
-  tracker.updateDisplay();
-}, 30000);
-
-// Load and save win count from localStorage
-function loadWinCount() {
-  const savedWins = localStorage.getItem('geodle_total_wins');
-  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
-}
-
-function saveWinCount() {
-  localStorage.setItem('geodle_total_wins', totalWins.toString());
-}
-
-function resetWinCount() {
-  totalWins = 0;
-  saveWinCount();
-}
-
-// Check if data is loaded and validate it
-function validateData() {
-  if (typeof geographyData === 'undefined') {
-    console.error('geographyData is not defined. Make sure data.js is loaded.');
-    return false;
-  }
-  
-  if (!Array.isArray(geographyData)) {
-    console.error('geographyData should be an array.');
-    return false;
-  }
-  
-  if (geographyData.length === 0) {
-    console.error('geographyData array is empty.');
-    return false;
-  }
-  
-  // Validate structure of first item
-  const firstItem = geographyData[0];
-  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
-    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
-    return false;
-  }
-  
-  return true;
-}
-
-// Initialize the game
-function initGame() {
-  // Validate data first
-  if (!validateData()) {
-    document.getElementById('loadingError').style.display = 'block';
-    document.getElementById('guessInput').disabled = true;
-    document.getElementById('guessButton').disabled = true;
-    return;
-  }
-  
-  // Hide error message if it was shown
-  document.getElementById('loadingError').style.display = 'none';
-  
-  // Initialize or reset the world map
-  if (worldMap) {
-    worldMap.remove();
-    worldMap = null;
-  }
-  initWorldMap();
-  
-  // Get random question from external data
-  const randomIndex = Math.floor(Math.random() * geographyData.length);
-  currentQuestion = geographyData[randomIndex];
-  currentClueIndex = 0;
-  guessHistory = [];
-  gameEnded = false;
-  
-  // Display the first clue
-  updateClueDisplay();
-  updateProgressBar();
-  
-  // Reset UI
-  document.getElementById('guessInput').disabled = false;
-  document.getElementById('guessButton').disabled = false;
-  document.getElementById('guessInput').value = '';
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('historyList').innerHTML = '';
-  document.getElementById('pastHintsList').innerHTML = '';
-  document.getElementById('endScreen').style.display = 'none';
-  
-  // Focus on input
-  document.getElementById('guessInput').focus();
-  
-  // Load win count from localStorage
-  loadWinCount();
-  updateWinDisplay();
-}
-
-function resetGame() {
-  // Initialize a new game (don't reset win count)
-  initGame();
-  
-  // Show reset confirmation
-  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
-}
-
-function updateClueDisplay() {
-  document.getElementById('currentClue').textContent = currentClueIndex + 1;
-  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
-  updatePastHints();
-}
-
-function updatePastHints() {
-  const pastHintsList = document.getElementById('pastHintsList');
-  pastHintsList.innerHTML = '';
-  
-  // Show all hints up to current clue index
-  for (let i = 0; i <= currentClueIndex; i++) {
-    const li = document.createElement('li');
-    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
-    pastHintsList.appendChild(li);
-  }
-}
-
-function updateProgressBar() {
-  const progress = ((currentClueIndex + 1) / 10) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
-}
-
-function updateWinDisplay() {
-  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
-}
-
-// Initialize Leaflet world map with arrow removal
-function initWorldMap() {
-  worldMap = L.map('worldMap', {
-    center: [20, 0],
-    zoom: 1,
-    minZoom: 1,
-    maxZoom: 10,
-    zoomControl: true,
-    dragging: true,
-    scrollWheelZoom: true,
-    doubleClickZoom: true,
-    touchZoom: true,
-    attributionControl: false // Remove attribution to avoid arrows
-  });
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '', // Remove attribution
-    maxZoom: 18
-  }).addTo(worldMap);
-
-  // Additional CSS to hide any remaining controls that might show arrows
-  setTimeout(() => {
-    const mapContainer = document.getElementById('worldMap');
-    const style = document.createElement('style');
-    style.textContent = `
-      .leaflet-control-attribution { display: none !important; }
-      .leaflet-control-zoom a { 
-        text-decoration: none !important;
-        color: #333 !important;
-      }
-      .leaflet-control-zoom a:before,
-      .leaflet-control-zoom a:after { 
-        display: none !important; 
-      }
-    `;
-    mapContainer.appendChild(style);
-  }, 100);
-}
-
-function handleGuess(e) {
-  e.preventDefault();
-  
-  if (gameEnded) return;
-  
-  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
-  
-  if (!guess) return;
-  
-  // Check if correct
-  const isCorrect = guess === currentQuestion.answer;
-  
-  // Add to history
-  guessHistory.push({
-    text: guess,
-    correct: isCorrect,
-    clueNumber: currentClueIndex + 1
-  });
-  
-  if (isCorrect) {
-    showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
-    totalWins++;
-    saveWinCount();
-    updateWinDisplay();
-    endGame(true);
-  } else {
-    if (currentClueIndex < 9) {
-      currentClueIndex++;
-      updateClueDisplay();
-      updateProgressBar();
-      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
-    } else {
-      showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
-      endGame(false);
-    }
-  }
-  
-  // Update history display
-  updateHistoryDisplay();
-  
-  // Clear input
-  document.getElementById('guessInput').value = '';
-}
-
-function showFeedback(message, color) {
-  const feedback = document.getElementById('feedback');
-  feedback.textContent = message;
-  feedback.style.color = color;
-}
-
-function updateHistoryDisplay() {
-  const historyList = document.getElementById('historyList');
-  historyList.innerHTML = '';
-  
-  guessHistory.forEach((guess, index) => {
-    const li = document.createElement('li');
-    li.className = guess.correct ? 'correct' : 'incorrect';
-    li.innerHTML = `
-      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
-      <span>${guess.correct ? '✓' : '✗'}</span>
-    `;
-    historyList.appendChild(li);
-  });
-}
-
-function endGame(won) {
-  gameEnded = true;
-  document.getElementById('guessInput').disabled = true;
-  document.getElementById('guessButton').disabled = true;
-  
-  const endScreen = document.getElementById('endScreen');
-  const resultMsg = document.getElementById('resultMsg');
-  
-  if (won) {
-    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
-  } else {
-    resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
-  }
-  
-  endScreen.style.display = 'block';
-}
-
-function shareScore() {
-  const won = guessHistory.some(guess => guess.correct);
-  const cluesUsed = won ? currentClueIndex + 1 : 10;
-  const scoreText = won ? 
-    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
-    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
-  
-  if (navigator.share) {
-    navigator.share({
-      title: 'Geodle Score',
-      text: scoreText,
-      url: window.location.href
-    });
-  } else {
-    // Fallback - copy to clipboard
-    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-    alert('Score copied to clipboard!');
-  }
-}
-
-// Start the game when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
-  
-  // Set up event listeners
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('resetWinsBtn').addEventListener('click', function() {
-    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
-      resetWinCount();
-      updateWinDisplay();
-      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
-    }
-  });
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', initGame);
-});
-</script>
-<script type="text/javascript">
-	atOptions = {
-		'key' : '70ff22f72245000f0b57868d37fb890b',
-		'format' : 'iframe',
-		'height' : 60,
-		'width' : 468,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/70ff22f72245000f0b57868d37fb890b/invoke.js"></script>
-	<a href="https://www.profitableratecpm.com/m0mf6622t?key=28d4166f75ab418c02079249494f3afe"><img src="your‑image.jpg" alt="Banner"></a>
-
-<button onclick="window.location.href='https://www.profitableratecpm.com/m0mf6622t?key=28d4166f75ab418c02079249494f3afe';">Support me!</button>
-
-</body>
-</html>
