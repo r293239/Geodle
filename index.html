@@ -33,13 +33,6 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: hidden;
   }
-  /* Remove leaflet attribution and zoom controls positioning issues */
-  .leaflet-control-container .leaflet-top.leaflet-right {
-    display: none !important;
-  }
-  .leaflet-control-zoom {
-    margin-top: 10px !important;
-  }
   #clueBox {
     background: #d0e2ff;
     padding: 12px;
@@ -240,225 +233,10 @@
     margin: 20px 0;
     display: none;
   }
-  
-  #help-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
-    z-index: 9999;
-    transition: background-color 0.3s ease;
-  }
-
-  #help-button:hover {
-    background-color: #0056b3;
-  }
-
-  /* Hidden admin panel styles */
-  .admin-trigger {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-  }
-  
-  .admin-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    display: none;
-    z-index: 10000;
-  }
-  
-  .admin-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  .admin-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-  }
-  
-  .close-btn {
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .stat-card {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  
-  .stat-number {
-    font-size: 24px;
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  
-  .stat-label {
-    font-size: 12px;
-    color: #7f8c8d;
-    margin-top: 5px;
-  }
-  
-  .reset-btn {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 5px;
-  }
-  
-  .sync-btn {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 5px;
-  }
-  
-  .visitor-log {
-    max-height: 200px;
-    overflow-y: auto;
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 15px;
-  }
-  
-  .log-entry {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 5px;
-    padding: 3px;
-    background: white;
-    border-radius: 3px;
-  }
-
-  .sync-status {
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-    text-align: center;
-  }
-
-  .sync-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  .sync-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  .device-list {
-    max-height: 150px;
-    overflow-y: auto;
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-  }
-
-  .device-entry {
-    font-size: 12px;
-    padding: 5px;
-    margin: 2px 0;
-    background: white;
-    border-radius: 3px;
-    border-left: 3px solid #3498db;
-  }
-
-  .sync-indicator {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: #28a745;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .sync-indicator.syncing {
-    background: #ffc107;
-    opacity: 1;
-  }
-
-  .sync-indicator.error {
-    background: #dc3545;
-    opacity: 1;
-  }
-
-  .sync-indicator.success {
-    background: #28a745;
-    opacity: 1;
-  }
 </style>
 </head>
 <body>
 <h1>Geodle 🌍</h1>
-
-<!-- Sync status indicator -->
-<div id="syncIndicator" class="sync-indicator">🔄 Syncing...</div>
-
 <div id="worldMap"></div>
 <div id="progressInfo">
   <div>Clue <span id="currentClue">1</span> of 10</div>
@@ -495,70 +273,6 @@
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
 </div>
-
-<!-- Hidden admin trigger (invisible button) -->
-<button class="admin-trigger" onclick="showAdminPanel()"></button>
-
-<!-- Hidden admin panel -->
-<div class="admin-panel" id="adminPanel">
-  <div class="admin-content">
-    <div class="admin-header">
-      <h3>📊 Visitor Statistics</h3>
-      <button class="close-btn" onclick="hideAdminPanel()">✕</button>
-    </div>
-    
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="totalVisitors">0</div>
-        <div class="stat-label">Total Visitors</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="uniqueVisitors">0</div>
-        <div class="stat-label">Unique Visitors</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="returnVisitors">0</div>
-        <div class="stat-label">Return Visitors</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="todayVisitors">0</div>
-        <div class="stat-label">Today's Visitors</div>
-      </div>
-    </div>
-
-    <div id="syncStatus" class="sync-status" style="display: none;"></div>
-    
-    <div style="text-align: center; margin: 15px 0;">
-      <button class="sync-btn" onclick="manualSync()">🔄 Manual Sync</button>
-      <button class="sync-btn" onclick="exportData()">📤 Export Data</button>
-      <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-      <button class="sync-btn" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
-    </div>
-
-    <div>
-      <strong>Cross-Device Sync:</strong>
-      <div class="device-list" id="deviceList"></div>
-    </div>
-    
-    <div>
-      <strong>Recent Visits:</strong>
-      <div class="visitor-log" id="visitorLog"></div>
-    </div>
-    
-    <div style="text-align: center; margin-top: 15px;">
-      <button class="reset-btn" onclick="resetStats()">Reset All Statistics</button>
-    </div>
-  </div>
-</div>
-
-<!-- Sticky Help Button -->
-<a id="help-button" 
-   href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-   target="_blank" 
-   rel="noopener noreferrer">
-  Help Us Improve
-</a>
-
 <script>
 let currentQuestion = null;
 let currentClueIndex = 0;
@@ -567,612 +281,319 @@ let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
 
-// GitHub token and configuration
-const GITHUB_TOKEN = 'ghp_4H2ShJn6Uc8qNqTSJ2xxs0q11tGHfD0xfa21';
-const SYNC_INTERVAL = 30000; // 30 seconds
-let autoSyncInterval = null;
-
-// Cross-device syncing using GitHub Gist with working authentication
-class CrossDeviceSync {
-  constructor() {
-    this.gistId = localStorage.getItem('sync_gist_id') || null;
-    this.deviceId = this.getDeviceId();
-    this.lastSync = parseInt(localStorage.getItem('last_sync') || '0');
-    this.token = GITHUB_TOKEN;
-    this.isOnline = navigator.onLine;
-    
-    // Listen for online/offline events
-    window.addEventListener('online', () => {
-      this.isOnline = true;
-      this.showSyncStatus('🟢 Back online - resuming sync', 'success');
-      setTimeout(() => this.autoSync(), 1000);
-    });
-    
-    window.addEventListener('offline', () => {
-      this.isOnline = false;
-      this.showSyncStatus('🔴 Offline - sync paused', 'error');
-    });
-  }
-
-  getDeviceId() {
-    let deviceId = localStorage.getItem('device_id');
-    if (!deviceId) {
-      deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-      localStorage.setItem('device_id', deviceId);
-    }
-    return deviceId;
-  }
-
-  showSyncStatus(message, type) {
-    const indicator = document.getElementById('syncIndicator');
-    if (!indicator) return;
-    
-    indicator.textContent = message;
-    indicator.className = `sync-indicator ${type}`;
-    indicator.style.opacity = '1';
-    
-    setTimeout(() => {
-      indicator.style.opacity = '0';
-    }, 3000);
-  }
-
-  async createGist(data) {
-    if (!this.isOnline) {
-      return { success: false, error: 'Device is offline' };
-    }
-
-    try {
-      this.showSyncStatus('🔄 Creating sync storage...', 'syncing');
-      
-      const response = await fetch('https://api.github.com/gists', {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${this.token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-          description: 'Geodle Cross-Device Data Sync - Created ' + new Date().toISOString(),
-          public: false,
-          files: {
-            'geodle-data.json': {
-              content: JSON.stringify(data, null, 2)
-            }
-          }
-        })
-      });
-
-      if (response.ok) {
-        const gist = await response.json();
-        this.gistId = gist.id;
-        localStorage.setItem('sync_gist_id', this.gistId);
-        this.showSyncStatus('✅ Sync storage created!', 'success');
-        return { success: true, gistId: this.gistId };
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create gist');
-      }
-    } catch (error) {
-      this.showSyncStatus('❌ Sync failed: ' + error.message, 'error');
-      return { success: false, error: error.message };
-    }
-  }
-
-  async updateGist(data) {
-    if (!this.gistId) {
-      return await this.createGist(data);
-    }
-
-    if (!this.isOnline) {
-      return { success: false, error: 'Device is offline' };
-    }
-
-    try {
-      this.showSyncStatus('🔄 Syncing data...', 'syncing');
-      
-      const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `token ${this.token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-          files: {
-            'geodle-data.json': {
-              content: JSON.stringify(data, null, 2)
-            }
-          }
-        })
-      });
-
-      if (response.ok) {
-        this.showSyncStatus('✅ Data synced!', 'success');
-        return { success: true };
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update gist');
-      }
-    } catch (error) {
-      this.showSyncStatus('❌ Sync failed: ' + error.message, 'error');
-      return { success: false, error: error.message };
-    }
-  }
-
-  async getGistData() {
-    if (!this.gistId) {
-      return { success: false, error: 'No sync storage found' };
-    }
-
-    if (!this.isOnline) {
-      return { success: false, error: 'Device is offline' };
-    }
-
-    try {
-      const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
-        headers: {
-          'Authorization': `token ${this.token}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-      
-      if (response.ok) {
-        const gist = await response.json();
-        const content = gist.files['geodle-data.json'].content;
-        const data = JSON.parse(content);
-        return { success: true, data };
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch gist');
-      }
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  async syncUp(localData) {
-    const syncData = {
-      ...localData,
-      lastSync: Date.now(),
-      deviceId: this.deviceId,
-      deviceInfo: {
-        userAgent: navigator.userAgent.slice(0, 100),
-        timestamp: new Date().toISOString(),
-        url: window.location.href
-      }
-    };
-
-    const result = await this.updateGist(syncData);
-    if (result.success) {
-      this.lastSync = Date.now();
-      localStorage.setItem('last_sync', this.lastSync.toString());
-    }
-    return result;
-  }
-
-  async syncDown() {
-    const result = await this.getGistData();
-    if (result.success) {
-      this.lastSync = Date.now();
-      localStorage.setItem('last_sync', this.lastSync.toString());
-    }
-    return result;
-  }
-
-  async autoSync() {
-    if (!this.isOnline) return;
-    
-    try {
-      // Check if remote data is newer
-      const remoteResult = await this.syncDown();
-      if (remoteResult.success) {
-        const remoteData = remoteResult.data;
-        const remoteLastSync = remoteData.lastSync || 0;
-        
-        // If remote data is newer, merge it
-        if (remoteLastSync > this.lastSync) {
-          await tracker.mergeData(remoteData);
-          tracker.saveData();
-          tracker.updateDisplay();
-          console.log('Auto-sync: Merged newer remote data');
-        }
-        
-        // Always sync up our current data
-        const localData = tracker.data;
-        await this.syncUp(localData);
-      }
-    } catch (error) {
-      console.log('Auto-sync error:', error.message);
-    }
-  }
-
-  startAutoSync() {
-    if (autoSyncInterval) {
-      clearInterval(autoSyncInterval);
-    }
-    
-    // Initial sync after a short delay
-    setTimeout(() => this.autoSync(), 2000);
-    
-    // Set up recurring sync
-    autoSyncInterval = setInterval(() => {
-      this.autoSync();
-    }, SYNC_INTERVAL);
-    
-    console.log('Auto-sync started - syncing every', SYNC_INTERVAL / 1000, 'seconds');
-  }
-
-  stopAutoSync() {
-    if (autoSyncInterval) {
-      clearInterval(autoSyncInterval);
-      autoSyncInterval = null;
-    }
-  }
+// Load and save win count from localStorage
+function loadWinCount() {
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
 }
 
-// Enhanced visitor tracking system with auto-sync
-class VisitorTracker {
-  constructor() {
-    this.storageKey = 'site_visitor_data';
-    this.sessionKey = 'current_session';
-    this.sync = new CrossDeviceSync();
-    this.init();
-  }
-  
-  init() {
-    this.data = this.loadData();
-    this.trackVisit();
-    this.updateDisplay();
-    
-    // Start auto-sync
-    this.sync.startAutoSync();
-  }
-  
-  loadData() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        const data = JSON.parse(stored);
-        // Convert array back to Set if needed
-        if (Array.isArray(data.uniqueVisitors)) {
-          data.uniqueVisitors = new Set(data.uniqueVisitors);
-        }
-        return data;
-      } catch (e) {
-        console.warn('Failed to parse visitor data');
-      }
-    }
-    
-    // Default data structure
-    return {
-      totalVisits: 0,
-      uniqueVisitors: new Set(),
-      visitLog: [],
-      firstVisit: new Date().toISOString(),
-      lastVisit: null,
-      devices: {},
-      gameStats: {
-        totalWins: 0,
-        gamesPlayed: 0,
-        winStreak: 0,
-        bestStreak: 0
-      }
-    };
-  }
-  
-  saveData() {
-    if (!localStorage) return;
-    
-    // Convert Set to Array for storage
-    const dataToStore = {
-      ...this.data,
-      uniqueVisitors: Array.from(this.data.uniqueVisitors)
-    };
-    
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify(dataToStore));
-    } catch (e) {
-      console.warn('Failed to save visitor data');
-    }
-  }
-  
-  generateVisitorId() {
-    return 'visitor_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-  }
-  
-  getVisitorId() {
-    let visitorId = localStorage.getItem('visitor_id');
-    if (!visitorId) {
-      visitorId = this.generateVisitorId();
-      if (localStorage) {
-        localStorage.setItem('visitor_id', visitorId);
-      }
-    }
-    return visitorId;
-  }
-  
-  isNewSession() {
-    const sessionId = sessionStorage?.getItem(this.sessionKey);
-    if (!sessionId) {
-      if (sessionStorage) {
-        sessionStorage.setItem(this.sessionKey, 'active');
-      }
-      return true;
-    }
+function saveWinCount() {
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
+}
+
+function resetWinCount() {
+  totalWins = 0;
+  saveWinCount();
+}
+
+// Check if data is loaded and validate it
+function validateData() {
+  if (typeof geographyData === 'undefined') {
+    console.error('geographyData is not defined. Make sure data.js is loaded.');
     return false;
   }
   
-  trackVisit() {
-    if (!this.isNewSession()) return;
-    
-    const visitorId = this.getVisitorId();
-    const deviceId = this.sync.deviceId;
-    const now = new Date();
-    const isUnique = !this.data.uniqueVisitors.has(visitorId);
-    
-    // Convert array back to Set if loaded from storage
-    if (Array.isArray(this.data.uniqueVisitors)) {
-      this.data.uniqueVisitors = new Set(this.data.uniqueVisitors);
-    }
-    
-    // Track the visit
-    this.data.totalVisits++;
-    this.data.uniqueVisitors.add(visitorId);
-    this.data.lastVisit = now.toISOString();
-    
-    // Track device info
-    if (!this.data.devices[deviceId]) {
-      this.data.devices[deviceId] = {
-        firstSeen: now.toISOString(),
-        userAgent: navigator.userAgent.slice(0, 100),
-        visits: 0
-      };
-    }
-    this.data.devices[deviceId].visits++;
-    this.data.devices[deviceId].lastSeen = now.toISOString();
-    
-    // Add to visit log
-    this.data.visitLog.unshift({
-      id: visitorId.slice(-6),
-      deviceId: deviceId.slice(-6),
-      timestamp: now.toISOString(),
-      isUnique: isUnique,
-      userAgent: navigator.userAgent.slice(0, 50) + '...'
-    });
-    
-    // Keep only last 50 visits
-    this.data.visitLog = this.data.visitLog.slice(0, 50);
-    
-    this.saveData();
+  if (!Array.isArray(geographyData)) {
+    console.error('geographyData should be an array.');
+    return false;
   }
   
-  async syncData() {
-    const result = await this.sync.syncUp(this.data);
-    this.updateSyncStatus(result);
-    return result;
-  }
-
-  async importSyncData() {
-    const result = await this.sync.syncDown();
-    if (result.success) {
-      const remoteData = result.data;
-      
-      // Merge data intelligently
-      this.mergeData(remoteData);
-      this.saveData();
-      this.updateDisplay();
-    }
-    this.updateSyncStatus(result);
-    return result;
-  }
-
-  mergeData(remoteData) {
-    // Convert arrays to Sets for merging
-    const localVisitors = new Set(Array.isArray(this.data.uniqueVisitors) ? 
-      this.data.uniqueVisitors : Array.from(this.data.uniqueVisitors));
-    const remoteVisitors = new Set(Array.isArray(remoteData.uniqueVisitors) ? 
-      remoteData.uniqueVisitors : Array.from(remoteData.uniqueVisitors));
-
-    // Merge unique visitors
-    const mergedVisitors = new Set([...localVisitors, ...remoteVisitors]);
-    
-    // Merge visit logs (remove duplicates by timestamp)
-    const mergedLogs = [...(this.data.visitLog || []), ...(remoteData.visitLog || [])]
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .slice(0, 100); // Keep last 100
-    
-    // Merge devices
-    const mergedDevices = { ...(this.data.devices || {}), ...(remoteData.devices || {}) };
-
-    // Merge game stats
-    const mergedGameStats = {
-      totalWins: Math.max(this.data.gameStats?.totalWins || 0, remoteData.gameStats?.totalWins || 0),
-      gamesPlayed: Math.max(this.data.gameStats?.gamesPlayed || 0, remoteData.gameStats?.gamesPlayed || 0),
-      winStreak: Math.max(this.data.gameStats?.winStreak || 0, remoteData.gameStats?.winStreak || 0),
-      bestStreak: Math.max(this.data.gameStats?.bestStreak || 0, remoteData.gameStats?.bestStreak || 0)
-    };
-
-    // Update data
-    this.data = {
-      ...this.data,
-      totalVisits: Math.max(this.data.totalVisits || 0, remoteData.totalVisits || 0),
-      uniqueVisitors: mergedVisitors,
-      visitLog: mergedLogs,
-      firstVisit: (this.data.firstVisit && remoteData.firstVisit) ? 
-        (this.data.firstVisit < remoteData.firstVisit ? this.data.firstVisit : remoteData.firstVisit) : 
-        (this.data.firstVisit || remoteData.firstVisit),
-      lastVisit: (this.data.lastVisit && remoteData.lastVisit) ?
-        (this.data.lastVisit > remoteData.lastVisit ? this.data.lastVisit : remoteData.lastVisit) :
-        (this.data.lastVisit || remoteData.lastVisit),
-      devices: mergedDevices,
-      gameStats: mergedGameStats
-    };
-
-    // Update the global totalWins variable and localStorage
-    totalWins = mergedGameStats.totalWins;
-    localStorage.setItem('geodle_total_wins', totalWins.toString());
-  }
-
-  updateSyncStatus(result) {
-    const statusEl = document.getElementById('syncStatus');
-    if (!statusEl) return;
-
-    statusEl.style.display = 'block';
-    if (result.success) {
-      statusEl.className = 'sync-status sync-success';
-      statusEl.textContent = '✅ Data synced successfully across devices!';
-    } else {
-      statusEl.className = 'sync-status sync-error';
-      statusEl.textContent = `❌ Sync failed: ${result.error}`;
-    }
-
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-      statusEl.style.display = 'none';
-    }, 5000);
-  }
-
-  exportData() {
-    const exportData = {
-      ...this.data,
-      uniqueVisitors: Array.from(this.data.uniqueVisitors),
-      exportDate: new Date().toISOString(),
-      version: '2.0'
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
-      type: 'application/json' 
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `geodle-data-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    this.updateSyncStatus({ success: true, message: 'Data exported successfully!' });
-  }
-
-  importData(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const importedData = JSON.parse(e.target.result);
-        
-        // Validate imported data
-        if (importedData.uniqueVisitors && importedData.visitLog) {
-          this.mergeData(importedData);
-          this.saveData();
-          this.updateDisplay();
-          this.updateSyncStatus({ success: true, message: 'Data imported successfully!' });
-        } else {
-          throw new Error('Invalid data format');
-        }
-      } catch (error) {
-        this.updateSyncStatus({ success: false, error: 'Failed to import data: ' + error.message });
-      }
-    };
-    reader.readAsText(file);
+  if (geographyData.length === 0) {
+    console.error('geographyData array is empty.');
+    return false;
   }
   
-  getStats() {
-    // Convert array back to Set if needed
-    if (Array.isArray(this.data.uniqueVisitors)) {
-      this.data.uniqueVisitors = new Set(this.data.uniqueVisitors);
-    }
-    
-    const today = new Date().toDateString();
-    const todayVisits = (this.data.visitLog || []).filter(visit => 
-      new Date(visit.timestamp).toDateString() === today
-    ).length;
-    
-    return {
-      totalVisitors: this.data.totalVisits || 0,
-      uniqueVisitors: this.data.uniqueVisitors.size,
-      returnVisitors: (this.data.totalVisits || 0) - this.data.uniqueVisitors.size,
-      todayVisitors: todayVisits,
-      recentVisits: (this.data.visitLog || []).slice(0, 10),
-      devices: Object.keys(this.data.devices || {}).length,
-      gameStats: this.data.gameStats || { totalWins: 0, gamesPlayed: 0, winStreak: 0, bestStreak: 0 }
-    };
+  // Validate structure of first item
+  const firstItem = geographyData[0];
+  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
+    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
+    return false;
   }
   
-  updateDisplay() {
-    const stats = this.getStats();
-    
-    // Update admin panel if elements exist
-    const elements = {
-      totalVisitors: document.getElementById('totalVisitors'),
-      uniqueVisitors: document.getElementById('uniqueVisitors'),
-      returnVisitors: document.getElementById('returnVisitors'),
-      todayVisitors: document.getElementById('todayVisitors'),
-      visitorLog: document.getElementById('visitorLog'),
-      deviceList: document.getElementById('deviceList')
-    };
-    
-    if (elements.totalVisitors) elements.totalVisitors.textContent = stats.totalVisitors;
-    if (elements.uniqueVisitors) elements.uniqueVisitors.textContent = stats.uniqueVisitors;
-    if (elements.returnVisitors) elements.returnVisitors.textContent = stats.returnVisitors;
-    if (elements.todayVisitors) elements.todayVisitors.textContent = stats.todayVisitors;
-    
-    if (elements.visitorLog) {
-      elements.visitorLog.innerHTML = stats.recentVisits.map(visit => 
-        `<div class="log-entry">
-          <strong>${visit.id}</strong> (${visit.deviceId}) - ${new Date(visit.timestamp).toLocaleString()}
-          ${visit.isUnique ? '<span style="color: #27ae60;">[NEW]</span>' : '<span style="color: #f39c12;">[RETURN]</span>'}
-        </div>`
-      ).join('');
-    }
+  return true;
+}
 
-    if (elements.deviceList) {
-      const devices = Object.entries(this.data.devices || {}).map(([deviceId, info]) => ({
-        id: deviceId,
-        ...info
-      }));
-      
-      elements.deviceList.innerHTML = devices.map(device => 
-        `<div class="device-entry">
-          <strong>Device ${device.id.slice(-6)}</strong><br>
-          First seen: ${new Date(device.firstSeen).toLocaleDateString()}<br>
-          Last seen: ${new Date(device.lastSeen).toLocaleDateString()}<br>
-          Visits: ${device.visits}
-        </div>`
-      ).join('') || '<div style="text-align: center; color: #666;">No devices tracked yet</div>';
-    }
-  }
-
-  updateGameStats(won) {
-    if (!this.data.gameStats) {
-      this.data.gameStats = { totalWins: 0, gamesPlayed: 0, winStreak: 0, bestStreak: 0 };
-    }
-
-    this.data.gameStats.gamesPlayed++;
-    
-    if (won) {
-      this.data.gameStats.totalWins++;
-      this.data.gameStats.winStreak++;
-      this.data.gameStats.bestStreak = Math.max(this.data.gameStats.bestStreak, this.data.gameStats.winStreak);
-    } else {
-      this.data.gameStats.winStreak = 0;
-    }
-
-    this.saveData();
+// Initialize the game
+function initGame() {
+  // Validate data first
+  if (!validateData()) {
+    document.getElementById('loadingError').style.display = 'block';
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    return;
   }
   
-  reset() {
-    if (localStorage) {
-      localStorage.removeItem(this.storageKey);
-      localStorage.removeItem('visitor_id');
-      localStorage.removeItem('sync_gist_id');
-      localStorage.removeItem('last_sync');
-      localStorage.removeItem('device_id');
-    }
-    if (sessionStorage) {
-      sessionStorage.removeItem(this.sessionKey);
-    }
-    this.data = this.loadData();
-    this.updateDisplay();
+  // Hide error message if it was shown
+  document.getElementById('loadingError').style.display = 'none';
+  
+  // Initialize or reset the world map
+  if (worldMap) {
+    worldMap.remove();
+    worldMap = null;
+  }
+  initWorldMap();
+  
+  // Get random question from external data
+  const randomIndex = Math.floor(Math.random() * geographyData.length);
+  currentQuestion = geographyData[randomIndex];
+  currentClueIndex = 0;
+  guessHistory = [];
+  gameEnded = false;
+  
+  // Display the first clue
+  updateClueDisplay();
+  updateProgressBar();
+  
+  // Reset UI
+  document.getElementById('guessInput').disabled = false;
+  document.getElementById('guessButton').disabled = false;
+  document.getElementById('guessInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('historyList').innerHTML = '';
+  document.getElementById('pastHintsList').innerHTML = '';
+  document.getElementById('endScreen').style.display = 'none';
+  
+  // Focus on input
+  document.getElementById('guessInput').focus();
+  
+  // Load win count from localStorage
+  loadWinCount();
+  updateWinDisplay();
+}
+
+function resetGame() {
+  // Initialize a new game (don't reset win count)
+  initGame();
+  
+  // Show reset confirmation
+  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
+}
+
+function updateClueDisplay() {
+  document.getElementById('currentClue').textContent = currentClueIndex + 1;
+  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+  updatePastHints();
+}
+
+function updatePastHints() {
+  const pastHintsList = document.getElementById('pastHintsList');
+  pastHintsList.innerHTML = '';
+  
+  // Show all hints up to current clue index
+  for (let i = 0; i <= currentClueIndex; i++) {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+    pastHintsList.appendChild(li);
   }
 }
+
+function updateProgressBar() {
+  const progress = ((currentClueIndex + 1) / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function updateWinDisplay() {
+  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
+}
+
+// Initialize Leaflet world map
+function initWorldMap() {
+  worldMap = L.map('worldMap', {
+    center: [20, 0],
+    zoom: 1,
+    minZoom: 1,
+    maxZoom: 10,
+    zoomControl: true,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(worldMap);
+
+
+}
+
+function handleGuess(e) {
+  e.preventDefault();
+  
+  if (gameEnded) return;
+  
+  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+  
+  if (!guess) return;
+  
+  // Check if correct
+  const isCorrect = guess === currentQuestion.answer;
+  
+  // Add to history
+  guessHistory.push({
+    text: guess,
+    correct: isCorrect,
+    clueNumber: currentClueIndex + 1
+  });
+  
+  if (isCorrect) {
+    showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
+    totalWins++;
+    saveWinCount();
+    updateWinDisplay();
+    endGame(true);
+  } else {
+    if (currentClueIndex < 9) {
+      currentClueIndex++;
+      updateClueDisplay();
+      updateProgressBar();
+      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
+    } else {
+      showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
+      endGame(false);
+    }
+  }
+  
+  // Update history display
+  updateHistoryDisplay();
+  
+  // Clear input
+  document.getElementById('guessInput').value = '';
+}
+
+function showFeedback(message, color) {
+  const feedback = document.getElementById('feedback');
+  feedback.textContent = message;
+  feedback.style.color = color;
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  
+  guessHistory.forEach((guess, index) => {
+    const li = document.createElement('li');
+    li.className = guess.correct ? 'correct' : 'incorrect';
+    li.innerHTML = `
+      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
+      <span>${guess.correct ? '✓' : '✗'}</span>
+    `;
+    historyList.appendChild(li);
+  });
+}
+
+function endGame(won) {
+  gameEnded = true;
+  document.getElementById('guessInput').disabled = true;
+  document.getElementById('guessButton').disabled = true;
+  
+  const endScreen = document.getElementById('endScreen');
+  const resultMsg = document.getElementById('resultMsg');
+  
+  if (won) {
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
+  } else {
+    resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
+  }
+  
+  endScreen.style.display = 'block';
+}
+
+function shareScore() {
+  const won = guessHistory.some(guess => guess.correct);
+  const cluesUsed = won ? currentClueIndex + 1 : 10;
+  const scoreText = won ? 
+    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
+    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Geodle Score',
+      text: scoreText,
+      url: window.location.href
+    });
+  } else {
+    // Fallback - copy to clipboard
+    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+    alert('Score copied to clipboard!');
+  }
+}
+
+// Start the game when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
+      resetWinCount();
+      updateWinDisplay();
+      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
+    }
+  });
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
+});
+</script>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sticky Help Button</title>
+  <style>
+    #help-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      z-index: 9999;
+      transition: background-color 0.3s ease;
+    }
+
+    #help-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Your page content goes here -->
+
+  <!-- Sticky Help Button -->
+  <a id="help-button" 
+     href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+     target="_blank" 
+     rel="noopener noreferrer">
+    Help Us Improve
+  </a>
+
+</body>
+</html>
+
+</body>
+</html>
