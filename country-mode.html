@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geodle Country Mode 🌍</title>
+    <script src="countries.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .game-info {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .guess-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #2196F3;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .guess-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .guess-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .guess-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .guesses-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .guess-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .guess-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guess-cell {
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .country-name {
+            text-align: left;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .correct {
+            background: #4ade80;
+            color: white;
+        }
+
+        .partial {
+            background: #fbbf24;
+            color: white;
+        }
+
+        .wrong {
+            background: #f87171;
+            color: white;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .game-over h2 {
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .win {
+            color: #22c55e;
+        }
+
+        .lose {
+            color: #ef4444;
+        }
+
+        .new-game-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .new-game-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .country-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .mode-selector {
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mode-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .mode-btn:hover {
+            background: #1976D2;
+        }
+
+        .mode-btn.active {
+            background: #FF5722;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .guess-header, .guess-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            
+            .guess-cell {
+                padding: 5px;
+                font-size: 0.8rem;
+            }
+            
+            .mode-btn {
+                display: block;
+                margin: 5px auto;
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Geodle 🌍</h1>
+            <div class="subtitle">Country Guessing Mode</div>
+        </div>
+
+        <div class="mode-selector">
+            <h3>Game Modes</h3>
+            <button class="mode-btn" onclick="window.location.href='index.html'">Classic Mode</button>
+            <button class="mode-btn active">Country Mode</button>
+        </div>
+
+        <div class="game-info">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="attempts">7</div>
+                    <div>Attempts Left</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="streak">0</div>
+                    <div>Win Streak</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="guess-section">
+            <div class="search-container">
+                <input type="text" id="countryInput" class="search-input" 
+                       placeholder="Type a country name..." autocomplete="off">
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+            <button id="guessBtn" class="guess-btn">Make Guess</button>
+        </div>
+
+        <div class="guesses-container">
+            <div class="guess-header">
+                <div>Country</div>
+                <div>Continent</div>
+                <div>Population</div>
+                <div>GDP</div>
+                <div>Language</div>
+                <div>Climate</div>
+            </div>
+            <div id="guessesContainer"></div>
+        </div>
+
+        <div id="gameOver" class="game-over" style="display: none;">
+            <h2 id="gameOverTitle"></h2>
+            <div id="answerInfo"></div>
+            <div class="country-info" id="countryInfo"></div>
+            <button id="newGameBtn" class="new-game-btn">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        let currentCountry = null;
+        let guesses = [];
+        let gameWon = false;
+        let attempts = 7;
+        let streak = parseInt(localStorage.getItem('geodle_country_streak') || '0');
+
+        function initGame() {
+            // Validate data first
+            if (typeof countryData === 'undefined' || !Array.isArray(countryData)) {
+                console.error('Country data not loaded properly. Make sure countries.js is included.');
+                return;
+            }
+
+            currentCountry = countryData[Math.floor(Math.random() * countryData.length)];
+            guesses = [];
+            gameWon = false;
+            attempts = 7;
+            
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('guessesContainer').innerHTML = '';
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('countryInput').value = '';
+            document.getElementById('countryInput').disabled = false;
+            document.getElementById('guessBtn').disabled = false;
+            
+            console.log('Current country:', currentCountry.name); // For debugging
+        }
+
+        function showSuggestions(input) {
+            const suggestions = document.getElementById('suggestions');
+            const value = input.toLowerCase();
+            
+            if (value.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            const matches = countryData.filter(country => 
+                country.name.toLowerCase().includes(value) && 
+                !guesses.find(guess => guess.name === country.name)
+            );
+
+            if (matches.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            suggestions.innerHTML = matches.slice(0, 8).map(country => 
+                `<div class="suggestion-item" data-name="${country.name}">${country.name}</div>`
+            ).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
+        function makeGuess(countryName) {
+            const country = countryData.find(c => c.name === countryName);
+            if (!country || guesses.find(g => g.name === countryName)) return;
+
+            guesses.push(country);
+            attempts--;
+            
+            document.getElementById('attempts').textContent = attempts;
+            
+            const guessRow = createGuessRow(country);
+            document.getElementById('guessesContainer').appendChild(guessRow);
+            
+            if (country.name === currentCountry.name) {
+                gameWon = true;
+                streak++;
+                localStorage.setItem('geodle_country_streak', streak.toString());
+                endGame();
+            } else if (attempts === 0) {
+                streak = 0;
+                localStorage.setItem('geodle_country_streak', '0');
+                endGame();
+            }
+            
+            document.getElementById('countryInput').value = '';
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        function createGuessRow(guess) {
+            const row = document.createElement('div');
+            row.className = 'guess-row';
+            
+            const continent = getColorClass(guess.continent, currentCountry.continent);
+            const population = getColorClass(guess.population, currentCountry.population);
+            const gdp = getColorClass(guess.gdp, currentCountry.gdp);
+            const language = getColorClass(guess.language, currentCountry.language);
+            const climate = getColorClass(guess.climate, currentCountry.climate);
+            
+            row.innerHTML = `
+                <div class="guess-cell country-name ${guess.name === currentCountry.name ? 'correct' : 'wrong'}">${guess.name}</div>
+                <div class="guess-cell ${continent}">${guess.continent}</div>
+                <div class="guess-cell ${population}">${guess.population}</div>
+                <div class="guess-cell ${gdp}">${guess.gdp}</div>
+                <div class="guess-cell ${language}">${guess.language}</div>
+                <div class="guess-cell ${climate}">${guess.climate}</div>
+            `;
+            
+            return row;
+        }
+
+        function getColorClass(guess, correct) {
+            if (guess === correct) return 'correct';
+            
+            // Special logic for partial matches
+            if (guess.includes('/') && correct.includes('/')) {
+                const guessOptions = guess.split('/');
+                const correctOptions = correct.split('/');
+                const hasOverlap = guessOptions.some(g => correctOptions.includes(g));
+                if (hasOverlap) return 'partial';
+            }
+            
+            // Check for continent overlap (Europe/Asia cases)
+            if ((guess === 'Europe' && correct === 'Europe/Asia') || 
+                (guess === 'Asia' && correct === 'Europe/Asia') ||
+                (guess === 'Europe/Asia' && (correct === 'Europe' || correct === 'Asia'))) {
+                return 'partial';
+            }
+            
+            return 'wrong';
+        }
+
+        function endGame() {
+            document.getElementById('countryInput').disabled = true;
+            document.getElementById('guessBtn').disabled = true;
+            
+            const gameOverDiv = document.getElementById('gameOver');
+            const titleEl = document.getElementById('gameOverTitle');
+            const answerEl = document.getElementById('answerInfo');
+            const infoEl = document.getElementById('countryInfo');
+            
+            if (gameWon) {
+                titleEl.textContent = '🎉 Congratulations!';
+                titleEl.className = 'win';
+                answerEl.innerHTML = `You guessed <strong>${currentCountry.name}</strong> in ${8 - attempts} attempts!`;
+            } else {
+                titleEl.textContent = '😔 Game Over';
+                titleEl.className = 'lose';
+                answerEl.innerHTML = `The answer was <strong>${currentCountry.name}</strong>`;
+            }
+            
+            infoEl.innerHTML = `
+                <h3>${currentCountry.name}</h3>
+                <p><strong>Continent:</strong> ${currentCountry.continent}</p>
+                <p><strong>Population:</strong> ${currentCountry.population}</p>
+                <p><strong>GDP:</strong> ${currentCountry.gdp}</p>
+                <p><strong>Language:</strong> ${currentCountry.language}</p>
+                <p><strong>Climate:</strong> ${currentCountry.climate}</p>
+                <p style="margin-top: 10px;">${currentCountry.info}</p>
+            `;
+            
+            document.getElementById('streak').textContent = streak;
+            gameOverDiv.style.display = 'block';
+        }
+
+        // Event listeners
+        document.getElementById('countryInput').addEventListener('input', function() {
+            showSuggestions(this.value);
+        });
+
+        document.getElementById('countryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const value = this.value.trim();
+                const country = countryData.find(c => 
+                    c.name.toLowerCase() === value.toLowerCase()
+                );
+                if (country) {
+                    makeGuess(country.name);
+                }
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('suggestion-item')) {
+                makeGuess(e.target.dataset.name);
+            } else if (!e.target.closest('.search-container')) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+
+        document.getElementById('guessBtn').addEventListener('click', function() {
+            const value = document.getElementById('countryInput').value.trim();
+            const country = countryData.find(c => 
+                c.name.toLowerCase() === value.toLowerCase()
+            );
+            if (country) {
+                makeGuess(country.name);
+            }
+        });
+
+        document.getElementById('newGameBtn').addEventListener('click', initGame);
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                initGame();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
