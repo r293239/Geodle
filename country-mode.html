@@ -14,13 +14,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -32,33 +32,188 @@
         }
 
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
             margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .map-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .world-map {
+            width: 100%;
+            height: calc(100% - 40px);
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ddd;
+        }
+
+        .continent {
+            position: absolute;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            cursor: pointer;
+        }
+
+        .continent:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .north-america {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            top: 15%;
+            left: 15%;
+            width: 25%;
+            height: 35%;
+        }
+
+        .south-america {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            top: 45%;
+            left: 20%;
+            width: 15%;
+            height: 40%;
+        }
+
+        .europe {
+            background: linear-gradient(135deg, #5f27cd, #341f97);
+            top: 10%;
+            left: 45%;
+            width: 15%;
+            height: 25%;
+        }
+
+        .africa {
+            background: linear-gradient(135deg, #00d2d3, #54a0ff);
+            top: 20%;
+            left: 40%;
+            width: 20%;
+            height: 50%;
+        }
+
+        .asia {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            top: 5%;
+            left: 55%;
+            width: 35%;
+            height: 45%;
+        }
+
+        .oceania {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            top: 60%;
+            left: 75%;
+            width: 20%;
+            height: 25%;
+        }
+
+        .antarctica {
+            background: linear-gradient(135deg, #b2bec3, #636e72);
+            bottom: 5%;
+            left: 30%;
+            width: 40%;
+            height: 12%;
+        }
+
+        .guess-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+            z-index: 20;
+        }
+
+        .correct-guess {
+            background: #4ade80;
+        }
+
+        .wrong-guess {
+            background: #f87171;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .game-info {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
             color: white;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .guess-section {
-            background: white;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .search-container {
@@ -68,16 +223,20 @@
 
         .search-input {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             font-size: 1.1rem;
-            border: 2px solid #ddd;
-            border-radius: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
         }
 
         .search-input:focus {
-            border-color: #2196F3;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
         }
 
         .suggestions {
@@ -85,96 +244,129 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 1px solid #ddd;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
             border-top: none;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 15px 15px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .suggestion-item {
-            padding: 10px;
+            padding: 12px 18px;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
         }
 
         .suggestion-item:hover {
-            background-color: #f5f5f5;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
         }
 
         .guess-btn {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             font-size: 1.2rem;
-            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .guess-btn:hover {
-            transform: translateY(-2px);
+        .guess-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
         }
 
         .guess-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .guesses-container {
-            background: white;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            grid-column: 1 / -1;
         }
 
         .guess-header {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
             gap: 10px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            padding: 18px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
             font-weight: bold;
             margin-bottom: 15px;
             font-size: 0.9rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .guess-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
             gap: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            animation: slideIn 0.5s ease-out;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            animation: slideIn 0.6s ease-out;
+            background: rgba(255,255,255,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-30px) scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .guess-cell {
-            padding: 8px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             text-align: center;
             font-weight: 500;
             font-size: 0.85rem;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guess-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .guess-cell:hover::before {
+            opacity: 1;
         }
 
         .country-name {
@@ -184,64 +376,78 @@
         }
 
         .correct {
-            background: #4ade80;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
             color: white;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
         }
 
         .partial {
-            background: #fbbf24;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
 
         .wrong {
-            background: #f87171;
+            background: linear-gradient(135deg, #f87171, #ef4444);
             color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         .game-over {
             text-align: center;
-            padding: 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             margin-top: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            grid-column: 1 / -1;
         }
 
         .game-over h2 {
-            margin-bottom: 15px;
-            font-size: 2rem;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
         }
 
         .win {
             color: #22c55e;
+            text-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
         }
 
         .lose {
             color: #ef4444;
+            text-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
         }
 
         .new-game-btn {
-            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            padding: 18px 35px;
+            border-radius: 15px;
+            font-size: 1.2rem;
             cursor: pointer;
-            margin-top: 15px;
-            transition: transform 0.2s;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
         .new-game-btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
         }
 
         .country-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            border-left: 4px solid #2196F3;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .stats {
@@ -252,39 +458,62 @@
 
         .stat {
             text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 100px;
         }
 
         .stat-number {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
 
         .mode-selector {
-            background: rgba(255,255,255,0.9);
-            border-radius: 15px;
-            padding: 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 20px;
             text-align: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .mode-btn {
-            background: #2196F3;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             margin: 0 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .mode-btn:hover {
-            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .mode-btn.active {
-            background: #FF5722;
+            background: linear-gradient(135deg, #FF5722, #E64A19);
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -293,16 +522,16 @@
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             
             .guess-header, .guess-row {
                 grid-template-columns: 1fr;
-                gap: 5px;
+                gap: 8px;
             }
             
             .guess-cell {
-                padding: 5px;
+                padding: 8px;
                 font-size: 0.8rem;
             }
             
@@ -310,6 +539,14 @@
                 display: block;
                 margin: 5px auto;
                 width: 200px;
+            }
+            
+            .map-container {
+                height: 250px;
+            }
+            
+            .continent {
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -327,36 +564,56 @@
             <button class="mode-btn active">Country Mode</button>
         </div>
 
-        <div class="game-info">
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number" id="attempts">7</div>
-                    <div>Attempts Left</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" id="streak">0</div>
-                    <div>Win Streak</div>
+        <div class="game-layout">
+            <div class="left-section">
+                <div class="map-container">
+                    <div class="map-title">🗺️ World Map - Track Your Guesses</div>
+                    <div class="world-map">
+                        <div class="continent north-america">North America</div>
+                        <div class="continent south-america">South America</div>
+                        <div class="continent europe">Europe</div>
+                        <div class="continent africa">Africa</div>
+                        <div class="continent asia">Asia</div>
+                        <div class="continent oceania">Oceania</div>
+                        <div class="continent antarctica">Antarctica</div>
+                        <div id="guessMarkers"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="guess-section">
-            <div class="search-container">
-                <input type="text" id="countryInput" class="search-input" 
-                       placeholder="Type a country name..." autocomplete="off">
-                <div id="suggestions" class="suggestions"></div>
+            <div class="right-section">
+                <div class="game-info">
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number" id="attempts">7</div>
+                            <div>Attempts Left</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" id="streak">0</div>
+                            <div>Win Streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guess-section">
+                    <div class="search-container">
+                        <input type="text" id="countryInput" class="search-input" 
+                               placeholder="🔍 Type a country name..." autocomplete="off">
+                        <div id="suggestions" class="suggestions"></div>
+                    </div>
+                    <button id="guessBtn" class="guess-btn">🎯 Make Guess</button>
+                </div>
             </div>
-            <button id="guessBtn" class="guess-btn">Make Guess</button>
         </div>
 
         <div class="guesses-container">
             <div class="guess-header">
-                <div>Country</div>
-                <div>Continent</div>
-                <div>Population</div>
-                <div>GDP</div>
-                <div>Language</div>
-                <div>Climate</div>
+                <div>🏴 Country</div>
+                <div>🌍 Continent</div>
+                <div>👥 Population</div>
+                <div>💰 GDP</div>
+                <div>💬 Language</div>
+                <div>🌡️ Climate</div>
             </div>
             <div id="guessesContainer"></div>
         </div>
@@ -365,7 +622,7 @@
             <h2 id="gameOverTitle"></h2>
             <div id="answerInfo"></div>
             <div class="country-info" id="countryInfo"></div>
-            <button id="newGameBtn" class="new-game-btn">New Game</button>
+            <button id="newGameBtn" class="new-game-btn">🎮 New Game</button>
         </div>
     </div>
 
@@ -375,6 +632,18 @@
         let gameWon = false;
         let attempts = 7;
         let streak = parseInt(localStorage.getItem('geodle_country_streak') || '0');
+
+        // Continent positions for guess markers
+        const continentPositions = {
+            'North America': { x: 27, y: 32 },
+            'South America': { x: 27, y: 65 },
+            'Europe': { x: 52, y: 22 },
+            'Africa': { x: 50, y: 45 },
+            'Asia': { x: 72, y: 27 },
+            'Oceania': { x: 85, y: 72 },
+            'Antarctica': { x: 50, y: 90 },
+            'Europe/Asia': { x: 62, y: 25 }
+        };
 
         function initGame() {
             // Validate data first
@@ -395,8 +664,29 @@
             document.getElementById('countryInput').value = '';
             document.getElementById('countryInput').disabled = false;
             document.getElementById('guessBtn').disabled = false;
+            document.getElementById('guessMarkers').innerHTML = '';
             
             console.log('Current country:', currentCountry.name); // For debugging
+        }
+
+        function addGuessMarker(country, isCorrect) {
+            const markersContainer = document.getElementById('guessMarkers');
+            const position = continentPositions[country.continent];
+            
+            if (position) {
+                const marker = document.createElement('div');
+                marker.className = `guess-indicator ${isCorrect ? 'correct-guess' : 'wrong-guess'}`;
+                marker.style.left = position.x + '%';
+                marker.style.top = position.y + '%';
+                marker.title = `${country.name} (${country.continent})`;
+                
+                // Add slight random offset to avoid overlapping
+                const randomX = (Math.random() - 0.5) * 4;
+                const randomY = (Math.random() - 0.5) * 4;
+                marker.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                
+                markersContainer.appendChild(marker);
+            }
         }
 
         function showSuggestions(input) {
@@ -419,7 +709,7 @@
             }
 
             suggestions.innerHTML = matches.slice(0, 8).map(country => 
-                `<div class="suggestion-item" data-name="${country.name}">${country.name}</div>`
+                `<div class="suggestion-item" data-name="${country.name}">🏴 ${country.name}</div>`
             ).join('');
             
             suggestions.style.display = 'block';
@@ -432,12 +722,15 @@
             guesses.push(country);
             attempts--;
             
+            const isCorrect = country.name === currentCountry.name;
+            addGuessMarker(country, isCorrect);
+            
             document.getElementById('attempts').textContent = attempts;
             
             const guessRow = createGuessRow(country);
             document.getElementById('guessesContainer').appendChild(guessRow);
             
-            if (country.name === currentCountry.name) {
+            if (isCorrect) {
                 gameWon = true;
                 streak++;
                 localStorage.setItem('geodle_country_streak', streak.toString());
@@ -499,6 +792,9 @@
             document.getElementById('countryInput').disabled = true;
             document.getElementById('guessBtn').disabled = true;
             
+            // Add the correct answer marker to the map
+            addGuessMarker(currentCountry, true);
+            
             const gameOverDiv = document.getElementById('gameOver');
             const titleEl = document.getElementById('gameOverTitle');
             const answerEl = document.getElementById('answerInfo');
@@ -515,13 +811,13 @@
             }
             
             infoEl.innerHTML = `
-                <h3>${currentCountry.name}</h3>
-                <p><strong>Continent:</strong> ${currentCountry.continent}</p>
-                <p><strong>Population:</strong> ${currentCountry.population}</p>
-                <p><strong>GDP:</strong> ${currentCountry.gdp}</p>
-                <p><strong>Language:</strong> ${currentCountry.language}</p>
-                <p><strong>Climate:</strong> ${currentCountry.climate}</p>
-                <p style="margin-top: 10px;">${currentCountry.info}</p>
+                <h3>🏴 ${currentCountry.name}</h3>
+                <p><strong>🌍 Continent:</strong> ${currentCountry.continent}</p>
+                <p><strong>👥 Population:</strong> ${currentCountry.population}</p>
+                <p><strong>💰 GDP:</strong> ${currentCountry.gdp}</p>
+                <p><strong>💬 Language:</strong> ${currentCountry.language}</p>
+                <p><strong>🌡️ Climate:</strong> ${currentCountry.climate}</p>
+                <p style="margin-top: 15px; font-style: italic;">${currentCountry.info}</p>
             `;
             
             document.getElementById('streak').textContent = streak;
