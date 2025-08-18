@@ -1,4 +1,400 @@
-<!DOCTYPE html>
+dropdown.innerHTML = '';
+    matches.forEach((country, index) => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.textContent = country;
+      item.addEventListener('click', function() {
+        input.value = country;
+        dropdown.classList.remove('active');
+        input.focus();
+      });
+      dropdown.appendChild(item);
+    });
+    
+    dropdown.classList.add('active');
+  });
+  
+  input.addEventListener('keydown', function(e) {
+    const items = dropdown.querySelectorAll('.autocomplete-item');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+      updateHighlight(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      highlightedIndex = Math.max(highlightedIndex - 1, -1);
+      updateHighlight(items);
+    } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+      e.preventDefault();
+      items[highlightedIndex].click();
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('active');
+      highlightedIndex = -1;
+    }
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('active');
+    }
+  });
+}
+
+function updateHighlight(items) {
+  items.forEach((item, index) => {
+    if (index === highlightedIndex) {
+      item.classList.add('highlighted');
+    } else {
+      item.classList.remove('highlighted');
+    }
+  });
+}
+
+// Winning effects
+function createConfetti() {
+  for (let i = 0; i < 50; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * window.innerWidth + 'px';
+      confetti.style.top = Math.random() * window.innerHeight + 'px';
+      document.body.appendChild(confetti);
+      
+      setTimeout(() => {
+        confetti.remove();
+      }, 2000);
+    }, i * 50);
+  }
+}
+
+function triggerWinEffects() {
+  // Create confetti
+  createConfetti();
+  
+  // Add celebration animation to main elements
+  const clueBox = document.getElementById('clueBox');
+  const endScreen = document.getElementById('endScreen');
+  
+  clueBox.classList.add('win-celebration');
+  endScreen.classList.add('win-pulse');
+  
+  setTimeout(() => {
+    clueBox.classList.remove('win-celebration');
+    endScreen.classList.remove('win-pulse');
+  }, 2000);
+}
+
+// Load and save win count from localStorage
+function loadWinCount() {
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+}
+
+function saveWinCount() {
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
+}
+
+function resetWinCount() {
+  totalWins = 0;
+  saveWinCount();
+}
+
+// Check if data is loaded and validate it
+function validateData() {
+  if (typeof geographyData === 'undefined') {
+    console.error('geographyData is not defined. Make sure data.js is loaded.');
+    return false;
+  }
+  
+  if (!Array.isArray(geographyData)) {
+    console.error('geographyData should be an array.');
+    return false;
+  }
+  
+  if (geographyData.length === 0) {
+    console.error('geographyData array is empty.');
+    return false;
+  }
+  
+  // Validate structure of first item
+  const firstItem = geographyData[0];
+  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
+    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
+    return false;
+  }
+  
+  return true;
+}
+
+// Initialize the game
+function initGame() {
+  // Validate data first
+  if (!validateData()) {
+    document.getElementById('loadingError').style.display = 'block';
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    return;
+  }
+  
+  // Hide error message if it was shown
+  document.getElementById('loadingError').style.display = 'none';
+  
+  // Initialize or reset the world map
+  if (worldMap) {
+    worldMap.remove();
+    worldMap = null;
+  }
+  initWorldMap();
+  
+  // Get random question from external data
+  const randomIndex = Math.floor(Math.random() * geographyData.length);
+  currentQuestion = geographyData[randomIndex];
+  currentClueIndex = 0;
+  guessHistory = [];
+  gameEnded = false;
+  
+  // Display the first clue
+  updateClueDisplay();
+  updateProgressBar();
+  
+  // Reset UI
+  document.getElementById('guessInput').disabled = false;
+  document.getElementById('guessButton').disabled = false;
+  document.getElementById('guessInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = '';
+  document.getElementById('historyList').innerHTML = '';
+  document.getElementById('pastHintsList').innerHTML = '';
+  document.getElementById('endScreen').style.display = 'none';
+  
+  // Focus on input
+  document.getElementById('guessInput').focus();
+  
+  // Load win count from localStorage
+  loadWinCount();
+  updateWinDisplay();
+}
+
+function resetGame() {
+  // Initialize a new game (don't reset win count)
+  initGame();
+  
+  // Show reset confirmation
+  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
+}
+
+function updateClueDisplay() {
+  document.getElementById('currentClue').textContent = currentClueIndex + 1;
+  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+  updatePastHints();
+}
+
+function updatePastHints() {
+  const pastHintsList = document.getElementById('pastHintsList');
+  pastHintsList.innerHTML = '';
+  
+  // Show all hints up to current clue index
+  for (let i = 0; i <= currentClueIndex; i++) {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+    pastHintsList.appendChild(li);
+  }
+}
+
+function updateProgressBar() {
+  const progress = ((currentClueIndex + 1) / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function updateWinDisplay() {
+  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
+}
+
+// Initialize Leaflet world map
+function initWorldMap() {
+  worldMap = L.map('worldMap', {
+    center: [20, 0],
+    zoom: 1,
+    minZoom: 1,
+    maxZoom: 10,
+    zoomControl: true,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(worldMap);
+}
+
+function handleGuess(e) {
+  e.preventDefault();
+  
+  if (gameEnded) return;
+  
+  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+  
+  if (!guess) return;
+  
+  // Close autocomplete dropdown
+  document.getElementById('autocompleteDropdown').classList.remove('active');
+  
+  // Check if correct
+  const isCorrect = guess === currentQuestion.answer;
+  
+  // Add to history
+  guessHistory.push({
+    text: guess,
+    correct: isCorrect,
+    clueNumber: currentClueIndex + 1
+  });
+  
+  if (isCorrect) {
+    showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'success');
+    totalWins++;
+    saveWinCount();
+    updateWinDisplay();
+    triggerWinEffects(); // Add winning effects
+    endGame(true);
+  } else {
+    if (currentClueIndex < 9) {
+      currentClueIndex++;
+      updateClueDisplay();
+      updateProgressBar();
+      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'error');
+    } else {
+      showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'error');
+      endGame(false);
+    }
+  }
+  
+  // Update history display
+  updateHistoryDisplay();
+  
+  // Clear input
+  document.getElementById('guessInput').value = '';
+}
+
+function showFeedback(message, type) {
+  const feedback = document.getElementById('feedback');
+  feedback.textContent = message;
+  feedback.className = type === 'success' ? 'success-feedback' : 
+                      type === 'error' ? 'error-feedback' : '';
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  
+  guessHistory.forEach((guess, index) => {
+    const li = document.createElement('li');
+    li.className = guess.correct ? 'correct' : 'incorrect';
+    li.innerHTML = `
+      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
+      <span>${guess.correct ? '✓' : '✗'}</span>
+    `;
+    historyList.appendChild(li);
+  });
+}
+
+function endGame(won) {
+  gameEnded = true;
+  document.getElementById('guessInput').disabled = true;
+  document.getElementById('guessButton').disabled = true;
+  
+  const endScreen = document.getElementById('endScreen');
+  const resultMsg = document.getElementById('resultMsg');
+  
+  if (won) {
+    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
+  } else {
+    resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
+  }
+  
+  endScreen.style.display = 'block';
+}
+
+function shareScore() {
+  const won = guessHistory.some(guess => guess.correct);
+  const cluesUsed = won ? currentClueIndex + 1 : 10;
+  const scoreText = won ? 
+    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
+    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Geodle Score',
+      text: scoreText,
+      url: window.location.href
+    });
+  } else {
+    // Fallback - copy to clipboard
+    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+    alert('Score copied to clipboard!');
+  }
+}
+
+// Mode selector functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Setup autocomplete
+  setupAutocomplete();
+  
+  // Update mode descriptions on hover
+  const classicBtn = document.getElementById('classicModeBtn');
+  const countryBtn = document.getElementById('countryModeBtn');
+  const description = document.getElementById('modeDescription');
+  
+  const descriptions = {
+    classic: "Get geographic clues and guess the mystery location!",
+    country: "Compare countries by continent, population, GDP, and more!"
+  };
+  
+  if (classicBtn && countryBtn && description) {
+    classicBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.classic;
+    });
+    
+    countryBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.country;
+    });
+    
+    // Reset to current mode description on mouse leave
+    const resetDescription = function() {
+      if (classicBtn.classList.contains('active')) {
+        description.textContent = descriptions.classic;
+      } else if (countryBtn.classList.contains('active')) {
+        description.textContent = descriptions.country;
+      }
+    };
+    
+    classicBtn.addEventListener('mouseleave', resetDescription);
+    countryBtn.addEventListener('mouseleave', resetDescription);
+  }
+  
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
+      resetWinCount();
+      updateWinDisplay();
+      showFeedback('🏆 Win count reset to 0!', 'success');
+    }
+  });
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
+});
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -39,11 +435,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
     z-index: -1;
     animation: gradientShift 10s ease-in-out infinite;
+    backdrop-filter: blur(0.5px);
   }
   
   @keyframes gradientShift {
@@ -57,10 +456,19 @@
     font-size: 2.8rem;
     font-weight: 700;
     color: white;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.2);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.3);
     letter-spacing: -0.02em;
-    animation: fadeInDown 0.8s ease;
+    animation: fadeInDown 0.8s ease, titleGlow 3s ease-in-out infinite alternate;
     position: relative;
+  }
+  
+  @keyframes titleGlow {
+    from { 
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.3);
+    }
+    to { 
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 60px rgba(255,255,255,0.6);
+    }
   }
   
   #worldMap {
@@ -183,6 +591,7 @@
     gap: 2px;
     margin-bottom: 20px;
     animation: fadeInUp 0.8s ease 0.5s both;
+    position: relative;
   }
   
   #guessInput {
@@ -198,6 +607,7 @@
     font-weight: 400;
     color: #333;
     font-family: inherit;
+    position: relative;
   }
   
   #guessInput:focus {
@@ -217,24 +627,80 @@
   #guessInput:focus::placeholder {
     opacity: 0.7;
   }
+
+  /* Autocomplete Dropdown */
+  .autocomplete-container {
+    position: relative;
+    flex: 1;
+  }
+
+  .autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 0 0 16px 16px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    display: none;
+  }
+
+  .autocomplete-dropdown.active {
+    display: block;
+    animation: slideDown 0.3s ease;
+  }
+
+  .autocomplete-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #333;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .autocomplete-item:hover,
+  .autocomplete-item.highlighted {
+    background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+    color: #2e7d32;
+  }
+
+  .autocomplete-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 16px 16px;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
   
   #guessButton {
     padding: 18px 26px;
     font-size: 1.1em;
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: linear-gradient(135deg, #4CAF50, #45a049);
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 0 16px 16px 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     position: relative;
     overflow: hidden;
     font-family: inherit;
-    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
   }
   
   #guessButton::before {
@@ -253,9 +719,9 @@
   }
   
   #guessButton:hover:not(:disabled) {
-    background: linear-gradient(135deg, #218838, #1e7e34);
+    background: linear-gradient(135deg, #45a049, #3d8b40);
     transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
+    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
   }
   
   #guessButton:active {
@@ -263,11 +729,10 @@
   }
   
   #guessButton:disabled {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
+    background: linear-gradient(135deg, #cccccc, #bbbbbb);
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-    color: rgba(255,255,255,0.8);
+    box-shadow: none;
   }
   
   #feedback {
@@ -529,7 +994,7 @@
     border-radius: 14px;
     cursor: pointer;
     font-size: 1em;
-    font-weight: 700;
+    font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -538,7 +1003,6 @@
     margin: 8px;
     font-family: inherit;
     backdrop-filter: blur(10px);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
   
   .btn::before {
@@ -565,29 +1029,25 @@
   }
   
   #resetBtn {
-    background: linear-gradient(135deg, #dc3545, #bd2130);
+    background: linear-gradient(135deg, #dc3545, #c82333);
     color: white;
-    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
   }
   
   #resetBtn:hover {
-    background: linear-gradient(135deg, #c82333, #a71e2a);
-    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.5);
-    transform: translateY(-3px);
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
   }
   
   #resetWinsBtn {
     background: linear-gradient(135deg, #6f42c1, #5a2d91);
     color: white;
-    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
   }
   
   #resetWinsBtn:hover {
     background: linear-gradient(135deg, #5a2d91, #4e2779);
-    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
-    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
   }
   
   #endScreen {
@@ -609,26 +1069,22 @@
     background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
     margin: 10px 8px;
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
   }
   
   #shareBtn:hover, #newGameBtn:hover {
     background: linear-gradient(135deg, #0056b3, #004085);
-    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
-    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
   }
   
   #newGameBtn {
-    background: linear-gradient(135deg, #fd7e14, #e8590c);
-    box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
   }
   
   #newGameBtn:hover {
-    background: linear-gradient(135deg, #e8590c, #d63384);
-    box-shadow: 0 12px 35px rgba(253, 126, 20, 0.5);
-    transform: translateY(-3px);
+    background: linear-gradient(135deg, #f57c00, #ef6c00);
+    box-shadow: 0 12px 35px rgba(255, 152, 0, 0.4);
   }
   
   #dailyLimitMsg, #loadingError {
@@ -750,7 +1206,101 @@
     }
   }
   
-  /* Mobile Responsiveness */
+  /* Winning Effects */
+  @keyframes confettiPop {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2) rotate(180deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(0.8) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes celebration {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+    }
+    25% {
+      transform: scale(1.1) rotate(-3deg);
+    }
+    75% {
+      transform: scale(1.1) rotate(3deg);
+    }
+  }
+
+  @keyframes winPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(76, 175, 80, 0.8);
+    }
+  }
+
+  .win-celebration {
+    animation: celebration 0.6s ease-in-out 3;
+  }
+
+  .win-pulse {
+    animation: winPulse 1s ease-in-out infinite;
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #f39c12;
+    pointer-events: none;
+    z-index: 10000;
+    animation: confettiPop 2s ease-out forwards;
+  }
+
+  .confetti:nth-child(2n) {
+    background: #e74c3c;
+    animation-delay: 0.1s;
+  }
+
+  .confetti:nth-child(3n) {
+    background: #3498db;
+    animation-delay: 0.2s;
+  }
+
+  .confetti:nth-child(4n) {
+    background: #2ecc71;
+    animation-delay: 0.3s;
+  }
+
+  .confetti:nth-child(5n) {
+    background: #9b59b6;
+    animation-delay: 0.4s;
+  }
+
+  /* Success Feedback Styling */
+  .success-feedback {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 12px;
+    padding: 16px;
+    animation: celebration 0.6s ease-in-out;
+    box-shadow: 0 8px 25px rgba(33, 136, 56, 0.3);
+  }
+
+  .error-feedback {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 12px;
+    padding: 16px;
+    animation: shakeX 0.6s ease;
+    box-shadow: 0 8px 25px rgba(114, 28, 36, 0.3);
+  }
   @media (max-width: 768px) {
     body {
       padding: 15px;
@@ -921,7 +1471,10 @@
 </div>
 <div id="clueBox">Loading clue...</div>
 <form id="guessForm">
-  <input type="text" id="guessInput" placeholder="Type your guess here" autocomplete="off" />
+  <div class="autocomplete-container">
+    <input type="text" id="guessInput" placeholder="Type your guess here" autocomplete="off" />
+    <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+  </div>
   <button id="guessButton" type="submit">Guess</button>
 </form>
 <div id="feedback"></div>
