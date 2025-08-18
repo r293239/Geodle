@@ -578,6 +578,127 @@ document.addEventListener('DOMContentLoaded', function() {
     #help-button:hover {
       background-color: #0056b3;
     }
+    <!-- Add this CSS to your existing <style> section in index.html -->
+<style>
+/* Add these styles to your existing CSS */
+.mode-selector {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+}
+
+.mode-selector h3 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.mode-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+  padding: 12px 20px;
+  margin: 0 10px 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.mode-btn:hover {
+  background: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.5);
+  transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
+}
+
+.mode-btn.active {
+  background: #FF6B6B;
+  border-color: #FF5252;
+  color: white;
+}
+
+.mode-btn.active:hover {
+  background: #FF5252;
+  border-color: #FF3D3D;
+}
+
+.mode-description {
+  font-size: 0.9rem;
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .mode-btn {
+    display: block;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 250px;
+  }
+}
+</style>
+
+<!-- Add this HTML right after your <h1>Geodle 🌍</h1> and before the map div -->
+<div class="mode-selector">
+  <h3>🎮 Game Modes</h3>
+  <a href="index.html" class="mode-btn active" id="classicModeBtn">
+    🗺️ Classic Mode
+  </a>
+  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
+    🌍 Country Mode
+  </a>
+  <div class="mode-description">
+    <span id="modeDescription">Get geographic clues and guess the mystery location!</span>
+  </div>
+</div>
+
+<!-- Add this JavaScript to your existing <script> section -->
+<script>
+// Add this to your existing JavaScript
+
+// Mode selector functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Update mode descriptions on hover
+  const classicBtn = document.getElementById('classicModeBtn');
+  const countryBtn = document.getElementById('countryModeBtn');
+  const description = document.getElementById('modeDescription');
+  
+  const descriptions = {
+    classic: "Get geographic clues and guess the mystery location!",
+    country: "Compare countries by continent, population, GDP, and more!"
+  };
+  
+  if (classicBtn && countryBtn && description) {
+    classicBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.classic;
+    });
+    
+    countryBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.country;
+    });
+    
+    // Reset to current mode description on mouse leave
+    const resetDescription = function() {
+      if (classicBtn.classList.contains('active')) {
+        description.textContent = descriptions.classic;
+      } else if (countryBtn.classList.contains('active')) {
+        description.textContent = descriptions.country;
+      }
+    };
+    
+    classicBtn.addEventListener('mouseleave', resetDescription);
+    countryBtn.addEventListener('mouseleave', resetDescription);
+  }
+});
+</script>
   </style>
 </head>
 <body>
