@@ -56,19 +56,11 @@
     margin-bottom: 25px;
     font-size: 2.8rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #fff, #e0e7ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    color: white;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.2);
     letter-spacing: -0.02em;
-    animation: fadeInDown 0.8s ease, glow 2s ease-in-out infinite alternate;
+    animation: fadeInDown 0.8s ease;
     position: relative;
-  }
-  
-  @keyframes glow {
-    from { filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
-    to { filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
   }
   
   #worldMap {
@@ -229,19 +221,20 @@
   #guessButton {
     padding: 18px 26px;
     font-size: 1.1em;
-    background: linear-gradient(135deg, #4CAF50, #45a049);
+    background: linear-gradient(135deg, #28a745, #20c997);
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 0 16px 16px 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     position: relative;
     overflow: hidden;
     font-family: inherit;
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
   
   #guessButton::before {
@@ -260,9 +253,9 @@
   }
   
   #guessButton:hover:not(:disabled) {
-    background: linear-gradient(135deg, #45a049, #3d8b40);
+    background: linear-gradient(135deg, #218838, #1e7e34);
     transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
   }
   
   #guessButton:active {
@@ -270,10 +263,11 @@
   }
   
   #guessButton:disabled {
-    background: linear-gradient(135deg, #cccccc, #bbbbbb);
+    background: linear-gradient(135deg, #6c757d, #5a6268);
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    color: rgba(255,255,255,0.8);
   }
   
   #feedback {
@@ -535,7 +529,7 @@
     border-radius: 14px;
     cursor: pointer;
     font-size: 1em;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -544,6 +538,7 @@
     margin: 8px;
     font-family: inherit;
     backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
   
   .btn::before {
@@ -570,25 +565,29 @@
   }
   
   #resetBtn {
-    background: linear-gradient(135deg, #dc3545, #c82333);
+    background: linear-gradient(135deg, #dc3545, #bd2130);
     color: white;
-    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
   #resetBtn:hover {
-    background: linear-gradient(135deg, #c82333, #bd2130);
-    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+    background: linear-gradient(135deg, #c82333, #a71e2a);
+    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.5);
+    transform: translateY(-3px);
   }
   
   #resetWinsBtn {
     background: linear-gradient(135deg, #6f42c1, #5a2d91);
     color: white;
-    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
   #resetWinsBtn:hover {
     background: linear-gradient(135deg, #5a2d91, #4e2779);
-    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
+    transform: translateY(-3px);
   }
   
   #endScreen {
@@ -610,22 +609,26 @@
     background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
     margin: 10px 8px;
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
   #shareBtn:hover, #newGameBtn:hover {
     background: linear-gradient(135deg, #0056b3, #004085);
-    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
+    transform: translateY(-3px);
   }
   
   #newGameBtn {
-    background: linear-gradient(135deg, #ff9800, #f57c00);
-    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+    background: linear-gradient(135deg, #fd7e14, #e8590c);
+    box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
   #newGameBtn:hover {
-    background: linear-gradient(135deg, #f57c00, #ef6c00);
-    box-shadow: 0 12px 35px rgba(255, 152, 0, 0.4);
+    background: linear-gradient(135deg, #e8590c, #d63384);
+    box-shadow: 0 12px 35px rgba(253, 126, 20, 0.5);
+    transform: translateY(-3px);
   }
   
   #dailyLimitMsg, #loadingError {
