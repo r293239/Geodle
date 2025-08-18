@@ -13,230 +13,902 @@
 /*]]>/* */
 </script>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    max-width: 480px;
-    margin: 20px auto;
-    padding: 10px;
-    background: #f0f4f8;
-    color: #222;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+    z-index: -1;
+    animation: gradientShift 10s ease-in-out infinite;
+  }
+  
+  @keyframes gradientShift {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+  
   h1 {
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 25px;
+    font-size: 2.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, #e0e7ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    letter-spacing: -0.02em;
+    animation: fadeInDown 0.8s ease, glow 2s ease-in-out infinite alternate;
+    position: relative;
   }
+  
+  @keyframes glow {
+    from { filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+    to { filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
+  }
+  
   #worldMap {
-    height: 300px;
+    height: 320px;
     width: 100%;
-    border-radius: 10px;
-    margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    margin: 25px 0;
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: fadeInUp 0.8s ease 0.2s both;
+    transition: transform 0.3s ease;
+  }
+  
+  #worldMap:hover {
+    transform: translateY(-2px) scale(1.001);
+  }
+  
+  #clueBox {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    padding: 24px;
+    margin: 25px 0;
+    font-weight: 500;
+    font-size: 1.25em;
+    border-radius: 18px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 
+      0 15px 50px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    color: #333;
+    animation: fadeInUp 0.8s ease 0.3s both;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
     overflow: hidden;
   }
-  #clueBox {
-    background: #d0e2ff;
-    padding: 12px;
-    margin: 20px 0;
-    font-weight: bold;
-    font-size: 1.2em;
-    border-radius: 8px;
-    text-align: center;
+  
+  #clueBox::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 2s ease;
   }
+  
+  #clueBox:hover::before {
+    left: 100%;
+  }
+  
+  #clueBox:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  
   #progressInfo {
     text-align: center;
-    margin: 15px 0;
+    margin: 20px 0;
     font-size: 1.1em;
-    color: #0078d7;
+    color: rgba(255,255,255,0.95);
+    font-weight: 500;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.8s ease 0.4s both;
   }
+  
   #progressBar {
     width: 100%;
-    height: 20px;
-    background: #e0e0e0;
-    border-radius: 10px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
     overflow: hidden;
-    margin: 10px 0;
+    margin: 15px 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 
+      inset 0 2px 4px rgba(0,0,0,0.1),
+      0 4px 20px rgba(0,0,0,0.1);
+    position: relative;
   }
+  
   #progressFill {
     height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #8BC34A);
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A, #CDDC39);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
     width: 10%;
+    border-radius: 14px;
+    box-shadow: 
+      0 0 30px rgba(76, 175, 80, 0.6),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    position: relative;
+    overflow: hidden;
   }
+  
+  #progressFill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+    border-radius: 14px;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
   #guessForm {
     display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
+    gap: 2px;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease 0.5s both;
   }
+  
   #guessInput {
     flex: 1;
-    font-size: 1em;
-    padding: 8px;
-    border: 2px solid #0078d7;
-    border-radius: 4px 0 0 4px;
+    font-size: 1.1em;
+    padding: 18px 22px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 16px 0 0 16px;
     outline: none;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 400;
+    color: #333;
+    font-family: inherit;
   }
+  
+  #guessInput:focus {
+    border-color: #4CAF50;
+    box-shadow: 
+      0 0 30px rgba(76, 175, 80, 0.4),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+    background: rgba(255,255,255,1);
+  }
+  
+  #guessInput::placeholder {
+    color: rgba(0,0,0,0.5);
+    transition: opacity 0.3s ease;
+  }
+  
+  #guessInput:focus::placeholder {
+    opacity: 0.7;
+  }
+  
   #guessButton {
-    padding: 8px 15px;
-    font-size: 1em;
-    background: #0078d7;
+    padding: 18px 26px;
+    font-size: 1.1em;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 0 4px 4px 0;
-    transition: background 0.3s;
+    border-radius: 0 16px 16px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
   }
+  
+  #guessButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  #guessButton:hover:not(:disabled)::before {
+    left: 100%;
+  }
+  
   #guessButton:hover:not(:disabled) {
-    background: #005a9e;
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.5);
   }
+  
+  #guessButton:active {
+    transform: translateY(0);
+  }
+  
   #guessButton:disabled {
-    background: #cccccc;
+    background: linear-gradient(135deg, #cccccc, #bbbbbb);
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
+  
   #feedback {
     text-align: center;
-    font-weight: bold;
-    margin: 10px 0;
+    font-weight: 600;
+    margin: 20px 0;
+    padding: 16px;
+    border-radius: 12px;
+    transition: all 0.4s ease;
+    font-size: 1.1em;
+    min-height: 20px;
+    backdrop-filter: blur(10px);
   }
-  #pastHints {
-    margin-top: 10px;
+  
+  /* Mode Selector Styles */
+  .mode-selector {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: fadeInUp 0.8s ease 0.1s both;
+    box-shadow: 
+      0 15px 50px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.2);
   }
-  #pastHints h3 {
-    margin-bottom: 6px;
+
+  .mode-selector h3 {
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
   }
-  #pastHintsList {
+
+  .mode-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.25);
+    padding: 14px 24px;
+    margin: 0 8px 12px 8px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .mode-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .mode-btn:hover::before {
+    left: 100%;
+  }
+
+  .mode-btn:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    color: white;
+    text-decoration: none;
+  }
+
+  .mode-btn.active {
+    background: linear-gradient(135deg, #FF6B6B, #FF5252);
+    border-color: rgba(255,255,255,0.3);
+    color: white;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+  }
+
+  .mode-btn.active:hover {
+    background: linear-gradient(135deg, #FF5252, #FF3D3D);
+    box-shadow: 0 10px 35px rgba(255, 107, 107, 0.5);
+  }
+
+  .mode-description {
+    font-size: 0.95rem;
+    margin-top: 15px;
+    opacity: 0.9;
+    font-weight: 300;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  }
+  
+  /* Card Styles */
+  .glass-card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 18px;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 
+      0 15px 50px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.3);
+    animation: fadeInUp 0.6s ease both;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glass-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  
+  .glass-card h3 {
+    margin-bottom: 18px;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.3em;
+  }
+  
+  #pastHints, #history {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 18px;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 
+      0 15px 50px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.3);
+    animation: fadeInUp 0.6s ease both;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  #pastHints:hover, #history:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  
+  #pastHints h3, #history h3 {
+    margin-bottom: 18px;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.3em;
+  }
+  
+  #pastHintsList, #historyList {
     list-style: none;
     padding-left: 0;
-    max-height: 200px;
+    max-height: 220px;
     overflow-y: auto;
   }
+  
+  #pastHintsList::-webkit-scrollbar, #historyList::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  #pastHintsList::-webkit-scrollbar-track, #historyList::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+  }
+  
+  #pastHintsList::-webkit-scrollbar-thumb, #historyList::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  #pastHintsList::-webkit-scrollbar-thumb:hover, #historyList::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+  }
+  
   #pastHintsList li {
-    padding: 4px 8px;
-    background: #e8f4fd;
-    margin-bottom: 3px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    border-left: 3px solid #0078d7;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+    margin-bottom: 10px;
+    border-radius: 12px;
+    font-size: 0.95em;
+    border-left: 4px solid #4CAF50;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInLeft 0.5s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   }
-  #history {
-    margin-top: 10px;
+  
+  #pastHintsList li:hover {
+    transform: translateX(8px) translateY(-1px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+    background: linear-gradient(135deg, #dff5df, #e8f5e8);
   }
-  #history h3 {
-    margin-bottom: 6px;
-  }
-  #historyList {
-    list-style: none;
-    padding-left: 0;
-  }
+  
   #historyList li {
-    padding: 6px 10px;
-    background: white;
-    margin-bottom: 4px;
-    border-radius: 4px;
-    box-shadow: 0 0 3px #aaa;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.8);
+    margin-bottom: 10px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     font-size: 0.95em;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInRight 0.5s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    backdrop-filter: blur(10px);
   }
+  
+  #historyList li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  }
+  
   #historyList li.correct {
-    background: #c8e6c9;
+    background: linear-gradient(135deg, rgba(200, 230, 201, 0.9), rgba(232, 245, 232, 0.9));
     color: #2e7d32;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
   }
+  
   #historyList li.incorrect {
-    background: #ffcdd2;
+    background: linear-gradient(135deg, rgba(255, 205, 210, 0.9), rgba(255, 235, 238, 0.9));
     color: #c62828;
+    border-left: 4px solid #f44336;
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
   }
+  
   #streak {
     text-align: center;
-    font-size: 1.1em;
-    margin: 12px 0;
-    color: #0078d7;
-    font-weight: bold;
-  }
-  #endScreen {
-    background: #c2f0c2;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-    text-align: center;
-    display: none;
-  }
-  #shareBtn {
-    margin-top: 12px;
-    background: #0078d7;
+    font-size: 1.25em;
+    margin: 20px 0;
     color: white;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 20px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: fadeInUp 0.8s ease 0.6s both;
+    box-shadow: 
+      0 10px 40px rgba(0,0,0,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  
+  /* Enhanced Button Styles */
+  .btn {
+    padding: 14px 24px;
     border: none;
-    padding: 8px 14px;
+    border-radius: 14px;
     cursor: pointer;
     font-size: 1em;
-    border-radius: 6px;
-    margin-right: 10px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    overflow: hidden;
+    margin: 8px;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
   }
-  #dailyLimitMsg {
-    background: #ffd3d3;
+  
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .btn:hover::before {
+    left: 100%;
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+  }
+  
+  .btn:active {
+    transform: translateY(-1px);
+  }
+  
+  #resetBtn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+  }
+  
+  #resetBtn:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+  }
+  
+  #resetWinsBtn {
+    background: linear-gradient(135deg, #6f42c1, #5a2d91);
+    color: white;
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+  }
+  
+  #resetWinsBtn:hover {
+    background: linear-gradient(135deg, #5a2d91, #4e2779);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
+  }
+  
+  #endScreen {
+    background: linear-gradient(135deg, rgba(194, 240, 194, 0.95), rgba(168, 230, 168, 0.95));
+    backdrop-filter: blur(20px);
+    padding: 30px;
+    border-radius: 20px;
+    margin-top: 25px;
+    text-align: center;
+    display: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    animation: bounceIn 0.8s ease;
+  }
+  
+  #shareBtn, #newGameBtn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    margin: 10px 8px;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+  }
+  
+  #shareBtn:hover, #newGameBtn:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
+  }
+  
+  #newGameBtn {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+  }
+  
+  #newGameBtn:hover {
+    background: linear-gradient(135deg, #f57c00, #ef6c00);
+    box-shadow: 0 12px 35px rgba(255, 152, 0, 0.4);
+  }
+  
+  #dailyLimitMsg, #loadingError {
+    background: linear-gradient(135deg, rgba(255, 211, 211, 0.95), rgba(255, 235, 238, 0.95));
+    backdrop-filter: blur(20px);
     border: 1px solid #d64c4c;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 24px;
+    border-radius: 18px;
     text-align: center;
     color: #d64c4c;
-    font-weight: bold;
-    margin: 20px 0;
+    font-weight: 600;
+    margin: 25px 0;
+    box-shadow: 
+      0 15px 50px rgba(214, 76, 76, 0.2),
+      inset 0 1px 0 rgba(255,255,255,0.3);
+    animation: shakeX 0.8s ease;
   }
-  #newGameBtn {
-    background: #ff9800;
+  
+  #help-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
     border: none;
-    padding: 8px 14px;
+    border-radius: 50px;
+    padding: 16px 28px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1em;
-    border-radius: 6px;
-    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
+    text-decoration: none;
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-family: inherit;
   }
-  #newGameBtn:hover {
-    background: #f57c00;
-  }
-  #resetBtn {
-    background: #dc3545;
+
+  #help-button:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 123, 255, 0.5);
     color: white;
-    border: none;
-    padding: 8px 14px;
-    cursor: pointer;
-    font-size: 1em;
-    border-radius: 6px;
-    margin: 10px auto;
-    display: block;
+    text-decoration: none;
   }
-  #resetBtn:hover {
-    background: #c82333;
+  
+  /* Enhanced Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  #resetWinsBtn {
-    background: #6f42c1;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    cursor: pointer;
-    font-size: 1em;
-    border-radius: 6px;
-    margin: 10px auto;
-    display: block;
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  #resetWinsBtn:hover {
-    background: #5a2d91;
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
-  #loadingError {
-    background: #ffebee;
-    border: 1px solid #f44336;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    color: #c62828;
-    margin: 20px 0;
-    display: none;
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes shakeX {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-8px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(8px);
+    }
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    body {
+      padding: 15px;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+    
+    .mode-btn {
+      display: block;
+      margin: 12px auto;
+      width: 90%;
+      max-width: 280px;
+      padding: 16px 20px;
+    }
+    
+    #worldMap {
+      height: 280px;
+      margin: 20px 0;
+    }
+    
+    #clueBox {
+      font-size: 1.1em;
+      padding: 20px 16px;
+    }
+    
+    #guessForm {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    #guessInput, #guessButton {
+      border-radius: 14px;
+    }
+    
+    #guessInput {
+      padding: 16px 18px;
+    }
+    
+    #guessButton {
+      padding: 16px 20px;
+    }
+    
+    #pastHints, #history {
+      padding: 20px 16px;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      font-size: 0.9em;
+    }
+    
+    #help-button {
+      bottom: 20px;
+      right: 20px;
+      padding: 14px 22px;
+      font-size: 13px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    body {
+      padding: 12px;
+    }
+    
+    h1 {
+      font-size: 1.9rem;
+    }
+    
+    #worldMap {
+      height: 240px;
+    }
+    
+    .mode-selector {
+      padding: 20px 16px;
+    }
+    
+    .mode-btn {
+      width: 95%;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+    }
+    
+    #clueBox {
+      font-size: 1.05em;
+      padding: 18px 14px;
+    }
+    
+    #pastHints, #history {
+      padding: 18px 14px;
+    }
+    
+    #pastHintsList, #historyList {
+      max-height: 180px;
+    }
+    
+    .btn {
+      padding: 12px 18px;
+      font-size: 0.85em;
+      margin: 6px;
+    }
+    
+    #endScreen {
+      padding: 24px 18px;
+    }
+  }
+  
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Focus styles for accessibility */
+  button:focus,
+  input:focus,
+  a:focus {
+    outline: 2px solid rgba(255,255,255,0.8);
+    outline-offset: 2px;
+  }
+  
+  /* Loading states */
+  .loading {
+    opacity: 0.7;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Pulse animation for loading */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  .pulse {
+    animation: pulse 1.5s ease-in-out infinite;
   }
 </style>
 </head>
 <body>
 <h1>Geodle 🌍</h1>
+
+<!-- Mode Selector -->
+<div class="mode-selector">
+  <h3>🎮 Game Modes</h3>
+  <a href="index.html" class="mode-btn active" id="classicModeBtn">
+    🗺️ Classic Mode
+  </a>
+  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
+    🌍 Country Mode
+  </a>
+  <div class="mode-description">
+    <span id="modeDescription">Get geographic clues and guess the mystery location!</span>
+  </div>
+</div>
+
 <div id="worldMap"></div>
 <div id="progressInfo">
   <div>Clue <span id="currentClue">1</span> of 10</div>
@@ -251,8 +923,10 @@
 </form>
 <div id="feedback"></div>
 <div id="streak">🏆 Total Wins: 0</div>
-<button id="resetBtn">🔄 Reset Game</button>
-<button id="resetWinsBtn">🏆 Reset Win Count</button>
+<div style="text-align: center;">
+  <button id="resetBtn" class="btn">🔄 Reset Game</button>
+  <button id="resetWinsBtn" class="btn">🏆 Reset Win Count</button>
+</div>
 <div id="pastHints">
   <h3>Past Hints</h3>
   <ul id="pastHintsList"></ul>
@@ -263,8 +937,8 @@
 </div>
 <div id="endScreen">
   <div id="resultMsg"></div>
-  <button id="shareBtn">Share My Score</button>
-  <button id="newGameBtn">New Game</button>
+  <button id="shareBtn" class="btn">Share My Score</button>
+  <button id="newGameBtn" class="btn">New Game</button>
 </div>
 <div id="dailyLimitMsg" style="display:none;">
   You've already played today! Come back tomorrow 👀
@@ -273,6 +947,15 @@
   <h3>⚠️ Data Loading Error</h3>
   <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
 </div>
+
+<!-- Sticky Help Button -->
+<a id="help-button" 
+   href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+   target="_blank" 
+   rel="noopener noreferrer">
+  Help Us Improve
+</a>
+
 <script>
 let currentQuestion = null;
 let currentClueIndex = 0;
@@ -424,8 +1107,6 @@ function initWorldMap() {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 18
   }).addTo(worldMap);
-
-
 }
 
 function handleGuess(e) {
@@ -530,140 +1211,6 @@ function shareScore() {
   }
 }
 
-// Start the game when page loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
-  
-  // Set up event listeners
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('resetWinsBtn').addEventListener('click', function() {
-    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
-      resetWinCount();
-      updateWinDisplay();
-      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
-    }
-  });
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', initGame);
-});
-</script>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sticky Help Button</title>
-  <style>
-    #help-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      text-decoration: none;
-      z-index: 9999;
-      transition: background-color 0.3s ease;
-    }
-
-    #help-button:hover {
-      background-color: #0056b3;
-    }
-    <!-- Add this CSS to your existing <style> section in index.html -->
-<style>
-/* Add these styles to your existing CSS */
-.mode-selector {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: white;
-}
-
-.mode-selector h3 {
-  margin-bottom: 15px;
-  font-size: 1.3rem;
-}
-
-.mode-btn {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 2px solid rgba(255,255,255,0.3);
-  padding: 12px 20px;
-  margin: 0 10px 10px 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 500;
-}
-
-.mode-btn:hover {
-  background: rgba(255,255,255,0.3);
-  border-color: rgba(255,255,255,0.5);
-  transform: translateY(-2px);
-  color: white;
-  text-decoration: none;
-}
-
-.mode-btn.active {
-  background: #FF6B6B;
-  border-color: #FF5252;
-  color: white;
-}
-
-.mode-btn.active:hover {
-  background: #FF5252;
-  border-color: #FF3D3D;
-}
-
-.mode-description {
-  font-size: 0.9rem;
-  margin-top: 10px;
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .mode-btn {
-    display: block;
-    margin: 10px auto;
-    width: 80%;
-    max-width: 250px;
-  }
-}
-</style>
-
-<!-- Add this HTML right after your <h1>Geodle 🌍</h1> and before the map div -->
-<div class="mode-selector">
-  <h3>🎮 Game Modes</h3>
-  <a href="index.html" class="mode-btn active" id="classicModeBtn">
-    🗺️ Classic Mode
-  </a>
-  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
-    🌍 Country Mode
-  </a>
-  <div class="mode-description">
-    <span id="modeDescription">Get geographic clues and guess the mystery location!</span>
-  </div>
-</div>
-
-<!-- Add this JavaScript to your existing <script> section -->
-<script>
-// Add this to your existing JavaScript
-
 // Mode selector functionality
 document.addEventListener('DOMContentLoaded', function() {
   // Update mode descriptions on hover
@@ -697,24 +1244,25 @@ document.addEventListener('DOMContentLoaded', function() {
     classicBtn.addEventListener('mouseleave', resetDescription);
     countryBtn.addEventListener('mouseleave', resetDescription);
   }
+  
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
+      resetWinCount();
+      updateWinDisplay();
+      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
+    }
+  });
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
 });
 </script>
-  </style>
-</head>
-<body>
-
-  <!-- Your page content goes here -->
-
-  <!-- Sticky Help Button -->
-  <a id="help-button" 
-     href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-     target="_blank" 
-     rel="noopener noreferrer">
-    Help Us Improve
-  </a>
-
-</body>
-</html>
-
 </body>
 </html>
