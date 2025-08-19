@@ -16,15 +16,41 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             color: #333;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 2;
         }
 
         .header {
@@ -37,10 +63,26 @@
             font-size: 3.5rem;
             margin-bottom: 10px;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            background: linear-gradient(45deg, #fff, #f0f8ff);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .header h1::after {
+            content: "🌍";
+            background: none;
+            -webkit-text-fill-color: initial;
+            margin-left: 15px;
+            display: inline-block;
+            animation: earthSpin 6s linear infinite;
+        }
+
+        @keyframes earthSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .subtitle {
@@ -493,7 +535,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Geodle 🌍</h1>
+            <h1>Geodle</h1>
             <div class="subtitle">Country Guessing Mode</div>
         </div>
 
