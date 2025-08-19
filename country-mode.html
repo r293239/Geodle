@@ -448,7 +448,7 @@
             box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
         }
 
-                    @media (max-width: 1024px) {
+        @media (max-width: 1024px) {
             .game-layout {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -459,7 +459,7 @@
             }
         }
 
-                    @media (max-width: 768px) {
+        @media (max-width: 768px) {
             .container {
                 padding: 10px;
             }
@@ -942,140 +942,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 initMap();
-                initGame();
-            }, 100);
-        });
-    </script>Item('geodle_country_streak', streak.toString());
-                endGame();
-            } else if (attempts === 0) {
-                streak = 0;
-                localStorage.setItem('geodle_country_streak', '0');
-                endGame();
-            }
-            
-            document.getElementById('countryInput').value = '';
-            document.getElementById('suggestions').style.display = 'none';
-        }
-
-        function createGuessRow(guess) {
-            const row = document.createElement('div');
-            row.className = 'guess-row';
-            
-            const continent = getColorClass(guess.continent, currentCountry.continent);
-            const population = getColorClass(guess.population, currentCountry.population);
-            const gdp = getColorClass(guess.gdp, currentCountry.gdp);
-            const language = getColorClass(guess.language, currentCountry.language);
-            const climate = getColorClass(guess.climate, currentCountry.climate);
-            
-            row.innerHTML = `
-                <div class="guess-cell country-name ${guess.name === currentCountry.name ? 'correct' : 'wrong'}">${guess.name}</div>
-                <div class="guess-cell ${continent}">${guess.continent}</div>
-                <div class="guess-cell ${population}">${guess.population}</div>
-                <div class="guess-cell ${gdp}">${guess.gdp}</div>
-                <div class="guess-cell ${language}">${guess.language}</div>
-                <div class="guess-cell ${climate}">${guess.climate}</div>
-            `;
-            
-            return row;
-        }
-
-        function getColorClass(guess, correct) {
-            if (guess === correct) return 'correct';
-            
-            // Special logic for partial matches
-            if (guess.includes('/') && correct.includes('/')) {
-                const guessOptions = guess.split('/');
-                const correctOptions = correct.split('/');
-                const hasOverlap = guessOptions.some(g => correctOptions.includes(g));
-                if (hasOverlap) return 'partial';
-            }
-            
-            // Check for continent overlap (Europe/Asia cases)
-            if ((guess === 'Europe' && correct === 'Europe/Asia') || 
-                (guess === 'Asia' && correct === 'Europe/Asia') ||
-                (guess === 'Europe/Asia' && (correct === 'Europe' || correct === 'Asia'))) {
-                return 'partial';
-            }
-            
-            return 'wrong';
-        }
-
-        function endGame() {
-            document.getElementById('countryInput').disabled = true;
-            document.getElementById('guessBtn').disabled = true;
-            
-            // Add the correct answer marker to the map
-            addGuessMarker(currentCountry, true);
-            
-            const gameOverDiv = document.getElementById('gameOver');
-            const titleEl = document.getElementById('gameOverTitle');
-            const answerEl = document.getElementById('answerInfo');
-            const infoEl = document.getElementById('countryInfo');
-            
-            if (gameWon) {
-                titleEl.textContent = '🎉 Congratulations!';
-                titleEl.className = 'win';
-                answerEl.innerHTML = `You guessed <strong>${currentCountry.name}</strong> in ${8 - attempts} attempts!`;
-            } else {
-                titleEl.textContent = '😔 Game Over';
-                titleEl.className = 'lose';
-                answerEl.innerHTML = `The answer was <strong>${currentCountry.name}</strong>`;
-            }
-            
-            infoEl.innerHTML = `
-                <h3>🏴 ${currentCountry.name}</h3>
-                <p><strong>🌍 Continent:</strong> ${currentCountry.continent}</p>
-                <p><strong>👥 Population:</strong> ${currentCountry.population}</p>
-                <p><strong>💰 GDP:</strong> ${currentCountry.gdp}</p>
-                <p><strong>💬 Language:</strong> ${currentCountry.language}</p>
-                <p><strong>🌡️ Climate:</strong> ${currentCountry.climate}</p>
-                <p style="margin-top: 15px; font-style: italic;">${currentCountry.info}</p>
-            `;
-            
-            document.getElementById('streak').textContent = streak;
-            gameOverDiv.style.display = 'block';
-        }
-
-        // Event listeners
-        document.getElementById('countryInput').addEventListener('input', function() {
-            showSuggestions(this.value);
-        });
-
-        document.getElementById('countryInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const value = this.value.trim();
-                const country = countryData.find(c => 
-                    c.name.toLowerCase() === value.toLowerCase()
-                );
-                if (country) {
-                    makeGuess(country.name);
-                }
-            }
-        });
-
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('suggestion-item')) {
-                makeGuess(e.target.dataset.name);
-            } else if (!e.target.closest('.search-container')) {
-                document.getElementById('suggestions').style.display = 'none';
-            }
-        });
-
-        document.getElementById('guessBtn').addEventListener('click', function() {
-            const value = document.getElementById('countryInput').value.trim();
-            const country = countryData.find(c => 
-                c.name.toLowerCase() === value.toLowerCase()
-            );
-            if (country) {
-                makeGuess(country.name);
-            }
-        });
-
-        document.getElementById('newGameBtn').addEventListener('click', initGame);
-
-        // Initialize game when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
                 initGame();
             }, 100);
         });
