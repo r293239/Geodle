@@ -1309,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', function() {
   #consent-banner span { flex: 1 1 auto; margin-right: 10px; }
 
   /* Modal */
-  #terms-modal {
+  .modal {
     display: none;
     position: fixed;
     z-index: 2000;
@@ -1320,19 +1320,20 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow-y: auto;
     background-color: rgba(0,0,0,0.6);
   }
-  #terms-content {
+  .modal-content {
     background-color: #fff;
     margin: 50px auto;
     padding: 20px;
     border-radius: 10px;
-    max-width: 600px;
+    max-width: 700px;
     font-family: Arial, sans-serif;
     color: #000;
     line-height: 1.5;
     position: relative;
   }
-  #terms-content h2 { text-align: center; }
-  #close-terms {
+  .modal-content h2 { text-align: center; }
+  .modal-content h3 { margin-top: 15px; }
+  .close-modal {
     position: absolute;
     top: 10px;
     right: 15px;
@@ -1353,26 +1354,149 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <!-- Terms Modal -->
-<div id="terms-modal">
-  <div id="terms-content">
-    <button id="close-terms">&times;</button>
+<div id="terms-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="close-terms">&times;</button>
     <h2>Terms & Conditions</h2>
-    <p>Welcome to Geodle! By using our website and playing our game, you agree to the following terms:</p>
-    <ol>
-      <li>You are responsible for your actions while using this website.</li>
-      <li>We use cookies and ads to improve your experience and support the game.</li>
-      <li>The game and website are provided "as-is" without warranties.</li>
-      <li>We may update these terms at any time without notice.</li>
-      <li>All intellectual property, including game graphics and code, is owned by us.</li>
-      <li>By continuing to use the site, you accept these terms.</li>
-    </ol>
-    <p>Thank you for playing Geodle!</p>
+    <p>Effective Date: August 21, 2025</p>
+
+    <h3>1. Agreement to Terms</h3>
+    <p>By clicking “I Agree” or by opening and playing the Game, you acknowledge that:</p>
+    <ul>
+      <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
+      <li>Your use of the Game is voluntary and at your own risk.</li>
+      <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
+    </ul>
+    <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
+
+    <h3>2. Use of the Game</h3>
+    <ul>
+      <li>Geodle is intended for entertainment and educational purposes only.</li>
+      <li>You may use the Game on your personal device only. You may not:
+        <ul>
+          <li>Copy, distribute, modify, or create derivative works without permission</li>
+          <li>Reverse engineer or attempt to extract the source code</li>
+          <li>Use the Game for commercial purposes without written consent</li>
+        </ul>
+      </li>
+      <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
+    </ul>
+
+    <h3>3. Account and Data</h3>
+    <ul>
+      <li>Geodle does not require personal accounts. All game progress, scores, and settings are stored locally on your device via local storage.</li>
+      <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
+      <li>The Game does not collect, transmit, or store personal information externally.</li>
+    </ul>
+
+    <h3>4. Content and Intellectual Property</h3>
+    <ul>
+      <li>All content, including graphics, text, sounds, and mechanics, is owned by Reuben Yee or used with permission.</li>
+      <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
+      <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
+    </ul>
+
+    <h3>5. Third-Party Services and Ads</h3>
+    <ul>
+      <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
+      <li>We do not control or store data collected by third-party networks.</li>
+      <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
+    </ul>
+
+    <h3>6. Children</h3>
+    <ul>
+      <li>The Game is safe for all ages. No personal info is collected, so children under 13 can play safely.</li>
+      <li>Parents/guardians can manage local storage to remove game data at any time.</li>
+    </ul>
+
+    <h3>7. Limitation of Liability</h3>
+    <ul>
+      <li>The Game is provided “as is” without warranties.</li>
+      <li>We are not responsible for any damages or losses arising from:
+        <ul>
+          <li>Use of the Game</li>
+          <li>Loss of local storage data</li>
+          <li>Technical issues or interruptions</li>
+          <li>Interactions with third-party ads</li>
+        </ul>
+      </li>
+      <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
+    </ul>
+
+    <h3>8. Governing Law</h3>
+    <p>These Terms are governed by Singapore law.</p>
+
+    <h3>9. Changes to Terms</h3>
+    <p>We may update these Terms. Continued use constitutes acceptance of updates.</p>
+
+    <h3>10. Contact</h3>
+    <p>Email: reubenyee2012@gmail.com</p>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacy-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="close-privacy">&times;</button>
+    <h2>Privacy Policy</h2>
+    <p>Effective Date: August 21, 2025</p>
+
+    <h3>1. Information We Collect</h3>
+    <p>Geodle does not collect personal information. The only information stored locally on your device includes:</p>
+    <ul>
+      <li>Game progress</li>
+      <li>High scores</li>
+      <li>User settings (sound, difficulty, themes)</li>
+    </ul>
+
+    <h3>2. Local Storage</h3>
+    <ul>
+      <li>All data is stored locally and is not transmitted to any server.</li>
+      <li>You can clear your local storage at any time, which will reset all progress and settings.</li>
+    </ul>
+
+    <h3>3. No Tracking or Analytics</h3>
+    <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
+
+    <h3>4. Third-Party Advertising</h3>
+    <ul>
+      <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
+      <li>We do not control or store this information.</li>
+    </ul>
+
+    <h3>5. Children’s Privacy</h3>
+    <ul>
+      <li>Game is safe for children under 13.</li>
+      <li>Parents can manage local storage to remove saved data.</li>
+    </ul>
+
+    <h3>6. Data Retention</h3>
+    <p>All game progress and settings remain on your device until you clear local storage.</p>
+
+    <h3>7. Your Rights</h3>
+    <ul>
+      <li>You do not need to request access or deletion because no personal info is collected.</li>
+      <li>Clearing local storage deletes all saved data.</li>
+    </ul>
+
+    <h3>8. International Users</h3>
+    <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
+
+    <h3>9. Third-Party Links</h3>
+    <p>We are not responsible for the content or privacy practices of external websites.</p>
+
+    <h3>10. Changes to This Privacy Policy</h3>
+    <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
+
+    <h3>11. Contact</h3>
+    <p>Email: reubenyee2012@gmail.com</p>
   </div>
 </div>
 
 <script>
   const banner = document.getElementById('consent-banner');
-  const modal = document.getElementById('terms-modal');
+  const termsModal = document.getElementById('terms-modal');
+  const privacyModal = document.getElementById('privacy-modal');
 
   // Show banner if not accepted
   if(localStorage.getItem('geodleConsentAccepted') !== 'true'){
@@ -1386,67 +1510,27 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => { banner.style.display = 'none'; }, 500);
   });
 
-  // Open Terms modal
+  // Open modals
   document.getElementById('open-terms').addEventListener('click', () => {
-    modal.style.display = 'block';
+    termsModal.style.display = 'block';
   });
-
-  // Close modal
-  document.getElementById('close-terms').addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-
-  // Close modal when clicking outside content
-  window.addEventListener('click', (e) => {
-    if(e.target === modal) modal.style.display = 'none';
-  });
-
-  // Open Privacy (optional simple alert or replace with your own page)
   document.getElementById('open-privacy').addEventListener('click', () => {
-    alert("Privacy Policy for Geodle Game
-Effective Date: August 21, 2025
-Geodle (“we”, “our”, “us”) respects your privacy and is committed to being transparent about how we handle information when you play our game. This Privacy Policy explains what data is stored, how it is used, and your rights regarding your information. By accessing or using Geodle, you agree to this Privacy Policy.
-1. Information We Collect
-Geodle does not collect personal information from users. We do not require you to provide your name, email address, or any other identifying details to play the game.
-The only information stored is in your device’s local storage, which may include:
-Your game progress
-High scores
-User settings (such as sound, difficulty, or theme preferences)
-This information is stored locally on your device and is not transmitted to our servers or shared with any third parties.
-2. Local Storage
-The game uses your browser or device local storage to remember your progress and settings. Local storage ensures that:
-Your game progress is saved between sessions
-Your preferences are maintained automatically
-No personal information is transmitted to us
-You can clear your browser or device local storage at any time, which will reset your progress and settings.
-3. No Tracking or Analytics
-Geodle does not use cookies, tracking, analytics, or third-party scripts to collect information about your gameplay, device, or location. We do not monitor, analyze, or store information about your activities beyond the local storage used for game progress.
-4. Third-Party Advertising
-If the game displays advertisements through third-party networks:
-These third parties may collect limited anonymous information such as device type, IP address, or interaction with the ad to serve relevant content.
-We do not access, control, or store this information.
-Ads are managed entirely by the third-party providers.
-5. Children’s Privacy
-Geodle is designed to be safe for all ages. Since we do not collect personal information, children under 13 can play the game without providing any identifying information.
-Parents and guardians can clear local storage to remove all saved game data at any time.
-6. Data Retention
-All game progress and settings remain on your device until you choose to clear your browser or app storage. We do not store or back up this information on any server.
-7. Your Rights
-Because Geodle does not collect personal information:
-You do not need to request access, correction, or deletion of data with us.
-Clearing your local storage on your device will remove all saved data, including progress and preferences.
-You have full control over your game data locally.
-8. International Users
-Geodle can be accessed worldwide. Since we do not transfer or store personal data externally, international users do not need to worry about cross-border data transfers.
-9. Third-Party Links
-Geodle may include links to external websites or services. We are not responsible for the privacy practices or content of these external sites. Users should read the privacy policies of any third-party sites they visit.
-10. Changes to This Privacy Policy
-We may update this Privacy Policy from time to time to reflect changes in the game or legal requirements. Any changes will be posted here. Your continued use of Geodle constitutes acceptance of the updated Privacy Policy.
-11. Contact Us
-If you have questions about this Privacy Policy or how your data is handled, you can contact us at:
-Email: reubenyee2012@gmail.com");
+    privacyModal.style.display = 'block';
+  });
+
+  // Close modals
+  document.getElementById('close-terms').addEventListener('click', () => {
+    termsModal.style.display = 'none';
+  });
+  document.getElementById('close-privacy').addEventListener('click', () => {
+    privacyModal.style.display = 'none';
+  });
+
+  // Close modals when clicking outside content
+  window.addEventListener('click', (e) => {
+    if(e.target === termsModal) termsModal.style.display = 'none';
+    if(e.target === privacyModal) privacyModal.style.display = 'none';
   });
 </script>
-
 </body>
 </html>
