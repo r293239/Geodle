@@ -447,22 +447,41 @@
             <div class="subtitle">Connect countries with the shortest path!</div>
         </div>
 <!-- Button Container -->
-<div style="text-align:center; margin: 20px;">
-  <button onclick="goToCountryMode()" style="padding: 10px 20px; margin: 10px; font-size:16px; cursor:pointer;">
-    Country Mode
-  </button>
-
-  <button onclick="goToMainGame()" style="padding: 10px 20px; margin: 10px; font-size:16px; cursor:pointer;">
-    Classic Mode
-  </button>
+<div style="text-align:center; margin: 40px;">
+  <button onclick="goToCountryMode()" class="game-button">Country Mode</button>
+  <button onclick="goToClassicMode()" class="game-button">Classic Mode</button>
 </div>
+
+<style>
+  .game-button {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .game-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .game-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+</style>
 
 <script>
   function goToCountryMode() {
     window.location.href = "https://geodle-game.netlify.app/country-mode";
   }
 
-  function goToMainGame() {
+  function goToClassicMode() {
     window.location.href = "https://geodle-game.netlify.app/index.html";
   }
 </script>
