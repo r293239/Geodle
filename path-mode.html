@@ -528,14 +528,33 @@
         let pathMarkers = [];
         let countryNames = [];
 
-        // Initialize the game when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Extract country names from the imported data
-            if (typeof countries !== 'undefined') {
+        // Wait for both DOM and external script to load
+        function initializeWhenReady() {
+            console.log('Checking if countries data is loaded...');
+            if (typeof countries !== 'undefined' && countries.length > 0) {
+                console.log('Countries data found:', countries.length, 'countries');
                 countryNames = countries.map(country => country.name);
+                console.log('Country names extracted:', countryNames.length);
                 initializeGame();
             } else {
-                console.error('Countries data not loaded. Make sure country-data.js is included.');
+                console.log('Countries data not ready, retrying in 200ms...');
+                // Try again after a short delay
+                setTimeout(initializeWhenReady, 200);
+            }
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            initializeWhenReady();
+        });
+
+        // Also try to initialize when the window loads (backup)
+        window.addEventListener('load', function() {
+            console.log('Window loaded');
+            if (countryNames.length === 0) {
+                console.log('Retrying initialization...');
+                initializeWhenReady();
             }
         });
 
@@ -557,37 +576,62 @@
             return country && country.borders ? country.borders : [];
         }
 
-        // Daily challenge pairs - using more diverse global pairs
+        // Daily challenge pairs - using countries from our data
         function getDailyChallengeFromData() {
-            if (!countryNames.length) return ['France', 'Germany'];
+            if (!countryNames.length) {
+                console.warn('No country names available, using fallback');
+                return ['France', 'Germany'];
+            }
             
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
             
-            // Create challenging pairs from different continents
-            const challengingPairs = [];
-            const majorCountries = countryNames.filter(name => {
-                const country = getCountryData(name);
-                return country && country.population > 10000000; // Countries with >10M population
-            });
+            // Create interesting pairs from different regions
+            const challengingPairs = [
+                ['France', 'Germany'],
+                ['United States', 'Mexico'],
+                ['China', 'India'],
+                ['Brazil', 'Argentina'],
+                ['Russia', 'China'],
+                ['Turkey', 'Iran'],
+                ['Poland', 'Ukraine'],
+                ['Spain', 'Portugal'],
+                ['Germany', 'Poland'],
+                ['Thailand', 'Vietnam'],
+                ['Italy', 'France'],
+                ['Kazakhstan', 'Russia'],
+                ['Afghanistan', 'Pakistan'],
+                ['Romania', 'Bulgaria'],
+                ['Norway', 'Sweden']
+            ];
 
-            // Generate some interesting pairs
-            for (let i = 0; i < majorCountries.length; i += 2) {
-                if (i + 1 < majorCountries.length) {
-                    challengingPairs.push([majorCountries[i], majorCountries[i + 1]]);
-                }
+            // Filter pairs to ensure both countries exist in our data
+            const validPairs = challengingPairs.filter(pair => 
+                countryNames.includes(pair[0]) && countryNames.includes(pair[1])
+            );
+
+            if (validPairs.length === 0) {
+                console.warn('No valid pairs found, using first two countries');
+                return [countryNames[0], countryNames[1]];
             }
 
-            const pairIndex = dayOfYear % challengingPairs.length;
-            return challengingPairs[pairIndex] || ['United States', 'China'];
+            const pairIndex = dayOfYear % validPairs.length;
+            const selectedPair = validPairs[pairIndex];
+            console.log('Selected challenge pair:', selectedPair);
+            return selectedPair;
         }
 
         function initializeGame() {
+            console.log('Initializing game...');
+            console.log('Available countries:', countryNames.slice(0, 5), '...'); // Show first 5
+            
             initMap();
             const [start, end] = getDailyChallengeFromData();
             startCountry = start;
             endCountry = end;
             currentPath = [startCountry];
+            
+            console.log('Challenge:', startCountry, '→', endCountry);
             
             document.getElementById('startCountry').textContent = startCountry;
             document.getElementById('endCountry').textContent = endCountry;
@@ -596,24 +640,138 @@
             updateMapMarkers();
             updatePathVisual();
             setupEventListeners();
+            
+            console.log('Game initialized successfully!');
         }
 
         function initMap() {
+            console.log('Initializing Leaflet map...');
+            
             if (map) {
+                console.log('Removing existing map...');
                 map.remove();
             }
             
-            map = L.map('worldMap', {
-                center: [20, 0],
-                zoom: 2,
-                zoomControl: true,
-                scrollWheelZoom: true,
-                doubleClickZoom: true
-            });
+            // Make sure the container exists and has dimensions
+            const mapContainer = document.getElementById('worldMap');
+            if (!mapContainer) {
+                console.error('Map container not found!');
+                return;
+            }
+            
+            console.log('Map container found, creating Leaflet map...');
+            
+            try {
+                map = L.map('worldMap', {
+                    center: [30, 0],
+                    zoom: 2,
+                    zoomControl: true,
+                    scrollWheelZoom: true,
+                    doubleClickZoom: true,
+                    worldCopyJump: false
+                });
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                console.log('Leaflet map created, adding tile layer...');
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(map);
+
+                console.log('Tile layer added successfully!');
+                
+                // Force map to resize after a short delay
+                setTimeout(() => {
+                    if (map) {
+                        console.log('Invalidating map size...');
+                        map.invalidateSize();
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error creating map:', error);
+            }
+        }
+
+        function addMarkerToMap(countryName, color, size = 12) {
+            const coords = getCountryCoords(countryName);
+            if (!coords) {
+                console.warn(`No coordinates found for ${countryName}`);
+                return null;
+            }
+            
+            const [lat, lng] = coords;
+            console.log(`Adding marker for ${countryName} at [${lat}, ${lng}]`);
+            
+            const marker = L.circleMarker([lat, lng], {
+                color: 'white',
+                fillColor: color,
+                fillOpacity: 0.9,
+                radius: size,
+                weight: 3
             }).addTo(map);
+            
+            marker.bindPopup(`<b>${countryName}</b>`);
+            return marker;
+        }
+
+        function updateMapMarkers() {
+            console.log('Updating map markers...');
+            
+            if (!map) {
+                console.warn('Map not initialized yet');
+                return;
+            }
+            
+            // Clear existing markers
+            pathMarkers.forEach(marker => {
+                try {
+                    map.removeLayer(marker);
+                } catch (e) {
+                    console.warn('Error removing marker:', e);
+                }
+            });
+            pathMarkers = [];
+
+            // Add start marker (green)
+            console.log('Adding start marker:', startCountry);
+            const startMarker = addMarkerToMap(startCountry, '#22c55e', 15);
+            if (startMarker) pathMarkers.push(startMarker);
+
+            // Add end marker (red)
+            console.log('Adding end marker:', endCountry);
+            const endMarker = addMarkerToMap(endCountry, '#ef4444', 15);
+            if (endMarker) pathMarkers.push(endMarker);
+
+            // Add path markers (blue) - excluding start and end
+            const pathMiddle = currentPath.slice(1);
+            if (pathMiddle.length > 0 && pathMiddle[pathMiddle.length - 1] !== endCountry) {
+                pathMiddle.forEach(country => {
+                    console.log('Adding path marker:', country);
+                    const marker = addMarkerToMap(country, '#3b82f6', 10);
+                    if (marker) pathMarkers.push(marker);
+                });
+            }
+
+            // Draw lines between path countries
+            if (currentPath.length > 1) {
+                console.log('Drawing path lines...');
+                const pathCoords = currentPath.map(country => getCountryCoords(country)).filter(coords => coords);
+                if (pathCoords.length > 1) {
+                    try {
+                        const polyline = L.polyline(pathCoords, {
+                            color: '#667eea', 
+                            weight: 4, 
+                            opacity: 0.7
+                        }).addTo(map);
+                        pathMarkers.push(polyline);
+                        console.log('Path lines drawn successfully');
+                    } catch (error) {
+                        console.error('Error drawing path lines:', error);
+                    }
+                }
+            }
+        } 100);
         }
 
         function addMarkerToMap(countryName, color, size = 12) {
