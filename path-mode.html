@@ -446,6 +446,26 @@
             <h1>Geodle Path Mode 🗺️</h1>
             <div class="subtitle">Connect countries with the shortest path!</div>
         </div>
+<!-- Button Container -->
+<div style="text-align:center; margin: 20px;">
+  <button onclick="goToCountryMode()" style="padding: 10px 20px; margin: 10px; font-size:16px; cursor:pointer;">
+    Country Mode
+  </button>
+
+  <button onclick="goToMainGame()" style="padding: 10px 20px; margin: 10px; font-size:16px; cursor:pointer;">
+    Classic Mode
+  </button>
+</div>
+
+<script>
+  function goToCountryMode() {
+    window.location.href = "https://geodle-game.netlify.app/country-mode";
+  }
+
+  function goToMainGame() {
+    window.location.href = "https://geodle-game.netlify.app/index.html";
+  }
+</script>
 
         <div class="game-layout">
             <div class="left-section">
