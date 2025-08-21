@@ -3,438 +3,739 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geodle 🌍 - Path Mode</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
-    <!-- Import country data -->
-    <script src="./country-data.js"></script>
+    <title>Geodle Country Mode 🌍</title>
+    <script src="countries.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .header h1::after {
+            content: "🌍";
+            background: none;
+            -webkit-text-fill-color: initial;
+            margin-left: 15px;
+            display: inline-block;
+            animation: earthSpin 6s linear infinite;
+        }
+
+        @keyframes earthSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .map-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-title {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #worldMap {
+            width: 100%;
+            height: calc(100% - 40px);
+            border-radius: 15px;
+            border: 2px solid #ddd;
+        }
+
+        .leaflet-container {
+            border-radius: 15px;
+        }
+
+        .custom-marker {
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .correct-marker {
+            background-color: #22c55e;
+            animation: correctPulse 2s infinite;
+        }
+
+        .wrong-marker {
+            background-color: #ef4444;
+            animation: wrongPulse 2s infinite;
+        }
+
+        .target-marker {
+            background-color: #3b82f6;
+            animation: targetPulse 2s infinite;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes wrongPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes targetPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-info {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .guess-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .suggestion-item {
+            padding: 12px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .guess-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .guess-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .guess-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .guesses-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            grid-column: 1 / -1;
+        }
+
+        .guess-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 18px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .guess-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 15px;
+            animation: slideIn 0.6s ease-out;
+            background: rgba(255,255,255,0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .guess-cell {
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guess-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .guess-cell:hover::before {
+            opacity: 1;
+        }
+
+        .country-name {
+            text-align: left;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .correct {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .partial {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .wrong {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            margin-top: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            grid-column: 1 / -1;
+        }
+
+        .game-over h2 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .win {
+            color: #22c55e;
+            text-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
+        }
+
+        .lose {
+            color: #ef4444;
+            text-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        .new-game-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .new-game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .country-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 100px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .mode-selector {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .mode-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #FF5722, #E64A19);
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .map-container {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .guess-header, .guess-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .guess-cell {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .mode-btn {
+                display: block;
+                margin: 5px auto;
+                width: 200px;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-green-50 min-h-screen">
-    <!-- Navigation Header -->
-    <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-6xl mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-gray-800">Geodle 🌍</h1>
-                    <span class="text-green-600 font-medium">Path Mode</span>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Geodle</h1>
+            <div class="subtitle">Country Guessing Mode</div>
+        </div>
+
+        <div class="mode-selector">
+            <h3>Game Modes</h3>
+            <button class="mode-btn" onclick="window.location.href='index.html'">Classic Mode</button>
+            <button class="mode-btn active">Country Mode</button>
+            <button class="mode-btn" onclick="window.location.href='path-mode.html'">Path Mode</button>
+        </div>
+
+        <div class="game-layout">
+            <div class="left-section">
+                <div class="map-container">
+                    <div class="map-title">🗺️ Interactive World Map </div>
+                    <div id="worldMap"></div>
                 </div>
-                
-                <!-- Navigation Links -->
-                <div class="flex items-center space-x-4">
-                    <a href="./index.html" 
-                       class="flex items-center px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        Home
-                    </a>
-                    
-                    <a href="./country-mode" 
-                       class="flex items-center px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Country Mode
-                    </a>
-                    
-                    <div class="flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-lg">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3"></path>
-                        </svg>
-                        Path Mode
+            </div>
+
+            <div class="right-section">
+                <div class="game-info">
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number" id="attempts">7</div>
+                            <div>Attempts Left</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" id="streak">0</div>
+                            <div>Win Streak</div>
+                        </div>
                     </div>
+                </div>
+
+                <div class="guess-section">
+                    <div class="search-container">
+                        <input type="text" id="countryInput" class="search-input" 
+                               placeholder="🔍 Type a country name..." autocomplete="off">
+                        <div id="suggestions" class="suggestions"></div>
+                    </div>
+                    <button id="guessBtn" class="guess-btn">🎯 Make Guess</button>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <div id="app"></div>
+        <div class="guesses-container">
+            <div class="guess-header">
+                <div>🏴 Country</div>
+                <div>🌍 Continent</div>
+                <div>👥 Population</div>
+                <div>💰 GDP</div>
+                <div>💬 Language</div>
+                <div>🌡️ Climate</div>
+            </div>
+            <div id="guessesContainer"></div>
+        </div>
 
-    <script type="text/babel">
-        const { useState } = React;
-        const { MapPin, Target, Navigation, RotateCcw, Trophy } = lucide;
+        <div id="gameOver" class="game-over" style="display: none;">
+            <h2 id="gameOverTitle"></h2>
+            <div id="answerInfo"></div>
+            <div class="country-info" id="countryInfo"></div>
+            <button id="newGameBtn" class="new-game-btn">🎮 New Game</button>
+        </div>
+    </div>
 
-        // Path finding function using BFS
-        const findPath = (start, target, maxSteps) => {
-            if (start === target) return [start];
-            
-            const queue = [[start]];
-            const visited = new Set([start]);
-            
-            while (queue.length > 0) {
-                const currentPath = queue.shift();
-                const currentCountry = currentPath[currentPath.length - 1];
-                
-                if (currentPath.length > maxSteps) continue;
-                
-                const neighbors = countryData[currentCountry] || [];
-                
-                for (const neighbor of neighbors) {
-                    if (neighbor === target) {
-                        return [...currentPath, neighbor];
-                    }
-                    
-                    if (!visited.has(neighbor) && currentPath.length < maxSteps) {
-                        visited.add(neighbor);
-                        queue.push([...currentPath, neighbor]);
-                    }
-                }
+    <script>
+        let currentCountry = null;
+        let guesses = [];
+        let gameWon = false;
+        let attempts = 7;
+        let streak = parseInt(localStorage.getItem('geodle_country_streak') || '0');
+        let map = null;
+        let markers = [];
+
+        // Approximate country coordinates (you can expand this)
+        const countryCoordinates = {
+            'United States': [39.8283, -98.5795],
+            'Canada': [56.1304, -106.3468],
+            'Mexico': [23.6345, -102.5528],
+            'Brazil': [-14.2350, -51.9253],
+            'Argentina': [-38.4161, -63.6167],
+            'Chile': [-35.6751, -71.5430],
+            'Colombia': [4.5709, -74.2973],
+            'Peru': [-9.1900, -75.0152],
+            'United Kingdom': [55.3781, -3.4360],
+            'France': [46.2276, 2.2137],
+            'Germany': [51.1657, 10.4515],
+            'Italy': [41.8719, 12.5674],
+            'Spain': [40.4637, -3.7492],
+            'Russia': [61.5240, 105.3188],
+            'China': [35.8617, 104.1954],
+            'Japan': [36.2048, 138.2529],
+            'India': [20.5937, 78.9629],
+            'Australia': [-25.2744, 133.7751],
+            'New Zealand': [-40.9006, 174.8860],
+            'South Africa': [-30.5595, 22.9375],
+            'Nigeria': [9.0820, 8.6753],
+            'Egypt': [26.0975, 30.0444],
+            'Morocco': [31.7917, -7.0926],
+            'Algeria': [28.0339, 1.6596],
+            'Libya': [26.3351, 17.2283],
+            'Saudi Arabia': [23.8859, 45.0792],
+            'Turkey': [38.9637, 35.2433],
+            'Iran': [32.4279, 53.6880],
+            'Iraq': [33.2232, 43.6793],
+            'Afghanistan': [33.9391, 67.7100],
+            'Pakistan': [30.3753, 69.3451],
+            'Bangladesh': [23.6850, 90.3563],
+            'Thailand': [15.8700, 100.9925],
+            'Vietnam': [14.0583, 108.2772],
+            'Indonesia': [-0.7893, 113.9213],
+            'Malaysia': [4.2105, 101.9758],
+            'Philippines': [12.8797, 121.7740],
+            'South Korea': [35.9078, 127.7669],
+            'North Korea': [40.3399, 127.5101],
+            'Mongolia': [46.8625, 103.8467],
+            'Kazakhstan': [48.0196, 66.9237],
+            'Ukraine': [48.3794, 31.1656],
+            'Poland': [51.9194, 19.1451],
+            'Romania': [45.9432, 24.9668],
+            'Greece': [39.0742, 21.8243],
+            'Norway': [60.4720, 8.4689],
+            'Sweden': [60.1282, 18.6435],
+            'Finland': [61.9241, 25.7482],
+            'Denmark': [56.2639, 9.5018],
+            'Netherlands': [52.1326, 5.2913],
+            'Belgium': [50.5039, 4.4699],
+            'Switzerland': [46.8182, 8.2275],
+            'Austria': [47.5162, 14.5501],
+            'Czech Republic': [49.8175, 15.4730],
+            'Slovakia': [48.6690, 19.6990],
+            'Hungary': [47.1625, 19.5033],
+            'Croatia': [45.1000, 15.2000],
+            'Serbia': [44.0165, 21.0059],
+            'Bulgaria': [42.7339, 25.4858],
+            'Portugal': [39.3999, -8.2245],
+            'Ireland': [53.1424, -7.6921],
+            'Iceland': [64.9631, -19.0208],
+            'Estonia': [58.5953, 25.0136],
+            'Latvia': [56.8796, 24.6032],
+            'Lithuania': [55.1694, 23.8813],
+            'Belarus': [53.7098, 27.9534],
+            'Moldova': [47.4116, 28.3699],
+            'Armenia': [40.0691, 45.0382],
+            'Georgia': [42.3154, 43.3569],
+            'Azerbaijan': [40.1431, 47.5769],
+            'Israel': [31.0461, 34.8516],
+            'Lebanon': [33.8547, 35.8623],
+            'Syria': [34.8021, 38.9968],
+            'Jordan': [30.5852, 36.2384],
+            'Kuwait': [29.3117, 47.4818],
+            'Qatar': [25.3548, 51.1839],
+            'UAE': [23.4241, 53.8478],
+            'Oman': [21.4735, 55.9754],
+            'Yemen': [15.5527, 48.5164],
+            'Kenya': [-0.0236, 37.9062],
+            'Tanzania': [-6.3690, 34.8888],
+            'Uganda': [1.3733, 32.2903],
+            'Ethiopia': [9.1450, 40.4897],
+            'Sudan': [12.8628, 30.2176],
+            'Chad': [15.4542, 18.7322],
+            'Niger': [17.6078, 8.0817],
+            'Mali': [17.5707, -3.9962],
+            'Burkina Faso': [12.2383, -1.5616],
+            'Ghana': [7.9465, -1.0232],
+            'Ivory Coast': [7.5400, -5.5471],
+            'Senegal': [14.4974, -14.4524],
+            'Guinea': [9.9456, -9.6966],
+            'Sierra Leone': [8.4606, -11.7799],
+            'Liberia': [6.4281, -9.4295],
+            'Togo': [8.6195, 0.8248],
+            'Benin': [9.3077, 2.3158],
+            'Cameroon': [7.3697, 12.3547],
+            'Central African Republic': [6.6111, 20.9394],
+            'Democratic Republic of Congo': [-4.0383, 21.7587],
+            'Republic of Congo': [-0.2280, 15.8277],
+            'Gabon': [-0.8037, 11.6094],
+            'Equatorial Guinea': [1.6508, 10.2679],
+            'Sao Tome and Principe': [0.1864, 6.6131],
+            'Angola': [-11.2027, 17.8739],
+            'Zambia': [-13.1339, 27.8493],
+            'Zimbabwe': [-19.0154, 29.1549],
+            'Botswana': [-22.3285, 24.6849],
+            'Namibia': [-22.9576, 18.4904],
+            'Lesotho': [-29.6094, 28.2336],
+            'Swaziland': [-26.5225, 31.4659],
+            'Madagascar': [-18.7669, 46.8691],
+            'Mauritius': [-20.3484, 57.5522],
+            'Seychelles': [-4.6796, 55.4920],
+            'Comoros': [-11.6455, 43.3333]
+        };
+
+        function initMap() {
+            if (map) {
+                map.remove();
             }
             
-            return null; // No path found within max steps
-        };
-
-        // Path Mode Component
-        const PathMode = () => {
-            const [startCountry, setStartCountry] = useState('');
-            const [targetCountry, setTargetCountry] = useState('');
-            const [maxSteps, setMaxSteps] = useState(4);
-            const [currentPath, setCurrentPath] = useState([]);
-            const [userInput, setUserInput] = useState('');
-            const [gameState, setGameState] = useState('setup'); // setup, playing, won, failed
-            const [score, setScore] = useState(0);
-            const [attempts, setAttempts] = useState(0);
-            const [suggestions, setSuggestions] = useState([]);
-            const [message, setMessage] = useState('');
-            const [totalGames, setTotalGames] = useState(0);
-
-            // Generate random challenge
-            const generateChallenge = () => {
-                const countries = allCountries.filter(c => countryData[c] && countryData[c].length > 0);
-                const start = countries[Math.floor(Math.random() * countries.length)];
-                let target;
-                let validPath = null;
-                let steps = 3 + Math.floor(Math.random() * 3); // 3-5 steps
-                
-                // Find a target that has a valid path within steps
-                let attempts = 0;
-                do {
-                    target = countries[Math.floor(Math.random() * countries.length)];
-                    validPath = findPath(start, target, steps);
-                    attempts++;
-                } while ((!validPath || start === target) && attempts < 50);
-                
-                if (!validPath) {
-                    // Fallback to a known good combination
-                    setStartCountry('France');
-                    setTargetCountry('Poland');
-                    setMaxSteps(4);
-                } else {
-                    setStartCountry(start);
-                    setTargetCountry(target);
-                    setMaxSteps(steps);
-                }
-                
-                setCurrentPath([start]);
-                setGameState('playing');
-                setAttempts(0);
-                setMessage('');
-                setUserInput('');
-                setSuggestions([]);
-                setTotalGames(prev => prev + 1);
-            };
-
-            // Handle country input
-            const handleCountrySubmit = () => {
-                if (!userInput.trim()) return;
-                
-                const inputCountry = userInput.trim();
-                const currentCountry = currentPath[currentPath.length - 1];
-                
-                // Check if input country exists
-                if (!allCountries.includes(inputCountry)) {
-                    setMessage('❌ Country not found. Check spelling!');
-                    return;
-                }
-                
-                // Check if already in path
-                if (currentPath.includes(inputCountry)) {
-                    setMessage('❌ Already visited this country!');
-                    return;
-                }
-                
-                // Check if it borders current country
-                const currentBorders = countryData[currentCountry] || [];
-                if (!currentBorders.includes(inputCountry)) {
-                    setMessage(`❌ ${inputCountry} doesn't border ${currentCountry}!`);
-                    setAttempts(prev => prev + 1);
-                    setUserInput('');
-                    return;
-                }
-                
-                // Valid move
-                const newPath = [...currentPath, inputCountry];
-                setCurrentPath(newPath);
-                setAttempts(prev => prev + 1);
-                setUserInput('');
-                setSuggestions([]);
-                
-                // Check if reached target
-                if (inputCountry === targetCountry) {
-                    const pathLength = newPath.length - 1; // Don't count starting country
-                    const bonusPoints = Math.max(0, (maxSteps - pathLength) * 15);
-                    const efficiencyBonus = pathLength <= 2 ? 50 : 0;
-                    const newScore = 100 + bonusPoints + efficiencyBonus - (attempts * 3);
-                    setScore(prev => prev + Math.max(10, newScore));
-                    setGameState('won');
-                    setMessage(`🎉 Success in ${pathLength} steps! Path: ${newPath.join(' → ')}`);
-                } else if (newPath.length - 1 >= maxSteps) {
-                    setGameState('failed');
-                    setMessage(`❌ Maximum ${maxSteps} steps reached! Try a new challenge.`);
-                } else {
-                    setMessage(`✅ Good! Now at ${inputCountry} (${newPath.length - 1}/${maxSteps} steps)`);
-                }
-            };
-
-            // Auto-complete suggestions
-            const updateSuggestions = (input) => {
-                if (input.length < 2) {
-                    setSuggestions([]);
-                    return;
-                }
-                
-                const currentCountry = currentPath[currentPath.length - 1];
-                const borders = countryData[currentCountry] || [];
-                const available = borders.filter(country => 
-                    !currentPath.includes(country) && 
-                    country.toLowerCase().includes(input.toLowerCase())
-                );
-                setSuggestions(available.slice(0, 5));
-            };
-
-            const resetGame = () => {
-                setGameState('setup');
-                setCurrentPath([]);
-                setScore(0);
-                setAttempts(0);
-                setMessage('');
-                setTotalGames(0);
-            };
-
-            return (
-                <div className="max-w-2xl mx-auto p-6">
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        {/* Header */}
-                        <div className="text-center mb-6">
-                            <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                                <Navigation className="inline-block mr-2 text-green-500" />
-                                Path Mode
-                            </h2>
-                            <p className="text-gray-600">Travel from one country to another by crossing borders!</p>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-3 gap-4 mb-6">
-                            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                                <Trophy className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
-                                <div className="font-bold text-yellow-700">{score}</div>
-                                <div className="text-xs text-yellow-600">Score</div>
-                            </div>
-                            <div className="text-center p-3 bg-blue-50 rounded-lg">
-                                <Target className="w-6 h-6 text-blue-500 mx-auto mb-1" />
-                                <div className="font-bold text-blue-700">{totalGames}</div>
-                                <div className="text-xs text-blue-600">Games</div>
-                            </div>
-                            <div className="text-center p-3 bg-gray-50 rounded-lg">
-                                <RotateCcw className="w-6 h-6 text-gray-500 mx-auto mb-1" />
-                                <div className="font-bold text-gray-700">{attempts}</div>
-                                <div className="text-xs text-gray-600">Attempts</div>
-                            </div>
-                        </div>
-
-                        {gameState === 'setup' && (
-                            <div className="text-center">
-                                <div className="mb-6">
-                                    <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
-                                        <MapPin className="w-4 h-4 mr-2" />
-                                        Ready to explore?
-                                    </div>
-                                    <p className="text-gray-600 mb-4">
-                                        Find a path between two countries by crossing borders. 
-                                        Use the fewest countries possible to maximize your score!
-                                    </p>
-                                </div>
-                                <button 
-                                    onClick={generateChallenge}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
-                                >
-                                    🎯 Start New Challenge
-                                </button>
-                            </div>
-                        )}
-
-                        {gameState !== 'setup' && (
-                            <>
-                                {/* Challenge Info */}
-                                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border-l-4 border-green-500">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center">
-                                            <div className="bg-green-500 text-white p-2 rounded-full mr-3">
-                                                <MapPin className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <div className="text-sm text-gray-600">Starting from</div>
-                                                <div className="font-bold text-green-700">{startCountry}</div>
-                                            </div>
-                                        </div>
-                                        <div className="text-2xl text-gray-400">→</div>
-                                        <div className="flex items-center">
-                                            <div className="bg-red-500 text-white p-2 rounded-full mr-3">
-                                                <Target className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <div className="text-sm text-gray-600">Destination</div>
-                                                <div className="font-bold text-red-700">{targetCountry}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="inline-flex items-center px-3 py-1 bg-white rounded-full text-sm font-medium">
-                                            Maximum {maxSteps} countries • Progress: {currentPath.length - 1}/{maxSteps}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Current Path */}
-                                <div className="mb-6">
-                                    <div className="font-semibold mb-3 text-gray-700">Your Journey:</div>
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        {currentPath.map((country, index) => (
-                                            <span key={index} className="flex items-center">
-                                                <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                                                    index === 0 
-                                                        ? 'bg-green-500 text-white shadow-md' 
-                                                        : index === currentPath.length - 1 
-                                                            ? 'bg-blue-500 text-white shadow-md animate-pulse' 
-                                                            : 'bg-gray-200 text-gray-700'
-                                                }`}>
-                                                    {index === 0 && <MapPin className="w-3 h-3 mr-1" />}
-                                                    {country}
-                                                </span>
-                                                {index < currentPath.length - 1 && (
-                                                    <span className="mx-3 text-gray-400 text-lg">→</span>
-                                                )}
-                                            </span>
-                                        ))}
-                                        {currentPath[currentPath.length - 1] !== targetCountry && (
-                                            <>
-                                                <span className="mx-3 text-gray-300 text-lg">→</span>
-                                                <span className="px-4 py-2 border-2 border-dashed border-red-300 text-red-500 rounded-full text-sm font-medium">
-                                                    <Target className="w-3 h-3 mr-1 inline" />
-                                                    {targetCountry}
-                                                </span>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Input */}
-                                {gameState === 'playing' && (
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Next country (must border {currentPath[currentPath.length - 1]}):
-                                        </label>
-                                        <div className="flex gap-3">
-                                            <div className="flex-1 relative">
-                                                <input
-                                                    type="text"
-                                                    value={userInput}
-                                                    onChange={(e) => {
-                                                        setUserInput(e.target.value);
-                                                        updateSuggestions(e.target.value);
-                                                    }}
-                                                    onKeyPress={(e) => e.key === 'Enter' && handleCountrySubmit()}
-                                                    placeholder="Type country name..."
-                                                    className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                                                />
-                                                
-                                                {/* Suggestions */}
-                                                {suggestions.length > 0 && (
-                                                    <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                                                        {suggestions.map((country, index) => (
-                                                            <button
-                                                                key={index}
-                                                                onClick={() => {
-                                                                    setUserInput(country);
-                                                                    setSuggestions([]);
-                                                                }}
-                                                                className="w-full text-left px-4 py-3 hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0"
-                                                            >
-                                                                <span className="font-medium">{country}</span>
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            
-                                            <button 
-                                                onClick={handleCountrySubmit}
-                                                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
-                                            >
-                                                Go! →
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Message */}
-                                {message && (
-                                    <div className={`mb-6 p-4 rounded-lg border-l-4 ${
-                                        message.includes('❌') 
-                                            ? 'bg-red-50 text-red-700 border-red-500' 
-                                            : 'bg-green-50 text-green-700 border-green-500'
-                                    }`}>
-                                        <div className="font-medium">{message}</div>
-                                    </div>
-                                )}
-
-                                {/* Action Buttons */}
-                                {(gameState === 'won' || gameState === 'failed') && (
-                                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-                                        <button 
-                                            onClick={generateChallenge}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
-                                        >
-                                            🎯 New Challenge
-                                        </button>
-                                        <button 
-                                            onClick={resetGame}
-                                            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl flex items-center justify-center"
-                                        >
-                                            <RotateCcw className="w-4 h-4 mr-2" />
-                                            Reset Score
-                                        </button>
-                                    </div>
-                                )}
-
-                                {/* Hint */}
-                                {gameState === 'playing' && (
-                                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                                        <div className="flex items-start">
-                                            <div className="text-yellow-500 mr-2 mt-0.5">💡</div>
-                                            <div>
-                                                <div className="font-medium text-yellow-800 mb-1">Available borders from {currentPath[currentPath.length - 1]}:</div>
-                                                <div className="text-sm text-yellow-700">
-                                                    {countryData[currentPath[currentPath.length - 1]]?.filter(c => !currentPath.includes(c)).join(', ') || 'None available (you may need to backtrack!)'}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
-                </div>
-            );
-        };
-
-        // Render the app
-        ReactDOM.render(<PathMode />, document.getElementById('app'));
-    </script>
-</body>
-</html>
+            map = L.map('worldMap', {
+                center: [20, 0],
+                zoom: 2,
+                zoomControl: true,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                boxZoom: false
+            });
