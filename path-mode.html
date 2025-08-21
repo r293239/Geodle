@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geodle Path Mode 🗺️</title>
-    <script src="countries-data.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="country-data.js"></script>
     <style>
         * {
             margin: 0;
@@ -528,14 +528,14 @@
         let pathMarkers = [];
         let countryNames = [];
 
-        // Wait for countries-data.js to load
-        window.addEventListener('DOMContentLoaded', function() {
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', function() {
             // Extract country names from the imported data
             if (typeof countries !== 'undefined') {
                 countryNames = countries.map(country => country.name);
                 initializeGame();
             } else {
-                console.error('Countries data not loaded. Make sure countries-data.js is included.');
+                console.error('Countries data not loaded. Make sure country-data.js is included.');
             }
         });
 
@@ -551,7 +551,7 @@
             return country ? [country.latitude, country.longitude] : null;
         }
 
-        // Get neighboring countries (assuming the data has borders field)
+        // Get neighboring countries
         function getNeighbors(countryName) {
             const country = getCountryData(countryName);
             return country && country.borders ? country.borders : [];
@@ -632,9 +632,8 @@
             marker.bindPopup(`<b>${countryName}</b>`);
             return marker;
         }
-    </script>
-</body>
-</html>MapMarkers() {
+
+        function updateMapMarkers() {
             // Clear existing markers
             pathMarkers.forEach(marker => map.removeLayer(marker));
             pathMarkers = [];
@@ -868,6 +867,7 @@
                 scoreElement.innerHTML = `You ran out of attempts!<br>Try a different strategy next time.`;
             }
 
+            showOptimalPath();
             gameOverDiv.style.display = 'block';
             
             // Disable input elements
@@ -948,3 +948,6 @@
                 optimalDiv.innerHTML = '<h4>No direct path found between these countries.</h4>';
             }
         }
+    </script>
+</body>
+</html>
