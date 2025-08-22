@@ -514,11 +514,11 @@
                             <div>Path Length</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-number" id="optimalLength">?</div>
+                            <div class="stat-number" id="optimalLength">...</div>
                             <div>Optimal</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-number" id="attempts">10</div>
+                            <div class="stat-number" id="attempts">...</div>
                             <div>Attempts</div>
                         </div>
                     </div>
@@ -563,6 +563,8 @@
         let currentPath = [];
         let gameCompleted = false;
         let attempts = 10;
+        let maxAttempts = 10;
+        let optimalPath = [];
         let map = null;
         let pathMarkers = [];
         let countryNames = [];
@@ -621,6 +623,36 @@
             return challengingPairs[pairIndex] || ['United States', 'China'];
         }
 
+        // BFS pathfinding algorithm to find optimal route
+        function findOptimalPath(start, end) {
+            if (start === end) return [start];
+            
+            const queue = [[start]];
+            const visited = new Set([start]);
+            
+            while (queue.length > 0) {
+                const path = queue.shift();
+                const current = path[path.length - 1];
+                const neighbors = getNeighbors(current);
+                
+                for (const neighbor of neighbors) {
+                    if (neighbor === end) {
+                        return [...path, neighbor];
+                    }
+                    
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push([...path, neighbor]);
+                    }
+                }
+                
+                // Limit search to prevent infinite loops for disconnected components
+                if (visited.size > 100) break;
+            }
+            
+            return null; // No path found
+        }
+
         function initializeGame() {
             initMap();
             const [start, end] = getDailyChallengeFromData();
@@ -628,9 +660,24 @@
             endCountry = end;
             currentPath = [startCountry];
             
+            // Calculate optimal path and set attempts
+            optimalPath = findOptimalPath(startCountry, endCountry);
+            if (optimalPath) {
+                const optimalLength = optimalPath.length - 1;
+                maxAttempts = optimalLength + 5; // Optimal + 5 extra attempts
+                attempts = maxAttempts;
+                document.getElementById('optimalLength').textContent = optimalLength;
+            } else {
+                // Fallback if no path found (shouldn't happen with connected countries)
+                maxAttempts = 15;
+                attempts = 15;
+                document.getElementById('optimalLength').textContent = '?';
+            }
+            
             document.getElementById('startCountry').textContent = startCountry;
             document.getElementById('endCountry').textContent = endCountry;
             document.getElementById('startInPath').textContent = startCountry;
+            document.getElementById('attempts').textContent = attempts;
             
             updateMapMarkers();
             updatePathVisual();
@@ -881,7 +928,7 @@
 
         function resetPath() {
             currentPath = [startCountry];
-            attempts = 10;
+            attempts = maxAttempts;
             document.getElementById('attempts').textContent = attempts;
             document.getElementById('countryInput').value = '';
             document.getElementById('suggestions').style.display = 'none';
@@ -899,7 +946,9 @@
                 titleElement.textContent = '🎉 Congratulations!';
                 titleElement.className = 'win';
                 const pathLength = currentPath.length - 1;
-                scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!`;
+                const optimalLength = optimalPath ? optimalPath.length - 1 : '?';
+                const efficiency = optimalPath ? Math.round((optimalLength / pathLength) * 100) : 0;
+                scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Efficiency: <strong>${efficiency}%</strong>`;
             } else {
                 titleElement.textContent = '💔 Game Over!';
                 titleElement.className = 'lose';
@@ -918,7 +967,6 @@
         function newGame() {
             // Reset everything
             gameCompleted = false;
-            attempts = 10;
             currentPath = [];
             
             // Get new challenge
@@ -926,6 +974,19 @@
             startCountry = start;
             endCountry = end;
             currentPath = [startCountry];
+            
+            // Calculate new optimal path and attempts
+            optimalPath = findOptimalPath(startCountry, endCountry);
+            if (optimalPath) {
+                const optimalLength = optimalPath.length - 1;
+                maxAttempts = optimalLength + 5;
+                attempts = maxAttempts;
+                document.getElementById('optimalLength').textContent = optimalLength;
+            } else {
+                maxAttempts = 15;
+                attempts = 15;
+                document.getElementById('optimalLength').textContent = '?';
+            }
             
             // Update UI
             document.getElementById('startCountry').textContent = startCountry;
@@ -941,47 +1002,18 @@
             updateMapMarkers();
         }
 
-        // Simple pathfinding for optimal path calculation (BFS)
-        function findOptimalPath(start, end) {
-            if (start === end) return [start];
-            
-            const queue = [[start]];
-            const visited = new Set([start]);
-            
-            while (queue.length > 0) {
-                const path = queue.shift();
-                const current = path[path.length - 1];
-                const neighbors = getNeighbors(current);
-                
-                for (const neighbor of neighbors) {
-                    if (neighbor === end) {
-                        return [...path, neighbor];
-                    }
-                    
-                    if (!visited.has(neighbor)) {
-                        visited.add(neighbor);
-                        queue.push([...path, neighbor]);
-                    }
-                }
-                
-                // Limit search to prevent infinite loops
-                if (visited.size > 50) break;
-            }
-            
-            return null; // No path found
-        }
-
         // Calculate and display optimal path after game ends
         function showOptimalPath() {
-            const optimal = findOptimalPath(startCountry, endCountry);
             const optimalDiv = document.getElementById('optimalPathInfo');
             
-            if (optimal) {
-                const optimalLength = optimal.length - 1;
-                document.getElementById('optimalLength').textContent = optimalLength;
+            if (optimalPath && optimalPath.length > 0) {
+                const optimalLength = optimalPath.length - 1;
                 optimalDiv.innerHTML = `
                     <h4>Optimal Path (${optimalLength} step${optimalLength === 1 ? '' : 's'}):</h4>
-                    <p>${optimal.join(' → ')}</p>
+                    <p><strong>${optimalPath.join(' → ')}</strong></p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        You had ${maxAttempts} attempts (optimal + 5 bonus moves)
+                    </p>
                 `;
             } else {
                 optimalDiv.innerHTML = '<h4>No direct path found between these countries.</h4>';
