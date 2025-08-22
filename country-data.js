@@ -166,7 +166,7 @@ const countries = [
         name: 'Brazil',
         latitude: -14.2350,
         longitude: -51.9253,
-        borders: ['French Guiana', 'Suriname', 'Guyana', 'Venezuela', 'Colombia', 'Peru', 'Bolivia', 'Paraguay', 'Argentina', 'Uruguay'],
+        borders: ['France', 'Suriname', 'Guyana', 'Venezuela', 'Colombia', 'Peru', 'Bolivia', 'Paraguay', 'Argentina', 'Uruguay'],
         population: 212559000
     },
     {
@@ -425,7 +425,7 @@ const countries = [
         name: 'France',
         latitude: 46.2276,
         longitude: 2.2137,
-        borders: ['Spain', 'Belgium', 'Luxembourg', 'Germany', 'Switzerland', 'Italy', 'Monaco', 'Andorra'],
+        borders: ['Spain', 'Brazil', 'Belgium', 'Luxembourg', 'Germany', 'Switzerland', 'Italy', 'Monaco', 'Andorra'],
         population: 65274000
     },
     {
