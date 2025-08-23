@@ -16,14 +16,16 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #7209b7, #a663cc);
             background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            animation: gradientShift 20s ease infinite;
             min-height: 100vh;
-            color: #333;
+            color: #fff;
             position: relative;
+            overflow-x: hidden;
         }
 
+        /* Animated starfield background */
         body::before {
             content: '';
             position: fixed;
@@ -31,10 +33,33 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 3s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Floating geometric shapes */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+                radial-gradient(circle at 15% 25%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(72, 187, 120, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 30% 80%, rgba(236, 201, 75, 0.1) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -43,6 +68,17 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        @keyframes sparkle {
+            0% { opacity: 0.3; transform: translateX(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; transform: translateX(-200px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
         }
 
         .container {
@@ -56,26 +92,70 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
-            color: white;
+            color: #fff;
         }
 
         .header h1 {
             font-size: 3.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            background: linear-gradient(45deg, #fff, #f0f8ff, #e6f3ff);
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.8), 0 0 40px rgba(138, 43, 226, 0.4);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 900;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            animation: gradientText 4s ease infinite, glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
         }
 
         .subtitle {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             opacity: 0.9;
             margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .audio-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
 
         .game-layout {
@@ -92,12 +172,12 @@
         }
 
         .map-container {
-            background: rgba(255,255,255,0.95);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 25px;
             padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
             height: 500px;
             position: relative;
             overflow: hidden;
@@ -106,33 +186,36 @@
         .map-title {
             text-align: center;
             margin-bottom: 15px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            color: #333;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         #worldMap {
             width: 100%;
             height: calc(100% - 40px);
             border-radius: 15px;
-            border: 2px solid #ddd;
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            filter: hue-rotate(20deg) saturate(1.2);
         }
 
         .challenge-info {
-            background: rgba(255,255,255,0.95);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 25px;
             padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(72, 187, 120, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(72, 187, 120, 0.3);
         }
 
         .challenge-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
-            color: #333;
+            color: #4ecdc4;
+            text-shadow: 0 0 15px rgba(78, 205, 196, 0.6);
         }
 
         .country-pair {
@@ -147,17 +230,32 @@
 
         .country-flag {
             padding: 15px 25px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
-            border-radius: 15px;
+            border-radius: 20px;
             text-align: center;
             min-width: 150px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .country-flag:hover {
+            transform: perspective(1000px) rotateY(0deg) translateY(-5px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.6);
         }
 
         .arrow {
             font-size: 2rem;
-            color: #667eea;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .right-section {
@@ -167,14 +265,14 @@
         }
 
         .game-info {
-            background: rgba(255,255,255,0.15);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 25px;
+            padding: 25px;
             color: white;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 1px solid rgba(66, 153, 225, 0.3);
+            box-shadow: 0 15px 35px rgba(66, 153, 225, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
         .stats {
@@ -185,25 +283,31 @@
 
         .stat {
             text-align: center;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 15px;
             min-width: 80px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
         }
 
         .stat-number {
             font-size: 1.8rem;
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .input-section {
-            background: rgba(255,255,255,0.95);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(236, 201, 75, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(236, 201, 75, 0.3);
         }
 
         .search-container {
@@ -215,18 +319,23 @@
             width: 100%;
             padding: 18px;
             font-size: 1.1rem;
-            border: 2px solid #e1e8ed;
-            border-radius: 15px;
+            border: 2px solid rgba(78, 205, 196, 0.4);
+            border-radius: 20px;
             outline: none;
             transition: all 0.3s ease;
-            background: rgba(255,255,255,0.9);
+            background: rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
         }
 
         .search-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            transform: translateY(-1px);
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+            transform: translateY(-2px);
         }
 
         .suggestions {
@@ -234,27 +343,28 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: rgba(255,255,255,0.95);
+            background: rgba(0,0,0,0.9);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(78, 205, 196, 0.3);
             border-top: none;
-            border-radius: 0 0 15px 15px;
+            border-radius: 0 0 20px 20px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .suggestion-item {
             padding: 12px 18px;
             cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             transition: all 0.2s;
+            color: #fff;
         }
 
         .suggestion-item:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(78, 205, 196, 0.2);
             transform: translateX(5px);
         }
 
@@ -262,22 +372,23 @@
             width: 100%;
             padding: 18px;
             font-size: 1.2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
             margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .action-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.6);
         }
 
         .action-btn:disabled {
@@ -288,21 +399,22 @@
         }
 
         .path-container {
-            background: rgba(255,255,255,0.95);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(138, 43, 226, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
             grid-column: 1 / -1;
         }
 
         .path-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
-            color: #333;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
         .path-visual {
@@ -316,31 +428,34 @@
 
         .path-country {
             padding: 12px 20px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
             color: white;
-            border-radius: 12px;
+            border-radius: 20px;
             font-weight: 600;
             text-align: center;
             min-width: 120px;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
             animation: slideIn 0.5s ease-out;
+            border: 1px solid rgba(255,255,255,0.2);
+            transform: perspective(1000px) rotateX(5deg);
         }
 
         .path-arrow {
             font-size: 1.5rem;
-            color: #667eea;
+            color: #ffd700;
             font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
         }
 
         .game-over {
             text-align: center;
             padding: 40px;
-            background: rgba(255,255,255,0.95);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
             margin-top: 20px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
             grid-column: 1 / -1;
         }
 
@@ -350,21 +465,27 @@
         }
 
         .win {
-            color: #22c55e;
-            text-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
+            color: #4ecdc4;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.8);
+            animation: winPulse 1s ease-in-out infinite alternate;
         }
 
         .lose {
-            color: #ef4444;
-            text-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+        }
+
+        @keyframes winPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
         }
 
         .new-game-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
             color: white;
             border: none;
             padding: 18px 35px;
-            border-radius: 15px;
+            border-radius: 20px;
             font-size: 1.2rem;
             cursor: pointer;
             margin-top: 20px;
@@ -372,36 +493,76 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .new-game-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.6);
         }
 
         .optimal-path {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(69, 183, 209, 0.1));
+            border-radius: 20px;
             padding: 20px;
             margin-top: 20px;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid #4ecdc4;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(78, 205, 196, 0.3);
         }
 
         .score-display {
             font-size: 1.5rem;
             font-weight: bold;
             margin: 15px 0;
+            color: #fff;
+        }
+
+        /* Winning effect particles */
+        .particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Game mode navigation styling */
+        .game-button {
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .game-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .game-button:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px) scale(0.9);
+                transform: translateY(-20px) scale(0.9) perspective(1000px) rotateX(-10deg);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0) scale(1) perspective(1000px) rotateX(5deg);
             }
         }
 
@@ -437,71 +598,61 @@
             .path-arrow {
                 transform: rotate(90deg);
             }
+
+            .audio-controls {
+                top: 10px;
+                left: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button id="toggleMusic" class="audio-btn">🎵 Music</button>
+        <button id="toggleSfx" class="audio-btn">🔊 SFX</button>
+    </div>
+
+    <!-- Hidden audio elements -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundjay.com/misc/sounds-909.wav" type="audio/wav">
+        <!-- Fallback for browsers that don't support the audio element -->
+    </audio>
+    <audio id="winSound">
+        <source src="https://www.soundjay.com/misc/sounds-907.wav" type="audio/wav">
+    </audio>
+    <audio id="clickSound">
+        <source src="https://www.soundjay.com/misc/sounds-901.wav" type="audio/wav">
+    </audio>
+
     <div class="container">
         <div class="header">
             <h1>Geodle Path Mode 🗺️</h1>
-            <div class="subtitle">Connect countries with the shortest path!</div>
+            <div class="subtitle">Navigate the world through connected borders!</div>
         </div>
-<!-- Button Container -->
-<div style="text-align:center; margin: 40px;">
-  <button onclick="goToCountryMode()" class="game-button">Country Mode</button>
-  <button onclick="goToClassicMode()" class="game-button">Classic Mode</button>
-</div>
 
-<style>
-  .game-button {
-    background: linear-gradient(90deg, #4CAF50, #2E7D32);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    margin: 10px;
-    font-size: 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .game-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-
-  .game-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  }
-</style>
-
-<script>
-  function goToCountryMode() {
-    window.location.href = "https://geodle-game.netlify.app/country-mode";
-  }
-
-  function goToClassicMode() {
-    window.location.href = "https://geodle-game.netlify.app/index.html";
-  }
-</script>
+        <!-- Button Container -->
+        <div style="text-align:center; margin: 40px;">
+          <button onclick="goToCountryMode()" class="game-button">Country Mode</button>
+          <button onclick="goToClassicMode()" class="game-button">Classic Mode</button>
+        </div>
 
         <div class="game-layout">
             <div class="left-section">
                 <div class="map-container">
-                    <div class="map-title">🗺️ Interactive World Map</div>
+                    <div class="map-title">🌟 Interactive World Map</div>
                     <div id="worldMap"></div>
                 </div>
 
                 <div class="challenge-info">
-                    <div class="challenge-title">Today's Challenge</div>
+                    <div class="challenge-title">Today's Path Challenge</div>
                     <div class="country-pair">
                         <div class="country-flag" id="startCountry">Loading...</div>
                         <div class="arrow">→</div>
                         <div class="country-flag" id="endCountry">Loading...</div>
                     </div>
-                    <div style="text-align: center; margin-top: 15px; color: #666;">
-                        Find the shortest path by naming countries that share borders!
+                    <div style="text-align: center; margin-top: 15px; color: #4ecdc4;">
+                        Create the shortest path by connecting neighboring countries!
                     </div>
                 </div>
             </div>
@@ -527,22 +678,22 @@
                 <div class="input-section">
                     <div class="search-container">
                         <input type="text" id="countryInput" class="search-input" 
-                               placeholder="🔍 Type next country in path..." autocomplete="off">
+                               placeholder="🌍 Enter next country in your path..." autocomplete="off">
                         <div id="suggestions" class="suggestions"></div>
                     </div>
-                    <button id="addCountryBtn" class="action-btn">➕ Add to Path</button>
-                    <button id="finishPathBtn" class="action-btn" style="background: linear-gradient(135deg, #22c55e, #16a34a);" disabled>
-                        ✅ Finish Path
+                    <button id="addCountryBtn" class="action-btn">⚡ Add to Path</button>
+                    <button id="finishPathBtn" class="action-btn" style="background: linear-gradient(135deg, #4ecdc4, #45b7d1);" disabled>
+                        🎯 Complete Journey
                     </button>
-                    <button id="resetPathBtn" class="action-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        🔄 Reset Path
+                    <button id="resetPathBtn" class="action-btn" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">
+                        🔄 Restart Path
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="path-container">
-            <div class="path-title">Your Current Path</div>
+            <div class="path-title">Your Journey Trail</div>
             <div class="path-visual" id="pathVisual">
                 <div class="path-country" id="startInPath">Start here...</div>
             </div>
@@ -552,11 +703,16 @@
             <h2 id="gameOverTitle"></h2>
             <div class="score-display" id="scoreDisplay"></div>
             <div class="optimal-path" id="optimalPathInfo"></div>
-            <button id="newGameBtn" class="new-game-btn">🎮 New Challenge</button>
+            <button id="newGameBtn" class="new-game-btn">🎮 Try Again</button>
         </div>
     </div>
 
     <script>
+        // Audio variables
+        let musicEnabled = false;
+        let sfxEnabled = true;
+        let backgroundMusic, winSound, clickSound;
+
         // Game state
         let startCountry = '';
         let endCountry = '';
@@ -569,8 +725,133 @@
         let pathMarkers = [];
         let countryNames = [];
 
+        // Initialize audio
+        function initAudio() {
+            backgroundMusic = document.getElementById('backgroundMusic');
+            winSound = document.getElementById('winSound');
+            clickSound = document.getElementById('clickSound');
+
+            // Create simple tones using Web Audio API as fallback
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Background music simulation
+            function playBackgroundTone() {
+                if (!musicEnabled) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(440, audioContext.currentTime + 2);
+                oscillator.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 4);
+                
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 4);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 4);
+                
+                setTimeout(playBackgroundTone, 5000);
+            }
+
+            // Win sound
+            window.playWinSound = function() {
+                if (!sfxEnabled) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+                oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            };
+
+            // Click sound
+            window.playClickSound = function() {
+                if (!sfxEnabled) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            };
+
+            // Setup audio controls
+            document.getElementById('toggleMusic').addEventListener('click', function() {
+                musicEnabled = !musicEnabled;
+                this.textContent = musicEnabled ? '🎵 Music ON' : '🎵 Music OFF';
+                if (musicEnabled) {
+                    playBackgroundTone();
+                }
+            });
+
+            document.getElementById('toggleSfx').addEventListener('click', function() {
+                sfxEnabled = !sfxEnabled;
+                this.textContent = sfxEnabled ? '🔊 SFX ON' : '🔊 SFX OFF';
+            });
+        }
+
+        // Particle effect for winning
+        function createWinningEffect() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = '-10px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.width = (Math.random() * 8 + 4) + 'px';
+                    particle.style.height = particle.style.width;
+                    
+                    document.body.appendChild(particle);
+                    
+                    const animation = particle.animate([
+                        { 
+                            transform: 'translateY(0px) rotate(0deg)',
+                            opacity: 1
+                        },
+                        { 
+                            transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`,
+                            opacity: 0
+                        }
+                    ], {
+                        duration: Math.random() * 3000 + 2000,
+                        easing: 'ease-out'
+                    });
+                    
+                    animation.onfinish = () => {
+                        particle.remove();
+                    };
+                }, i * 100);
+            }
+        }
+
         // Initialize the game when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            initAudio();
+            
             // Extract country names from the imported data
             if (typeof countries !== 'undefined') {
                 countryNames = countries.map(country => country.name);
@@ -579,6 +860,17 @@
                 console.error('Countries data not loaded. Make sure country-data.js is included.');
             }
         });
+
+        // Navigation functions
+        function goToCountryMode() {
+            window.playClickSound && window.playClickSound();
+            window.location.href = "https://geodle-game.netlify.app/country-mode";
+        }
+
+        function goToClassicMode() {
+            window.playClickSound && window.playClickSound();
+            window.location.href = "https://geodle-game.netlify.app/index.html";
+        }
 
         // Create a mapping function to get country data by name
         function getCountryData(countryName) {
@@ -725,16 +1017,16 @@
             pathMarkers = [];
 
             // Add start marker (green)
-            const startMarker = addMarkerToMap(startCountry, '#22c55e', 15);
+            const startMarker = addMarkerToMap(startCountry, '#4ecdc4', 15);
             if (startMarker) pathMarkers.push(startMarker);
 
             // Add end marker (red)
-            const endMarker = addMarkerToMap(endCountry, '#ef4444', 15);
+            const endMarker = addMarkerToMap(endCountry, '#ff6b6b', 15);
             if (endMarker) pathMarkers.push(endMarker);
 
             // Add path markers (blue)
             currentPath.slice(1, -1).forEach(country => {
-                const marker = addMarkerToMap(country, '#3b82f6', 10);
+                const marker = addMarkerToMap(country, '#45b7d1', 10);
                 if (marker) pathMarkers.push(marker);
             });
 
@@ -742,7 +1034,7 @@
             if (currentPath.length > 1) {
                 const pathCoords = currentPath.map(country => getCountryCoords(country)).filter(coords => coords);
                 if (pathCoords.length > 1) {
-                    const polyline = L.polyline(pathCoords, {color: '#667eea', weight: 4, opacity: 0.7}).addTo(map);
+                    const polyline = L.polyline(pathCoords, {color: '#ffd700', weight: 4, opacity: 0.8}).addTo(map);
                     pathMarkers.push(polyline);
                 }
             }
@@ -758,11 +1050,11 @@
                 countryDiv.textContent = country;
 
                 if (country === startCountry) {
-                    countryDiv.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                    countryDiv.style.background = 'linear-gradient(135deg, #4ecdc4, #45b7d1)';
                 } else if (country === endCountry) {
-                    countryDiv.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    countryDiv.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
                 } else {
-                    countryDiv.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                    countryDiv.style.background = 'linear-gradient(135deg, #96ceb4, #feca57)';
                 }
 
                 pathVisual.appendChild(countryDiv);
@@ -816,6 +1108,7 @@
                         div.addEventListener('click', () => {
                             countryInput.value = country;
                             suggestions.style.display = 'none';
+                            window.playClickSound && window.playClickSound();
                         });
                         suggestions.appendChild(div);
                     });
@@ -833,28 +1126,33 @@
 
             // Add country to path
             addBtn.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
                 addCountryToPath();
             });
 
             // Enter key to add country
             countryInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
+                    window.playClickSound && window.playClickSound();
                     addCountryToPath();
                 }
             });
 
             // Finish path
             finishBtn.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
                 finishPath();
             });
 
             // Reset path
             resetBtn.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
                 resetPath();
             });
 
             // New game
             newGameBtn.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
                 newGame();
             });
         }
@@ -882,7 +1180,7 @@
 
             // Check if country is the end country
             if (countryName === endCountry) {
-                alert('Use "Finish Path" button to complete your journey to the destination!');
+                alert('Use "Complete Journey" button to finish your path to the destination!');
                 return;
             }
 
@@ -943,16 +1241,20 @@
             const scoreElement = document.getElementById('scoreDisplay');
             
             if (won) {
-                titleElement.textContent = '🎉 Congratulations!';
+                titleElement.textContent = '🎉 Path Complete!';
                 titleElement.className = 'win';
                 const pathLength = currentPath.length - 1;
                 const optimalLength = optimalPath ? optimalPath.length - 1 : '?';
                 const efficiency = optimalPath ? Math.round((optimalLength / pathLength) * 100) : 0;
-                scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Efficiency: <strong>${efficiency}%</strong>`;
+                scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Journey Efficiency: <strong>${efficiency}%</strong>`;
+                
+                // Play win sound and create particle effect
+                window.playWinSound && window.playWinSound();
+                createWinningEffect();
             } else {
-                titleElement.textContent = '💔 Game Over!';
+                titleElement.textContent = '⚡ Journey Incomplete!';
                 titleElement.className = 'lose';
-                scoreElement.innerHTML = `You ran out of attempts!<br>Try a different strategy next time.`;
+                scoreElement.innerHTML = `Your adventure ran out of moves!<br>Plan a different route and try again.`;
             }
 
             showOptimalPath();
@@ -1009,36 +1311,39 @@
             if (optimalPath && optimalPath.length > 0) {
                 const optimalLength = optimalPath.length - 1;
                 optimalDiv.innerHTML = `
-                    <h4>Optimal Path (${optimalLength} step${optimalLength === 1 ? '' : 's'}):</h4>
+                    <h4>🏆 Optimal Journey (${optimalLength} step${optimalLength === 1 ? '' : 's'}):</h4>
                     <p><strong>${optimalPath.join(' → ')}</strong></p>
-                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #4ecdc4;">
                         You had ${maxAttempts} attempts (optimal + 5 bonus moves)
                     </p>
                 `;
             } else {
-                optimalDiv.innerHTML = '<h4>No direct path found between these countries.</h4>';
+                optimalDiv.innerHTML = '<h4>🌍 No direct path found between these countries.</h4>';
             }
         }
     </script>
-<a href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-   target="_blank" 
-   style="
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #007BFF;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      font-weight: bold;
-      text-decoration: none;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-      z-index: 1000;
-   ">
-   Help Us Improve
-</a>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+       target="_blank" 
+       style="
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+          color: white;
+          padding: 12px 20px;
+          border-radius: 25px;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          font-weight: bold;
+          text-decoration: none;
+          box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+          z-index: 1000;
+          border: 1px solid rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+       ">
+       Help Us Improve ✨
+    </a>
 
 </body>
 </html>
