@@ -901,8 +901,8 @@
 <!-- Mode Selector -->
 <div class="mode-selector">
   <h3>🎮 Game Modes</h3>
-  <a href="index.html" class="mode-btn active" id="classicModeBtn">
-    🗺️ Classic Mode
+  <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
+    🛤️ Path Mode
   </a>
   <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
     🌍 Country Mode
@@ -1217,18 +1217,18 @@ function shareScore() {
 // Mode selector functionality
 document.addEventListener('DOMContentLoaded', function() {
   // Update mode descriptions on hover
-  const classicBtn = document.getElementById('classicModeBtn');
+  const pathBtn = document.getElementById('pathModeBtn');
   const countryBtn = document.getElementById('countryModeBtn');
   const description = document.getElementById('modeDescription');
   
   const descriptions = {
-    classic: "Get geographic clues and guess the mystery location!",
+    path: "Get geographic clues and guess the mystery location!",
     country: "Compare countries by continent, population, GDP, and more!"
   };
   
-  if (classicBtn && countryBtn && description) {
-    classicBtn.addEventListener('mouseenter', function() {
-      description.textContent = descriptions.classic;
+  if (pathBtn && countryBtn && description) {
+    pathBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.path;
     });
     
     countryBtn.addEventListener('mouseenter', function() {
@@ -1237,14 +1237,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Reset to current mode description on mouse leave
     const resetDescription = function() {
-      if (classicBtn.classList.contains('active')) {
-        description.textContent = descriptions.classic;
+      if (pathBtn.classList.contains('active')) {
+        description.textContent = descriptions.path;
       } else if (countryBtn.classList.contains('active')) {
         description.textContent = descriptions.country;
       }
     };
     
-    classicBtn.addEventListener('mouseleave', resetDescription);
+    pathBtn.addEventListener('mouseleave', resetDescription);
     countryBtn.addEventListener('mouseleave', resetDescription);
   }
   
@@ -1361,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <p>Effective Date: August 21, 2025</p>
 
     <h3>1. Agreement to Terms</h3>
-    <p>By clicking “I Agree” or by opening and playing the Game, you acknowledge that:</p>
+    <p>By clicking "I Agree" or by opening and playing the Game, you acknowledge that:</p>
     <ul>
       <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
       <li>Your use of the Game is voluntary and at your own risk.</li>
@@ -1411,7 +1411,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <h3>7. Limitation of Liability</h3>
     <ul>
-      <li>The Game is provided “as is” without warranties.</li>
+      <li>The Game is provided "as is" without warranties.</li>
       <li>We are not responsible for any damages or losses arising from:
         <ul>
           <li>Use of the Game</li>
@@ -1464,7 +1464,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <li>We do not control or store this information.</li>
     </ul>
 
-    <h3>5. Children’s Privacy</h3>
+    <h3>5. Children's Privacy</h3>
     <ul>
       <li>Game is safe for children under 13.</li>
       <li>Parents can manage local storage to remove saved data.</li>
