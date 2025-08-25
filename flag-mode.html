@@ -306,7 +306,6 @@
 
         <div class="controls">
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
-            <button id="hint-btn" class="control-btn hint-btn">Next Clue</button>
             <button id="back-btn" class="control-btn back-btn">Back to Menu</button>
         </div>
     </div>
@@ -536,7 +535,6 @@
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
-                this.hintBtn = document.getElementById('hint-btn');
                 this.backBtn = document.getElementById('back-btn');
                 this.guessesList = document.getElementById('guesses-list');
                 this.gameOverDiv = document.getElementById('game-over');
@@ -559,7 +557,6 @@
                     }
                 });
                 
-                this.hintBtn.addEventListener('click', () => this.nextClue());
                 this.newGameBtn.addEventListener('click', () => this.startNewGame());
                 this.backBtn.addEventListener('click', () => {
                     alert('Back button would return to main menu');
@@ -579,8 +576,6 @@
                 this.gameOverDiv.style.display = 'none';
                 this.guessInput.disabled = false;
                 this.submitBtn.disabled = false;
-                this.hintBtn.disabled = false;
-                this.hintBtn.textContent = 'Next Clue';
                 this.guessInput.value = '';
                 this.guessInput.focus();
             }
@@ -750,7 +745,6 @@
                 this.gameOver = true;
                 this.guessInput.disabled = true;
                 this.submitBtn.disabled = true;
-                this.hintBtn.disabled = true;
                 
                 // Show full clear flag
                 this.currentClue = 6;
