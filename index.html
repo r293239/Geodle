@@ -1557,6 +1557,28 @@ document.addEventListener('DOMContentLoaded', function() {
 </head>
 <body>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invisible Button</title>
+<style>
+  #invisible-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 20px;   /* small but clickable */
+    height: 20px;
+    background: transparent;
+    border: 1px solid red; /* temporary border for testing */
+    cursor: pointer;
+    z-index: 1000;
+  }
+</style>
+</head>
+<body>
+
 <button id="invisible-btn"></button>
 
 <script>
