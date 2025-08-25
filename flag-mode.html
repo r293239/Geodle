@@ -285,7 +285,7 @@
         </div>
 
         <div class="clue-info" id="clue-info">
-            Clue 1: Small cropped section of the flag
+            Clue 1: Small cropped section • Auto-advances after wrong guesses
         </div>
 
         <div class="flag-container">
@@ -307,7 +307,7 @@
         <div id="game-over" class="game-over" style="display: none;"></div>
 
         <div class="controls">
-            <button id="hint-btn" class="control-btn hint-btn">Next Clue</button>
+            <button id="hint-btn" class="control-btn hint-btn">Manual Clue</button>
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
             <button id="back-btn" class="control-btn back-btn">Back to Menu</button>
         </div>
@@ -610,10 +610,10 @@
 
             updateClue() {
                 const clueDescriptions = [
-                    'Clue 1: Small cropped section of the flag',
-                    'Clue 2: Half of the flag revealed',
-                    'Clue 3: Blurred full flag',
-                    'Clue 4: Full clear flag'
+                    'Clue 1: Small cropped section • Auto-advances after wrong guesses',
+                    'Clue 2: Half of the flag revealed • Auto-advances after wrong guesses',
+                    'Clue 3: Blurred full flag • Auto-advances after wrong guesses',
+                    'Clue 4: Full clear flag • Final clue!'
                 ];
 
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
@@ -710,6 +710,13 @@
                 } else {
                     this.currentAttempt++;
                     this.updateDisplay();
+                    
+                    // Auto-advance to next clue after wrong guess (unless already at final clue)
+                    if (this.currentClue < this.maxClues) {
+                        setTimeout(() => {
+                            this.nextClue();
+                        }, 1000); // 1 second delay to show the wrong guess first
+                    }
                     
                     if (this.currentAttempt > this.maxAttempts) {
                         this.endGame(false);
