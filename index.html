@@ -1531,33 +1531,39 @@ document.addEventListener('DOMContentLoaded', function() {
     if(e.target === termsModal) termsModal.style.display = 'none';
     if(e.target === privacyModal) privacyModal.style.display = 'none';
   });
-<!-- Add this in your <body> -->
-<button id="invisible-btn">You have sharp eyes</button>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invisible Button</title>
 <style>
   #invisible-btn {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: auto;          /* fits the text */
-    padding: 2px 4px;     /* tiny padding */
-    font-size: 8px;       /* very small text */
+    width: 10px;   /* small but clickable */
+    height: 10px;
     background: transparent;
-    border: 3px solid black; /* optional border for visibility */
-    color: purple;
+    border: 1px solid purple; /* temporary border for testing */
     cursor: pointer;
     z-index: 1000;
-    opacity: 0.7;         /* slightly faded */
   }
 </style>
+</head>
+<body>
+
+<button id="invisible-btn"></button>
 
 <script>
   const btn = document.getElementById('invisible-btn');
   btn.addEventListener('dblclick', () => {
-    alert("Everyone to DM me at 89132851 and add a screenshot gets a place in this message forever! -creator Reuben");
+    alert(Everyone to DM me at 89132851 with a screenshot gets a place in this message forever!-creator Reuben");
   });
 </script>
 
+</body>
+</html>
 
 </body>
 </html>
