@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geodle Flag Mode 🚩</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .difficulty-selector {
+            margin-bottom: 20px;
+        }
+
+        .difficulty-selector button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-selector button.easy {
+            background: #48bb78;
+            color: white;
+        }
+
+        .difficulty-selector button.hard {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .difficulty-selector button.active {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .flag-container {
+            width: 300px;
+            height: 200px;
+            margin: 20px auto;
+            border: 3px solid #4a5568;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: #f7fafc;
+        }
+
+        .flag-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .flag-cropped {
+            transform: scale(4);
+            transform-origin: top left;
+        }
+
+        .flag-half {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+
+        .flag-blurred {
+            filter: blur(8px);
+        }
+
+        .clue-info {
+            margin: 15px 0;
+            padding: 10px;
+            background: #edf2f7;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .input-section {
+            margin: 20px 0;
+        }
+
+        .guess-input {
+            width: 70%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+
+        .guess-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .guesses-container {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .guess-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guess-correct {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .guess-wrong {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .game-over {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .win {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .lose {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            margin: 5px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .new-game-btn {
+            background: #48bb78;
+            color: white;
+        }
+
+        .hint-btn {
+            background: #ed8936;
+            color: white;
+        }
+
+        .back-btn {
+            background: #4299e1;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestion {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .suggestion:hover {
+            background: #edf2f7;
+        }
+
+        .input-container {
+            position: relative;
+            display: inline-block;
+            width: 70%;
+        }
+
+        @media (max-width: 600px) {
+            .input-container, .guess-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .flag-container {
+                width: 250px;
+                height: 167px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🚩 Geodle Flag Mode</h1>
+        
+        <div class="difficulty-selector">
+            <button class="difficulty-btn easy active" data-difficulty="easy">Easy Mode</button>
+            <button class="difficulty-btn hard" data-difficulty="hard">Hard Mode</button>
+        </div>
+
+        <div class="game-info">
+            <span>Attempt: <span id="current-attempt">1</span>/6</span>
+            <span>Clue: <span id="current-clue">1</span>/4</span>
+        </div>
+
+        <div class="clue-info" id="clue-info">
+            Clue 1: Small cropped section of the flag
+        </div>
+
+        <div class="flag-container">
+            <img id="flag-image" class="flag-image flag-cropped" src="" alt="Flag clue">
+        </div>
+
+        <div class="input-section">
+            <div class="input-container">
+                <input type="text" id="guess-input" class="guess-input" placeholder="Enter country name..." autocomplete="off">
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+            <button id="submit-guess" class="submit-btn">Guess</button>
+        </div>
+
+        <div class="guesses-container">
+            <div id="guesses-list"></div>
+        </div>
+
+        <div id="game-over" class="game-over" style="display: none;"></div>
+
+        <div class="controls">
+            <button id="hint-btn" class="control-btn hint-btn">Next Clue</button>
+            <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
+            <button id="back-btn" class="control-btn back-btn">Back to Menu</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="games-played">0</div>
+                <div>Games Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="games-won">0</div>
+                <div>Games Won</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="win-percentage">0%</div>
+                <div>Win Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="flag-data.js"></script>
+    <script>
+        class GeodleFlagMode {
+            constructor() {
+                this.currentCountry = null;
+                this.currentClue = 1;
+                this.currentAttempt = 1;
+                this.maxAttempts = 6;
+                this.maxClues = 4;
+                this.guesses = [];
+                this.gameOver = false;
+                this.difficulty = 'easy';
+                this.stats = this.loadStats();
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.startNewGame();
+                this.updateStats();
+            }
+
+            initializeElements() {
+                this.flagImage = document.getElementById('flag-image');
+                this.guessInput = document.getElementById('guess-input');
+                this.submitBtn = document.getElementById('submit-guess');
+                this.hintBtn = document.getElementById('hint-btn');
+                this.newGameBtn = document.getElementById('new-game-btn');
+                this.backBtn = document.getElementById('back-btn');
+                this.guessesList = document.getElementById('guesses-list');
+                this.gameOverDiv = document.getElementById('game-over');
+                this.currentAttemptSpan = document.getElementById('current-attempt');
+                this.currentClueSpan = document.getElementById('current-clue');
+                this.clueInfo = document.getElementById('clue-info');
+                this.suggestions = document.getElementById('suggestions');
+                
+                // Difficulty buttons
+                this.difficultyBtns = document.querySelectorAll('.difficulty-btn');
+            }
+
+            bindEvents() {
+                this.submitBtn.addEventListener('click', () => this.makeGuess());
+                this.guessInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.makeGuess();
+                });
+                this.guessInput.addEventListener('input', () => this.showSuggestions());
+                this.guessInput.addEventListener('focus', () => this.showSuggestions());
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.input-container')) {
+                        this.hideSuggestions();
+                    }
+                });
+                
+                this.hintBtn.addEventListener('click', () => this.nextClue());
+                this.newGameBtn.addEventListener('click', () => this.startNewGame());
+                this.backBtn.addEventListener('click', () => {
+                    // This would navigate back to main menu
+                    window.location.href = 'index.html';
+                });
+
+                this.difficultyBtns.forEach(btn => {
+                    btn.addEventListener('click', () => this.changeDifficulty(btn.dataset.difficulty));
+                });
+            }
+
+            changeDifficulty(newDifficulty) {
+                this.difficulty = newDifficulty;
+                this.difficultyBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-difficulty="${newDifficulty}"]`).classList.add('active');
+                this.startNewGame();
+            }
+
+            getCountryPool() {
+                return this.difficulty === 'easy' ? window.easyFlags : window.allFlags;
+            }
+
+            startNewGame() {
+                const countryPool = this.getCountryPool();
+                this.currentCountry = countryPool[Math.floor(Math.random() * countryPool.length)];
+                this.currentClue = 1;
+                this.currentAttempt = 1;
+                this.guesses = [];
+                this.gameOver = false;
+                
+                this.updateDisplay();
+                this.updateClue();
+                this.guessesList.innerHTML = '';
+                this.gameOverDiv.style.display = 'none';
+                this.guessInput.disabled = false;
+                this.submitBtn.disabled = false;
+                this.guessInput.value = '';
+                this.guessInput.focus();
+            }
+
+            updateDisplay() {
+                this.currentAttemptSpan.textContent = this.currentAttempt;
+                this.currentClueSpan.textContent = this.currentClue;
+            }
+
+            updateClue() {
+                const clueDescriptions = [
+                    'Clue 1: Small cropped section of the flag',
+                    'Clue 2: Half of the flag revealed',
+                    'Clue 3: Blurred full flag',
+                    'Clue 4: Full clear flag'
+                ];
+
+                this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
+                
+                // Remove all flag classes
+                this.flagImage.className = 'flag-image';
+                
+                // Set flag source
+                this.flagImage.src = this.currentCountry.flag;
+                
+                // Apply appropriate class based on clue
+                switch(this.currentClue) {
+                    case 1:
+                        this.flagImage.classList.add('flag-cropped');
+                        break;
+                    case 2:
+                        this.flagImage.classList.add('flag-half');
+                        break;
+                    case 3:
+                        this.flagImage.classList.add('flag-blurred');
+                        break;
+                    case 4:
+                        // Full clear flag - no additional classes
+                        break;
+                }
+            }
+
+            nextClue() {
+                if (this.currentClue < this.maxClues && !this.gameOver) {
+                    this.currentClue++;
+                    this.updateDisplay();
+                    this.updateClue();
+                    
+                    if (this.currentClue === this.maxClues) {
+                        this.hintBtn.disabled = true;
+                        this.hintBtn.textContent = 'Final Clue';
+                    }
+                }
+            }
+
+            showSuggestions() {
+                const input = this.guessInput.value.toLowerCase().trim();
+                if (input.length < 2) {
+                    this.hideSuggestions();
+                    return;
+                }
+
+                const countryPool = this.getCountryPool();
+                const matches = countryPool
+                    .filter(country => 
+                        country.name.toLowerCase().includes(input) ||
+                        (country.alternatives && country.alternatives.some(alt => 
+                            alt.toLowerCase().includes(input)
+                        ))
+                    )
+                    .slice(0, 5);
+
+                if (matches.length > 0) {
+                    this.suggestions.innerHTML = matches
+                        .map(country => `<div class="suggestion" data-country="${country.name}">${country.name}</div>`)
+                        .join('');
+                    
+                    this.suggestions.style.display = 'block';
+                    
+                    // Add click handlers to suggestions
+                    this.suggestions.querySelectorAll('.suggestion').forEach(suggestion => {
+                        suggestion.addEventListener('click', () => {
+                            this.guessInput.value = suggestion.dataset.country;
+                            this.hideSuggestions();
+                            this.makeGuess();
+                        });
+                    });
+                } else {
+                    this.hideSuggestions();
+                }
+            }
+
+            hideSuggestions() {
+                this.suggestions.style.display = 'none';
+            }
+
+            makeGuess() {
+                if (this.gameOver) return;
+                
+                const guess = this.guessInput.value.trim();
+                if (!guess) return;
+
+                this.hideSuggestions();
+                
+                const isCorrect = this.checkGuess(guess);
+                this.addGuessToList(guess, isCorrect);
+                
+                if (isCorrect) {
+                    this.endGame(true);
+                } else {
+                    this.currentAttempt++;
+                    this.updateDisplay();
+                    
+                    if (this.currentAttempt > this.maxAttempts) {
+                        this.endGame(false);
+                    }
+                }
+                
+                this.guessInput.value = '';
+            }
+
+            checkGuess(guess) {
+                const normalizeString = (str) => str.toLowerCase().replace(/[^a-z]/g, '');
+                const normalizedGuess = normalizeString(guess);
+                const normalizedCountry = normalizeString(this.currentCountry.name);
+                
+                // Check main name
+                if (normalizedGuess === normalizedCountry) return true;
+                
+                // Check alternatives
+                if (this.currentCountry.alternatives) {
+                    return this.currentCountry.alternatives.some(alt => 
+                        normalizeString(alt) === normalizedGuess
+                    );
+                }
+                
+                return false;
+            }
+
+            addGuessToList(guess, isCorrect) {
+                const guessItem = document.createElement('div');
+                guessItem.className = `guess-item ${isCorrect ? 'guess-correct' : 'guess-wrong'}`;
+                guessItem.innerHTML = `
+                    <span>${guess}</span>
+                    <span>${isCorrect ? '✅' : '❌'}</span>
+                `;
+                this.guessesList.appendChild(guessItem);
+            }
+
+            endGame(won) {
+                this.gameOver = true;
+                this.guessInput.disabled = true;
+                this.submitBtn.disabled = true;
+                this.hintBtn.disabled = true;
+                
+                // Show full clear flag
+                this.currentClue = 4;
+                this.updateClue();
+                this.updateDisplay();
+                
+                // Update stats
+                this.stats.gamesPlayed++;
+                if (won) this.stats.gamesWon++;
+                this.saveStats();
+                this.updateStats();
+                
+                // Show game over message
+                this.gameOverDiv.style.display = 'block';
+                if (won) {
+                    this.gameOverDiv.className = 'game-over win';
+                    this.gameOverDiv.innerHTML = `
+                        🎉 Congratulations! 🎉<br>
+                        You guessed <strong>${this.currentCountry.name}</strong> correctly!<br>
+                        <small>Attempts used: ${this.currentAttempt}/6 | Clues used: ${this.currentClue}/4</small>
+                    `;
+                } else {
+                    this.gameOverDiv.className = 'game-over lose';
+                    this.gameOverDiv.innerHTML = `
+                        😔 Game Over! 😔<br>
+                        The correct answer was <strong>${this.currentCountry.name}</strong><br>
+                        <small>Better luck next time!</small>
+                    `;
+                }
+            }
+
+            loadStats() {
+                const saved = localStorage.getItem('geodle-flag-stats');
+                return saved ? JSON.parse(saved) : { gamesPlayed: 0, gamesWon: 0 };
+            }
+
+            saveStats() {
+                localStorage.setItem('geodle-flag-stats', JSON.stringify(this.stats));
+            }
+
+            updateStats() {
+                document.getElementById('games-played').textContent = this.stats.gamesPlayed;
+                document.getElementById('games-won').textContent = this.stats.gamesWon;
+                const winPercentage = this.stats.gamesPlayed > 0 
+                    ? Math.round((this.stats.gamesWon / this.stats.gamesPlayed) * 100)
+                    : 0;
+                document.getElementById('win-percentage').textContent = `${winPercentage}%`;
+            }
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new GeodleFlagMode();
+        });
+    </script>
+</body>
+</html>
