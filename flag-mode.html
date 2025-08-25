@@ -101,12 +101,6 @@
             justify-content: center;
         }
 
-        .text-clue {
-            background: #e6fffa;
-            border-left: 4px solid #319795;
-            color: #2c7a7b;
-        }
-
         .input-section {
             margin: 20px 0;
         }
@@ -261,26 +255,6 @@
             transform: none;
         }
 
-        .stats {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f7fafc;
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
         @media (max-width: 600px) {
             .input-container {
                 width: 100%;
@@ -334,21 +308,6 @@
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
             <button id="hint-btn" class="control-btn hint-btn">Next Clue</button>
             <button id="back-btn" class="control-btn back-btn">Back to Menu</button>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number" id="games-played">0</div>
-                <div>Games Played</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="games-won">0</div>
-                <div>Games Won</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="win-percentage">0%</div>
-                <div>Win Rate</div>
-            </div>
         </div>
     </div>
 
@@ -566,12 +525,10 @@
                 this.maxClues = 6;
                 this.guesses = [];
                 this.gameOver = false;
-                this.stats = this.loadStats();
                 
                 this.initializeElements();
                 this.bindEvents();
                 this.startNewGame();
-                this.updateStats();
             }
 
             initializeElements() {
@@ -643,29 +600,9 @@
                     'Clue 6: Full clear flag • Final clue!'
                 ];
 
-                const textClues = [
-                    null,
-                    `💭 This country is located in ${this.currentCountry.continent}`,
-                    `🏛️ The capital city is ${this.currentCountry.capital}`,
-                    `👥 Population size: ${this.currentCountry.population}`,
-                    `🗺️ It's located in ${this.currentCountry.continent}`,
-                    `🎯 Final visual clue - this is the complete flag!`
-                ];
-
-                // Update main clue description
+                // Update main clue description (no more text clues)
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
                 this.clueInfo.className = 'clue-info';
-
-                // Add text clue if available
-                if (textClues[this.currentClue - 1]) {
-                    this.clueInfo.innerHTML = `
-                        <div>${clueDescriptions[this.currentClue - 1]}</div>
-                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #cbd5e0; font-size: 0.95em;">
-                            ${textClues[this.currentClue - 1]}
-                        </div>
-                    `;
-                    this.clueInfo.classList.add('text-clue');
-                }
                 
                 // Remove all flag classes
                 this.flagImage.className = 'flag-image';
@@ -820,12 +757,6 @@
                 this.updateClue();
                 this.updateDisplay();
                 
-                // Update stats
-                this.stats.gamesPlayed++;
-                if (won) this.stats.gamesWon++;
-                this.saveStats();
-                this.updateStats();
-                
                 // Show game over message
                 this.gameOverDiv.style.display = 'block';
                 if (won) {
@@ -843,26 +774,6 @@
                         <small>Better luck next time!</small>
                     `;
                 }
-            }
-
-            loadStats() {
-                // Since localStorage is not available in Claude artifacts, 
-                // return default stats
-                return { gamesPlayed: 0, gamesWon: 0 };
-            }
-
-            saveStats() {
-                // Stats saving is disabled in Claude artifacts
-                console.log('Stats would be saved:', this.stats);
-            }
-
-            updateStats() {
-                document.getElementById('games-played').textContent = this.stats.gamesPlayed;
-                document.getElementById('games-won').textContent = this.stats.gamesWon;
-                const winPercentage = this.stats.gamesPlayed > 0 
-                    ? Math.round((this.stats.gamesWon / this.stats.gamesPlayed) * 100)
-                    : 0;
-                document.getElementById('win-percentage').textContent = `${winPercentage}%`;
             }
         }
 
