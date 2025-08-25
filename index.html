@@ -1532,5 +1532,42 @@ document.addEventListener('DOMContentLoaded', function() {
     if(e.target === privacyModal) privacyModal.style.display = 'none';
   });
 </script>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invisible Button</title>
+<style>
+  /* Totally invisible tiny button */
+  #invisible-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 1px;   /* tiny size */
+    height: 1px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1000;
+  }
+</style>
+</head>
+<body>
+
+<button id="invisible-btn"></button>
+
+<script>
+  const btn = document.getElementById('invisible-btn');
+  btn.addEventListener('dblclick', () => {
+    alert("First one to DM me at 89132851 gets a place in this message forever!");
+  });
+</script>
+
+</body>
+</html>
+
 </body>
 </html>
