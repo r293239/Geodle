@@ -1532,5 +1532,140 @@ document.addEventListener('DOMContentLoaded', function() {
     if(e.target === privacyModal) privacyModal.style.display = 'none';
   });
 </script>
+  <!-- Hidden Mini-Game -->
+<div id="secretGame" class="glass-card" style="display:none; text-align:center; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; padding:20px; max-width:300px;">
+  <h3>🎯 Secret Mini-Game</h3>
+  <p>Click the moving target 5 times to unlock the secret!</p>
+  <div id="targetArea" style="position:relative; height:200px; background:rgba(0,0,0,0.05); border-radius:12px; overflow:hidden;">
+    <div id="target" style="width:50px; height:50px; background:linear-gradient(135deg, #ff6b6b, #ff5252); border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); cursor:pointer; box-shadow:0 4px 15px rgba(255,0,0,0.5); transition: all 0.3s ease;"></div>
+  </div>
+  <p style="margin-top:15px;">Score: <span id="secretScore">0</span></p>
+  <button id="closeSecret" class="btn" style="background:linear-gradient(135deg,#6f42c1,#5a2d91); margin-top:10px;">Close</button>
+</div>
+
+<!-- Hidden clickable hotspot -->
+<div id="hotspot" style="position:fixed; bottom:5px; right:5px; width:30px; height:30px; opacity:0; cursor:pointer; z-index:1000;"></div>
+
+<script>
+  const secretGame = document.getElementById('secretGame');
+  const target = document.getElementById('target');
+  const area = document.getElementById('targetArea');
+  const scoreDisplay = document.getElementById('secretScore');
+  const closeBtn = document.getElementById('closeSecret');
+  let score = 0;
+  let gameWon = localStorage.getItem('secretGameWon');
+
+  // Show secret game on clicking the hidden hotspot
+  document.getElementById('hotspot').addEventListener('click', () => {
+    if (!gameWon) secretGame.style.display = 'block';
+  });
+
+  function moveTarget() {
+    const maxX = area.clientWidth - target.offsetWidth;
+    const maxY = area.clientHeight - target.offsetHeight;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    target.style.left = x + 'px';
+    target.style.top = y + 'px';
+    target.style.transform = `rotate(${Math.random()*360}deg)`;
+  }
+
+  target.addEventListener('click', () => {
+    score++;
+    scoreDisplay.innerText = score;
+    moveTarget();
+    target.style.transition = 'transform 0.1s ease';
+    target.style.transform += ' scale(1.2)';
+
+    if (score >= 5 && !gameWon) {
+      gameWon = true;
+      localStorage.setItem('secretGameWon', 'true');
+      secretGame.innerHTML = `
+        <h3>🎉 You found the secret!</h3>
+        <p>First one to DM me at 89132851 will forever have their picture placed here.<br>
+        One-time only: after you find it, you can never get it again!</p>
+        <button id="closeSecretEnd" class="btn" style="background:linear-gradient(135deg,#6f42c1,#5a2d91); margin-top:10px;">Close</button>
+      `;
+      document.getElementById('closeSecretEnd').addEventListener('click', () => {
+        secretGame.style.display = 'none';
+      });
+    }
+  });
+
+  // Move target every 2 seconds
+  setInterval(() => {
+    if (secretGame.style.display === 'block' && !gameWon) moveTarget();
+  }, 2000);
+
+  closeBtn.addEventListener('click', () => secretGame.style.display = 'none');
+</script>
+<!-- Hidden Mini-Game -->
+<div id="secretGame" class="glass-card" style="display:none; text-align:center; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; padding:20px; max-width:300px;">
+  <h3>🎯 Secret Mini-Game</h3>
+  <p>Click the moving target 5 times to unlock the secret!</p>
+  <div id="targetArea" style="position:relative; height:200px; background:rgba(0,0,0,0.05); border-radius:12px; overflow:hidden;">
+    <div id="target" style="width:50px; height:50px; background:linear-gradient(135deg, #ff6b6b, #ff5252); border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); cursor:pointer; box-shadow:0 4px 15px rgba(255,0,0,0.5); transition: all 0.3s ease;"></div>
+  </div>
+  <p style="margin-top:15px;">Score: <span id="secretScore">0</span></p>
+  <button id="closeSecret" class="btn" style="background:linear-gradient(135deg,#6f42c1,#5a2d91); margin-top:10px;">Close</button>
+</div>
+
+<!-- Hidden clickable hotspot -->
+<div id="hotspot" style="position:fixed; bottom:5px; right:5px; width:30px; height:30px; opacity:0; cursor:pointer; z-index:1000;"></div>
+
+<script>
+  const secretGame = document.getElementById('secretGame');
+  const target = document.getElementById('target');
+  const area = document.getElementById('targetArea');
+  const scoreDisplay = document.getElementById('secretScore');
+  const closeBtn = document.getElementById('closeSecret');
+  let score = 0;
+  let gameWon = localStorage.getItem('secretGameWon');
+
+  // Show secret game on clicking the hidden hotspot
+  document.getElementById('hotspot').addEventListener('click', () => {
+    if (!gameWon) secretGame.style.display = 'block';
+  });
+
+  function moveTarget() {
+    const maxX = area.clientWidth - target.offsetWidth;
+    const maxY = area.clientHeight - target.offsetHeight;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    target.style.left = x + 'px';
+    target.style.top = y + 'px';
+    target.style.transform = `rotate(${Math.random()*360}deg)`;
+  }
+
+  target.addEventListener('click', () => {
+    score++;
+    scoreDisplay.innerText = score;
+    moveTarget();
+    target.style.transition = 'transform 0.1s ease';
+    target.style.transform += ' scale(1.2)';
+
+    if (score >= 5 && !gameWon) {
+      gameWon = true;
+      localStorage.setItem('secretGameWon', 'true');
+      secretGame.innerHTML = `
+        <h3>🎉 You found the secret!</h3>
+        <p>First one to DM me at 89132851 will forever have their picture placed here.<br>
+        One-time only: after you find it, you can never get it again!</p>
+        <button id="closeSecretEnd" class="btn" style="background:linear-gradient(135deg,#6f42c1,#5a2d91); margin-top:10px;">Close</button>
+      `;
+      document.getElementById('closeSecretEnd').addEventListener('click', () => {
+        secretGame.style.display = 'none';
+      });
+    }
+  });
+
+  // Move target every 2 seconds
+  setInterval(() => {
+    if (secretGame.style.display === 'block' && !gameWon) moveTarget();
+  }, 2000);
+
+  closeBtn.addEventListener('click', () => secretGame.style.display = 'none');
+</script>
+
 </body>
 </html>
