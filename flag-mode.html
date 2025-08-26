@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geodle Flag Mode 🚩</title>
+    <title>Flagdle 🌍</title>
     <style>
         * {
             margin: 0;
@@ -13,28 +13,60 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #333;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
         .game-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             padding: 30px;
             max-width: 500px;
             width: 90%;
             text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
-            color: #4a5568;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 20px;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .game-info {
@@ -42,6 +74,32 @@
             justify-content: space-between;
             margin-bottom: 20px;
             font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
         }
 
         .flag-container {
@@ -59,46 +117,41 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 0.5s ease;
         }
 
-        .flag-cropped {
-            transform: scale(4);
-            transform-origin: 15% 25%;
+        .flag-pixelated {
+            image-rendering: pixelated;
+            filter: blur(8px) contrast(0.3);
+        }
+
+        .flag-rotated {
+            transform: rotate(180deg);
+            filter: blur(4px);
+        }
+
+        .flag-inverted {
+            filter: invert(1) blur(2px);
+        }
+
+        .flag-grayscale {
+            filter: grayscale(100%) blur(1px);
         }
 
         .flag-half {
             clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
         }
 
-        .flag-blurred {
-            filter: blur(8px);
-        }
-
-        .flag-grayscale {
-            filter: grayscale(100%);
-        }
-
-        .flag-pixelated {
-            image-rendering: pixelated;
-            transform: scale(0.3);
-            transform-origin: center;
-        }
-
-        .flag-rotated {
-            transform: rotate(90deg);
-        }
-
         .clue-info {
             margin: 15px 0;
             padding: 15px;
-            background: #edf2f7;
+            background: linear-gradient(135deg, #edf2f7, #e2e8f0);
             border-radius: 10px;
             font-weight: bold;
             min-height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-left: 4px solid #667eea;
         }
 
         .input-section {
@@ -117,16 +170,18 @@
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 1.1rem;
+            transition: border-color 0.3s ease;
         }
 
         .guess-input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
         }
 
         .submit-btn {
             padding: 15px 25px;
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             border-radius: 10px;
@@ -138,8 +193,8 @@
         }
 
         .submit-btn:hover {
-            background: #5a67d8;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .submit-btn:disabled {
@@ -160,6 +215,7 @@
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .suggestion {
@@ -167,6 +223,7 @@
             cursor: pointer;
             border-bottom: 1px solid #edf2f7;
             text-align: left;
+            transition: background 0.2s ease;
         }
 
         .suggestion:hover {
@@ -185,16 +242,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .guess-correct {
-            background: #c6f6d5;
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
             color: #22543d;
+            border-left: 4px solid #48bb78;
         }
 
         .guess-wrong {
-            background: #fed7d7;
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
             color: #742a2a;
+            border-left: 4px solid #f56565;
         }
 
         .game-over {
@@ -203,20 +268,33 @@
             border-radius: 15px;
             font-size: 1.2rem;
             font-weight: bold;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .win {
-            background: #c6f6d5;
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
             color: #22543d;
+            border: 2px solid #48bb78;
         }
 
         .lose {
-            background: #fed7d7;
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
             color: #742a2a;
+            border: 2px solid #f56565;
         }
 
         .controls {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .control-btn {
@@ -227,20 +305,21 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
         .new-game-btn {
-            background: #48bb78;
+            background: linear-gradient(135deg, #48bb78, #38a169);
             color: white;
         }
 
-        .hint-btn {
-            background: #ed8936;
+        .music-btn {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
             color: white;
         }
 
         .back-btn {
-            background: #4299e1;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
             color: white;
         }
 
@@ -270,12 +349,34 @@
                 width: 250px;
                 height: 167px;
             }
+
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="stars" id="stars"></div>
+    
     <div class="game-container">
-        <h1>🚩 Geodle Flag Mode</h1>
+        <h1>🌍 Flagdle</h1>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-number" id="wins-count">0</span>
+                <span class="stat-label">Wins</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="games-played">0</span>
+                <span class="stat-label">Played</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="win-rate">0%</span>
+                <span class="stat-label">Win Rate</span>
+            </div>
+        </div>
 
         <div class="game-info">
             <span>Attempt: <span id="current-attempt">1</span>/6</span>
@@ -283,11 +384,11 @@
         </div>
 
         <div class="clue-info" id="clue-info">
-            Clue 1: Small cropped section
+            Clue 1: Heavily pixelated and blurred • Advances after wrong guesses
         </div>
 
         <div class="flag-container">
-            <img id="flag-image" class="flag-image flag-cropped" src="" alt="Flag clue">
+            <img id="flag-image" class="flag-image flag-pixelated" src="" alt="Flag clue">
         </div>
 
         <div class="input-section">
@@ -306,19 +407,42 @@
 
         <div class="controls">
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
+            <button id="music-btn" class="control-btn music-btn">🎵 Music</button>
             <button id="back-btn" class="control-btn back-btn">Back to Menu</button>
         </div>
     </div>
 
+    <!-- Background Music -->
+    <audio id="background-music" loop>
+        <source src="https://www.soundjay.com/misc/sounds-effects/gentle-ocean-waves.mp3" type="audio/mpeg">
+        <!-- Fallback to a more reliable source -->
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmQePzWH0fPTgjMKF2u98OScUSAORK3h7qZeGgnTz/PVkjwNGHbE6tur" type="audio/wav">
+    </audio>
+
     <script>
-        // Flag data embedded in the HTML - All UN member countries
-        const countries = [
+        // Create stars animation
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 100;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Countries data - separated for better organization
+        const countriesData = [
             { name: "Afghanistan", alternatives: [], flag: "https://flagcdn.com/w320/af.png", continent: "Asia", capital: "Kabul", population: "Medium" },
             { name: "Albania", alternatives: ["Shqipëria"], flag: "https://flagcdn.com/w320/al.png", continent: "Europe", capital: "Tirana", population: "Small" },
             { name: "Algeria", alternatives: [], flag: "https://flagcdn.com/w320/dz.png", continent: "Africa", capital: "Algiers", population: "Medium" },
             { name: "Andorra", alternatives: [], flag: "https://flagcdn.com/w320/ad.png", continent: "Europe", capital: "Andorra la Vella", population: "Small" },
             { name: "Angola", alternatives: [], flag: "https://flagcdn.com/w320/ao.png", continent: "Africa", capital: "Luanda", population: "Medium" },
-            { name: "Antigua and Barbuda", alternatives: ["Antigua", "Barbuda"], flag: "https://flagcdn.com/w320/ag.png", continent: "North America", capital: "St. John's", population: "Small" },
             { name: "Argentina", alternatives: [], flag: "https://flagcdn.com/w320/ar.png", continent: "South America", capital: "Buenos Aires", population: "Medium" },
             { name: "Armenia", alternatives: [], flag: "https://flagcdn.com/w320/am.png", continent: "Asia", capital: "Yerevan", population: "Small" },
             { name: "Australia", alternatives: [], flag: "https://flagcdn.com/w320/au.png", continent: "Oceania", capital: "Canberra", population: "Medium" },
@@ -507,15 +631,146 @@
             { name: "Vietnam", alternatives: [], flag: "https://flagcdn.com/w320/vn.png", continent: "Asia", capital: "Hanoi", population: "Large" },
             { name: "Yemen", alternatives: [], flag: "https://flagcdn.com/w320/ye.png", continent: "Asia", capital: "Sana'a", population: "Medium" },
             { name: "Zambia", alternatives: [], flag: "https://flagcdn.com/w320/zm.png", continent: "Africa", capital: "Lusaka", population: "Small" },
-            { name: "Zimbabwe", alternatives: [], flag: "https://flagcdn.com/w320/zw.png", continent: "Africa", capital: "Harare", population: "Small" },
-            // Some dependent territories for extra challenge
-            { name: "Greenland", alternatives: [], flag: "https://flagcdn.com/w320/gl.png", continent: "North America", capital: "Nuuk", population: "Small" },
-            { name: "Puerto Rico", alternatives: [], flag: "https://flagcdn.com/w320/pr.png", continent: "North America", capital: "San Juan", population: "Small" },
-            { name: "Hong Kong", alternatives: [], flag: "https://flagcdn.com/w320/hk.png", continent: "Asia", capital: "Hong Kong", population: "Small" },
-            { name: "Macau", alternatives: ["Macao"], flag: "https://flagcdn.com/w320/mo.png", continent: "Asia", capital: "Macau", population: "Small" }
+            { name: "Zimbabwe", alternatives: [], flag: "https://flagcdn.com/w320/zw.png", continent: "Africa", capital: "Harare", population: "Small" }
         ];
 
-        class GeodleFlagMode {
+        // Game Statistics Management
+        class GameStats {
+            constructor() {
+                this.loadStats();
+            }
+
+            loadStats() {
+                const saved = JSON.parse(localStorage.getItem('flagdle-stats') || '{}');
+                this.wins = saved.wins || 0;
+                this.gamesPlayed = saved.gamesPlayed || 0;
+                this.winStreak = saved.winStreak || 0;
+                this.bestStreak = saved.bestStreak || 0;
+            }
+
+            saveStats() {
+                localStorage.setItem('flagdle-stats', JSON.stringify({
+                    wins: this.wins,
+                    gamesPlayed: this.gamesPlayed,
+                    winStreak: this.winStreak,
+                    bestStreak: this.bestStreak
+                }));
+            }
+
+            recordWin() {
+                this.wins++;
+                this.gamesPlayed++;
+                this.winStreak++;
+                this.bestStreak = Math.max(this.bestStreak, this.winStreak);
+                this.saveStats();
+            }
+
+            recordLoss() {
+                this.gamesPlayed++;
+                this.winStreak = 0;
+                this.saveStats();
+            }
+
+            getWinRate() {
+                return this.gamesPlayed === 0 ? 0 : Math.round((this.wins / this.gamesPlayed) * 100);
+            }
+
+            updateDisplay() {
+                document.getElementById('wins-count').textContent = this.wins;
+                document.getElementById('games-played').textContent = this.gamesPlayed;
+                document.getElementById('win-rate').textContent = this.getWinRate() + '%';
+            }
+        }
+
+        // Music Management
+        class MusicManager {
+            constructor() {
+                this.audio = document.getElementById('background-music');
+                this.isPlaying = false;
+                this.musicEnabled = localStorage.getItem('flagdle-music') !== 'false';
+                this.initMusic();
+            }
+
+            initMusic() {
+                // Create a simple melody using Web Audio API as fallback
+                this.createAudioContext();
+                this.updateMusicButton();
+            }
+
+            createAudioContext() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.createMelody();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+
+            createMelody() {
+                const notes = [
+                    { freq: 523.25, duration: 0.5 }, // C5
+                    { freq: 587.33, duration: 0.5 }, // D5
+                    { freq: 659.25, duration: 0.5 }, // E5
+                    { freq: 698.46, duration: 0.5 }, // F5
+                    { freq: 783.99, duration: 1.0 }, // G5
+                    { freq: 659.25, duration: 0.5 }, // E5
+                    { freq: 523.25, duration: 1.0 }  // C5
+                ];
+
+                if (this.musicEnabled && this.audioContext) {
+                    this.playMelody(notes, 0);
+                }
+            }
+
+            playMelody(notes, index) {
+                if (!this.musicEnabled || !this.audioContext) return;
+
+                if (index >= notes.length) {
+                    setTimeout(() => this.playMelody(notes, 0), 2000);
+                    return;
+                }
+
+                const note = notes[index];
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(note.freq, this.audioContext.currentTime);
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + note.duration);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + note.duration);
+
+                setTimeout(() => this.playMelody(notes, index + 1), note.duration * 1000);
+            }
+
+            toggle() {
+                this.musicEnabled = !this.musicEnabled;
+                localStorage.setItem('flagdle-music', this.musicEnabled);
+                
+                if (this.musicEnabled) {
+                    this.createMelody();
+                }
+                
+                this.updateMusicButton();
+            }
+
+            updateMusicButton() {
+                const btn = document.getElementById('music-btn');
+                btn.textContent = this.musicEnabled ? '🔊 Music On' : '🔇 Music Off';
+                btn.style.background = this.musicEnabled 
+                    ? 'linear-gradient(135deg, #48bb78, #38a169)'
+                    : 'linear-gradient(135deg, #ed8936, #dd6b20)';
+            }
+        }
+
+        class FlagdleGame {
             constructor() {
                 this.currentCountry = null;
                 this.currentClue = 1;
@@ -524,9 +779,12 @@
                 this.maxClues = 6;
                 this.guesses = [];
                 this.gameOver = false;
+                this.stats = new GameStats();
+                this.music = new MusicManager();
                 
                 this.initializeElements();
                 this.bindEvents();
+                createStars();
                 this.startNewGame();
             }
 
@@ -535,6 +793,7 @@
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
+                this.musicBtn = document.getElementById('music-btn');
                 this.backBtn = document.getElementById('back-btn');
                 this.guessesList = document.getElementById('guesses-list');
                 this.gameOverDiv = document.getElementById('game-over');
@@ -558,13 +817,14 @@
                 });
                 
                 this.newGameBtn.addEventListener('click', () => this.startNewGame());
+                this.musicBtn.addEventListener('click', () => this.music.toggle());
                 this.backBtn.addEventListener('click', () => {
-                    alert('Back button would return to main menu');
+                    alert('Thanks for playing Flagdle! 🌍');
                 });
             }
 
             startNewGame() {
-                this.currentCountry = countries[Math.floor(Math.random() * countries.length)];
+                this.currentCountry = countriesData[Math.floor(Math.random() * countriesData.length)];
                 this.currentClue = 1;
                 this.currentAttempt = 1;
                 this.guesses = [];
@@ -578,6 +838,7 @@
                 this.submitBtn.disabled = false;
                 this.guessInput.value = '';
                 this.guessInput.focus();
+                this.stats.updateDisplay();
             }
 
             updateDisplay() {
@@ -587,17 +848,15 @@
 
             updateClue() {
                 const clueDescriptions = [
-                    'Clue 1: Small cropped section • Auto-advances after wrong guesses',
-                    'Clue 2: Half of the flag revealed • Auto-advances after wrong guesses',
-                    'Clue 3: Blurred full flag • Auto-advances after wrong guesses',
-                    'Clue 4: Flag in grayscale • Auto-advances after wrong guesses',
-                    'Clue 5: Flag rotated 90 degrees • Auto-advances after wrong guesses',
-                    'Clue 6: Full clear flag • Final clue!'
+                    'Clue 1: Heavily pixelated and blurred • Hardest level',
+                    'Clue 2: Upside down and blurred • Very hard',
+                    'Clue 3: Colors inverted and blurred • Hard',
+                    'Clue 4: Grayscale with slight blur • Medium',
+                    'Clue 5: Half of the flag revealed • Easy',
+                    'Clue 6: Full clear flag • Easiest!'
                 ];
 
-                // Update main clue description (no more text clues)
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
-                this.clueInfo.className = 'clue-info';
                 
                 // Remove all flag classes
                 this.flagImage.className = 'flag-image';
@@ -605,22 +864,22 @@
                 // Set flag source
                 this.flagImage.src = this.currentCountry.flag;
                 
-                // Apply appropriate class based on clue
+                // Apply appropriate class based on clue (hardest to easiest)
                 switch(this.currentClue) {
                     case 1:
-                        this.flagImage.classList.add('flag-cropped');
+                        this.flagImage.classList.add('flag-pixelated');
                         break;
                     case 2:
-                        this.flagImage.classList.add('flag-half');
+                        this.flagImage.classList.add('flag-rotated');
                         break;
                     case 3:
-                        this.flagImage.classList.add('flag-blurred');
+                        this.flagImage.classList.add('flag-inverted');
                         break;
                     case 4:
                         this.flagImage.classList.add('flag-grayscale');
                         break;
                     case 5:
-                        this.flagImage.classList.add('flag-rotated');
+                        this.flagImage.classList.add('flag-half');
                         break;
                     case 6:
                         // Full clear flag - no additional classes
@@ -633,11 +892,6 @@
                     this.currentClue++;
                     this.updateDisplay();
                     this.updateClue();
-                    
-                    if (this.currentClue === this.maxClues) {
-                        this.hintBtn.disabled = true;
-                        this.hintBtn.textContent = 'Final Clue';
-                    }
                 }
             }
 
@@ -648,7 +902,7 @@
                     return;
                 }
 
-                const matches = countries
+                const matches = countriesData
                     .filter(country => 
                         country.name.toLowerCase().includes(input) ||
                         (country.alternatives && country.alternatives.some(alt => 
@@ -700,9 +954,7 @@
                     
                     // Auto-advance to next clue after wrong guess (unless already at final clue)
                     if (this.currentClue < this.maxClues) {
-                        setTimeout(() => {
-                            this.nextClue();
-                        }, 1500); // 1.5 second delay to show the wrong guess first
+                        this.nextClue();
                     }
                     
                     if (this.currentAttempt > this.maxAttempts) {
@@ -751,20 +1003,30 @@
                 this.updateClue();
                 this.updateDisplay();
                 
+                // Update statistics
+                if (won) {
+                    this.stats.recordWin();
+                } else {
+                    this.stats.recordLoss();
+                }
+                this.stats.updateDisplay();
+                
                 // Show game over message
                 this.gameOverDiv.style.display = 'block';
                 if (won) {
                     this.gameOverDiv.className = 'game-over win';
                     this.gameOverDiv.innerHTML = `
-                        🎉 Congratulations! 🎉<br>
+                        🎉 Excellent! 🎉<br>
                         You guessed <strong>${this.currentCountry.name}</strong> correctly!<br>
-                        <small>Attempts used: ${this.currentAttempt}/6 | Clues used: ${this.currentClue}/6</small>
+                        <small>Attempts: ${this.currentAttempt}/6 | Clues used: ${this.currentClue}/6</small><br>
+                        <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small>
                     `;
                 } else {
                     this.gameOverDiv.className = 'game-over lose';
                     this.gameOverDiv.innerHTML = `
                         😔 Game Over! 😔<br>
                         The correct answer was <strong>${this.currentCountry.name}</strong><br>
+                        <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small><br>
                         <small>Better luck next time!</small>
                     `;
                 }
@@ -773,7 +1035,7 @@
 
         // Initialize game when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new GeodleFlagMode();
+            new FlagdleGame();
         });
     </script>
 </body>
