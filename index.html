@@ -50,6 +50,182 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.8; }
   }
+
+  /* Three-line Menu Button */
+  #menu-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+  }
+
+  #menu-button:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+
+  .menu-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .menu-icon span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 1px;
+    opacity: 1;
+    transform: rotate(0deg);
+    transition: all 0.25s ease-in-out;
+  }
+
+  .menu-icon span:nth-child(1) {
+    top: 0px;
+    transform-origin: left center;
+  }
+
+  .menu-icon span:nth-child(2) {
+    top: 6px;
+    transform-origin: left center;
+  }
+
+  .menu-icon span:nth-child(3) {
+    top: 12px;
+    transform-origin: left center;
+  }
+
+  /* Menu Dropdown */
+  #menu-dropdown {
+    position: fixed;
+    top: 70px;
+    left: 20px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    padding: 20px;
+    min-width: 200px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #menu-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .menu-item {
+    display: block;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .menu-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+  }
+
+  .menu-item:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Music Toggle Switch */
+  .music-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #667eea;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  /* Invisible Easter Egg Button */
+  #invisible-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: default;
+    z-index: 999;
+    opacity: 0;
+  }
   
   h1 {
     text-align: center;
@@ -760,6 +936,18 @@
       font-size: 2.2rem;
       margin-bottom: 20px;
     }
+
+    #menu-button {
+      top: 15px;
+      left: 15px;
+    }
+
+    #menu-dropdown {
+      top: 65px;
+      left: 15px;
+      right: 15px;
+      width: auto;
+    }
     
     .mode-btn {
       display: block;
@@ -896,6 +1084,32 @@
 </style>
 </head>
 <body>
+
+<!-- Three-line Menu Button -->
+<div id="menu-button">
+  <div class="menu-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<!-- Menu Dropdown -->
+<div id="menu-dropdown">
+  <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
+  <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
+  <div class="music-toggle">
+    <span>🎵 Music</span>
+    <label class="switch">
+      <input type="checkbox" id="music-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+</div>
+
+<!-- Invisible Easter Egg Button -->
+<button id="invisible-btn"></button>
+
 <h1>Geodle 🌍</h1>
 
 <!-- Mode Selector -->
@@ -966,6 +1180,7 @@ let guessHistory = [];
 let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
+let musicEnabled = true;
 
 // Load and save win count from localStorage
 function loadWinCount() {
@@ -980,6 +1195,24 @@ function saveWinCount() {
 function resetWinCount() {
   totalWins = 0;
   saveWinCount();
+}
+
+// Music functions
+function loadMusicSetting() {
+  const savedSetting = localStorage.getItem('geodle_music_enabled');
+  musicEnabled = savedSetting !== null ? savedSetting === 'true' : true;
+  document.getElementById('music-toggle').checked = musicEnabled;
+}
+
+function saveMusicSetting() {
+  localStorage.setItem('geodle_music_enabled', musicEnabled.toString());
+}
+
+function toggleMusic() {
+  musicEnabled = !musicEnabled;
+  saveMusicSetting();
+  // Here you would implement actual music play/pause functionality
+  console.log('Music ' + (musicEnabled ? 'enabled' : 'disabled'));
 }
 
 // Check if data is loaded and validate it
@@ -1214,8 +1447,53 @@ function shareScore() {
   }
 }
 
+// Menu functionality
+function toggleMenu() {
+  const dropdown = document.getElementById('menu-dropdown');
+  dropdown.classList.toggle('show');
+}
+
+function closeMenu() {
+  const dropdown = document.getElementById('menu-dropdown');
+  dropdown.classList.remove('show');
+}
+
 // Mode selector functionality
 document.addEventListener('DOMContentLoaded', function() {
+  // Load music setting
+  loadMusicSetting();
+  
+  // Menu event listeners
+  document.getElementById('menu-button').addEventListener('click', toggleMenu);
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('menu-button');
+    const dropdown = document.getElementById('menu-dropdown');
+    if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
+      closeMenu();
+    }
+  });
+  
+  // Menu items
+  document.getElementById('menu-terms').addEventListener('click', function() {
+    closeMenu();
+    document.getElementById('terms-modal').style.display = 'block';
+  });
+  
+  document.getElementById('menu-privacy').addEventListener('click', function() {
+    closeMenu();
+    document.getElementById('privacy-modal').style.display = 'block';
+  });
+  
+  // Music toggle
+  document.getElementById('music-toggle').addEventListener('change', toggleMusic);
+  
+  // Easter egg button
+  document.getElementById('invisible-btn').addEventListener('dblclick', function() {
+    alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
+  });
+  
   // Update mode descriptions on hover
   const pathBtn = document.getElementById('pathModeBtn');
   const countryBtn = document.getElementById('countryModeBtn');
@@ -1267,6 +1545,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('newGameBtn').addEventListener('click', initGame);
 });
 </script>
+
 <!-- Terms & Cookies Consent Banner -->
 <style>
   /* Banner */
@@ -1531,39 +1810,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(e.target === termsModal) termsModal.style.display = 'none';
     if(e.target === privacyModal) privacyModal.style.display = 'none';
   });
-<script>
-
-  
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invisible Button</title>
-<style>
-  #invisible-btn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 10px;   /* small but clickable */
-    height: 10px;
-    background: transparent;
-    border: 1px solid purple; /* temporary border for testing */
-    cursor: pointer;
-    z-index: 1000;
-  }
-</style>
-</head>
-<body>
-
-<button id="invisible-btn"></button>
-
-<script>
-  const btn = document.getElementById('invisible-btn');
-  btn.addEventListener('dblclick', () => {
-    alert(Everyone to DM me at 89132851 with a screenshot gets a place in this message forever!-creator Reuben");
-  });
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
