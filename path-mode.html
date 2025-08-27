@@ -725,6 +725,9 @@
         let pathMarkers = [];
         let countryNames = [];
 
+        // Cache for optimal paths to avoid recalculating
+        let pathCache = new Map();
+
         // Initialize audio
         function initAudio() {
             backgroundMusic = document.getElementById('backgroundMusic');
@@ -901,34 +904,104 @@
             return country && country.borders ? country.borders : [];
         }
 
-        // Daily challenge pairs - using more diverse global pairs
+        // FIXED: Daily challenge pairs - ensures minimum 4 steps between countries
         function getDailyChallengeFromData() {
             if (!countryNames.length) return ['France', 'Germany'];
             
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
             
-            // Create challenging pairs from different continents
-            const challengingPairs = [];
+            // Pre-calculated pairs that are guaranteed to be at least 4 steps apart
+            const validChallengePairs = [
+                // Europe to Asia
+                ['Portugal', 'China'],
+                ['Ireland', 'Japan'],
+                ['Norway', 'India'],
+                ['Spain', 'Mongolia'],
+                ['United Kingdom', 'South Korea'],
+                
+                // Americas to Africa/Asia
+                ['Canada', 'South Africa'],
+                ['Mexico', 'Egypt'],
+                ['United States', 'Morocco'],
+                ['Brazil', 'Kenya'],
+                ['Argentina', 'Nigeria'],
+                
+                // Cross-continental distant pairs
+                ['Australia', 'France'],
+                ['New Zealand', 'Germany'],
+                ['Chile', 'Russia'],
+                ['Peru', 'Turkey'],
+                ['Colombia', 'Iran'],
+                
+                // Africa to Europe/Asia
+                ['South Africa', 'Norway'],
+                ['Morocco', 'Finland'],
+                ['Egypt', 'United Kingdom'],
+                ['Nigeria', 'Japan'],
+                ['Kenya', 'Sweden'],
+                
+                // Additional diverse pairs
+                ['Iceland', 'Thailand'],
+                ['Madagascar', 'Poland'],
+                ['Uruguay', 'Kazakhstan'],
+                ['Paraguay', 'Ukraine'],
+                ['Bolivia', 'Romania']
+            ];
+            
+            // Filter pairs to ensure both countries exist in our data
+            const availablePairs = validChallengePairs.filter(([start, end]) => 
+                countryNames.includes(start) && countryNames.includes(end)
+            );
+            
+            if (availablePairs.length === 0) {
+                // Fallback to original method but with distance check
+                return findValidPairWithMinDistance();
+            }
+            
+            const pairIndex = dayOfYear % availablePairs.length;
+            return availablePairs[pairIndex];
+        }
+
+        // Helper function to find a valid pair with minimum distance when predefined pairs fail
+        function findValidPairWithMinDistance() {
             const majorCountries = countryNames.filter(name => {
                 const country = getCountryData(name);
-                return country && country.population > 10000000; // Countries with >10M population
+                return country && country.population > 5000000; // Countries with >5M population
             });
-
-            // Generate some interesting pairs
-            for (let i = 0; i < majorCountries.length; i += 2) {
-                if (i + 1 < majorCountries.length) {
-                    challengingPairs.push([majorCountries[i], majorCountries[i + 1]]);
+            
+            // Try to find a pair that's at least 4 steps apart
+            for (let attempts = 0; attempts < 50; attempts++) {
+                const start = majorCountries[Math.floor(Math.random() * majorCountries.length)];
+                const end = majorCountries[Math.floor(Math.random() * majorCountries.length)];
+                
+                if (start !== end) {
+                    const pathKey = `${start}-${end}`;
+                    if (!pathCache.has(pathKey)) {
+                        const path = findOptimalPath(start, end);
+                        pathCache.set(pathKey, path);
+                    }
+                    
+                    const path = pathCache.get(pathKey);
+                    if (path && path.length >= 5) { // 5 countries = 4 steps minimum
+                        return [start, end];
+                    }
                 }
             }
-
-            const pairIndex = dayOfYear % challengingPairs.length;
-            return challengingPairs[pairIndex] || ['United States', 'China'];
+            
+            // Ultimate fallback
+            return ['France', 'China'];
         }
 
         // BFS pathfinding algorithm to find optimal route
         function findOptimalPath(start, end) {
             if (start === end) return [start];
+            
+            // Check cache first
+            const cacheKey = `${start}-${end}`;
+            if (pathCache.has(cacheKey)) {
+                return pathCache.get(cacheKey);
+            }
             
             const queue = [[start]];
             const visited = new Set([start]);
@@ -940,7 +1013,9 @@
                 
                 for (const neighbor of neighbors) {
                     if (neighbor === end) {
-                        return [...path, neighbor];
+                        const resultPath = [...path, neighbor];
+                        pathCache.set(cacheKey, resultPath);
+                        return resultPath;
                     }
                     
                     if (!visited.has(neighbor)) {
@@ -950,9 +1025,10 @@
                 }
                 
                 // Limit search to prevent infinite loops for disconnected components
-                if (visited.size > 100) break;
+                if (visited.size > 150) break;
             }
             
+            pathCache.set(cacheKey, null);
             return null; // No path found
         }
 
@@ -967,11 +1043,11 @@
             optimalPath = findOptimalPath(startCountry, endCountry);
             if (optimalPath) {
                 const optimalLength = optimalPath.length - 1;
-                maxAttempts = optimalLength + 5; // Optimal + 5 extra attempts
+                maxAttempts = Math.max(optimalLength + 5, 10); // Ensure minimum 10 attempts
                 attempts = maxAttempts;
                 document.getElementById('optimalLength').textContent = optimalLength;
             } else {
-                // Fallback if no path found (shouldn't happen with connected countries)
+                // Fallback if no path found (shouldn't happen with our curated pairs)
                 maxAttempts = 15;
                 attempts = 15;
                 document.getElementById('optimalLength').textContent = '?';
@@ -1292,7 +1368,7 @@
             optimalPath = findOptimalPath(startCountry, endCountry);
             if (optimalPath) {
                 const optimalLength = optimalPath.length - 1;
-                maxAttempts = optimalLength + 5;
+                maxAttempts = Math.max(optimalLength + 5, 10);
                 attempts = maxAttempts;
                 document.getElementById('optimalLength').textContent = optimalLength;
             } else {
