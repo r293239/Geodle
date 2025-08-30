@@ -24,7 +24,7 @@ window.easyFlags = [
     },
     {
         name: "France",
-        alternatives: [],
+        alternatives: [French Republic],
         flag: "https://flagcdn.com/w320/fr.png"
     },
     {
