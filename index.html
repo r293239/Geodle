@@ -1121,6 +1121,9 @@
   <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
     🌍 Country Mode
   </a>
+  <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
+    🏳️ Flag Mode
+  </a>
   <div class="mode-description">
     <span id="modeDescription">Get geographic clues and guess the mystery location!</span>
   </div>
@@ -1497,14 +1500,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Update mode descriptions on hover
   const pathBtn = document.getElementById('pathModeBtn');
   const countryBtn = document.getElementById('countryModeBtn');
+  const flagBtn = document.getElementById('flagModeBtn');
   const description = document.getElementById('modeDescription');
   
   const descriptions = {
     path: "Get geographic clues and guess the mystery location!",
-    country: "Compare countries by continent, population, GDP, and more!"
+    country: "Compare countries by continent, population, GDP, and more!",
+    flag: "Identify countries by their flags!"
   };
   
-  if (pathBtn && countryBtn && description) {
+  if (pathBtn && countryBtn && flagBtn && description) {
     pathBtn.addEventListener('mouseenter', function() {
       description.textContent = descriptions.path;
     });
@@ -1513,17 +1518,24 @@ document.addEventListener('DOMContentLoaded', function() {
       description.textContent = descriptions.country;
     });
     
+    flagBtn.addEventListener('mouseenter', function() {
+      description.textContent = descriptions.flag;
+    });
+    
     // Reset to current mode description on mouse leave
     const resetDescription = function() {
       if (pathBtn.classList.contains('active')) {
         description.textContent = descriptions.path;
       } else if (countryBtn.classList.contains('active')) {
         description.textContent = descriptions.country;
+      } else if (flagBtn.classList.contains('active')) {
+        description.textContent = descriptions.flag;
       }
     };
     
     pathBtn.addEventListener('mouseleave', resetDescription);
     countryBtn.addEventListener('mouseleave', resetDescription);
+    flagBtn.addEventListener('mouseleave', resetDescription);
   }
   
   // Add a small delay to ensure data.js is fully loaded
