@@ -1,4 +1,1287 @@
-<!DOCTYPE html>
+</style>
+</head>
+<body>
+
+<!-- Three-line Menu Button -->
+<div id="menu-button">
+  <div class="menu-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<!-- Menu Dropdown -->
+<div id="menu-dropdown">
+  <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
+  <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
+  
+  <!-- Language Selector -->
+  <div class="language-dropdown" id="language-dropdown">
+    <div class="language-selector" id="language-selector">
+      <span>🌐 <span id="current-language">English</span></span>
+      <span class="dropdown-arrow">▼</span>
+    </div>
+    <div class="language-options" id="language-options">
+      <div class="language-option selected" data-lang="en" data-name="English">🇺🇸 English</div>
+      <div class="language-option" data-lang="es" data-name="Español">🇪🇸 Español</div>
+      <div class="language-option" data-lang="fr" data-name="Français">🇫🇷 Français</div>
+      <div class="language-option" data-lang="de" data-name="Deutsch">🇩🇪 Deutsch</div>
+      <div class="language-option" data-lang="it" data-name="Italiano">🇮🇹 Italiano</div>
+      <div class="language-option" data-lang="pt" data-name="Português">🇵🇹 Português</div>
+      <div class="language-option" data-lang="ru" data-name="Русский">🇷🇺 Русский</div>
+      <div class="language-option" data-lang="zh" data-name="中文">🇨🇳 中文</div>
+      <div class="language-option" data-lang="ja" data-name="日本語">🇯🇵 日本語</div>
+      <div class="language-option" data-lang="ko" data-name="한국어">🇰🇷 한국어</div>
+    </div>
+  </div>
+  
+  <!-- Music Toggle -->
+  <div class="toggle-item">
+    <span>🎵 <span data-translate="music">Music</span></span>
+    <label class="switch">
+      <input type="checkbox" id="music-toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+</div>
+
+<!-- Invisible Easter Egg Button -->
+<button id="invisible-btn"></button>
+
+<h1 data-translate="title">Geodle 🌍</h1>
+
+<!-- Mode Selector -->
+<div class="mode-selector">
+  <h3 data-translate="gameModes">🎮 Game Modes</h3>
+  <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
+    <span data-translate="pathMode">🛤️ Path Mode</span>
+  </a>
+  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
+    <span data-translate="countryMode">🌍 Country Mode</span>
+  </a>
+  <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
+    <span data-translate="flagMode">🏳️ Flag Mode</span>
+  </a>
+  <div class="mode-description">
+    <span id="modeDescription" data-translate="pathModeDesc">Get geographic clues and guess the mystery location!</span>
+  </div>
+</div>
+
+<div id="worldMap"></div>
+<div id="progressInfo">
+  <div><span data-translate="clue">Clue</span> <span id="currentClue">1</span> <span data-translate="of">of</span> 10</div>
+  <div id="progressBar">
+    <div id="progressFill"></div>
+  </div>
+</div>
+<div id="clueBox" data-translate="loadingClue">Loading clue...</div>
+<form id="guessForm">
+  <input type="text" id="guessInput" data-translate-placeholder="guessPlaceholder" placeholder="Type your guess here" autocomplete="off" />
+  <button id="guessButton" type="submit" data-translate="guess">Guess</button>
+</form>
+<div id="feedback"></div>
+<div id="streak">🏆 <span data-translate="totalWins">Total Wins</span>: 0</div>
+<div style="text-align: center;">
+  <button id="resetBtn" class="btn">🔄 <span data-translate="resetGame">Reset Game</span></button>
+  <button id="resetWinsBtn" class="btn">🏆 <span data-translate="resetWinCount">Reset Win Count</span></button>
+</div>
+<div id="pastHints">
+  <h3 data-translate="pastHints">Past Hints</h3>
+  <ul id="pastHintsList"></ul>
+</div>
+<div id="history">
+  <h3 data-translate="guessHistory">Guess History</h3>
+  <ul id="historyList"></ul>
+</div>
+<div id="endScreen">
+  <div id="resultMsg"></div>
+  <button id="shareBtn" class="btn" data-translate="shareScore">Share My Score</button>
+  <button id="newGameBtn" class="btn" data-translate="newGame">New Game</button>
+</div>
+<div id="dailyLimitMsg" style="display:none;">
+  <span data-translate="dailyLimit">You've already played today! Come back tomorrow 👀</span>
+</div>
+<div id="loadingError">
+  <h3>⚠️ <span data-translate="dataLoadingError">Data Loading Error</span></h3>
+  <p data-translate="dataLoadingErrorDesc">Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
+</div>
+
+<!-- Sticky Help Button -->
+<a id="help-button" 
+   href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+   target="_blank" 
+   rel="noopener noreferrer">
+  <span data-translate="helpImprove">Help Us Improve</span>
+</a>
+
+<script>
+// Language translations
+const translations = {
+  en: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Game Modes",
+    pathMode: "🛤️ Path Mode",
+    countryMode: "🌍 Country Mode",
+    flagMode: "🏳️ Flag Mode",
+    pathModeDesc: "Get geographic clues and guess the mystery location!",
+    countryModeDesc: "Compare countries by continent, population, GDP, and more!",
+    flagModeDesc: "Identify countries by their flags!",
+    clue: "Clue",
+    of: "of",
+    loadingClue: "Loading clue...",
+    guessPlaceholder: "Type your guess here",
+    guess: "Guess",
+    totalWins: "Total Wins",
+    resetGame: "Reset Game",
+    resetWinCount: "Reset Win Count",
+    pastHints: "Past Hints",
+    guessHistory: "Guess History",
+    shareScore: "Share My Score",
+    newGame: "New Game",
+    dailyLimit: "You've already played today! Come back tomorrow 👀",
+    dataLoadingError: "Data Loading Error",
+    dataLoadingErrorDesc: "Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.",
+    helpImprove: "Help Us Improve",
+    music: "Music",
+    correct: "🎉 Correct! The answer is",
+    incorrect: "❌ {guess} is not correct. Here's the next clue...",
+    gameOver: "😔 Game Over! The answer was",
+    resetGameConfirm: "🔄 Game reset! New country selected.",
+    resetWinsConfirm: "Are you sure you want to reset your win count? This cannot be undone.",
+    resetWinsSuccess: "🏆 Win count reset to 0!",
+    congratulations: "🎉 Congratulations!<br>You guessed \"{answer}\" after {clues} clue{plural}!",
+    betterLuck: "😔 Better luck next time!<br>The answer was \"{answer}\"",
+    scoreCopied: "Score copied to clipboard!",
+    scoreWon: "🌍 Geodle - I guessed \"{answer}\" in {clues}/10 clues! Total Wins: {wins}",
+    scoreLost: "🌍 Geodle - I couldn't guess \"{answer}\" in 10 clues. Can you?"
+  },
+  es: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Modos de Juego",
+    pathMode: "🛤️ Modo Ruta",
+    countryMode: "🌍 Modo País",
+    flagMode: "🏳️ Modo Bandera",
+    pathModeDesc: "¡Obtén pistas geográficas y adivina la ubicación misteriosa!",
+    countryModeDesc: "¡Compara países por continente, población, PIB y más!",
+    flagModeDesc: "¡Identifica países por sus banderas!",
+    clue: "Pista",
+    of: "de",
+    loadingClue: "Cargando pista...",
+    guessPlaceholder: "Escribe tu respuesta aquí",
+    guess: "Adivinar",
+    totalWins: "Victorias Totales",
+    resetGame: "Reiniciar Juego",
+    resetWinCount: "Reiniciar Contador",
+    pastHints: "Pistas Anteriores",
+    guessHistory: "Historial de Respuestas",
+    shareScore: "Compartir Puntuación",
+    newGame: "Nuevo Juego",
+    dailyLimit: "¡Ya has jugado hoy! Vuelve mañana 👀",
+    dataLoadingError: "Error al Cargar Datos",
+    dataLoadingErrorDesc: "No se pudo cargar el archivo de datos geográficos (data.js). Asegúrate de que el archivo existe y está formateado correctamente.",
+    helpImprove: "Ayúdanos a Mejorar",
+    music: "Música",
+    correct: "🎉 ¡Correcto! La respuesta es",
+    incorrect: "❌ {guess} no es correcto. Aquí tienes la siguiente pista...",
+    gameOver: "😔 ¡Juego Terminado! La respuesta era",
+    resetGameConfirm: "🔄 ¡Juego reiniciado! Nuevo país seleccionado.",
+    resetWinsConfirm: "¿Estás seguro de que quieres reiniciar tu contador de victorias? Esto no se puede deshacer.",
+    resetWinsSuccess: "🏆 ¡Contador de victorias reiniciado a 0!",
+    congratulations: "🎉 ¡Felicidades!<br>¡Adivinaste \"{answer}\" después de {clues} pista{plural}!",
+    betterLuck: "😔 ¡Mejor suerte la próxima vez!<br>La respuesta era \"{answer}\"",
+    scoreCopied: "¡Puntuación copiada al portapapeles!",
+    scoreWon: "🌍 Geodle - ¡Adiviné \"{answer}\" en {clues}/10 pistas! Victorias Totales: {wins}",
+    scoreLost: "🌍 Geodle - No pude adivinar \"{answer}\" en 10 pistas. ¿Puedes tú?"
+  },
+  fr: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Modes de Jeu",
+    pathMode: "🛤️ Mode Chemin",
+    countryMode: "🌍 Mode Pays",
+    flagMode: "🏳️ Mode Drapeau",
+    pathModeDesc: "Obtenez des indices géographiques et devinez le lieu mystérieux !",
+    countryModeDesc: "Comparez les pays par continent, population, PIB et plus !",
+    flagModeDesc: "Identifiez les pays par leurs drapeaux !",
+    clue: "Indice",
+    of: "sur",
+    loadingClue: "Chargement de l'indice...",
+    guessPlaceholder: "Tapez votre réponse ici",
+    guess: "Deviner",
+    totalWins: "Victoires Totales",
+    resetGame: "Réinitialiser le Jeu",
+    resetWinCount: "Réinitialiser le Compteur",
+    pastHints: "Indices Précédents",
+    guessHistory: "Historique des Réponses",
+    shareScore: "Partager mon Score",
+    newGame: "Nouveau Jeu",
+    dailyLimit: "Vous avez déjà joué aujourd'hui ! Revenez demain 👀",
+    dataLoadingError: "Erreur de Chargement des Données",
+    dataLoadingErrorDesc: "Impossible de charger le fichier de données géographiques (data.js). Assurez-vous que le fichier existe et est correctement formaté.",
+    helpImprove: "Aidez-nous à Améliorer",
+    music: "Musique",
+    correct: "🎉 Correct ! La réponse est",
+    incorrect: "❌ {guess} n'est pas correct. Voici le prochain indice...",
+    gameOver: "😔 Jeu Terminé ! La réponse était",
+    resetGameConfirm: "🔄 Jeu réinitialisé ! Nouveau pays sélectionné.",
+    resetWinsConfirm: "Êtes-vous sûr de vouloir réinitialiser votre compteur de victoires ? Cela ne peut pas être annulé.",
+    resetWinsSuccess: "🏆 Compteur de victoires réinitialisé à 0 !",
+    congratulations: "🎉 Félicitations !<br>Vous avez deviné \"{answer}\" après {clues} indice{plural} !",
+    betterLuck: "😔 Bonne chance la prochaine fois !<br>La réponse était \"{answer}\"",
+    scoreCopied: "Score copié dans le presse-papiers !",
+    scoreWon: "🌍 Geodle - J'ai deviné \"{answer}\" en {clues}/10 indices ! Victoires Totales : {wins}",
+    scoreLost: "🌍 Geodle - Je n'ai pas pu deviner \"{answer}\" en 10 indices. Pouvez-vous ?"
+  },
+  de: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Spielmodi",
+    pathMode: "🛤️ Pfad-Modus",
+    countryMode: "🌍 Land-Modus",
+    flagMode: "🏳️ Flaggen-Modus",
+    pathModeDesc: "Erhalten Sie geografische Hinweise und erraten Sie den geheimnisvollen Ort!",
+    countryModeDesc: "Vergleichen Sie Länder nach Kontinent, Bevölkerung, BIP und mehr!",
+    flagModeDesc: "Identifizieren Sie Länder anhand ihrer Flaggen!",
+    clue: "Hinweis",
+    of: "von",
+    loadingClue: "Hinweis wird geladen...",
+    guessPlaceholder: "Geben Sie Ihre Antwort hier ein",
+    guess: "Raten",
+    totalWins: "Gesamtsiege",
+    resetGame: "Spiel Zurücksetzen",
+    resetWinCount: "Siegzähler Zurücksetzen",
+    pastHints: "Frühere Hinweise",
+    guessHistory: "Ratehistorie",
+    shareScore: "Punktzahl Teilen",
+    newGame: "Neues Spiel",
+    dailyLimit: "Sie haben heute schon gespielt! Kommen Sie morgen wieder 👀",
+    dataLoadingError: "Datenladefehler",
+    dataLoadingErrorDesc: "Die geografische Datendatei (data.js) konnte nicht geladen werden. Stellen Sie sicher, dass die Datei existiert und korrekt formatiert ist.",
+    helpImprove: "Helfen Sie uns zu Verbessern",
+    music: "Musik",
+    correct: "🎉 Richtig! Die Antwort ist",
+    incorrect: "❌ {guess} ist nicht richtig. Hier ist der nächste Hinweis...",
+    gameOver: "😔 Spiel Vorbei! Die Antwort war",
+    resetGameConfirm: "🔄 Spiel zurückgesetzt! Neues Land ausgewählt.",
+    resetWinsConfirm: "Sind Sie sicher, dass Sie Ihren Siegzähler zurücksetzen möchten? Dies kann nicht rückgängig gemacht werden.",
+    resetWinsSuccess: "🏆 Siegzähler auf 0 zurückgesetzt!",
+    congratulations: "🎉 Glückwunsch!<br>Sie haben \"{answer}\" nach {clues} Hinweis{plural} erraten!",
+    betterLuck: "😔 Viel Glück beim nächsten Mal!<br>Die Antwort war \"{answer}\"",
+    scoreCopied: "Punktzahl in die Zwischenablage kopiert!",
+    scoreWon: "🌍 Geodle - Ich habe \"{answer}\" in {clues}/10 Hinweisen erraten! Gesamtsiege: {wins}",
+    scoreLost: "🌍 Geodle - Ich konnte \"{answer}\" nicht in 10 Hinweisen erraten. Können Sie es?"
+  },
+  it: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Modalità di Gioco",
+    pathMode: "🛤️ Modalità Percorso",
+    countryMode: "🌍 Modalità Paese",
+    flagMode: "🏳️ Modalità Bandiera",
+    pathModeDesc: "Ottieni indizi geografici e indovina la località misteriosa!",
+    countryModeDesc: "Confronta i paesi per continente, popolazione, PIL e altro!",
+    flagModeDesc: "Identifica i paesi dalle loro bandiere!",
+    clue: "Indizio",
+    of: "di",
+    loadingClue: "Caricamento indizio...",
+    guessPlaceholder: "Digita la tua risposta qui",
+    guess: "Indovina",
+    totalWins: "Vittorie Totali",
+    resetGame: "Reimposta Gioco",
+    resetWinCount: "Reimposta Contatore",
+    pastHints: "Indizi Precedenti",
+    guessHistory: "Cronologia Risposte",
+    shareScore: "Condividi Punteggio",
+    newGame: "Nuovo Gioco",
+    dailyLimit: "Hai già giocato oggi! Torna domani 👀",
+    dataLoadingError: "Errore Caricamento Dati",
+    dataLoadingErrorDesc: "Impossibile caricare il file dei dati geografici (data.js). Assicurati che il file esista e sia formattato correttamente.",
+    helpImprove: "Aiutaci a Migliorare",
+    music: "Musica",
+    correct: "🎉 Corretto! La risposta è",
+    incorrect: "❌ {guess} non è corretto. Ecco il prossimo indizio...",
+    gameOver: "😔 Gioco Finito! La risposta era",
+    resetGameConfirm: "🔄 Gioco reimpostato! Nuovo paese selezionato.",
+    resetWinsConfirm: "Sei sicuro di voler reimpostare il contatore delle vittorie? Questo non può essere annullato.",
+    resetWinsSuccess: "🏆 Contatore vittorie reimpostato a 0!",
+    congratulations: "🎉 Congratulazioni!<br>Hai indovinato \"{answer}\" dopo {clues} indizi{plural}!",
+    betterLuck: "😔 Buona fortuna la prossima volta!<br>La risposta era \"{answer}\"",
+    scoreCopied: "Punteggio copiato negli appunti!",
+    scoreWon: "🌍 Geodle - Ho indovinato \"{answer}\" in {clues}/10 indizi! Vittorie Totali: {wins}",
+    scoreLost: "🌍 Geodle - Non sono riuscito a indovinare \"{answer}\" in 10 indizi. Riesci tu?"
+  },
+  pt: {
+    title: "Geodle 🌍",
+    gameModes: "🎮 Modos de Jogo",
+    pathMode: "🛤️ Modo Caminho",
+    countryMode: "🌍 Modo País",
+    flagMode: "🏳️ Modo Bandeira",
+    pathModeDesc: "Obtenha pistas geográficas e adivinhe o local misterioso!",
+    countryModeDesc: "Compare países por continente, população, PIB e mais!",
+    flagModeDesc: "Identifique países pelas suas bandeiras!",
+    clue: "Pista",
+    of: "de",
+    loadingClue: "Carregando pista...",
+    guessPlaceholder: "Digite sua resposta aqui",
+    guess: "Adivinhar",
+    totalWins: "Vitórias Totais",
+    resetGame: "Reiniciar Jogo",
+    resetWinCount: "Reiniciar Contador",
+    pastHints: "Pistas Anteriores",
+    guessHistory: "Histórico de Respostas",
+    shareScore: "Compartilhar Pontuação",
+    newGame: "Novo Jogo",
+    dailyLimit: "Você já jogou hoje! Volte amanhã 👀",
+    dataLoadingError: "Erro ao Carregar Dados",
+    dataLoadingErrorDesc: "Não foi possível carregar o arquivo de dados geográficos (data.js). Certifique-se de que o arquivo existe e está formatado corretamente.",
+    helpImprove: "Ajude-nos a Melhorar",
+    music: "Música",
+    correct: "🎉 Correto! A resposta é",
+    incorrect: "❌ {guess} não está correto. Aqui está a próxima pista...",
+    gameOver: "😔 Fim de Jogo! A resposta era",
+    resetGameConfirm: "🔄 Jogo reiniciado! Novo país selecionado.",
+    resetWinsConfirm: "Tem certeza de que deseja reiniciar seu contador de vitórias? Isso não pode ser desfeito.",
+    resetWinsSuccess: "🏆 Contador de vitórias reiniciado para 0!",
+    congratulations: "🎉 Parabéns!<br>Você adivinhou \"{answer}\" após {clues} pista{plural}!",
+    betterLuck: "😔 Boa sorte na próxima vez!<br>A resposta era \"{answer}\"",
+    scoreCopied: "Pontuação copiada para a área de transferência!",
+    scoreWon: "🌍 Geodle - Eu adivinhei \"{answer}\" em {clues}/10 pistas! Vitórias Totais: {wins}",
+    scoreLost: "🌍 Geodle - Não consegui adivinhar \"{answer}\" em 10 pistas. Consegue você?"
+  },
+  ru: {
+    title: "Геодл 🌍",
+    gameModes: "🎮 Режимы Игры",
+    pathMode: "🛤️ Режим Пути",
+    countryMode: "🌍 Режим Страны",
+    flagMode: "🏳️ Режим Флага",
+    pathModeDesc: "Получайте географические подсказки и угадывайте загадочное место!",
+    countryModeDesc: "Сравнивайте страны по континенту, населению, ВВП и многому другому!",
+    flagModeDesc: "Определяйте страны по их флагам!",
+    clue: "Подсказка",
+    of: "из",
+    loadingClue: "Загрузка подсказки...",
+    guessPlaceholder: "Введите ваш ответ здесь",
+    guess: "Угадать",
+    totalWins: "Всего Побед",
+    resetGame: "Сбросить Игру",
+    resetWinCount: "Сбросить Счетчик",
+    pastHints: "Предыдущие Подсказки",
+    guessHistory: "История Ответов",
+    shareScore: "Поделиться Счетом",
+    newGame: "Новая Игра",
+    dailyLimit: "Вы уже играли сегодня! Возвращайтесь завтра 👀",
+    dataLoadingError: "Ошибка Загрузки Данных",
+    dataLoadingErrorDesc: "Не удалось загрузить файл географических данных (data.js). Убедитесь, что файл существует и правильно отформатирован.",
+    helpImprove: "Помогите Нам Улучшить",
+    music: "Музыка",
+    correct: "🎉 Правильно! Ответ:",
+    incorrect: "❌ {guess} неправильно. Вот следующая подсказка...",
+    gameOver: "😔 Игра Окончена! Ответ был:",
+    resetGameConfirm: "🔄 Игра сброшена! Выбрана новая страна.",
+    resetWinsConfirm: "Вы уверены, что хотите сбросить счетчик побед? Это действие нельзя отменить.",
+    resetWinsSuccess: "🏆 Счетчик побед сброшен до 0!",
+    congratulations: "🎉 Поздравляем!<br>Вы угадали \"{answer}\" за {clues} подсказк{plural}!",
+    betterLuck: "😔 Удачи в следующий раз!<br>Ответ был \"{answer}\"",
+    scoreCopied: "Результат скопирован в буфер обмена!",
+    scoreWon: "🌍 Геодл - Я угадал \"{answer}\" за {clues}/10 подсказок! Всего Побед: {wins}",
+    scoreLost: "🌍 Геодл - Я не смог угадать \"{answer}\" за 10 подсказок. Сможете ли вы?"
+  },
+  zh: {
+    title: "地理猜猜 🌍",
+    gameModes: "🎮 游戏模式",
+    pathMode: "🛤️ 路径模式",
+    countryMode: "🌍 国家模式", 
+    flagMode: "🏳️ 国旗模式",
+    pathModeDesc: "获得地理线索，猜出神秘地点！",
+    countryModeDesc: "按大洲、人口、GDP等比较国家！",
+    flagModeDesc: "通过国旗识别国家！",
+    clue: "线索",
+    of: "/",
+    loadingClue: "加载线索中...",
+    guessPlaceholder: "在此输入您的猜测",
+    guess: "猜测",
+    totalWins: "总胜利次数",
+    resetGame: "重置游戏",
+    resetWinCount: "重置胜利次数",
+    pastHints: "过往提示",
+    guessHistory: "猜测历史",
+    shareScore: "分享我的分数",
+    newGame: "新游戏",
+    dailyLimit: "您今天已经玩过了！明天再来 👀",
+    dataLoadingError: "数据加载错误",
+    dataLoadingErrorDesc: "无法加载地理数据文件 (data.js)。请确保文件存在且格式正确。",
+    helpImprove: "帮助我们改进",
+    music: "音乐",
+    correct: "🎉 正确！答案是",
+    incorrect: "❌ {guess} 不正确。这是下一个线索...",
+    gameOver: "😔 游戏结束！答案是",
+    resetGameConfirm: "🔄 游戏已重置！选择了新国家。",
+    resetWinsConfirm: "您确定要重置胜利次数吗？此操作无法撤销。",
+    resetWinsSuccess: "🏆 胜利次数已重置为0！",
+    congratulations: "🎉 恭喜！<br>您在{clues}个线索后猜出了\"{answer}\"！",
+    betterLuck: "😔 下次好运！<br>答案是\"{answer}\"",
+    scoreCopied: "分数已复制到剪贴板！",
+    scoreWon: "🌍 地理猜猜 - 我在{clues}/10个线索中猜出了\"{answer}\"！总胜利次数：{wins}",
+    scoreLost: "🌍 地理猜猜 - 我无法在10个线索中猜出\"{answer}\"。你能吗？"
+  },
+  ja: {
+    title: "ジオドル 🌍",
+    gameModes: "🎮 ゲームモード",
+    pathMode: "🛤️ パスモード",
+    countryMode: "🌍 国モード",
+    flagMode: "🏳️ 旗モード",
+    pathModeDesc: "地理的なヒントを得て、謎の場所を当ててください！",
+    countryModeDesc: "大陸、人口、GDP などで国を比較しよう！",
+    flagModeDesc: "国旗で国を特定しよう！",
+    clue: "ヒント",
+    of: "/",
+    loadingClue: "ヒント読み込み中...",
+    guessPlaceholder: "あなたの回答をここに入力",
+    guess: "推測",
+    totalWins: "総勝利数",
+    resetGame: "ゲームリセット",
+    resetWinCount: "勝利数リセット",
+    pastHints: "過去のヒント",
+    guessHistory: "推測履歴",
+    shareScore: "スコアを共有",
+    newGame: "新しいゲーム",
+    dailyLimit: "今日はもうプレイしました！明日また来てください 👀",
+    dataLoadingError: "データ読み込みエラー",
+    dataLoadingErrorDesc: "地理データファイル (data.js) を読み込めませんでした。ファイルが存在し、正しく形式化されていることを確認してください。",
+    helpImprove: "改善にご協力ください",
+    music: "音楽",
+    correct: "🎉 正解！答えは",
+    incorrect: "❌ {guess} は正しくありません。次のヒントです...",
+    gameOver: "😔 ゲーム終了！答えは",
+    resetGameConfirm: "🔄 ゲームがリセットされました！新しい国が選択されました。",
+    resetWinsConfirm: "勝利数をリセットしてもよろしいですか？この操作は元に戻せません。",
+    resetWinsSuccess: "🏆 勝利数を0にリセットしました！",
+    congratulations: "🎉 おめでとうございます！<br>{clues}個のヒントで\"{answer}\"を当てました！",
+    betterLuck: "😔 次回頑張りましょう！<br>答えは\"{answer}\"でした",
+    scoreCopied: "スコアがクリップボードにコピーされました！",
+    scoreWon: "🌍 ジオドル - {clues}/10個のヒントで\"{answer}\"を当てました！総勝利数：{wins}",
+    scoreLost: "🌍 ジオドル - 10個のヒントで\"{answer}\"を当てられませんでした。あなたはできますか？"
+  },
+  ko: {
+    title: "지오들 🌍",
+    gameModes: "🎮 게임 모드",
+    pathMode: "🛤️ 경로 모드",
+    countryMode: "🌍 국가 모드",
+    flagMode: "🏳️ 국기 모드", 
+    pathModeDesc: "지리적 단서를 얻고 신비로운 장소를 맞춰보세요!",
+    countryModeDesc: "대륙, 인구, GDP 등으로 국가를 비교해보세요!",
+    flagModeDesc: "국기로 국가를 식별해보세요!",
+    clue: "단서",
+    of: "/",
+    loadingClue: "단서 로딩 중...",
+    guessPlaceholder: "여기에 답을 입력하세요",
+    guess: "추측",
+    totalWins: "총 승리 횟수",
+    resetGame: "게임 재시작",
+    resetWinCount: "승리 횟수 재설정",
+    pastHints: "이전 힌트",
+    guessHistory: "추측 기록",
+    shareScore: "점수 공유하기",
+    newGame: "새 게임",
+    dailyLimit: "오늘 이미 플레이했습니다! 내일 다시 오세요 👀",
+    dataLoadingError: "데이터 로딩 오류",
+    dataLoadingErrorDesc: "지리 데이터 파일(data.js)을 로드할 수 없습니다. 파일이 존재하고 올바르게 형식화되어 있는지 확인하세요.",
+    helpImprove: "개선에 도움주기",
+    music: "음악",
+    correct: "🎉 정답! 답은",
+    incorrect: "❌ {guess}는 정답이 아닙니다. 다음 단서입니다...",
+    gameOver: "😔 게임 오버! 정답은",
+    resetGameConfirm: "🔄 게임이 재시작되었습니다! 새로운 국가가 선택되었습니다.",
+    resetWinsConfirm: "승리 횟수를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    resetWinsSuccess: "🏆 승리 횟수가 0으로 재설정되었습니다!",
+    congratulations: "🎉 축하합니다!<br>{clues}개의 단서로 \"{answer}\"을(를) 맞췄습니다!",
+    betterLuck: "😔 다음에 더 잘해보세요!<br>정답은 \"{answer}\"였습니다",
+    scoreCopied: "점수가 클립보드에 복사되었습니다!",
+    scoreWon: "🌍 지오들 - {clues}/10개 단서로 \"{answer}\"을(를) 맞췄습니다! 총 승리 횟수: {wins}",
+    scoreLost: "🌍 지오들 - 10개 단서로 \"{answer}\"을(를) 맞추지 못했습니다. 당신은 할 수 있나요?"
+  }
+};
+
+let currentLanguage = 'en';
+let currentQuestion = null;
+let currentClueIndex = 0;
+let guessHistory = [];
+let gameEnded = false;
+let totalWins = 0;
+let worldMap = null;
+let musicEnabled = true;
+
+// Translation function
+function translate(key, replacements = {}) {
+  let text = translations[currentLanguage][key] || translations['en'][key] || key;
+  
+  // Replace placeholders
+  Object.keys(replacements).forEach(placeholder => {
+    text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+  });
+  
+  return text;
+}
+
+// Update all translatable elements
+function updateLanguage() {
+  document.querySelectorAll('[data-translate]').forEach(element => {
+    const key = element.getAttribute('data-translate');
+    if (element.tagName === 'INPUT') {
+      element.placeholder = translate(key);
+    } else {
+      element.textContent = translate(key);
+    }
+  });
+  
+  // Update placeholder specifically
+  const guessInput = document.getElementById('guessInput');
+  if (guessInput) {
+    guessInput.placeholder = translate('guessPlaceholder');
+  }
+  
+  // Update current language display
+  document.getElementById('current-language').textContent = 
+    translations[currentLanguage].title ? 
+    translations[currentLanguage].title.replace(' 🌍', '').replace('Geodle', 'English').replace('지오들', '한국어').replace('ジオドル', '日本語').replace('地理猜猜', '中文').replace('Геодл', 'Русский').replace('Geodle', 'Português').replace('Geodle', 'Italiano').replace('Geodle', 'Deutsch').replace('Geodle', 'Français').replace('Geodle', 'Español') :
+    'English';
+    
+  // Update language display properly
+  const langMap = {
+    'en': 'English',
+    'es': 'Español', 
+    'fr': 'Français',
+    'de': 'Deutsch',
+    'it': 'Italiano',
+    'pt': 'Português',
+    'ru': 'Русский',
+    'zh': '中文',
+    'ja': '日本語',
+    'ko': '한국어'
+  };
+  
+  document.getElementById('current-language').textContent = langMap[currentLanguage] || 'English';
+  
+  // Update mode descriptions
+  updateModeDescriptions();
+}
+
+// Update mode descriptions based on current language
+function updateModeDescriptions() {
+  const pathBtn = document.getElementById('pathModeBtn');
+  const countryBtn = document.getElementById('countryModeBtn');
+  const flagBtn = document.getElementById('flagModeBtn');
+  const description = document.getElementById('modeDescription');
+  
+  if (pathBtn && pathBtn.classList.contains('active')) {
+    description.textContent = translate('pathModeDesc');
+  } else if (countryBtn && countryBtn.classList.contains('active')) {
+    description.textContent = translate('countryModeDesc');
+  } else if (flagBtn && flagBtn.classList.contains('active')) {
+    description.textContent = translate('flagModeDesc');
+  }
+}
+
+// Load and save settings
+function loadSettings() {
+  // Load language
+  const savedLanguage = localStorage.getItem('geodle_language');
+  if (savedLanguage && translations[savedLanguage]) {
+    currentLanguage = savedLanguage;
+  }
+  
+  // Load music setting
+  const savedMusic = localStorage.getItem('geodle_music_enabled');
+  musicEnabled = savedMusic !== null ? savedMusic === 'true' : true;
+  document.getElementById('music-toggle').checked = musicEnabled;
+  
+  // Load win count
+  const savedWins = localStorage.getItem('geodle_total_wins');
+  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+}
+
+function saveSettings() {
+  localStorage.setItem('geodle_language', currentLanguage);
+  localStorage.setItem('geodle_music_enabled', musicEnabled.toString());
+  localStorage.setItem('geodle_total_wins', totalWins.toString());
+}
+
+function toggleMusic() {
+  musicEnabled = !musicEnabled;
+  saveSettings();
+  console.log('Music ' + (musicEnabled ? 'enabled' : 'disabled'));
+}
+
+// Language functions
+function changeLanguage(langCode) {
+  if (translations[langCode]) {
+    currentLanguage = langCode;
+    saveSettings();
+    updateLanguage();
+    
+    // Update selected language option
+    document.querySelectorAll('.language-option').forEach(option => {
+      option.classList.remove('selected');
+      if (option.getAttribute('data-lang') === langCode) {
+        option.classList.add('selected');
+      }
+    });
+  }
+}
+
+// Check if data is loaded and validate it
+function validateData() {
+  if (typeof geographyData === 'undefined') {
+    console.error('geographyData is not defined. Make sure data.js is loaded.');
+    return false;
+  }
+  
+  if (!Array.isArray(geographyData)) {
+    console.error('geographyData should be an array.');
+    return false;
+  }
+  
+  if (geographyData.length === 0) {
+    console.error('geographyData array is empty.');
+    return false;
+  }
+  
+  // Validate structure of first item
+  const firstItem = geographyData[0];
+  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
+    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
+    return false;
+  }
+  
+  return true;
+}
+
+// Initialize the game
+function initGame() {
+  // Validate data first
+  if (!validateData()) {
+    document.getElementById('loadingError').style.display = 'block';
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    return;
+  }
+  
+  // Hide error message if it was shown
+  document.getElementById('loadingError').style.display = 'none';
+  
+  // Initialize or reset the world map
+  if (worldMap) {
+    worldMap.remove();
+    worldMap = null;
+  }
+  initWorldMap();
+  
+  // Get random question from external data
+  const randomIndex = Math.floor(Math.random() * geographyData.length);
+  currentQuestion = geographyData[randomIndex];
+  currentClueIndex = 0;
+  guessHistory = [];
+  gameEnded = false;
+  
+  // Display the first clue
+  updateClueDisplay();
+  updateProgressBar();
+  
+  // Reset UI
+  document.getElementById('guessInput').disabled = false;
+  document.getElementById('guessButton').disabled = false;
+  document.getElementById('guessInput').value = '';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('historyList').innerHTML = '';
+  document.getElementById('pastHintsList').innerHTML = '';
+  document.getElementById('endScreen').style.display = 'none';
+  
+  // Focus on input
+  document.getElementById('guessInput').focus();
+  
+  updateWinDisplay();
+}
+
+function resetGame() {
+  initGame();
+  showFeedback(translate('resetGameConfirm'), '#0078d7');
+}
+
+function updateClueDisplay() {
+  document.getElementById('currentClue').textContent = currentClueIndex + 1;
+  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+  updatePastHints();
+}
+
+function updatePastHints() {
+  const pastHintsList = document.getElementById('pastHintsList');
+  pastHintsList.innerHTML = '';
+  
+  // Show all hints up to current clue index
+  for (let i = 0; i <= currentClueIndex; i++) {
+    const li = document.createElement('li');
+    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+    pastHintsList.appendChild(li);
+  }
+}
+
+function updateProgressBar() {
+  const progress = ((currentClueIndex + 1) / 10) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function updateWinDisplay() {
+  const streakElement = document.getElementById('streak');
+  streakElement.innerHTML = `🏆 <span data-translate="totalWins">${translate('totalWins')}</span>: ${totalWins}`;
+}
+
+// Initialize Leaflet world map
+function initWorldMap() {
+  worldMap = L.map('worldMap', {
+    center: [20, 0],
+    zoom: 1,
+    minZoom: 1,
+    maxZoom: 10,
+    zoomControl: true,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(worldMap);
+}
+
+function handleGuess(e) {
+  e.preventDefault();
+  
+  if (gameEnded) return;
+  
+  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+  
+  if (!guess) return;
+  
+  // Check if correct
+  const isCorrect = guess === currentQuestion.answer;
+  
+  // Add to history
+  guessHistory.push({
+    text: guess,
+    correct: isCorrect,
+    clueNumber: currentClueIndex + 1
+  });
+  
+  if (isCorrect) {
+    showFeedback(`${translate('correct')} ${currentQuestion.answer}`, 'green');
+    totalWins++;
+    saveSettings();
+    updateWinDisplay();
+    endGame(true);
+  } else {
+    if (currentClueIndex < 9) {
+      currentClueIndex++;
+      updateClueDisplay();
+      updateProgressBar();
+      showFeedback(translate('incorrect', {guess: guess}), 'red');
+    } else {
+      showFeedback(`${translate('gameOver')} ${currentQuestion.answer}`, 'orange');
+      endGame(false);
+    }
+  }
+  
+  // Update history display
+  updateHistoryDisplay();
+  
+  // Clear input
+  document.getElementById('guessInput').value = '';
+}
+
+function showFeedback(message, color) {
+  const feedback = document.getElementById('feedback');
+  feedback.textContent = message;
+  feedback.style.color = color;
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById('historyList');
+  historyList.innerHTML = '';
+  
+  guessHistory.forEach((guess, index) => {
+    const li = document.createElement('li');
+    li.className = guess.correct ? 'correct' : 'incorrect';
+    li.innerHTML = `
+      <span>${translate('clue')} ${guess.clueNumber}: ${guess.text}</span>
+      <span>${guess.correct ? '✓' : '✗'}</span>
+    `;
+    historyList.appendChild(li);
+  });
+}
+
+function endGame(won) {
+  gameEnded = true;
+  document.getElementById('guessInput').disabled = true;
+  document.getElementById('guessButton').disabled = true;
+  
+  const endScreen = document.getElementById('endScreen');
+  const resultMsg = document.getElementById('resultMsg');
+  
+  if (won) {
+    const plural = currentClueIndex + 1 > 1 ? 's' : '';
+    resultMsg.innerHTML = translate('congratulations', {
+      answer: currentQuestion.answer,
+      clues: currentClueIndex + 1,
+      plural: plural
+    });
+  } else {
+    resultMsg.innerHTML = translate('betterLuck', {
+      answer: currentQuestion.answer
+    });
+  }
+  
+  endScreen.style.display = 'block';
+}
+
+function shareScore() {
+  const won = guessHistory.some(guess => guess.correct);
+  const cluesUsed = won ? currentClueIndex + 1 : 10;
+  
+  const scoreText = won ? 
+    translate('scoreWon', {
+      answer: currentQuestion.answer,
+      clues: cluesUsed,
+      wins: totalWins
+    }) :
+    translate('scoreLost', {
+      answer: currentQuestion.answer
+    });
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Geodle Score',
+      text: scoreText,
+      url: window.location.href
+    });
+  } else {
+    // Fallback - copy to clipboard
+    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+    alert(translate('scoreCopied'));
+  }
+}
+
+// Menu functionality
+function toggleMenu() {
+  const dropdown = document.getElementById('menu-dropdown');
+  const menuButton = document.getElementById('menu-button');
+  
+  dropdown.classList.toggle('show');
+  menuButton.classList.toggle('open');
+}
+
+function closeMenu() {
+  const dropdown = document.getElementById('menu-dropdown');
+  const menuButton = document.getElementById('menu-button');
+  
+  dropdown.classList.remove('show');
+  menuButton.classList.remove('open');
+}
+
+// Language dropdown functionality
+function toggleLanguageDropdown() {
+  const dropdown = document.getElementById('language-dropdown');
+  const options = document.getElementById('language-options');
+  
+  dropdown.classList.toggle('open');
+  options.classList.toggle('show');
+}
+
+function closeLanguageDropdown() {
+  const dropdown = document.getElementById('language-dropdown');
+  const options = document.getElementById('language-options');
+  
+  dropdown.classList.remove('open');
+  options.classList.remove('show');
+}
+
+// Mode selector functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Load settings
+  loadSettings();
+  updateLanguage();
+  
+  // Menu event listeners
+  document.getElementById('menu-button').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('menu-button');
+    const dropdown = document.getElementById('menu-dropdown');
+    const langDropdown = document.getElementById('language-dropdown');
+    
+    if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
+      closeMenu();
+    }
+    
+    if (!langDropdown.contains(e.target)) {
+      closeLanguageDropdown();
+    }
+  });
+  
+  // Language selector
+  document.getElementById('language-selector').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleLanguageDropdown();
+  });
+  
+  // Language options
+  document.querySelectorAll('.language-option').forEach(option => {
+    option.addEventListener('click', function() {
+      const langCode = this.getAttribute('data-lang');
+      changeLanguage(langCode);
+      closeLanguageDropdown();
+    });
+  });
+  
+  // Menu items
+  document.getElementById('menu-terms').addEventListener('click', function() {
+    closeMenu();
+    document.getElementById('terms-modal').style.display = 'block';
+  });
+  
+  document.getElementById('menu-privacy').addEventListener('click', function() {
+    closeMenu();
+    document.getElementById('privacy-modal').style.display = 'block';
+  });
+  
+  // Music toggle
+  document.getElementById('music-toggle').addEventListener('change', toggleMusic);
+  
+  // Easter egg button
+  document.getElementById('invisible-btn').addEventListener('dblclick', function() {
+    alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
+  });
+  
+  // Update mode descriptions on hover
+  const pathBtn = document.getElementById('pathModeBtn');
+  const countryBtn = document.getElementById('countryModeBtn');
+  const flagBtn = document.getElementById('flagModeBtn');
+  const description = document.getElementById('modeDescription');
+  
+  if (pathBtn && countryBtn && flagBtn && description) {
+    pathBtn.addEventListener('mouseenter', function() {
+      description.textContent = translate('pathModeDesc');
+    });
+    
+    countryBtn.addEventListener('mouseenter', function() {
+      description.textContent = translate('countryModeDesc');
+    });
+    
+    flagBtn.addEventListener('mouseenter', function() {
+      description.textContent = translate('flagModeDesc');
+    });
+    
+    // Reset to current mode description on mouse leave
+    const resetDescription = function() {
+      updateModeDescriptions();
+    };
+    
+    pathBtn.addEventListener('mouseleave', resetDescription);
+    countryBtn.addEventListener('mouseleave', resetDescription);
+    flagBtn.addEventListener('mouseleave', resetDescription);
+  }
+  
+  // Add a small delay to ensure data.js is fully loaded
+  setTimeout(() => {
+    initGame();
+  }, 100);
+  
+  // Set up event listeners
+  document.getElementById('guessForm').addEventListener('submit', handleGuess);
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+  document.getElementById('resetWinsBtn').addEventListener('click', function() {
+    if (confirm(translate('resetWinsConfirm'))) {
+      totalWins = 0;
+      saveSettings();
+      updateWinDisplay();
+      showFeedback(translate('resetWinsSuccess'), '#6f42c1');
+    }
+  });
+  document.getElementById('shareBtn').addEventListener('click', shareScore);
+  document.getElementById('newGameBtn').addEventListener('click', initGame);
+});
+</script>
+
+<!-- Terms & Cookies Consent Banner -->
+<style>
+  /* Banner */
+  #consent-banner {
+    position: fixed;
+    bottom: -100px;
+    left: 0;
+    width: 100%;
+    background-color: #222;
+    color: #fff;
+    padding: 15px 20px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transition: bottom 0.5s ease-in-out;
+  }
+  #consent-banner.show { bottom: 0; }
+  #consent-banner button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+  #consent-banner button:hover { background-color: #45a049; }
+  #consent-banner a {
+    color: #4CAF50;
+    text-decoration: underline;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  #consent-banner span { flex: 1 1 auto; margin-right: 10px; }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0,0,0,0.6);
+  }
+  .modal-content {
+    background-color: #fff;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 700px;
+    font-family: Arial, sans-serif;
+    color: #000;
+    line-height: 1.5;
+    position: relative;
+  }
+  .modal-content h2 { text-align: center; }
+  .modal-content h3 { margin-top: 15px; }
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+</style>
+
+<div id="consent-banner">
+  <span>
+    We use cookies and display ads to improve your experience. By using this site, you agree to our 
+    <a id="open-terms">Terms & Conditions</a> and 
+    <a id="open-privacy">Privacy Policy</a>.
+  </span>
+  <button id="accept-btn">Accept</button>
+</div>
+
+<!-- Terms Modal -->
+<div id="terms-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="close-terms">&times;</button>
+    <h2>Terms & Conditions</h2>
+    <p>Effective Date: August 21, 2025</p>
+
+    <h3>1. Agreement to Terms</h3>
+    <p>By clicking "I Agree" or by opening and playing the Game, you acknowledge that:</p>
+    <ul>
+      <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
+      <li>Your use of the Game is voluntary and at your own risk.</li>
+      <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
+    </ul>
+    <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
+
+    <h3>2. Use of the Game</h3>
+    <ul>
+      <li>Geodle is intended for entertainment and educational purposes only.</li>
+      <li>You may use the Game on your personal device only. You may not:
+        <ul>
+          <li>Copy, distribute, modify, or create derivative works without permission</li>
+          <li>Reverse engineer or attempt to extract the source code</li>
+          <li>Use the Game for commercial purposes without written consent</li>
+        </ul>
+      </li>
+      <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
+    </ul>
+
+    <h3>3. Account and Data</h3>
+    <ul>
+      <li>Geodle does not require personal accounts. All game progress, scores, and settings are stored locally on your device via local storage.</li>
+      <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
+      <li>The Game does not collect, transmit, or store personal information externally.</li>
+    </ul>
+
+    <h3>4. Content and Intellectual Property</h3>
+    <ul>
+      <li>All content, including graphics, text, sounds, and mechanics, is owned by Reuben Yee or used with permission.</li>
+      <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
+      <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
+    </ul>
+
+    <h3>5. Third-Party Services and Ads</h3>
+    <ul>
+      <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
+      <li>We do not control or store data collected by third-party networks.</li>
+      <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
+    </ul>
+
+    <h3>6. Children</h3>
+    <ul>
+      <li>The Game is safe for all ages. No personal info is collected, so children under 13 can play safely.</li>
+      <li>Parents/guardians can manage local storage to remove game data at any time.</li>
+    </ul>
+
+    <h3>7. Limitation of Liability</h3>
+    <ul>
+      <li>The Game is provided "as is" without warranties.</li>
+      <li>We are not responsible for any damages or losses arising from:
+        <ul>
+          <li>Use of the Game</li>
+          <li>Loss of local storage data</li>
+          <li>Technical issues or interruptions</li>
+          <li>Interactions with third-party ads</li>
+        </ul>
+      </li>
+      <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
+    </ul>
+
+    <h3>8. Governing Law</h3>
+    <p>These Terms are governed by Singapore law.</p>
+
+    <h3>9. Changes to Terms</h3>
+    <p>We may update these Terms. Continued use constitutes acceptance of updates.</p>
+
+    <h3>10. Contact</h3>
+    <p>Email: reubenyee2012@gmail.com</p>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacy-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" id="close-privacy">&times;</button>
+    <h2>Privacy Policy</h2>
+    <p>Effective Date: August 21, 2025</p>
+
+    <h3>1. Information We Collect</h3>
+    <p>Geodle does not collect personal information. The only information stored locally on your device includes:</p>
+    <ul>
+      <li>Game progress</li>
+      <li>High scores</li>
+      <li>User settings (sound, difficulty, themes)</li>
+    </ul>
+
+    <h3>2. Local Storage</h3>
+    <ul>
+      <li>All data is stored locally and is not transmitted to any server.</li>
+      <li>You can clear your local storage at any time, which will reset all progress and settings.</li>
+    </ul>
+
+    <h3>3. No Tracking or Analytics</h3>
+    <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
+
+    <h3>4. Third-Party Advertising</h3>
+    <ul>
+      <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
+      <li>We do not control or store this information.</li>
+    </ul>
+
+    <h3>5. Children's Privacy</h3>
+    <ul>
+      <li>Game is safe for children under 13.</li>
+      <li>Parents can manage local storage to remove saved data.</li>
+    </ul>
+
+    <h3>6. Data Retention</h3>
+    <p>All game progress and settings remain on your device until you clear local storage.</p>
+
+    <h3>7. Your Rights</h3>
+    <ul>
+      <li>You do not need to request access or deletion because no personal info is collected.</li>
+      <li>Clearing local storage deletes all saved data.</li>
+    </ul>
+
+    <h3>8. International Users</h3>
+    <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
+
+    <h3>9. Third-Party Links</h3>
+    <p>We are not responsible for the content or privacy practices of external websites.</p>
+
+    <h3>10. Changes to This Privacy Policy</h3>
+    <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
+
+    <h3>11. Contact</h3>
+    <p>Email: reubenyee2012@gmail.com</p>
+  </div>
+</div>
+
+<script>
+  const banner = document.getElementById('consent-banner');
+  const termsModal = document.getElementById('terms-modal');
+  const privacyModal = document.getElementById('privacy-modal');
+
+  // Show banner if not accepted
+  if(localStorage.getItem('geodleConsentAccepted') !== 'true'){
+    setTimeout(() => { banner.classList.add('show'); }, 500);
+  } else { banner.style.display = 'none'; }
+
+  // Accept button
+  document.getElementById('accept-btn').addEventListener('click', () => {
+    localStorage.setItem('geodleConsentAccepted', 'true');
+    banner.classList.remove('show');
+    setTimeout(() => { banner.style.display = 'none'; }, 500);
+  });
+
+  // Open modals
+  document.getElementById('open-terms').addEventListener('click', () => {
+    termsModal.style.display = 'block';
+  });
+  document.getElementById('open-privacy').addEventListener('click', () => {
+    privacyModal.style.display = 'block';
+  });
+
+  // Close modals
+  document.getElementById('close-terms').addEventListener('click', () => {
+    termsModal.style.display = 'none';
+  });
+  document.getElementById('close-privacy').addEventListener('click', () => {
+    privacyModal.style.display = 'none';
+  });
+
+  // Close modals when clicking outside content
+  window.addEventListener('click', (e) => {
+    if(e.target === termsModal) termsModal.style.display = 'none';
+    if(e.target === privacyModal) privacyModal.style.display = 'none';
+  });
+</script>
+
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -51,7 +1334,7 @@
     50% { opacity: 0.8; }
   }
 
-  /* Three-line Menu Button */
+  /* Three-line Menu Button - Improved */
   #menu-button {
     position: fixed;
     top: 20px;
@@ -64,6 +1347,11 @@
     cursor: pointer;
     z-index: 1001;
     transition: all 0.3s ease;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #menu-button:hover {
@@ -76,45 +1364,57 @@
     width: 24px;
     height: 18px;
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .menu-icon span {
     display: block;
-    height: 3px;
+    height: 2px;
     width: 100%;
     background: white;
     border-radius: 1px;
-    opacity: 1;
-    transform: rotate(0deg);
     transition: all 0.25s ease-in-out;
+    position: relative;
   }
 
   .menu-icon span:nth-child(1) {
-    top: 0px;
-    transform-origin: left center;
+    transform-origin: center;
   }
 
   .menu-icon span:nth-child(2) {
-    top: 6px;
-    transform-origin: left center;
+    transform-origin: center;
   }
 
   .menu-icon span:nth-child(3) {
-    top: 12px;
-    transform-origin: left center;
+    transform-origin: center;
+  }
+
+  /* Menu open animation */
+  #menu-button.open .menu-icon span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  #menu-button.open .menu-icon span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  #menu-button.open .menu-icon span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
   }
 
   /* Menu Dropdown */
   #menu-dropdown {
     position: fixed;
-    top: 70px;
+    top: 80px;
     left: 20px;
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(20px);
     border-radius: 15px;
     padding: 20px;
-    min-width: 200px;
+    min-width: 240px;
     box-shadow: 0 15px 50px rgba(0,0,0,0.2);
     border: 1px solid rgba(255,255,255,0.3);
     z-index: 1000;
@@ -157,8 +1457,8 @@
     margin-bottom: 0;
   }
 
-  /* Music Toggle Switch */
-  .music-toggle {
+  /* Toggle Switch Styles */
+  .toggle-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -166,6 +1466,7 @@
     color: #333;
     font-weight: 500;
     font-size: 14px;
+    margin-bottom: 8px;
   }
 
   .switch {
@@ -211,6 +1512,79 @@
 
   input:checked + .slider:before {
     transform: translateX(26px);
+  }
+
+  /* Language Dropdown */
+  .language-dropdown {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .language-selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: rgba(102, 126, 234, 0.05);
+  }
+
+  .language-selector:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .language-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.1);
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 1002;
+  }
+
+  .language-options.show {
+    max-height: 200px;
+  }
+
+  .language-option {
+    padding: 10px 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .language-option:last-child {
+    border-bottom: none;
+  }
+
+  .language-option:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .language-option.selected {
+    background: rgba(102, 126, 234, 0.15);
+    font-weight: 600;
+  }
+
+  .dropdown-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .language-dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
   }
 
   /* Invisible Easter Egg Button */
@@ -943,7 +2317,7 @@
     }
 
     #menu-dropdown {
-      top: 65px;
+      top: 75px;
       left: 15px;
       right: 15px;
       width: auto;
@@ -1081,748 +2455,3 @@
   .pulse {
     animation: pulse 1.5s ease-in-out infinite;
   }
-</style>
-</head>
-<body>
-
-<!-- Three-line Menu Button -->
-<div id="menu-button">
-  <div class="menu-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-
-<!-- Menu Dropdown -->
-<div id="menu-dropdown">
-  <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
-  <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
-  <div class="music-toggle">
-    <span>🎵 Music</span>
-    <label class="switch">
-      <input type="checkbox" id="music-toggle">
-      <span class="slider"></span>
-    </label>
-  </div>
-</div>
-
-<!-- Invisible Easter Egg Button -->
-<button id="invisible-btn"></button>
-
-<h1>Geodle 🌍</h1>
-
-<!-- Mode Selector -->
-<div class="mode-selector">
-  <h3>🎮 Game Modes</h3>
-  <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
-    🛤️ Path Mode
-  </a>
-  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
-    🌍 Country Mode
-  </a>
-  <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
-    🏳️ Flag Mode
-  </a>
-  <div class="mode-description">
-    <span id="modeDescription">Get geographic clues and guess the mystery location!</span>
-  </div>
-</div>
-
-<div id="worldMap"></div>
-<div id="progressInfo">
-  <div>Clue <span id="currentClue">1</span> of 10</div>
-  <div id="progressBar">
-    <div id="progressFill"></div>
-  </div>
-</div>
-<div id="clueBox">Loading clue...</div>
-<form id="guessForm">
-  <input type="text" id="guessInput" placeholder="Type your guess here" autocomplete="off" />
-  <button id="guessButton" type="submit">Guess</button>
-</form>
-<div id="feedback"></div>
-<div id="streak">🏆 Total Wins: 0</div>
-<div style="text-align: center;">
-  <button id="resetBtn" class="btn">🔄 Reset Game</button>
-  <button id="resetWinsBtn" class="btn">🏆 Reset Win Count</button>
-</div>
-<div id="pastHints">
-  <h3>Past Hints</h3>
-  <ul id="pastHintsList"></ul>
-</div>
-<div id="history">
-  <h3>Guess History</h3>
-  <ul id="historyList"></ul>
-</div>
-<div id="endScreen">
-  <div id="resultMsg"></div>
-  <button id="shareBtn" class="btn">Share My Score</button>
-  <button id="newGameBtn" class="btn">New Game</button>
-</div>
-<div id="dailyLimitMsg" style="display:none;">
-  You've already played today! Come back tomorrow 👀
-</div>
-<div id="loadingError">
-  <h3>⚠️ Data Loading Error</h3>
-  <p>Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.</p>
-</div>
-
-<!-- Sticky Help Button -->
-<a id="help-button" 
-   href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-   target="_blank" 
-   rel="noopener noreferrer">
-  Help Us Improve
-</a>
-
-<script>
-let currentQuestion = null;
-let currentClueIndex = 0;
-let guessHistory = [];
-let gameEnded = false;
-let totalWins = 0;
-let worldMap = null;
-let musicEnabled = true;
-
-// Load and save win count from localStorage
-function loadWinCount() {
-  const savedWins = localStorage.getItem('geodle_total_wins');
-  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
-}
-
-function saveWinCount() {
-  localStorage.setItem('geodle_total_wins', totalWins.toString());
-}
-
-function resetWinCount() {
-  totalWins = 0;
-  saveWinCount();
-}
-
-// Music functions
-function loadMusicSetting() {
-  const savedSetting = localStorage.getItem('geodle_music_enabled');
-  musicEnabled = savedSetting !== null ? savedSetting === 'true' : true;
-  document.getElementById('music-toggle').checked = musicEnabled;
-}
-
-function saveMusicSetting() {
-  localStorage.setItem('geodle_music_enabled', musicEnabled.toString());
-}
-
-function toggleMusic() {
-  musicEnabled = !musicEnabled;
-  saveMusicSetting();
-  // Here you would implement actual music play/pause functionality
-  console.log('Music ' + (musicEnabled ? 'enabled' : 'disabled'));
-}
-
-// Check if data is loaded and validate it
-function validateData() {
-  if (typeof geographyData === 'undefined') {
-    console.error('geographyData is not defined. Make sure data.js is loaded.');
-    return false;
-  }
-  
-  if (!Array.isArray(geographyData)) {
-    console.error('geographyData should be an array.');
-    return false;
-  }
-  
-  if (geographyData.length === 0) {
-    console.error('geographyData array is empty.');
-    return false;
-  }
-  
-  // Validate structure of first item
-  const firstItem = geographyData[0];
-  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
-    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
-    return false;
-  }
-  
-  return true;
-}
-
-// Initialize the game
-function initGame() {
-  // Validate data first
-  if (!validateData()) {
-    document.getElementById('loadingError').style.display = 'block';
-    document.getElementById('guessInput').disabled = true;
-    document.getElementById('guessButton').disabled = true;
-    return;
-  }
-  
-  // Hide error message if it was shown
-  document.getElementById('loadingError').style.display = 'none';
-  
-  // Initialize or reset the world map
-  if (worldMap) {
-    worldMap.remove();
-    worldMap = null;
-  }
-  initWorldMap();
-  
-  // Get random question from external data
-  const randomIndex = Math.floor(Math.random() * geographyData.length);
-  currentQuestion = geographyData[randomIndex];
-  currentClueIndex = 0;
-  guessHistory = [];
-  gameEnded = false;
-  
-  // Display the first clue
-  updateClueDisplay();
-  updateProgressBar();
-  
-  // Reset UI
-  document.getElementById('guessInput').disabled = false;
-  document.getElementById('guessButton').disabled = false;
-  document.getElementById('guessInput').value = '';
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('historyList').innerHTML = '';
-  document.getElementById('pastHintsList').innerHTML = '';
-  document.getElementById('endScreen').style.display = 'none';
-  
-  // Focus on input
-  document.getElementById('guessInput').focus();
-  
-  // Load win count from localStorage
-  loadWinCount();
-  updateWinDisplay();
-}
-
-function resetGame() {
-  // Initialize a new game (don't reset win count)
-  initGame();
-  
-  // Show reset confirmation
-  showFeedback('🔄 Game reset! New country selected.', '#0078d7');
-}
-
-function updateClueDisplay() {
-  document.getElementById('currentClue').textContent = currentClueIndex + 1;
-  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
-  updatePastHints();
-}
-
-function updatePastHints() {
-  const pastHintsList = document.getElementById('pastHintsList');
-  pastHintsList.innerHTML = '';
-  
-  // Show all hints up to current clue index
-  for (let i = 0; i <= currentClueIndex; i++) {
-    const li = document.createElement('li');
-    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
-    pastHintsList.appendChild(li);
-  }
-}
-
-function updateProgressBar() {
-  const progress = ((currentClueIndex + 1) / 10) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
-}
-
-function updateWinDisplay() {
-  document.getElementById('streak').textContent = `🏆 Total Wins: ${totalWins}`;
-}
-
-// Initialize Leaflet world map
-function initWorldMap() {
-  worldMap = L.map('worldMap', {
-    center: [20, 0],
-    zoom: 1,
-    minZoom: 1,
-    maxZoom: 10,
-    zoomControl: true,
-    dragging: true,
-    scrollWheelZoom: true,
-    doubleClickZoom: true,
-    touchZoom: true
-  });
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 18
-  }).addTo(worldMap);
-}
-
-function handleGuess(e) {
-  e.preventDefault();
-  
-  if (gameEnded) return;
-  
-  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
-  
-  if (!guess) return;
-  
-  // Check if correct
-  const isCorrect = guess === currentQuestion.answer;
-  
-  // Add to history
-  guessHistory.push({
-    text: guess,
-    correct: isCorrect,
-    clueNumber: currentClueIndex + 1
-  });
-  
-  if (isCorrect) {
-    showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
-    totalWins++;
-    saveWinCount();
-    updateWinDisplay();
-    endGame(true);
-  } else {
-    if (currentClueIndex < 9) {
-      currentClueIndex++;
-      updateClueDisplay();
-      updateProgressBar();
-      showFeedback(`❌ ${guess} is not correct. Here's the next clue...`, 'red');
-    } else {
-      showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
-      endGame(false);
-    }
-  }
-  
-  // Update history display
-  updateHistoryDisplay();
-  
-  // Clear input
-  document.getElementById('guessInput').value = '';
-}
-
-function showFeedback(message, color) {
-  const feedback = document.getElementById('feedback');
-  feedback.textContent = message;
-  feedback.style.color = color;
-}
-
-function updateHistoryDisplay() {
-  const historyList = document.getElementById('historyList');
-  historyList.innerHTML = '';
-  
-  guessHistory.forEach((guess, index) => {
-    const li = document.createElement('li');
-    li.className = guess.correct ? 'correct' : 'incorrect';
-    li.innerHTML = `
-      <span>Clue ${guess.clueNumber}: ${guess.text}</span>
-      <span>${guess.correct ? '✓' : '✗'}</span>
-    `;
-    historyList.appendChild(li);
-  });
-}
-
-function endGame(won) {
-  gameEnded = true;
-  document.getElementById('guessInput').disabled = true;
-  document.getElementById('guessButton').disabled = true;
-  
-  const endScreen = document.getElementById('endScreen');
-  const resultMsg = document.getElementById('resultMsg');
-  
-  if (won) {
-    resultMsg.innerHTML = `🎉 Congratulations!<br>You guessed "${currentQuestion.answer}" after ${currentClueIndex + 1} clue${currentClueIndex + 1 > 1 ? 's' : ''}!`;
-  } else {
-    resultMsg.innerHTML = `😔 Better luck next time!<br>The answer was "${currentQuestion.answer}"`;
-  }
-  
-  endScreen.style.display = 'block';
-}
-
-function shareScore() {
-  const won = guessHistory.some(guess => guess.correct);
-  const cluesUsed = won ? currentClueIndex + 1 : 10;
-  const scoreText = won ? 
-    `🌍 Geodle - I guessed "${currentQuestion.answer}" in ${cluesUsed}/10 clues! Total Wins: ${totalWins}` :
-    `🌍 Geodle - I couldn't guess "${currentQuestion.answer}" in 10 clues. Can you?`;
-  
-  if (navigator.share) {
-    navigator.share({
-      title: 'Geodle Score',
-      text: scoreText,
-      url: window.location.href
-    });
-  } else {
-    // Fallback - copy to clipboard
-    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-    alert('Score copied to clipboard!');
-  }
-}
-
-// Menu functionality
-function toggleMenu() {
-  const dropdown = document.getElementById('menu-dropdown');
-  dropdown.classList.toggle('show');
-}
-
-function closeMenu() {
-  const dropdown = document.getElementById('menu-dropdown');
-  dropdown.classList.remove('show');
-}
-
-// Mode selector functionality
-document.addEventListener('DOMContentLoaded', function() {
-  // Load music setting
-  loadMusicSetting();
-  
-  // Menu event listeners
-  document.getElementById('menu-button').addEventListener('click', toggleMenu);
-  
-  // Close menu when clicking outside
-  document.addEventListener('click', function(e) {
-    const menu = document.getElementById('menu-button');
-    const dropdown = document.getElementById('menu-dropdown');
-    if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
-      closeMenu();
-    }
-  });
-  
-  // Menu items
-  document.getElementById('menu-terms').addEventListener('click', function() {
-    closeMenu();
-    document.getElementById('terms-modal').style.display = 'block';
-  });
-  
-  document.getElementById('menu-privacy').addEventListener('click', function() {
-    closeMenu();
-    document.getElementById('privacy-modal').style.display = 'block';
-  });
-  
-  // Music toggle
-  document.getElementById('music-toggle').addEventListener('change', toggleMusic);
-  
-  // Easter egg button
-  document.getElementById('invisible-btn').addEventListener('dblclick', function() {
-    alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
-  });
-  
-  // Update mode descriptions on hover
-  const pathBtn = document.getElementById('pathModeBtn');
-  const countryBtn = document.getElementById('countryModeBtn');
-  const flagBtn = document.getElementById('flagModeBtn');
-  const description = document.getElementById('modeDescription');
-  
-  const descriptions = {
-    path: "Get geographic clues and guess the mystery location!",
-    country: "Compare countries by continent, population, GDP, and more!",
-    flag: "Identify countries by their flags!"
-  };
-  
-  if (pathBtn && countryBtn && flagBtn && description) {
-    pathBtn.addEventListener('mouseenter', function() {
-      description.textContent = descriptions.path;
-    });
-    
-    countryBtn.addEventListener('mouseenter', function() {
-      description.textContent = descriptions.country;
-    });
-    
-    flagBtn.addEventListener('mouseenter', function() {
-      description.textContent = descriptions.flag;
-    });
-    
-    // Reset to current mode description on mouse leave
-    const resetDescription = function() {
-      if (pathBtn.classList.contains('active')) {
-        description.textContent = descriptions.path;
-      } else if (countryBtn.classList.contains('active')) {
-        description.textContent = descriptions.country;
-      } else if (flagBtn.classList.contains('active')) {
-        description.textContent = descriptions.flag;
-      }
-    };
-    
-    pathBtn.addEventListener('mouseleave', resetDescription);
-    countryBtn.addEventListener('mouseleave', resetDescription);
-    flagBtn.addEventListener('mouseleave', resetDescription);
-  }
-  
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
-  
-  // Set up event listeners
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('resetWinsBtn').addEventListener('click', function() {
-    if (confirm('Are you sure you want to reset your win count? This cannot be undone.')) {
-      resetWinCount();
-      updateWinDisplay();
-      showFeedback('🏆 Win count reset to 0!', '#6f42c1');
-    }
-  });
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', initGame);
-});
-</script>
-
-<!-- Terms & Cookies Consent Banner -->
-<style>
-  /* Banner */
-  #consent-banner {
-    position: fixed;
-    bottom: -100px;
-    left: 0;
-    width: 100%;
-    background-color: #222;
-    color: #fff;
-    padding: 15px 20px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
-    z-index: 1000;
-    transition: bottom 0.5s ease-in-out;
-  }
-  #consent-banner.show { bottom: 0; }
-  #consent-banner button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  #consent-banner button:hover { background-color: #45a049; }
-  #consent-banner a {
-    color: #4CAF50;
-    text-decoration: underline;
-    margin-left: 5px;
-    cursor: pointer;
-  }
-  #consent-banner span { flex: 1 1 auto; margin-right: 10px; }
-
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    background-color: rgba(0,0,0,0.6);
-  }
-  .modal-content {
-    background-color: #fff;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 700px;
-    font-family: Arial, sans-serif;
-    color: #000;
-    line-height: 1.5;
-    position: relative;
-  }
-  .modal-content h2 { text-align: center; }
-  .modal-content h3 { margin-top: 15px; }
-  .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 18px;
-    cursor: pointer;
-    background: none;
-    border: none;
-  }
-</style>
-
-<div id="consent-banner">
-  <span>
-    We use cookies and display ads to improve your experience. By using this site, you agree to our 
-    <a id="open-terms">Terms & Conditions</a> and 
-    <a id="open-privacy">Privacy Policy</a>.
-  </span>
-  <button id="accept-btn">Accept</button>
-</div>
-
-<!-- Terms Modal -->
-<div id="terms-modal" class="modal">
-  <div class="modal-content">
-    <button class="close-modal" id="close-terms">&times;</button>
-    <h2>Terms & Conditions</h2>
-    <p>Effective Date: August 21, 2025</p>
-
-    <h3>1. Agreement to Terms</h3>
-    <p>By clicking "I Agree" or by opening and playing the Game, you acknowledge that:</p>
-    <ul>
-      <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
-      <li>Your use of the Game is voluntary and at your own risk.</li>
-      <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
-    </ul>
-    <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
-
-    <h3>2. Use of the Game</h3>
-    <ul>
-      <li>Geodle is intended for entertainment and educational purposes only.</li>
-      <li>You may use the Game on your personal device only. You may not:
-        <ul>
-          <li>Copy, distribute, modify, or create derivative works without permission</li>
-          <li>Reverse engineer or attempt to extract the source code</li>
-          <li>Use the Game for commercial purposes without written consent</li>
-        </ul>
-      </li>
-      <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
-    </ul>
-
-    <h3>3. Account and Data</h3>
-    <ul>
-      <li>Geodle does not require personal accounts. All game progress, scores, and settings are stored locally on your device via local storage.</li>
-      <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
-      <li>The Game does not collect, transmit, or store personal information externally.</li>
-    </ul>
-
-    <h3>4. Content and Intellectual Property</h3>
-    <ul>
-      <li>All content, including graphics, text, sounds, and mechanics, is owned by Reuben Yee or used with permission.</li>
-      <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
-      <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
-    </ul>
-
-    <h3>5. Third-Party Services and Ads</h3>
-    <ul>
-      <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
-      <li>We do not control or store data collected by third-party networks.</li>
-      <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
-    </ul>
-
-    <h3>6. Children</h3>
-    <ul>
-      <li>The Game is safe for all ages. No personal info is collected, so children under 13 can play safely.</li>
-      <li>Parents/guardians can manage local storage to remove game data at any time.</li>
-    </ul>
-
-    <h3>7. Limitation of Liability</h3>
-    <ul>
-      <li>The Game is provided "as is" without warranties.</li>
-      <li>We are not responsible for any damages or losses arising from:
-        <ul>
-          <li>Use of the Game</li>
-          <li>Loss of local storage data</li>
-          <li>Technical issues or interruptions</li>
-          <li>Interactions with third-party ads</li>
-        </ul>
-      </li>
-      <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
-    </ul>
-
-    <h3>8. Governing Law</h3>
-    <p>These Terms are governed by Singapore law.</p>
-
-    <h3>9. Changes to Terms</h3>
-    <p>We may update these Terms. Continued use constitutes acceptance of updates.</p>
-
-    <h3>10. Contact</h3>
-    <p>Email: reubenyee2012@gmail.com</p>
-  </div>
-</div>
-
-<!-- Privacy Modal -->
-<div id="privacy-modal" class="modal">
-  <div class="modal-content">
-    <button class="close-modal" id="close-privacy">&times;</button>
-    <h2>Privacy Policy</h2>
-    <p>Effective Date: August 21, 2025</p>
-
-    <h3>1. Information We Collect</h3>
-    <p>Geodle does not collect personal information. The only information stored locally on your device includes:</p>
-    <ul>
-      <li>Game progress</li>
-      <li>High scores</li>
-      <li>User settings (sound, difficulty, themes)</li>
-    </ul>
-
-    <h3>2. Local Storage</h3>
-    <ul>
-      <li>All data is stored locally and is not transmitted to any server.</li>
-      <li>You can clear your local storage at any time, which will reset all progress and settings.</li>
-    </ul>
-
-    <h3>3. No Tracking or Analytics</h3>
-    <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
-
-    <h3>4. Third-Party Advertising</h3>
-    <ul>
-      <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
-      <li>We do not control or store this information.</li>
-    </ul>
-
-    <h3>5. Children's Privacy</h3>
-    <ul>
-      <li>Game is safe for children under 13.</li>
-      <li>Parents can manage local storage to remove saved data.</li>
-    </ul>
-
-    <h3>6. Data Retention</h3>
-    <p>All game progress and settings remain on your device until you clear local storage.</p>
-
-    <h3>7. Your Rights</h3>
-    <ul>
-      <li>You do not need to request access or deletion because no personal info is collected.</li>
-      <li>Clearing local storage deletes all saved data.</li>
-    </ul>
-
-    <h3>8. International Users</h3>
-    <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
-
-    <h3>9. Third-Party Links</h3>
-    <p>We are not responsible for the content or privacy practices of external websites.</p>
-
-    <h3>10. Changes to This Privacy Policy</h3>
-    <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
-
-    <h3>11. Contact</h3>
-    <p>Email: reubenyee2012@gmail.com</p>
-  </div>
-</div>
-
-<script>
-  const banner = document.getElementById('consent-banner');
-  const termsModal = document.getElementById('terms-modal');
-  const privacyModal = document.getElementById('privacy-modal');
-
-  // Show banner if not accepted
-  if(localStorage.getItem('geodleConsentAccepted') !== 'true'){
-    setTimeout(() => { banner.classList.add('show'); }, 500);
-  } else { banner.style.display = 'none'; }
-
-  // Accept button
-  document.getElementById('accept-btn').addEventListener('click', () => {
-    localStorage.setItem('geodleConsentAccepted', 'true');
-    banner.classList.remove('show');
-    setTimeout(() => { banner.style.display = 'none'; }, 500);
-  });
-
-  // Open modals
-  document.getElementById('open-terms').addEventListener('click', () => {
-    termsModal.style.display = 'block';
-  });
-  document.getElementById('open-privacy').addEventListener('click', () => {
-    privacyModal.style.display = 'block';
-  });
-
-  // Close modals
-  document.getElementById('close-terms').addEventListener('click', () => {
-    termsModal.style.display = 'none';
-  });
-  document.getElementById('close-privacy').addEventListener('click', () => {
-    privacyModal.style.display = 'none';
-  });
-
-  // Close modals when clicking outside content
-  window.addEventListener('click', (e) => {
-    if(e.target === termsModal) termsModal.style.display = 'none';
-    if(e.target === privacyModal) privacyModal.style.display = 'none';
-  });
-</script>
-
-</body>
-</html>
