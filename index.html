@@ -2,6 +2,20 @@
 </head>
 <body>
 
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-content">
+    <div class="loading-logo">🌍 Geodle</div>
+    <div class="loading-text">Loading geography data...</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-dots">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Three-line Menu Button -->
 <div id="menu-button">
   <div class="menu-icon">
@@ -55,16 +69,16 @@
 <div class="mode-selector">
   <h3 data-translate="gameModes">🎮 Game Modes</h3>
   <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
-    <span data-translate="pathMode">🛤️ Routele</span>
+    <span data-translate="pathMode">🛤️ Path Mode</span>
   </a>
   <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
-    <span data-translate="countryMode">🌍 Countryle</span>
+    <span data-translate="countryMode">🌍 Country Mode</span>
   </a>
   <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
-    <span data-translate="flagMode">🏳️ Flagle</span>
+    <span data-translate="flagMode">🏳️ Flag Mode</span>
   </a>
   <div class="mode-description">
-    <span id="modeDescription" data-translate="pathModeDesc">Get geographic clues and guess the mystery country!</span>
+    <span id="modeDescription" data-translate="pathModeDesc">Get geographic clues and guess the mystery location!</span>
   </div>
 </div>
 
@@ -627,6 +641,17 @@ function changeLanguage(langCode) {
   }
 }
 
+// Show loading screen initially
+function showLoadingScreen() {
+  document.getElementById('loading-screen').classList.remove('hidden');
+}
+
+function hideLoadingScreen() {
+  setTimeout(() => {
+    document.getElementById('loading-screen').classList.add('hidden');
+  }, 500); // Small delay to show the loading screen briefly
+}
+
 // Check if data is loaded and validate it
 function validateData() {
   if (typeof geographyData === 'undefined') {
@@ -656,53 +681,66 @@ function validateData() {
 
 // Initialize the game
 function initGame() {
-  // Validate data first
-  if (!validateData()) {
-    document.getElementById('loadingError').style.display = 'block';
-    document.getElementById('guessInput').disabled = true;
-    document.getElementById('guessButton').disabled = true;
-    return;
-  }
+  // Show loading screen
+  showLoadingScreen();
   
-  // Hide error message if it was shown
-  document.getElementById('loadingError').style.display = 'none';
-  
-  // Initialize or reset the world map
-  if (worldMap) {
-    worldMap.remove();
-    worldMap = null;
-  }
-  initWorldMap();
-  
-  // Get random question from external data
-  const randomIndex = Math.floor(Math.random() * geographyData.length);
-  currentQuestion = geographyData[randomIndex];
-  currentClueIndex = 0;
-  guessHistory = [];
-  gameEnded = false;
-  
-  // Display the first clue
-  updateClueDisplay();
-  updateProgressBar();
-  
-  // Reset UI
-  document.getElementById('guessInput').disabled = false;
-  document.getElementById('guessButton').disabled = false;
-  document.getElementById('guessInput').value = '';
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('historyList').innerHTML = '';
-  document.getElementById('pastHintsList').innerHTML = '';
-  document.getElementById('endScreen').style.display = 'none';
-  
-  // Focus on input
-  document.getElementById('guessInput').focus();
-  
-  updateWinDisplay();
+  // Simulate loading time for better UX
+  setTimeout(() => {
+    // Validate data first
+    if (!validateData()) {
+      document.getElementById('loadingError').style.display = 'block';
+      document.getElementById('guessInput').disabled = true;
+      document.getElementById('guessButton').disabled = true;
+      hideLoadingScreen();
+      return;
+    }
+    
+    // Hide error message if it was shown
+    document.getElementById('loadingError').style.display = 'none';
+    
+    // Initialize or reset the world map
+    if (worldMap) {
+      worldMap.remove();
+      worldMap = null;
+    }
+    initWorldMap();
+    
+    // Get random question from external data
+    const randomIndex = Math.floor(Math.random() * geographyData.length);
+    currentQuestion = geographyData[randomIndex];
+    currentClueIndex = 0;
+    guessHistory = [];
+    gameEnded = false;
+    
+    // Display the first clue
+    updateClueDisplay();
+    updateProgressBar();
+    
+    // Reset UI
+    document.getElementById('guessInput').disabled = false;
+    document.getElementById('guessButton').disabled = false;
+    document.getElementById('guessInput').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('historyList').innerHTML = '';
+    document.getElementById('pastHintsList').innerHTML = '';
+    document.getElementById('endScreen').style.display = 'none';
+    
+    // Focus on input
+    document.getElementById('guessInput').focus();
+    
+    updateWinDisplay();
+    
+    // Hide loading screen
+    hideLoadingScreen();
+  }, Math.random() * 800 + 400); // Random loading time between 400-1200ms for realism
 }
 
 function resetGame() {
-  initGame();
-  showFeedback(translate('resetGameConfirm'), '#0078d7');
+  showLoadingScreen();
+  setTimeout(() => {
+    initGame();
+    showFeedback(translate('resetGameConfirm'), '#0078d7');
+  }, 600);
 }
 
 function updateClueDisplay() {
@@ -1010,7 +1048,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', initGame);
+  document.getElementById('newGameBtn').addEventListener('click', function() {
+    showLoadingScreen();
+    setTimeout(() => {
+      initGame();
+    }, 600);
+  });
+  
+  // Show initial loading screen
+  showLoadingScreen();
 });
 </script>
 
@@ -1548,13 +1594,31 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     border: 1px solid rgba(0,0,0,0.1);
     max-height: 0;
-    overflow: hidden;
+    overflow-y: auto;
     transition: all 0.3s ease;
     z-index: 1002;
   }
 
   .language-options.show {
-    max-height: 200px;
+    max-height: 250px;
+  }
+
+  .language-options::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .language-options::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05);
+    border-radius: 3px;
+  }
+
+  .language-options::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 3px;
+  }
+
+  .language-options::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
   }
 
   .language-option {
@@ -1585,6 +1649,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
   .language-dropdown.open .dropdown-arrow {
     transform: rotate(180deg);
+  }
+
+  /* Loading Screen */
+  #loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  #loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loading-content {
+    text-align: center;
+    color: white;
+  }
+
+  .loading-logo {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: logoFloat 2s ease-in-out infinite;
+  }
+
+  .loading-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+    opacity: 0.9;
+    animation: fadeInOut 1.5s ease-in-out infinite;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+
+  .loading-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .loading-dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: dotBounce 1.4s ease-in-out infinite both;
+  }
+
+  .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+  .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+  .loading-dot:nth-child(3) { animation-delay: 0s; }
+
+  @keyframes logoFloat {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes dotBounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* Invisible Easter Egg Button */
