@@ -131,31 +131,236 @@
             font-weight: 600;
         }
 
-        /* Audio Controls */
-        .audio-controls {
+        /* Menu Button */
+        .menu-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            font-size: 18px;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .menu-button:hover {
+            background: rgba(138, 43, 226, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.5);
+        }
+
+        /* Settings Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .settings-menu {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .menu-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .menu-section {
+            margin-bottom: 25px;
+        }
+
+        .menu-section h3 {
+            color: #4ecdc4;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .audio-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .audio-btn:hover {
-            background: rgba(255,255,255,0.2);
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(26px);
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+        }
+
+        /* Volume slider styling */
+        .volume-slider {
+            width: 120px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(78, 205, 196, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.6);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(78, 205, 196, 0.4);
+        }
+
+        /* Enhanced dropdown styling */
+        .dropdown-select {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(138, 43, 226, 0.1));
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            min-width: 140px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .dropdown-select:hover {
+            border-color: rgba(138, 43, 226, 0.7);
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(0, 0, 0, 0.8));
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .dropdown-select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
         }
 
         .game-layout {
@@ -532,27 +737,166 @@
 
         /* Game mode navigation styling */
         .game-button {
-            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff6b6b);
+            background-size: 200% 200%;
             color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 15px 30px;
-            margin: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 18px 35px;
+            margin: 12px;
             font-size: 18px;
-            border-radius: 25px;
+            font-weight: 600;
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .game-button:hover::before {
+            left: 100%;
         }
 
         .game-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.5);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6);
+            background-position: 100% 0;
+            border-color: rgba(255,255,255,0.5);
         }
 
         .game-button:active {
-            transform: translateY(1px) scale(0.98);
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        /* Mode button specific styling */
+        .mode-btn {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1, #4ecdc4);
+            background-size: 200% 200%;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 18px 35px;
+            margin: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.6);
+            background-position: 100% 0;
+            border-color: rgba(255,255,255,0.5);
+            color: white;
+            text-decoration: none;
+        }
+
+        .mode-btn:active {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.5);
+        }
+
+        /* Enhanced Feedback Button */
+        .feedback-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+            z-index: 1000;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .feedback-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6);
+            background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+            text-decoration: none;
+            color: white;
+        }
+
+        .feedback-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ff6b6b);
+            border-radius: 32px;
+            z-index: -1;
+            filter: blur(8px);
+            opacity: 0.7;
+            animation: borderGlow 3s ease infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.9; }
+        }
+
+        .feedback-icon {
+            font-size: 16px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-3px); }
+            60% { transform: translateY(-2px); }
         }
 
         @keyframes slideIn {
@@ -599,24 +943,126 @@
                 transform: rotate(90deg);
             }
 
-            .audio-controls {
+            .menu-button {
                 top: 10px;
                 left: 10px;
+            }
+            
+            .settings-menu {
+                padding: 25px;
+                width: 95%;
+            }
+            
+            .feedback-button {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px 20px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Audio Controls -->
-    <div class="audio-controls">
-        <button id="toggleMusic" class="audio-btn">🎵 Music</button>
-        <button id="toggleSfx" class="audio-btn">🔊 SFX</button>
+    <!-- Menu Button -->
+    <button class="menu-button" id="menuButton">⚙️</button>
+
+    <!-- Settings Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="settings-menu">
+            <button class="close-menu-btn" id="closeMenuBtn">×</button>
+            <h2 class="menu-title">⚙️ Game Settings</h2>
+            
+            <div class="menu-section">
+                <h3>🔊 Audio Settings</h3>
+                <div class="setting-item">
+                    <span>Background Music</span>
+                    <div class="toggle-switch" id="musicToggle"></div>
+                </div>
+                <div class="setting-item">
+                    <span>Sound Effects</span>
+                    <div class="toggle-switch active" id="sfxToggle"></div>
+                </div>
+                <div class="setting-item">
+                    <span>Master Volume</span>
+                    <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>🌍 Language & Region</h3>
+                <div class="setting-item">
+                    <span>Language</span>
+                    <select class="dropdown-select" id="languageSelect">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="pt">🇧🇷 Português</option>
+                        <option value="ru">🇷🇺 Русский</option>
+                        <option value="zh">🇨🇳 中文</option>
+                        <option value="ja">🇯🇵 日本語</option>
+                        <option value="ko">🇰🇷 한국어</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Country Display</span>
+                    <select class="dropdown-select" id="countryDisplaySelect">
+                        <option value="name">Country Names</option>
+                        <option value="flag">Flags Only</option>
+                        <option value="both">Names + Flags</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>🎮 Game Settings</h3>
+                <div class="setting-item">
+                    <span>Difficulty Mode</span>
+                    <select class="dropdown-select" id="difficultySelect">
+                        <option value="easy">🟢 Easy (+8 attempts)</option>
+                        <option value="normal" selected>🟡 Normal (+5 attempts)</option>
+                        <option value="hard">🔴 Hard (+3 attempts)</option>
+                        <option value="expert">⚫ Expert (+1 attempt)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Hint System</span>
+                    <div class="toggle-switch active" id="hintsToggle"></div>
+                </div>
+                <div class="setting-item">
+                    <span>Auto-Save Progress</span>
+                    <div class="toggle-switch active" id="autoSaveToggle"></div>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h3>🎨 Visual Settings</h3>
+                <div class="setting-item">
+                    <span>Theme</span>
+                    <select class="dropdown-select" id="themeSelect">
+                        <option value="cosmic">🌌 Cosmic (Default)</option>
+                        <option value="ocean">🌊 Ocean Blue</option>
+                        <option value="forest">🌲 Forest Green</option>
+                        <option value="sunset">🌅 Sunset Orange</option>
+                        <option value="midnight">🌙 Midnight Purple</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Animations</span>
+                    <div class="toggle-switch active" id="animationsToggle"></div>
+                </div>
+                <div class="setting-item">
+                    <span>Particle Effects</span>
+                    <div class="toggle-switch active" id="particlesToggle"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Hidden audio elements -->
     <audio id="backgroundMusic" loop>
         <source src="https://www.soundjay.com/misc/sounds-909.wav" type="audio/wav">
-        <!-- Fallback for browsers that don't support the audio element -->
     </audio>
     <audio id="winSound">
         <source src="https://www.soundjay.com/misc/sounds-907.wav" type="audio/wav">
@@ -633,9 +1079,9 @@
 
         <!-- Button Container -->
         <div style="text-align:center; margin: 40px;">
-          <button onclick="goToCountryMode()" class="game-button">Countryle</button>
-          <button onclick="goToClassicMode()" class="game-button">Geodle</button>
-        <button class="mode-btn" onclick="window.location.href='flag-mode.html'">Flagle</button>
+          <button onclick="goToCountryMode()" class="game-button">🌍 Countryle</button>
+          <button onclick="goToClassicMode()" class="game-button">🎯 Geodle</button>
+          <a class="mode-btn" onclick="window.location.href='flag-mode.html'">🚩 Flagle</a>
         </div>
 
         <div class="game-layout">
@@ -707,6 +1153,14 @@
             <button id="newGameBtn" class="new-game-btn">🎮 Try Again</button>
         </div>
     </div>
+
+    <!-- Enhanced Feedback Button -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
+       target="_blank" 
+       class="feedback-button">
+       <span class="feedback-icon">✨</span>
+       <span>Help Us Improve</span>
+    </a>
 
     <script>
         // Audio variables
@@ -810,20 +1264,6 @@
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.1);
             };
-
-            // Setup audio controls
-            document.getElementById('toggleMusic').addEventListener('click', function() {
-                musicEnabled = !musicEnabled;
-                this.textContent = musicEnabled ? '🎵 Music ON' : '🎵 Music OFF';
-                if (musicEnabled) {
-                    playBackgroundTone();
-                }
-            });
-
-            document.getElementById('toggleSfx').addEventListener('click', function() {
-                sfxEnabled = !sfxEnabled;
-                this.textContent = sfxEnabled ? '🔊 SFX ON' : '🔊 SFX OFF';
-            });
         }
 
         // Particle effect for winning
@@ -866,6 +1306,7 @@
         // Initialize the game when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initAudio();
+            initSettingsMenu();
             
             // Extract country names from the imported data
             if (typeof countries !== 'undefined') {
@@ -875,6 +1316,189 @@
                 console.error('Countries data not loaded. Make sure country-data.js is included.');
             }
         });
+
+        // Settings menu functionality
+        function initSettingsMenu() {
+            const menuButton = document.getElementById('menuButton');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const musicToggle = document.getElementById('musicToggle');
+            const sfxToggle = document.getElementById('sfxToggle');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const languageSelect = document.getElementById('languageSelect');
+            const difficultySelect = document.getElementById('difficultySelect');
+            const themeSelect = document.getElementById('themeSelect');
+
+            // Menu open/close
+            menuButton.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
+                menuOverlay.classList.add('active');
+            });
+
+            closeMenuBtn.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
+                menuOverlay.classList.remove('active');
+            });
+
+            menuOverlay.addEventListener('click', function(e) {
+                if (e.target === menuOverlay) {
+                    menuOverlay.classList.remove('active');
+                }
+            });
+
+            // Audio toggles
+            musicToggle.addEventListener('click', function() {
+                window.playClickSound && window.playClickSound();
+                musicEnabled = !musicEnabled;
+                this.classList.toggle('active', musicEnabled);
+                if (musicEnabled) {
+                    playBackgroundTone();
+                }
+            });
+
+            sfxToggle.addEventListener('click', function() {
+                sfxEnabled = !sfxEnabled;
+                this.classList.toggle('active', sfxEnabled);
+                if (sfxEnabled) {
+                    window.playClickSound && window.playClickSound();
+                }
+            });
+
+            // Volume control
+            volumeSlider.addEventListener('input', function() {
+                const volume = this.value / 100;
+                console.log('Volume set to:', volume);
+            });
+
+            // Language selection
+            languageSelect.addEventListener('change', function() {
+                window.playClickSound && window.playClickSound();
+                const selectedLanguage = this.value;
+                console.log('Language changed to:', selectedLanguage);
+                showNotification(`Language changed to ${this.options[this.selectedIndex].text}`);
+            });
+
+            // Difficulty selection
+            difficultySelect.addEventListener('change', function() {
+                window.playClickSound && window.playClickSound();
+                const difficulty = this.value;
+                console.log('Difficulty changed to:', difficulty);
+                updateDifficulty(difficulty);
+                showNotification(`Difficulty set to ${this.options[this.selectedIndex].text}`);
+            });
+
+            // Theme selection
+            themeSelect.addEventListener('change', function() {
+                window.playClickSound && window.playClickSound();
+                const theme = this.value;
+                console.log('Theme changed to:', theme);
+                applyTheme(theme);
+                showNotification(`Theme changed to ${this.options[this.selectedIndex].text}`);
+            });
+
+            // Add toggle functionality to all toggle switches
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    if (this !== musicToggle && this !== sfxToggle) {
+                        window.playClickSound && window.playClickSound();
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+        }
+
+        // Update difficulty based on selection
+        function updateDifficulty(difficulty) {
+            const bonusAttempts = {
+                'easy': 8,
+                'normal': 5,
+                'hard': 3,
+                'expert': 1
+            };
+            
+            if (optimalPath) {
+                const optimalLength = optimalPath.length - 1;
+                maxAttempts = Math.max(optimalLength + bonusAttempts[difficulty], 5);
+                attempts = maxAttempts;
+                document.getElementById('attempts').textContent = attempts;
+            }
+        }
+
+        // Apply theme (basic implementation)
+        function applyTheme(theme) {
+            const themes = {
+                'cosmic': {
+                    background: 'linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #7209b7, #a663cc)',
+                    primary: '#8a2be2',
+                    secondary: '#4ecdc4'
+                },
+                'ocean': {
+                    background: 'linear-gradient(-45deg, #001427, #708090, #1e3a8a, #3b82f6, #60a5fa, #93c5fd)',
+                    primary: '#3b82f6',
+                    secondary: '#06b6d4'
+                },
+                'forest': {
+                    background: 'linear-gradient(-45deg, #064e3b, #065f46, #047857, #059669, #10b981, #34d399)',
+                    primary: '#059669',
+                    secondary: '#10b981'
+                },
+                'sunset': {
+                    background: 'linear-gradient(-45deg, #7c2d12, #ea580c, #f97316, #fb923c, #fdba74, #fed7aa)',
+                    primary: '#ea580c',
+                    secondary: '#f97316'
+                },
+                'midnight': {
+                    background: 'linear-gradient(-45deg, #1e1b4b, #312e81, #3730a3, #4338ca, #6366f1, #8b5cf6)',
+                    primary: '#4338ca',
+                    secondary: '#8b5cf6'
+                }
+            };
+            
+            if (themes[theme]) {
+                document.body.style.background = themes[theme].background;
+                document.body.style.backgroundSize = '400% 400%';
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 20px;
+                border: 1px solid rgba(78, 205, 196, 0.5);
+                backdrop-filter: blur(20px);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+                box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3);
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; transform: translateX(100%); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 3000);
+        }
 
         // Navigation functions
         function goToCountryMode() {
@@ -1410,28 +2034,5 @@
             }
         }
     </script>
-
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
-       target="_blank" 
-       style="
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-          color: white;
-          padding: 12px 20px;
-          border-radius: 25px;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-          font-weight: bold;
-          text-decoration: none;
-          box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
-          z-index: 1000;
-          border: 1px solid rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-       ">
-       Help Us Improve ✨
-    </a>
-
 </body>
 </html>
