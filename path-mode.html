@@ -50,7 +50,7 @@
             animation: gradientShift 20s ease infinite;
         }
 
-        /* Animated starfield background - Theme specific */
+        /* Enhanced starfield background - Theme specific */
         body::before {
             content: '';
             position: fixed;
@@ -59,14 +59,20 @@
             width: 100%;
             height: 100%;
             background-image: 
+                /* Varied star sizes and colors */
                 radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
-                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+                radial-gradient(3px 3px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #4ecdc4, transparent),
+                radial-gradient(1.5px 1.5px at 130px 80px, rgba(255,107,107,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ffd700, transparent),
+                radial-gradient(1px 1px at 200px 120px, rgba(138,43,226,0.8), transparent),
+                radial-gradient(2.5px 2.5px at 60px 150px, rgba(255,255,255,0.9), transparent),
+                /* Nebula-like clouds */
+                radial-gradient(ellipse 150px 80px at 30% 70%, rgba(138,43,226,0.1), transparent),
+                radial-gradient(ellipse 120px 60px at 80% 30%, rgba(255,107,107,0.08), transparent);
             background-repeat: repeat;
-            background-size: 200px 100px;
-            animation: sparkle 3s linear infinite;
+            background-size: 250px 180px;
+            animation: cosmicDance 4s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
@@ -82,39 +88,130 @@
         }
 
         body.theme-forest::before {
-            background-image: 
-                radial-gradient(2px 2px at 18px 28px, rgba(116,198,157,0.8), transparent),
-                radial-gradient(3px 3px at 42px 68px, rgba(82,183,136,0.6), transparent),
-                radial-gradient(1px 1px at 88px 38px, rgba(183,228,199,0.9), transparent),
-                radial-gradient(2px 2px at 128px 78px, rgba(116,198,157,0.7), transparent),
-                radial-gradient(4px 4px at 158px 28px, rgba(149,213,178,0.5), transparent);
-            animation: leafSway 5s ease-in-out infinite;
+            /* Tree silhouettes and falling leaves */
+            background: 
+                /* Tree trunks */
+                linear-gradient(0deg, 
+                    rgba(101,67,33,0.8) 80%, 
+                    rgba(101,67,33,0.6) 85%, 
+                    transparent 90%
+                ) 5% 100% / 15px 100% no-repeat,
+                linear-gradient(0deg, 
+                    rgba(101,67,33,0.8) 75%, 
+                    rgba(101,67,33,0.4) 82%, 
+                    transparent 88%
+                ) 15% 100% / 18px 100% no-repeat,
+                linear-gradient(0deg, 
+                    rgba(101,67,33,0.8) 85%, 
+                    rgba(101,67,33,0.5) 90%, 
+                    transparent 95%
+                ) 85% 100% / 12px 100% no-repeat,
+                linear-gradient(0deg, 
+                    rgba(101,67,33,0.8) 78%, 
+                    rgba(101,67,33,0.4) 85%, 
+                    transparent 92%
+                ) 95% 100% / 16px 100% no-repeat,
+                /* Tree canopies */
+                radial-gradient(ellipse 120px 80px at 8% 75%, rgba(82,183,136,0.6), rgba(82,183,136,0.3) 60%, transparent 70%),
+                radial-gradient(ellipse 140px 90px at 18% 70%, rgba(116,198,157,0.5), rgba(116,198,157,0.2) 65%, transparent 75%),
+                radial-gradient(ellipse 100px 70px at 88% 80%, rgba(149,213,178,0.7), rgba(149,213,178,0.3) 55%, transparent 65%),
+                radial-gradient(ellipse 110px 85px at 98% 75%, rgba(183,228,199,0.5), rgba(183,228,199,0.2) 60%, transparent 70%),
+                /* Falling leaves */
+                radial-gradient(3px 6px at 25% 10%, rgba(255,193,7,0.8), transparent),
+                radial-gradient(4px 7px at 45% 20%, rgba(255,152,0,0.7), transparent),
+                radial-gradient(2px 4px at 65% 5%, rgba(183,228,199,0.9), transparent),
+                radial-gradient(3px 5px at 85% 15%, rgba(255,87,34,0.8), transparent),
+                radial-gradient(2px 5px at 15% 30%, rgba(76,175,80,0.7), transparent);
+            animation: forestLife 6s ease-in-out infinite;
         }
 
         body.theme-sunset::before {
             background: 
-                /* Sun */
-                radial-gradient(circle 80px at 85% 20%, rgba(255,223,0,0.9) 30%, rgba(255,140,0,0.7) 50%, transparent 70%),
-                /* Beach waves pattern */
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 85%,
-                    rgba(255,255,255,0.1) 87%,
-                    rgba(135,206,235,0.2) 89%,
-                    rgba(255,255,255,0.1) 91%,
-                    transparent 93%
+                /* Sun with proper rays */
+                radial-gradient(circle 60px at 85% 25%, 
+                    rgba(255,255,0,0.9) 20%, 
+                    rgba(255,193,7,0.8) 40%, 
+                    rgba(255,152,0,0.6) 60%, 
+                    transparent 80%
+                ),
+                /* Sun rays radiating outward */
+                conic-gradient(from 0deg at 85% 25%, 
+                    transparent 0deg, 
+                    rgba(255,223,0,0.3) 10deg, 
+                    transparent 20deg,
+                    rgba(255,193,7,0.2) 30deg, 
+                    transparent 40deg,
+                    rgba(255,152,0,0.3) 50deg, 
+                    transparent 60deg,
+                    rgba(255,223,0,0.2) 70deg, 
+                    transparent 80deg,
+                    rgba(255,193,7,0.3) 90deg, 
+                    transparent 100deg,
+                    rgba(255,152,0,0.2) 110deg, 
+                    transparent 120deg,
+                    rgba(255,223,0,0.3) 130deg, 
+                    transparent 140deg,
+                    rgba(255,193,7,0.2) 150deg, 
+                    transparent 160deg,
+                    rgba(255,152,0,0.3) 170deg, 
+                    transparent 180deg,
+                    rgba(255,223,0,0.2) 190deg, 
+                    transparent 200deg,
+                    rgba(255,193,7,0.3) 210deg, 
+                    transparent 220deg,
+                    rgba(255,152,0,0.2) 230deg, 
+                    transparent 240deg,
+                    rgba(255,223,0,0.3) 250deg, 
+                    transparent 260deg,
+                    rgba(255,193,7,0.2) 270deg, 
+                    transparent 280deg,
+                    rgba(255,152,0,0.3) 290deg, 
+                    transparent 300deg,
+                    rgba(255,223,0,0.2) 310deg, 
+                    transparent 320deg,
+                    rgba(255,193,7,0.3) 330deg, 
+                    transparent 340deg,
+                    rgba(255,152,0,0.2) 350deg, 
+                    transparent 360deg
+                ),
+                /* Beach horizon */
+                linear-gradient(180deg, 
+                    transparent 70%, 
+                    rgba(255,248,220,0.1) 75%, 
+                    rgba(255,228,181,0.15) 80%, 
+                    rgba(244,164,96,0.2) 90%, 
+                    rgba(205,133,63,0.25) 100%
                 );
-            animation: sunsetScene 15s ease-in-out infinite;
+            animation: sunsetScene 20s ease-in-out infinite;
         }
 
         body.theme-midnight::before {
-            background-image: 
-                radial-gradient(2px 2px at 16px 26px, rgba(102,252,241,0.9), transparent),
-                radial-gradient(1px 1px at 44px 66px, rgba(69,162,158,0.7), transparent),
-                radial-gradient(3px 3px at 86px 36px, rgba(197,198,199,0.8), transparent),
-                radial-gradient(2px 2px at 126px 76px, rgba(136,146,176,0.6), transparent),
-                radial-gradient(1px 1px at 156px 26px, rgba(102,252,241,0.8), transparent);
-            animation: neonPulse 3s ease-in-out infinite;
+            background: 
+                /* Moon */
+                radial-gradient(circle 45px at 80% 20%, 
+                    rgba(245,245,245,0.9) 35%, 
+                    rgba(220,220,220,0.7) 50%, 
+                    rgba(192,192,192,0.4) 70%, 
+                    transparent 85%
+                ),
+                /* Moon craters */
+                radial-gradient(circle 8px at 75% 18%, rgba(169,169,169,0.6), transparent 60%),
+                radial-gradient(circle 5px at 83% 22%, rgba(169,169,169,0.4), transparent 50%),
+                radial-gradient(circle 6px at 78% 24%, rgba(169,169,169,0.5), transparent 55%),
+                /* Stars constellation pattern */
+                radial-gradient(2px 2px at 16px 26px, rgba(245,245,245,0.9), transparent),
+                radial-gradient(1px 1px at 44px 66px, rgba(173,216,230,0.8), transparent),
+                radial-gradient(3px 3px at 86px 36px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1.5px 1.5px at 126px 76px, rgba(230,230,250,0.7), transparent),
+                radial-gradient(1px 1px at 156px 26px, rgba(176,196,222,0.8), transparent),
+                radial-gradient(2px 2px at 200px 100px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 50px 140px, rgba(173,216,230,0.7), transparent),
+                /* Night clouds */
+                radial-gradient(ellipse 200px 60px at 25% 80%, rgba(25,25,112,0.3), transparent 70%),
+                radial-gradient(ellipse 150px 40px at 75% 85%, rgba(25,25,112,0.2), transparent 60%);
+            background-repeat: repeat;
+            background-size: 300px 200px;
+            animation: midnightSky 8s ease-in-out infinite;
         }
 
         /* Floating geometric shapes - Theme specific */
@@ -186,10 +283,32 @@
             100% { background-position: 0% 0%; }
         }
 
-        @keyframes sparkle {
-            0% { opacity: 0.3; transform: translateX(0); }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; transform: translateX(-200px); }
+        @keyframes cosmicDance {
+            0% { 
+                opacity: 0.6; 
+                transform: translateX(0) rotate(0deg); 
+                filter: hue-rotate(0deg);
+            }
+            25% { 
+                opacity: 0.8; 
+                transform: translateX(-50px) rotate(90deg); 
+                filter: hue-rotate(90deg);
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-100px) rotate(180deg); 
+                filter: hue-rotate(180deg);
+            }
+            75% { 
+                opacity: 0.8; 
+                transform: translateX(-150px) rotate(270deg); 
+                filter: hue-rotate(270deg);
+            }
+            100% { 
+                opacity: 0.6; 
+                transform: translateX(-200px) rotate(360deg); 
+                filter: hue-rotate(360deg);
+            }
         }
 
         @keyframes float {
@@ -203,20 +322,64 @@
             50% { opacity: 0.8; transform: translateY(-15px); }
         }
 
-        @keyframes leafSway {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            25% { transform: translateX(5px) rotate(2deg); }
-            75% { transform: translateX(-3px) rotate(-1deg); }
+        @keyframes forestLife {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                filter: brightness(1);
+            }
+            25% { 
+                transform: translateY(-8px) rotate(2deg); 
+                filter: brightness(1.1);
+            }
+            50% { 
+                transform: translateY(-15px) rotate(0deg); 
+                filter: brightness(1.2);
+            }
+            75% { 
+                transform: translateY(-5px) rotate(-1deg); 
+                filter: brightness(1.1);
+            }
         }
 
         @keyframes sunsetScene {
             0%, 100% { 
-                filter: hue-rotate(0deg) brightness(1);
+                filter: hue-rotate(0deg) brightness(1) saturate(1);
                 transform: translateY(0px);
             }
+            25% { 
+                filter: hue-rotate(5deg) brightness(1.1) saturate(1.2);
+                transform: translateY(-2px);
+            }
             50% { 
-                filter: hue-rotate(10deg) brightness(1.1);
+                filter: hue-rotate(10deg) brightness(1.2) saturate(1.4);
                 transform: translateY(-5px);
+            }
+            75% { 
+                filter: hue-rotate(15deg) brightness(1.15) saturate(1.3);
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes midnightSky {
+            0%, 100% { 
+                opacity: 0.8; 
+                transform: translateY(0px) scale(1);
+                filter: brightness(1);
+            }
+            25% { 
+                opacity: 0.9; 
+                transform: translateY(-3px) scale(1.02);
+                filter: brightness(1.1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateY(-5px) scale(1.05);
+                filter: brightness(1.2);
+            }
+            75% { 
+                opacity: 0.95; 
+                transform: translateY(-2px) scale(1.03);
+                filter: brightness(1.1);
             }
         }
 
