@@ -719,6 +719,9 @@
                 // Reset map view
                 this.map.setView([20, 0], 2);
                 
+                // Reset used cities list
+                this.usedCities = [];
+                
                 this.updateDisplay();
                 this.showLeaderboard();
             }
@@ -756,6 +759,65 @@
                         <span>${score.bestTime ? (score.bestTime/1000).toFixed(1) + 's' : '--'}</span>
                     </div>
                 `).join('');
+            }
+            
+            // Daily play restriction methods
+            loadDailyPlayData() {
+                // Since we can't use localStorage, store in memory (resets on page refresh)
+                // In a real implementation, this would use localStorage or a backend
+                return {
+                    lastPlayDate: null,
+                    hasPlayedToday: false
+                };
+            }
+            
+            canPlayToday() {
+                const today = new Date().toDateString();
+                return this.dailyPlayData.lastPlayDate !== today;
+            }
+            
+            markTodayAsPlayed() {
+                const today = new Date().toDateString();
+                this.dailyPlayData.lastPlayDate = today;
+                this.dailyPlayData.hasPlayedToday = true;
+                // In a real implementation, save to localStorage here
+            }
+            
+            checkDailyPlayStatus() {
+                if (!this.canPlayToday()) {
+                    this.startBtn.disabled = true;
+                    this.resetBtn.disabled = true;
+                    this.showDailyLimitMessage();
+                }
+            }
+            
+            showDailyLimitMessage() {
+                const timeUntilReset = this.getTimeUntilNextPlay();
+                this.cityNameEl.innerHTML = `<div class="game-over">
+                    <h2>🔒 Daily Challenge Complete</h2>
+                    <p>You've already played today's challenge!</p>
+                    <p style="margin-top: 15px; color: #7f8c8d;">
+                        ⏰ Next challenge available in: <strong>${timeUntilReset}</strong>
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #95a5a6;">
+                        Check your score on the leaderboard below
+                    </p>
+                </div>`;
+                this.cityHintEl.textContent = '';
+                this.showLeaderboard();
+            }
+            
+            getTimeUntilNextPlay() {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const diff = tomorrow - now;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                return `${hours}h ${minutes}m`;
             }
         }
         
