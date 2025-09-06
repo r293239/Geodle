@@ -50,6 +50,26 @@
     "landmark": "Colosseum"
   },
   {
+    "name": "Moscow",
+    "lat": 55.7558,
+    "lng": 37.6176,
+    "hint": "Russian capital, famous for Red Square and the Kremlin",
+    "difficulty": 1,
+    "country": "Russia",
+    "population": "12.5M",
+    "landmark": "Red Square"
+  },
+  {
+    "name": "Los Angeles",
+    "lat": 34.0522,
+    "lng": -118.2437,
+    "hint": "City of Angels, Hollywood's home in California",
+    "difficulty": 1,
+    "country": "USA",
+    "population": "4M",
+    "landmark": "Hollywood Sign"
+  },
+  {
     "name": "Sydney",
     "lat": -33.8688,
     "lng": 151.2093,
@@ -138,6 +158,46 @@
     "country": "UAE",
     "population": "3.4M",
     "landmark": "Burj Khalifa"
+  },
+  {
+    "name": "Istanbul",
+    "lat": 41.0082,
+    "lng": 28.9784,
+    "hint": "Turkish city bridging Europe and Asia",
+    "difficulty": 2,
+    "country": "Turkey",
+    "population": "15M",
+    "landmark": "Hagia Sophia"
+  },
+  {
+    "name": "Bangkok",
+    "lat": 13.7563,
+    "lng": 100.5018,
+    "hint": "Thailand's capital, famous for temples and street food",
+    "difficulty": 2,
+    "country": "Thailand",
+    "population": "10M",
+    "landmark": "Grand Palace"
+  },
+  {
+    "name": "Lagos",
+    "lat": 6.5244,
+    "lng": 3.3792,
+    "hint": "Nigeria's largest city and economic hub",
+    "difficulty": 2,
+    "country": "Nigeria",
+    "population": "15M",
+    "landmark": "National Theatre"
+  },
+  {
+    "name": "Jakarta",
+    "lat": -6.2088,
+    "lng": 106.8456,
+    "hint": "Indonesia's capital, largest city in Southeast Asia",
+    "difficulty": 2,
+    "country": "Indonesia",
+    "population": "10M",
+    "landmark": "National Monument"
   },
   {
     "name": "Reykjavik",
@@ -298,5 +358,155 @@
     "country": "Monaco",
     "population": "39K",
     "landmark": "Monte Carlo Casino"
+  },
+  {
+    "name": "Andorra la Vella",
+    "lat": 42.5063,
+    "lng": 1.5218,
+    "hint": "Capital of Andorra, duty-free shopping paradise",
+    "difficulty": 3,
+    "country": "Andorra",
+    "population": "23K",
+    "landmark": "Casa de la Vall"
+  },
+  {
+    "name": "Wellington",
+    "lat": -41.2924,
+    "lng": 174.7787,
+    "hint": "New Zealand's windy capital city",
+    "difficulty": 3,
+    "country": "New Zealand",
+    "population": "418K",
+    "landmark": "Beehive Building"
+  },
+  {
+    "name": "Canberra",
+    "lat": -35.2809,
+    "lng": 149.1300,
+    "hint": "Australia's purpose-built capital city",
+    "difficulty": 3,
+    "country": "Australia",
+    "population": "431K",
+    "landmark": "Parliament House"
+  },
+  {
+    "name": "Ottawa",
+    "lat": 45.4215,
+    "lng": -75.6972,
+    "hint": "Canada's capital on the Ottawa River",
+    "difficulty": 3,
+    "country": "Canada",
+    "population": "1.4M",
+    "landmark": "Parliament Hill"
+  },
+  {
+    "name": "Bern",
+    "lat": 46.9481,
+    "lng": 7.4474,
+    "hint": "Switzerland's capital, famous for bears and clocks",
+    "difficulty": 3,
+    "country": "Switzerland",
+    "population": "134K",
+    "landmark": "Zytglogge"
+  },
+  {
+    "name": "Stockholm",
+    "lat": 59.3293,
+    "lng": 18.0686,
+    "hint": "Sweden's capital built on 14 islands",
+    "difficulty": 3,
+    "country": "Sweden",
+    "population": "975K",
+    "landmark": "Gamla Stan"
+  },
+  {
+    "name": "Oslo",
+    "lat": 59.9139,
+    "lng": 10.7522,
+    "hint": "Norway's capital, famous for Nobel Peace Prize",
+    "difficulty": 3,
+    "country": "Norway",
+    "population": "695K",
+    "landmark": "Opera House"
+  },
+  {
+    "name": "Helsinki",
+    "lat": 60.1699,
+    "lng": 24.9384,
+    "hint": "Finland's capital, known for design and saunas",
+    "difficulty": 3,
+    "country": "Finland",
+    "population": "658K",
+    "landmark": "Senate Square"
+  },
+  {
+    "name": "Copenhagen",
+    "lat": 55.6761,
+    "lng": 12.5683,
+    "hint": "Denmark's capital, famous for bikes and Little Mermaid",
+    "difficulty": 3,
+    "country": "Denmark",
+    "population": "660K",
+    "landmark": "Little Mermaid"
+  },
+  {
+    "name": "Tallinn",
+    "lat": 59.4370,
+    "lng": 24.7536,
+    "hint": "Estonia's medieval capital on the Baltic Sea",
+    "difficulty": 3,
+    "country": "Estonia",
+    "population": "437K",
+    "landmark": "Old Town"
+  },
+  {
+    "name": "Riga",
+    "lat": 56.9496,
+    "lng": 24.1052,
+    "hint": "Latvia's capital, famous for Art Nouveau architecture",
+    "difficulty": 3,
+    "country": "Latvia",
+    "population": "633K",
+    "landmark": "House of Blackheads"
+  },
+  {
+    "name": "Vilnius",
+    "lat": 54.6872,
+    "lng": 25.2797,
+    "hint": "Lithuania's capital with baroque old town",
+    "difficulty": 3,
+    "country": "Lithuania",
+    "population": "588K",
+    "landmark": "Gediminas Tower"
+  },
+  {
+    "name": "Bucharest",
+    "lat": 44.4268,
+    "lng": 26.1025,
+    "hint": "Romania's capital, once called 'Little Paris'",
+    "difficulty": 3,
+    "country": "Romania",
+    "population": "1.9M",
+    "landmark": "Palace of Parliament"
+  },
+  {
+    "name": "Sofia",
+    "lat": 42.6977,
+    "lng": 23.3219,
+    "hint": "Bulgaria's capital at the foot of Vitosha Mountain",
+    "difficulty": 3,
+    "country": "Bulgaria",
+    "population": "1.4M",
+    "landmark": "Alexander Nevsky Cathedral"
+  },
+  {
+    "name": "Zagreb",
+    "lat": 45.8150,
+    "lng": 15.9819,
+    "hint": "Croatia's capital with medieval Upper Town",
+    "difficulty": 3,
+    "country": "Croatia",
+    "population": "806K",
+    "landmark": "St. Mark's Church"
   }
 ]
