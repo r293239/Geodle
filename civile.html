@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Sprint - Geography Challenge</title>
+    <title>Civile - Geography Challenge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <style>
         * {
             margin: 0;
@@ -112,44 +113,41 @@
             border-radius: 4px;
         }
 
-        .world-map {
+        #map {
             width: 100%;
             max-width: 800px;
             height: 400px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><rect width="1000" height="500" fill="%23e8f4f8"/><path d="M100,100 Q200,50 300,100 L400,150 Q500,200 600,150 L700,100 Q800,50 900,100 L900,400 Q800,450 700,400 L600,350 Q500,300 400,350 L300,400 Q200,450 100,400 Z" fill="%2395a5a6"/><circle cx="150" cy="200" r="3" fill="%23e74c3c"/><circle cx="250" cy="180" r="3" fill="%23e74c3c"/><circle cx="350" cy="160" r="3" fill="%23e74c3c"/><circle cx="450" cy="190" r="3" fill="%23e74c3c"/><circle cx="550" cy="170" r="3" fill="%23e74c3c"/><circle cx="650" cy="180" r="3" fill="%23e74c3c"/><circle cx="750" cy="160" r="3" fill="%23e74c3c"/><circle cx="850" cy="190" r="3" fill="%23e74c3c"/></svg>') center/cover;
             border-radius: 15px;
-            position: relative;
-            cursor: crosshair;
             border: 3px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 1;
         }
 
-        .click-indicator {
-            position: absolute;
-            width: 20px;
-            height: 20px;
+        .leaflet-container {
+            background: #1a73e8 !important;
+        }
+
+        .click-marker {
+            background: rgba(231, 76, 60, 0.7);
             border: 3px solid #e74c3c;
             border-radius: 50%;
-            background: rgba(231, 76, 60, 0.3);
-            animation: clickPulse 0.6s ease-out;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            animation: markerPulse 1s ease-out;
         }
 
-        @keyframes clickPulse {
+        .correct-marker {
+            background: rgba(39, 174, 96, 0.7);
+            border-color: #27ae60;
+        }
+
+        @keyframes markerPulse {
             0% { 
-                transform: translate(-50%, -50%) scale(0.5);
+                transform: scale(0.5);
                 opacity: 1;
             }
             100% { 
-                transform: translate(-50%, -50%) scale(2);
+                transform: scale(2);
                 opacity: 0;
             }
-        }
-
-        .correct-indicator {
-            border-color: #27ae60;
-            background: rgba(39, 174, 96, 0.3);
         }
 
         .controls {
@@ -272,7 +270,7 @@
                 font-size: 1.8em;
             }
             
-            .world-map {
+            #map {
                 height: 300px;
             }
         }
@@ -280,7 +278,7 @@
 </head>
 <body>
     <div class="game-header">
-        <h1>🌍 City Sprint</h1>
+        <h1>🌍 Civile</h1>
         <div class="game-stats">
             <div class="stat-item">
                 <div>Score</div>
@@ -311,7 +309,7 @@
             <div class="timer-fill" id="timerFill"></div>
         </div>
 
-        <div class="world-map" id="worldMap"></div>
+        <div id="map"></div>
 
         <div class="controls">
             <button id="startBtn">Start Game</button>
@@ -326,32 +324,30 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
-        class CitySprintGame {
-            constructor() {
-                this.cities = [
-                    // Easy cities (Rounds 1-5)
-                    { name: "Paris", x: 48.8566, y: 2.3522, hint: "City of Light, home to the Eiffel Tower", difficulty: 1 },
-                    { name: "Tokyo", x: 35.6762, y: 139.6503, hint: "Japan's capital, famous for sushi and technology", difficulty: 1 },
-                    { name: "New York", x: 40.7128, y: -74.0060, hint: "The Big Apple, home to the Statue of Liberty", difficulty: 1 },
-                    { name: "London", x: 51.5074, y: -0.1278, hint: "UK capital, famous for Big Ben and red buses", difficulty: 1 },
-                    { name: "Rome", x: 41.9028, y: 12.4964, hint: "Eternal City, home to the Colosseum", difficulty: 1 },
-                    
-                    // Medium cities (Rounds 6-10)
-                    { name: "Sydney", x: -33.8688, y: 151.2093, hint: "Australian city famous for its Opera House", difficulty: 2 },
-                    { name: "Cairo", x: 30.0444, y: 31.2357, hint: "Egyptian capital near the Great Pyramids", difficulty: 2 },
-                    { name: "Mumbai", x: 19.0760, y: 72.8777, hint: "Bollywood's home city in India", difficulty: 2 },
-                    { name: "Berlin", x: 52.5200, y: 13.4050, hint: "German capital, once divided by a famous wall", difficulty: 2 },
-                    { name: "Mexico City", x: 19.4326, y: -99.1332, hint: "High-altitude capital of Mexico", difficulty: 2 },
-                    
-                    // Hard cities (Rounds 11-15)
-                    { name: "Reykjavik", x: 64.1466, y: -21.9426, hint: "Northernmost capital city in the world", difficulty: 3 },
-                    { name: "Ulaanbaatar", x: 47.8864, y: 106.9057, hint: "Mongolia's capital, means 'Red Hero'", difficulty: 3 },
-                    { name: "Antananarivo", x: -18.8792, y: 47.5079, hint: "Capital of the island nation Madagascar", difficulty: 3 },
-                    { name: "Vientiane", x: 17.9757, y: 102.6331, hint: "Capital of Laos in Southeast Asia", difficulty: 3 },
-                    { name: "Thimphu", x: 27.4728, y: 89.6390, hint: "Mountain capital of Bhutan", difficulty: 3 }
+        // Load city data from external file
+        let CITIES_DATA = [];
+
+        // Load cities data
+        async function loadCitiesData() {
+            try {
+                const response = await fetch('cities-data.json');
+                CITIES_DATA = await response.json();
+            } catch (error) {
+                console.error('Failed to load cities data, using fallback:', error);
+                // Fallback data if file loading fails
+                CITIES_DATA = [
+                    { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower", difficulty: 1, country: "France", population: "2.1M" },
+                    { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi and technology", difficulty: 1, country: "Japan", population: "37M" },
+                    { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty", difficulty: 1, country: "USA", population: "8.3M" }
                 ];
-                
+            }
+        }
+
+        class CivileGame {
+            constructor() {
+                this.cities = [];
                 this.score = 0;
                 this.round = 1;
                 this.streak = 0;
@@ -360,14 +356,22 @@
                 this.gameActive = false;
                 this.isPaused = false;
                 this.timer = null;
-                this.timeLeft = 10000; // 10 seconds in milliseconds
+                this.timeLeft = 10000;
                 this.startTime = 0;
-                this.highScores = this.loadHighScores();
+                this.highScores = [];
+                this.map = null;
+                this.markers = [];
                 
                 this.initializeElements();
+                this.initializeMap();
                 this.setupEventListeners();
                 this.updateDisplay();
                 this.showLeaderboard();
+            }
+            
+            async initialize() {
+                await loadCitiesData();
+                this.cities = CITIES_DATA;
             }
             
             initializeElements() {
@@ -378,7 +382,6 @@
                 this.cityNameEl = document.getElementById('cityName');
                 this.cityHintEl = document.getElementById('cityHint');
                 this.timerFillEl = document.getElementById('timerFill');
-                this.worldMapEl = document.getElementById('worldMap');
                 this.startBtn = document.getElementById('startBtn');
                 this.pauseBtn = document.getElementById('pauseBtn');
                 this.skipBtn = document.getElementById('skipBtn');
@@ -387,15 +390,40 @@
                 this.scoresListEl = document.getElementById('scoresList');
             }
             
+            initializeMap() {
+                this.map = L.map('map', {
+                    center: [20, 0],
+                    zoom: 2,
+                    minZoom: 2,
+                    maxZoom: 6,
+                    worldCopyJump: true,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    maxBoundsViscosity: 1.0
+                });
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    noWrap: true
+                }).addTo(this.map);
+
+                // Disable default double-click zoom to prevent interference
+                this.map.doubleClickZoom.disable();
+            }
+            
             setupEventListeners() {
                 this.startBtn.addEventListener('click', () => this.startGame());
                 this.pauseBtn.addEventListener('click', () => this.togglePause());
                 this.skipBtn.addEventListener('click', () => this.skipCity());
                 this.resetBtn.addEventListener('click', () => this.resetGame());
-                this.worldMapEl.addEventListener('click', (e) => this.handleMapClick(e));
+                
+                this.map.on('click', (e) => this.handleMapClick(e));
             }
             
-            startGame() {
+            async startGame() {
+                if (this.cities.length === 0) {
+                    await this.initialize();
+                }
+                
                 this.gameActive = true;
                 this.startBtn.disabled = true;
                 this.pauseBtn.disabled = false;
@@ -410,15 +438,23 @@
                     return;
                 }
                 
+                // Clear previous markers
+                this.clearMarkers();
+                
                 // Select city based on difficulty progression
                 let difficulty = Math.min(3, Math.ceil(this.round / 5));
                 let availableCities = this.cities.filter(city => city.difficulty === difficulty);
+                
+                if (availableCities.length === 0) {
+                    availableCities = this.cities; // Fallback to all cities
+                }
+                
                 this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
                 
                 this.cityNameEl.textContent = this.currentCity.name;
                 this.cityHintEl.textContent = this.currentCity.hint;
                 
-                this.timeLeft = 10000; // Reset timer
+                this.timeLeft = 10000;
                 this.startTime = Date.now();
                 this.startTimer();
             }
@@ -441,48 +477,115 @@
             handleMapClick(e) {
                 if (!this.gameActive || this.isPaused || !this.currentCity) return;
                 
-                const rect = this.worldMapEl.getBoundingClientRect();
-                const clickX = ((e.clientX - rect.left) / rect.width) * 100;
-                const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+                const clickLat = e.latlng.lat;
+                const clickLng = e.latlng.lng;
                 
-                // Convert city coordinates to map percentage
-                const cityMapX = ((this.currentCity.y + 180) / 360) * 100;
-                const cityMapY = ((90 - this.currentCity.x) / 180) * 100;
-                
-                // Calculate distance (with some tolerance)
-                const distance = Math.sqrt(
-                    Math.pow(clickX - cityMapX, 2) + 
-                    Math.pow(clickY - cityMapY, 2)
+                // Calculate distance in kilometers
+                const distance = this.calculateDistance(
+                    clickLat, clickLng,
+                    this.currentCity.lat, this.currentCity.lng
                 );
                 
-                this.showClickIndicator(e.clientX - rect.left, e.clientY - rect.top, distance < 8);
+                // Tolerance varies by zoom level and difficulty
+                const tolerance = this.getCurrentTolerance();
+                const isCorrect = distance < tolerance;
                 
-                if (distance < 8) { // Tolerance for correct click
-                    this.handleCorrectClick();
+                // Add click marker
+                this.addClickMarker(clickLat, clickLng, isCorrect);
+                
+                if (isCorrect) {
+                    this.handleCorrectClick(distance);
                 } else {
-                    this.handleIncorrectClick();
+                    this.handleIncorrectClick(distance);
                 }
             }
             
-            showClickIndicator(x, y, isCorrect) {
-                const indicator = document.createElement('div');
-                indicator.className = `click-indicator ${isCorrect ? 'correct-indicator' : ''}`;
-                indicator.style.left = x + 'px';
-                indicator.style.top = y + 'px';
-                this.worldMapEl.appendChild(indicator);
-                
-                setTimeout(() => {
-                    this.worldMapEl.removeChild(indicator);
-                }, 600);
+            calculateDistance(lat1, lng1, lat2, lng2) {
+                const R = 6371; // Earth's radius in kilometers
+                const dLat = this.toRadians(lat2 - lat1);
+                const dLng = this.toRadians(lng2 - lng1);
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
             }
             
-            handleCorrectClick() {
+            toRadians(degrees) {
+                return degrees * (Math.PI / 180);
+            }
+            
+            getCurrentTolerance() {
+                const zoom = this.map.getZoom();
+                const difficulty = Math.min(3, Math.ceil(this.round / 5));
+                
+                // Base tolerance decreases with difficulty and increases with zoom
+                let baseTolerance = 500; // 500km base
+                
+                // Adjust for difficulty
+                if (difficulty === 2) baseTolerance = 300;
+                if (difficulty === 3) baseTolerance = 200;
+                
+                // Adjust for zoom (more precise clicking at higher zoom)
+                const zoomFactor = Math.max(0.5, (6 - zoom) / 4);
+                
+                return baseTolerance * zoomFactor;
+            }
+            
+            addClickMarker(lat, lng, isCorrect) {
+                const marker = L.circleMarker([lat, lng], {
+                    radius: 10,
+                    className: isCorrect ? 'correct-marker' : 'click-marker',
+                    color: isCorrect ? '#27ae60' : '#e74c3c',
+                    fillColor: isCorrect ? 'rgba(39, 174, 96, 0.7)' : 'rgba(231, 76, 60, 0.7)',
+                    fillOpacity: 0.8,
+                    weight: 3
+                }).addTo(this.map);
+                
+                this.markers.push(marker);
+                
+                // Remove marker after animation
+                setTimeout(() => {
+                    this.map.removeLayer(marker);
+                    this.markers = this.markers.filter(m => m !== marker);
+                }, 1000);
+            }
+            
+            showCityLocation() {
+                // Show the correct city location
+                const correctMarker = L.circleMarker([this.currentCity.lat, this.currentCity.lng], {
+                    radius: 12,
+                    color: '#27ae60',
+                    fillColor: '#2ecc71',
+                    fillOpacity: 0.9,
+                    weight: 4
+                }).addTo(this.map);
+                
+                correctMarker.bindPopup(`${this.currentCity.name}<br>${this.currentCity.country}`).openPopup();
+                this.markers.push(correctMarker);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    this.map.removeLayer(correctMarker);
+                    this.markers = this.markers.filter(m => m !== correctMarker);
+                }, 3000);
+            }
+            
+            clearMarkers() {
+                this.markers.forEach(marker => {
+                    this.map.removeLayer(marker);
+                });
+                this.markers = [];
+            }
+            
+            handleCorrectClick(distance) {
                 clearInterval(this.timer);
                 
                 const responseTime = Date.now() - this.startTime;
                 const timeBonus = Math.max(0, Math.floor((this.timeLeft / 100)));
+                const accuracyBonus = Math.max(0, Math.floor(200 - distance / 5)); // Bonus for accuracy
                 const streakBonus = this.streak * 10;
-                const roundScore = 100 + timeBonus + streakBonus;
+                const roundScore = 100 + timeBonus + accuracyBonus + streakBonus;
                 
                 this.score += roundScore;
                 this.streak++;
@@ -491,32 +594,34 @@
                     this.bestTime = responseTime;
                 }
                 
-                this.showFeedback('correct', `+${roundScore} points! (${(responseTime/1000).toFixed(1)}s)`);
+                this.showCityLocation();
+                this.showFeedback('correct', `+${roundScore} points! (${Math.round(distance)}km away)`);
                 this.updateDisplay();
                 
                 setTimeout(() => {
                     this.round++;
                     this.nextRound();
-                }, 2000);
+                }, 3000);
             }
             
-            handleIncorrectClick() {
+            handleIncorrectClick(distance) {
                 this.score = Math.max(0, this.score - 25);
                 this.streak = 0;
-                this.showFeedback('incorrect', '-25 points');
+                this.showFeedback('incorrect', `-25 points (${Math.round(distance)}km away)`);
                 this.updateDisplay();
             }
             
             handleTimeout() {
                 clearInterval(this.timer);
                 this.streak = 0;
+                this.showCityLocation();
                 this.showFeedback('incorrect', 'Time\'s up!');
                 this.updateDisplay();
                 
                 setTimeout(() => {
                     this.round++;
                     this.nextRound();
-                }, 2000);
+                }, 3000);
             }
             
             skipCity() {
@@ -525,13 +630,14 @@
                 clearInterval(this.timer);
                 this.score = Math.max(0, this.score - 50);
                 this.streak = 0;
+                this.showCityLocation();
                 this.showFeedback('incorrect', 'City skipped (-50 points)');
                 this.updateDisplay();
                 
                 setTimeout(() => {
                     this.round++;
                     this.nextRound();
-                }, 1500);
+                }, 3000);
             }
             
             showFeedback(type, message) {
@@ -559,7 +665,7 @@
                 if (this.isPaused) {
                     this.cityNameEl.textContent = 'Game Paused';
                     this.cityHintEl.textContent = 'Click Resume to continue';
-                } else {
+                } else if (this.currentCity) {
                     this.cityNameEl.textContent = this.currentCity.name;
                     this.cityHintEl.textContent = this.currentCity.hint;
                 }
@@ -568,6 +674,7 @@
             endGame() {
                 this.gameActive = false;
                 clearInterval(this.timer);
+                this.clearMarkers();
                 
                 this.startBtn.disabled = false;
                 this.pauseBtn.disabled = true;
@@ -590,6 +697,8 @@
             
             resetGame() {
                 clearInterval(this.timer);
+                this.clearMarkers();
+                
                 this.score = 0;
                 this.round = 1;
                 this.streak = 0;
@@ -606,6 +715,9 @@
                 this.cityNameEl.textContent = 'Click "Start Game" to begin!';
                 this.cityHintEl.textContent = 'Test your geography knowledge by clicking cities on the world map';
                 this.timerFillEl.style.width = '100%';
+                
+                // Reset map view
+                this.map.setView([20, 0], 2);
                 
                 this.updateDisplay();
                 this.showLeaderboard();
@@ -628,14 +740,7 @@
                 
                 this.highScores.push(newScore);
                 this.highScores.sort((a, b) => b.score - a.score);
-                this.highScores = this.highScores.slice(0, 5); // Keep top 5
-                
-                // Save to memory (no localStorage in Claude.ai)
-            }
-            
-            loadHighScores() {
-                // Return empty array since we can't use localStorage
-                return [];
+                this.highScores = this.highScores.slice(0, 5);
             }
             
             showLeaderboard() {
