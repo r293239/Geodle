@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Sprint - Geography Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .game-header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .game-container {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .city-prompt {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .city-name {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .city-hint {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
+            transition: width 0.1s linear;
+            border-radius: 4px;
+        }
+
+        .world-map {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500"><rect width="1000" height="500" fill="%23e8f4f8"/><path d="M100,100 Q200,50 300,100 L400,150 Q500,200 600,150 L700,100 Q800,50 900,100 L900,400 Q800,450 700,400 L600,350 Q500,300 400,350 L300,400 Q200,450 100,400 Z" fill="%2395a5a6"/><circle cx="150" cy="200" r="3" fill="%23e74c3c"/><circle cx="250" cy="180" r="3" fill="%23e74c3c"/><circle cx="350" cy="160" r="3" fill="%23e74c3c"/><circle cx="450" cy="190" r="3" fill="%23e74c3c"/><circle cx="550" cy="170" r="3" fill="%23e74c3c"/><circle cx="650" cy="180" r="3" fill="%23e74c3c"/><circle cx="750" cy="160" r="3" fill="%23e74c3c"/><circle cx="850" cy="190" r="3" fill="%23e74c3c"/></svg>') center/cover;
+            border-radius: 15px;
+            position: relative;
+            cursor: crosshair;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .click-indicator {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e74c3c;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.3);
+            animation: clickPulse 0.6s ease-out;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        @keyframes clickPulse {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+
+        .correct-indicator {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 1000;
+            animation: feedbackShow 2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        @keyframes feedbackShow {
+            0% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            80% { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        .leaderboard {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 15px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+
+        .game-over {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .game-stats {
+                gap: 15px;
+            }
+            
+            .stat-item {
+                padding: 8px 15px;
+            }
+            
+            .city-name {
+                font-size: 1.8em;
+            }
+            
+            .world-map {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-header">
+        <h1>🌍 City Sprint</h1>
+        <div class="game-stats">
+            <div class="stat-item">
+                <div>Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Round</div>
+                <div class="stat-value" id="round">1</div>
+            </div>
+            <div class="stat-item">
+                <div>Streak</div>
+                <div class="stat-value" id="streak">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Best Time</div>
+                <div class="stat-value" id="bestTime">--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="city-prompt" id="cityPrompt">
+            <div class="city-name" id="cityName">Click "Start Game" to begin!</div>
+            <div class="city-hint" id="cityHint">Test your geography knowledge by clicking cities on the world map</div>
+        </div>
+
+        <div class="timer-bar">
+            <div class="timer-fill" id="timerFill"></div>
+        </div>
+
+        <div class="world-map" id="worldMap"></div>
+
+        <div class="controls">
+            <button id="startBtn">Start Game</button>
+            <button id="pauseBtn" disabled>Pause</button>
+            <button id="skipBtn" disabled>Skip City (-50 pts)</button>
+            <button id="resetBtn">Reset Game</button>
+        </div>
+
+        <div class="leaderboard" id="leaderboard" style="display: none;">
+            <h3>🏆 High Scores</h3>
+            <div id="scoresList"></div>
+        </div>
+    </div>
+
+    <script>
+        class CitySprintGame {
+            constructor() {
+                this.cities = [
+                    // Easy cities (Rounds 1-5)
+                    { name: "Paris", x: 48.8566, y: 2.3522, hint: "City of Light, home to the Eiffel Tower", difficulty: 1 },
+                    { name: "Tokyo", x: 35.6762, y: 139.6503, hint: "Japan's capital, famous for sushi and technology", difficulty: 1 },
+                    { name: "New York", x: 40.7128, y: -74.0060, hint: "The Big Apple, home to the Statue of Liberty", difficulty: 1 },
+                    { name: "London", x: 51.5074, y: -0.1278, hint: "UK capital, famous for Big Ben and red buses", difficulty: 1 },
+                    { name: "Rome", x: 41.9028, y: 12.4964, hint: "Eternal City, home to the Colosseum", difficulty: 1 },
+                    
+                    // Medium cities (Rounds 6-10)
+                    { name: "Sydney", x: -33.8688, y: 151.2093, hint: "Australian city famous for its Opera House", difficulty: 2 },
+                    { name: "Cairo", x: 30.0444, y: 31.2357, hint: "Egyptian capital near the Great Pyramids", difficulty: 2 },
+                    { name: "Mumbai", x: 19.0760, y: 72.8777, hint: "Bollywood's home city in India", difficulty: 2 },
+                    { name: "Berlin", x: 52.5200, y: 13.4050, hint: "German capital, once divided by a famous wall", difficulty: 2 },
+                    { name: "Mexico City", x: 19.4326, y: -99.1332, hint: "High-altitude capital of Mexico", difficulty: 2 },
+                    
+                    // Hard cities (Rounds 11-15)
+                    { name: "Reykjavik", x: 64.1466, y: -21.9426, hint: "Northernmost capital city in the world", difficulty: 3 },
+                    { name: "Ulaanbaatar", x: 47.8864, y: 106.9057, hint: "Mongolia's capital, means 'Red Hero'", difficulty: 3 },
+                    { name: "Antananarivo", x: -18.8792, y: 47.5079, hint: "Capital of the island nation Madagascar", difficulty: 3 },
+                    { name: "Vientiane", x: 17.9757, y: 102.6331, hint: "Capital of Laos in Southeast Asia", difficulty: 3 },
+                    { name: "Thimphu", x: 27.4728, y: 89.6390, hint: "Mountain capital of Bhutan", difficulty: 3 }
+                ];
+                
+                this.score = 0;
+                this.round = 1;
+                this.streak = 0;
+                this.bestTime = null;
+                this.currentCity = null;
+                this.gameActive = false;
+                this.isPaused = false;
+                this.timer = null;
+                this.timeLeft = 10000; // 10 seconds in milliseconds
+                this.startTime = 0;
+                this.highScores = this.loadHighScores();
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.updateDisplay();
+                this.showLeaderboard();
+            }
+            
+            initializeElements() {
+                this.scoreEl = document.getElementById('score');
+                this.roundEl = document.getElementById('round');
+                this.streakEl = document.getElementById('streak');
+                this.bestTimeEl = document.getElementById('bestTime');
+                this.cityNameEl = document.getElementById('cityName');
+                this.cityHintEl = document.getElementById('cityHint');
+                this.timerFillEl = document.getElementById('timerFill');
+                this.worldMapEl = document.getElementById('worldMap');
+                this.startBtn = document.getElementById('startBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.skipBtn = document.getElementById('skipBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.leaderboardEl = document.getElementById('leaderboard');
+                this.scoresListEl = document.getElementById('scoresList');
+            }
+            
+            setupEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startGame());
+                this.pauseBtn.addEventListener('click', () => this.togglePause());
+                this.skipBtn.addEventListener('click', () => this.skipCity());
+                this.resetBtn.addEventListener('click', () => this.resetGame());
+                this.worldMapEl.addEventListener('click', (e) => this.handleMapClick(e));
+            }
+            
+            startGame() {
+                this.gameActive = true;
+                this.startBtn.disabled = true;
+                this.pauseBtn.disabled = false;
+                this.skipBtn.disabled = false;
+                this.leaderboardEl.style.display = 'none';
+                this.nextRound();
+            }
+            
+            nextRound() {
+                if (!this.gameActive || this.round > 15) {
+                    this.endGame();
+                    return;
+                }
+                
+                // Select city based on difficulty progression
+                let difficulty = Math.min(3, Math.ceil(this.round / 5));
+                let availableCities = this.cities.filter(city => city.difficulty === difficulty);
+                this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
+                
+                this.cityNameEl.textContent = this.currentCity.name;
+                this.cityHintEl.textContent = this.currentCity.hint;
+                
+                this.timeLeft = 10000; // Reset timer
+                this.startTime = Date.now();
+                this.startTimer();
+            }
+            
+            startTimer() {
+                clearInterval(this.timer);
+                this.timer = setInterval(() => {
+                    if (this.isPaused) return;
+                    
+                    this.timeLeft -= 100;
+                    const percentage = (this.timeLeft / 10000) * 100;
+                    this.timerFillEl.style.width = Math.max(0, percentage) + '%';
+                    
+                    if (this.timeLeft <= 0) {
+                        this.handleTimeout();
+                    }
+                }, 100);
+            }
+            
+            handleMapClick(e) {
+                if (!this.gameActive || this.isPaused || !this.currentCity) return;
+                
+                const rect = this.worldMapEl.getBoundingClientRect();
+                const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+                const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                // Convert city coordinates to map percentage
+                const cityMapX = ((this.currentCity.y + 180) / 360) * 100;
+                const cityMapY = ((90 - this.currentCity.x) / 180) * 100;
+                
+                // Calculate distance (with some tolerance)
+                const distance = Math.sqrt(
+                    Math.pow(clickX - cityMapX, 2) + 
+                    Math.pow(clickY - cityMapY, 2)
+                );
+                
+                this.showClickIndicator(e.clientX - rect.left, e.clientY - rect.top, distance < 8);
+                
+                if (distance < 8) { // Tolerance for correct click
+                    this.handleCorrectClick();
+                } else {
+                    this.handleIncorrectClick();
+                }
+            }
+            
+            showClickIndicator(x, y, isCorrect) {
+                const indicator = document.createElement('div');
+                indicator.className = `click-indicator ${isCorrect ? 'correct-indicator' : ''}`;
+                indicator.style.left = x + 'px';
+                indicator.style.top = y + 'px';
+                this.worldMapEl.appendChild(indicator);
+                
+                setTimeout(() => {
+                    this.worldMapEl.removeChild(indicator);
+                }, 600);
+            }
+            
+            handleCorrectClick() {
+                clearInterval(this.timer);
+                
+                const responseTime = Date.now() - this.startTime;
+                const timeBonus = Math.max(0, Math.floor((this.timeLeft / 100)));
+                const streakBonus = this.streak * 10;
+                const roundScore = 100 + timeBonus + streakBonus;
+                
+                this.score += roundScore;
+                this.streak++;
+                
+                if (!this.bestTime || responseTime < this.bestTime) {
+                    this.bestTime = responseTime;
+                }
+                
+                this.showFeedback('correct', `+${roundScore} points! (${(responseTime/1000).toFixed(1)}s)`);
+                this.updateDisplay();
+                
+                setTimeout(() => {
+                    this.round++;
+                    this.nextRound();
+                }, 2000);
+            }
+            
+            handleIncorrectClick() {
+                this.score = Math.max(0, this.score - 25);
+                this.streak = 0;
+                this.showFeedback('incorrect', '-25 points');
+                this.updateDisplay();
+            }
+            
+            handleTimeout() {
+                clearInterval(this.timer);
+                this.streak = 0;
+                this.showFeedback('incorrect', 'Time\'s up!');
+                this.updateDisplay();
+                
+                setTimeout(() => {
+                    this.round++;
+                    this.nextRound();
+                }, 2000);
+            }
+            
+            skipCity() {
+                if (!this.gameActive || !this.currentCity) return;
+                
+                clearInterval(this.timer);
+                this.score = Math.max(0, this.score - 50);
+                this.streak = 0;
+                this.showFeedback('incorrect', 'City skipped (-50 points)');
+                this.updateDisplay();
+                
+                setTimeout(() => {
+                    this.round++;
+                    this.nextRound();
+                }, 1500);
+            }
+            
+            showFeedback(type, message) {
+                const existingFeedback = document.querySelector('.feedback');
+                if (existingFeedback) {
+                    existingFeedback.remove();
+                }
+                
+                const feedback = document.createElement('div');
+                feedback.className = `feedback ${type}`;
+                feedback.textContent = message;
+                document.body.appendChild(feedback);
+                
+                setTimeout(() => {
+                    if (feedback.parentNode) {
+                        feedback.parentNode.removeChild(feedback);
+                    }
+                }, 2000);
+            }
+            
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                this.pauseBtn.textContent = this.isPaused ? 'Resume' : 'Pause';
+                
+                if (this.isPaused) {
+                    this.cityNameEl.textContent = 'Game Paused';
+                    this.cityHintEl.textContent = 'Click Resume to continue';
+                } else {
+                    this.cityNameEl.textContent = this.currentCity.name;
+                    this.cityHintEl.textContent = this.currentCity.hint;
+                }
+            }
+            
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                
+                this.startBtn.disabled = false;
+                this.pauseBtn.disabled = true;
+                this.skipBtn.disabled = true;
+                
+                this.saveHighScore();
+                this.showGameOver();
+                this.showLeaderboard();
+            }
+            
+            showGameOver() {
+                this.cityNameEl.innerHTML = `<div class="game-over">
+                    <h2>🎉 Game Complete!</h2>
+                    <p>Final Score: <strong>${this.score}</strong></p>
+                    <p>Rounds Completed: <strong>${this.round - 1}/15</strong></p>
+                    <p>Best Time: <strong>${this.bestTime ? (this.bestTime/1000).toFixed(1) + 's' : '--'}</strong></p>
+                </div>`;
+                this.cityHintEl.textContent = '';
+            }
+            
+            resetGame() {
+                clearInterval(this.timer);
+                this.score = 0;
+                this.round = 1;
+                this.streak = 0;
+                this.bestTime = null;
+                this.currentCity = null;
+                this.gameActive = false;
+                this.isPaused = false;
+                
+                this.startBtn.disabled = false;
+                this.pauseBtn.disabled = true;
+                this.skipBtn.disabled = true;
+                this.pauseBtn.textContent = 'Pause';
+                
+                this.cityNameEl.textContent = 'Click "Start Game" to begin!';
+                this.cityHintEl.textContent = 'Test your geography knowledge by clicking cities on the world map';
+                this.timerFillEl.style.width = '100%';
+                
+                this.updateDisplay();
+                this.showLeaderboard();
+            }
+            
+            updateDisplay() {
+                this.scoreEl.textContent = this.score;
+                this.roundEl.textContent = this.round;
+                this.streakEl.textContent = this.streak;
+                this.bestTimeEl.textContent = this.bestTime ? (this.bestTime/1000).toFixed(1) + 's' : '--';
+            }
+            
+            saveHighScore() {
+                const newScore = {
+                    score: this.score,
+                    rounds: this.round - 1,
+                    bestTime: this.bestTime,
+                    date: new Date().toLocaleDateString()
+                };
+                
+                this.highScores.push(newScore);
+                this.highScores.sort((a, b) => b.score - a.score);
+                this.highScores = this.highScores.slice(0, 5); // Keep top 5
+                
+                // Save to memory (no localStorage in Claude.ai)
+            }
+            
+            loadHighScores() {
+                // Return empty array since we can't use localStorage
+                return [];
+            }
+            
+            showLeaderboard() {
+                if (this.highScores.length === 0) {
+                    this.leaderboardEl.style.display = 'none';
+                    return;
+                }
+                
+                this.leaderboardEl.style.display = 'block';
+                this.scoresListEl.innerHTML = this.highScores.map((score, index) => `
+                    <div class="score-entry">
+                        <span>${index + 1}. ${score.score} pts (${score.rounds} rounds)</span>
+                        <span>${score.bestTime ? (score.bestTime/1000).toFixed(1) + 's' : '--'}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Initialize game when page loads
+        window.addEventListener('load', () => {
+            new CivileGame();
+        });
+    </script>
+</body>
+</html>
