@@ -1,4 +1,23 @@
-<!DOCTYPE html>
+saveAchievements() {
+                try {
+                    localStorage.setItem('civile_achievements', JSON.stringify(this.achievements));
+                } catch (error) {
+                    console.error('Error saving achievements:', error);
+                }
+            }
+
+            loadWeekendPlays() {
+                try {
+                    const saved = localStorage.getItem('civile_weekend_plays');
+                    return saved ? JSON.parse(saved) : { saturday: false, sunday: false };
+                } catch (error) {
+                    return { saturday: false, sunday: false };
+                }
+            }
+
+            saveWeekendPlays() {
+                try {
+                    localStorage.setItem('civile_<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1703,6 +1722,11 @@
         window.addEventListener('load', () => {
             initializeSettings();
             window.game = new EnhancedCivileGame();
+            
+            // Initialize achievements page
+            if (window.game) {
+                window.game.updateAchievementDisplay();
+            }
             
             // Add keyboard shortcuts
             document.addEventListener('keydown', (e) => {
