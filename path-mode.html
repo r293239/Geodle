@@ -1029,16 +1029,6 @@
             <div class="menu-section">
                 <h3>🎨 Visual Settings</h3>
                 <div class="setting-item">
-                    <span>Theme</span>
-                    <select class="dropdown-select" id="themeSelect">
-                        <option value="cosmic">🌌 Cosmic (Default)</option>
-                        <option value="ocean">🌊 Ocean Blue</option>
-                        <option value="forest">🌲 Forest Green</option>
-                        <option value="sunset">🌅 Sunset Orange</option>
-                        <option value="midnight">🌙 Midnight Purple</option>
-                    </select>
-                </div>
-                <div class="setting-item">
                     <span>Animations</span>
                     <div class="toggle-switch active" id="animationsToggle"></div>
                 </div>
@@ -1317,7 +1307,6 @@
             const volumeSlider = document.getElementById('volumeSlider');
             const languageSelect = document.getElementById('languageSelect');
             const difficultySelect = document.getElementById('difficultySelect');
-            const themeSelect = document.getElementById('themeSelect');
 
             // Menu open/close
             menuButton.addEventListener('click', function() {
@@ -1377,15 +1366,6 @@
                 showNotification(`Difficulty set to ${this.options[this.selectedIndex].text}`);
             });
 
-            // Theme selection
-            themeSelect.addEventListener('change', function() {
-                window.playClickSound && window.playClickSound();
-                const theme = this.value;
-                console.log('Theme changed to:', theme);
-                applyTheme(theme);
-                showNotification(`Theme changed to ${this.options[this.selectedIndex].text}`);
-            });
-
             // Add toggle functionality to all toggle switches
             document.querySelectorAll('.toggle-switch').forEach(toggle => {
                 toggle.addEventListener('click', function() {
@@ -1412,55 +1392,6 @@
                 attempts = maxAttempts;
                 document.getElementById('attempts').textContent = attempts;
             }
-        }
-
-        // Apply theme with enhanced visual differences
-        function applyTheme(theme) {
-            const body = document.body;
-            
-            // Remove all theme classes first
-            body.classList.remove('theme-ocean', 'theme-forest', 'theme-sunset', 'theme-midnight');
-            
-            // Apply the selected theme
-            if (theme !== 'cosmic') {
-                body.classList.add(`theme-${theme}`);
-            }
-            
-            // Theme-specific element color updates
-            const themeColors = {
-                'cosmic': {
-                    primary: '#8a2be2',
-                    secondary: '#4ecdc4',
-                    accent: '#ffd700'
-                },
-                'ocean': {
-                    primary: '#0077be',
-                    secondary: '#00b4d8',
-                    accent: '#90e0ef'
-                },
-                'forest': {
-                    primary: '#2d5016',
-                    secondary: '#52b788',
-                    accent: '#95d5b2'
-                },
-                'sunset': {
-                    primary: '#d2691e',
-                    secondary: '#ff8c00',
-                    accent: '#ffd700'
-                },
-                'midnight': {
-                    primary: '#66fcf1',
-                    secondary: '#45a29e',
-                    accent: '#c5c6c7'
-                }
-            };
-            
-            const colors = themeColors[theme] || themeColors['cosmic'];
-            
-            // Update CSS custom properties if needed
-            document.documentElement.style.setProperty('--theme-primary', colors.primary);
-            document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
-            document.documentElement.style.setProperty('--theme-accent', colors.accent);
         }
 
         // Show notification
@@ -1537,92 +1468,55 @@
             return country && country.borders ? country.borders : [];
         }
 
-        // FIXED: Daily challenge pairs - ensures minimum 4 steps between countries
+        // SIMPLE: Daily challenge pairs - randomly selects countries and ensures minimum 4 steps between them
         function getDailyChallengeFromData() {
             if (!countryNames.length) return ['France', 'Germany'];
             
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
             
-            // Pre-calculated pairs that are guaranteed to be at least 4 steps apart
-            const validChallengePairs = [
-                // Europe to Asia
-                ['Portugal', 'China'],
-                ['Ireland', 'Japan'],
-                ['Norway', 'India'],
-                ['Spain', 'Mongolia'],
-                ['United Kingdom', 'South Korea'],
-                
-                // Americas to Africa/Asia
-                ['Canada', 'South Africa'],
-                ['Mexico', 'Egypt'],
-                ['United States', 'Morocco'],
-                ['Brazil', 'Kenya'],
-                ['Argentina', 'Nigeria'],
-                
-                // Cross-continental distant pairs
-                ['Australia', 'France'],
-                ['New Zealand', 'Germany'],
-                ['Chile', 'Russia'],
-                ['Peru', 'Turkey'],
-                ['Colombia', 'Iran'],
-                
-                // Africa to Europe/Asia
-                ['South Africa', 'Norway'],
-                ['Morocco', 'Finland'],
-                ['Egypt', 'United Kingdom'],
-                ['Nigeria', 'Japan'],
-                ['Kenya', 'Sweden'],
-                
-                // Additional diverse pairs
-                ['Iceland', 'Thailand'],
-                ['Madagascar', 'Poland'],
-                ['Uruguay', 'Kazakhstan'],
-                ['Paraguay', 'Ukraine'],
-                ['Bolivia', 'Romania']
-            ];
+            // Use the day of year as a seed for consistent daily challenges
+            const seed = dayOfYear;
             
-            // Filter pairs to ensure both countries exist in our data
-            const availablePairs = validChallengePairs.filter(([start, end]) => 
-                countryNames.includes(start) && countryNames.includes(end)
-            );
-            
-            if (availablePairs.length === 0) {
-                // Fallback to original method but with distance check
-                return findValidPairWithMinDistance();
-            }
-            
-            const pairIndex = dayOfYear % availablePairs.length;
-            return availablePairs[pairIndex];
-        }
-
-        // Helper function to find a valid pair with minimum distance when predefined pairs fail
-        function findValidPairWithMinDistance() {
-            const majorCountries = countryNames.filter(name => {
+            // Get eligible countries (those with borders)
+            const eligibleCountries = countryNames.filter(name => {
                 const country = getCountryData(name);
-                return country && country.population > 5000000; // Countries with >5M population
+                return country && country.borders && country.borders.length > 0;
             });
             
+            if (eligibleCountries.length < 2) {
+                return ['France', 'Germany'];
+            }
+            
             // Try to find a pair that's at least 4 steps apart
-            for (let attempts = 0; attempts < 50; attempts++) {
-                const start = majorCountries[Math.floor(Math.random() * majorCountries.length)];
-                const end = majorCountries[Math.floor(Math.random() * majorCountries.length)];
+            for (let attempt = 0; attempt < 100; attempt++) {
+                // Select random countries using seeded random
+                const startIndex = (seed + attempt) % eligibleCountries.length;
+                const start = eligibleCountries[startIndex];
+                
+                const endIndex = (seed + attempt * 2 + 1) % eligibleCountries.length;
+                const end = eligibleCountries[endIndex];
                 
                 if (start !== end) {
                     const pathKey = `${start}-${end}`;
+                    
+                    // Calculate path if not cached
                     if (!pathCache.has(pathKey)) {
                         const path = findOptimalPath(start, end);
                         pathCache.set(pathKey, path);
                     }
                     
                     const path = pathCache.get(pathKey);
-                    if (path && path.length >= 5) { // 5 countries = 4 steps minimum
+                    
+                    // Check if path exists and has minimum 4 steps (5 countries)
+                    if (path && path.length >= 5) {
+                        console.log(`Found valid pair: ${start} -> ${end} (${path.length - 1} steps)`);
                         return [start, end];
                     }
                 }
             }
             
-            // Ultimate fallback
+            // If no pair found with 4+ steps, use a fallback
             return ['France', 'China'];
         }
 
@@ -1680,7 +1574,7 @@
                 attempts = maxAttempts;
                 document.getElementById('optimalLength').textContent = optimalLength;
             } else {
-                // Fallback if no path found (shouldn't happen with our curated pairs)
+                // Fallback if no path found
                 maxAttempts = 15;
                 attempts = 15;
                 document.getElementById('optimalLength').textContent = '?';
