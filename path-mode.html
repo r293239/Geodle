@@ -16,34 +16,28 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #7209b7, #a663cc);
+            background: linear-gradient(135deg, 
+                #0f0c29 0%, 
+                #302b63 25%, 
+                #24243e 50%, 
+                #1a1a2e 75%, 
+                #16213e 100%);
             background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
+            animation: cosmicShift 20s ease infinite;
             min-height: 100vh;
             color: #fff;
             position: relative;
             overflow-x: hidden;
-            transition: all 1s ease;
         }
 
-        /* Theme variations */
-        body.theme-ocean {
-            background: linear-gradient(-45deg, #001427, #012a4a, #2a6f97, #0077be, #00b4d8, #90e0ef);
+        /* Enhanced cosmic background animation */
+        @keyframes cosmicShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        body.theme-forest {
-            background: linear-gradient(-45deg, #1b4332, #2d5016, #52b788, #74c69d, #95d5b2, #b7e4c7);
-        }
-
-        body.theme-sunset {
-            background: linear-gradient(180deg, #ff6b35 0%, #f7931e 25%, #ffd700 50%, #ffb347 75%, #d2691e 100%);
-        }
-
-        body.theme-midnight {
-            background: linear-gradient(-45deg, #0b0c10, #1f2833, #66fcf1, #45a29e, #c5c6c7, #8892b0);
-        }
-
-        /* Clean floating particles */
+        /* Cosmic starfield effect */
         body::before {
             content: '';
             position: fixed;
@@ -53,20 +47,48 @@
             height: 100%;
             background-image: 
                 radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), transparent),
-                radial-gradient(3px 3px at 40px 70px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.6), transparent),
                 radial-gradient(1px 1px at 90px 40px, rgba(78,205,196,0.7), transparent),
-                radial-gradient(2px 2px at 130px 80px, rgba(255,107,107,0.5), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,107,107,0.5), transparent),
                 radial-gradient(1px 1px at 160px 30px, rgba(255,215,0,0.8), transparent),
-                radial-gradient(2px 2px at 200px 120px, rgba(138,43,226,0.6), transparent);
+                radial-gradient(2px 2px at 200px 120px, rgba(138,43,226,0.6), transparent),
+                radial-gradient(1px 1px at 250px 60px, rgba(144,224,239,0.7), transparent),
+                radial-gradient(2px 2px at 280px 90px, rgba(82,183,136,0.5), transparent),
+                radial-gradient(1px 1px at 320px 40px, rgba(255,140,0,0.6), transparent),
+                radial-gradient(2px 2px at 350px 110px, rgba(102,252,241,0.5), transparent);
             background-repeat: repeat;
-            background-size: 250px 180px;
-            animation: gentleFloat 15s linear infinite;
+            background-size: 400px 300px;
+            animation: starDrift 25s linear infinite;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
-        /* Clean geometric shapes overlay */
+        /* Animated star movement */
+        @keyframes starDrift {
+            0% { 
+                transform: translateX(0px) translateY(0px); 
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translateX(-50px) translateY(-20px); 
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateX(-100px) translateY(0px); 
+                opacity: 1;
+            }
+            75% { 
+                transform: translateX(-150px) translateY(20px); 
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateX(-200px) translateY(0px); 
+                opacity: 0.6;
+            }
+        }
+
+        /* Nebula overlay effect */
         body::after {
             content: '';
             position: fixed;
@@ -75,47 +97,18 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(ellipse at 15% 25%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 85% 75%, rgba(72, 187, 120, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 60% 40%, rgba(66, 153, 225, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 30% 80%, rgba(236, 201, 75, 0.1) 0%, transparent 50%);
-            animation: gentleShapes 12s ease-in-out infinite;
+                radial-gradient(ellipse at 15% 25%, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 85% 75%, rgba(78, 205, 196, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 60% 40%, rgba(255, 107, 107, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 30% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 65%);
+            animation: nebulaFlow 15s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.4;
+            opacity: 0.5;
         }
 
-        /* Clean, smooth animations */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes gentleFloat {
-            0% { 
-                transform: translateX(0px) translateY(0px); 
-                opacity: 0.6;
-            }
-            25% { 
-                transform: translateX(-30px) translateY(-15px); 
-                opacity: 0.8;
-            }
-            50% { 
-                transform: translateX(-60px) translateY(0px); 
-                opacity: 1;
-            }
-            75% { 
-                transform: translateX(-90px) translateY(15px); 
-                opacity: 0.8;
-            }
-            100% { 
-                transform: translateX(-120px) translateY(0px); 
-                opacity: 0.6;
-            }
-        }
-
-        @keyframes gentleShapes {
+        /* Nebula animation */
+        @keyframes nebulaFlow {
             0%, 100% { 
                 transform: scale(1) rotate(0deg);
                 opacity: 0.4;
@@ -128,119 +121,6 @@
                 transform: scale(0.95) rotate(-1deg);
                 opacity: 0.5;
             }
-        }
-
-        /* Theme-specific particle adjustments */
-        body.theme-ocean::before {
-            background-image: 
-                radial-gradient(3px 3px at 15px 25px, rgba(144,224,239,0.8), transparent),
-                radial-gradient(2px 2px at 35px 65px, rgba(0,180,216,0.6), transparent),
-                radial-gradient(4px 4px at 85px 35px, rgba(144,224,239,0.7), transparent),
-                radial-gradient(1px 1px at 125px 75px, rgba(0,180,216,0.5), transparent);
-            animation: bubbleRise 12s ease-in-out infinite;
-        }
-
-        body.theme-forest::before {
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(82,183,136,0.7), transparent),
-                radial-gradient(3px 3px at 60px 80px, rgba(116,198,157,0.6), transparent),
-                radial-gradient(1px 1px at 100px 50px, rgba(149,213,178,0.8), transparent),
-                radial-gradient(2px 2px at 140px 90px, rgba(183,228,199,0.5), transparent);
-            animation: leafDance 10s ease-in-out infinite;
-        }
-
-        body.theme-sunset::before {
-            background-image: 
-                radial-gradient(3px 3px at 25px 35px, rgba(255,215,0,0.8), transparent),
-                radial-gradient(2px 2px at 65px 75px, rgba(255,140,0,0.7), transparent),
-                radial-gradient(4px 4px at 105px 45px, rgba(255,99,71,0.6), transparent),
-                radial-gradient(1px 1px at 145px 85px, rgba(255,215,0,0.5), transparent);
-            animation: sunShimmer 8s ease-in-out infinite;
-        }
-
-        body.theme-midnight::before {
-            background-image: 
-                radial-gradient(2px 2px at 20px 30px, rgba(102,252,241,0.8), transparent),
-                radial-gradient(3px 3px at 60px 70px, rgba(69,162,158,0.7), transparent),
-                radial-gradient(1px 1px at 100px 40px, rgba(197,198,199,0.6), transparent),
-                radial-gradient(2px 2px at 140px 80px, rgba(136,146,176,0.5), transparent);
-            animation: cyberPulse 6s ease-in-out infinite;
-        }
-
-        /* Clean theme-specific shape overlays */
-        body.theme-ocean::after {
-            background: 
-                radial-gradient(ellipse at 20% 30%, rgba(0,180,216,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 70%, rgba(144,224,239,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(42,111,151,0.08) 0%, transparent 70%);
-            animation: waveFlow 10s ease-in-out infinite;
-        }
-
-        body.theme-forest::after {
-            background: 
-                radial-gradient(ellipse at 10% 20%, rgba(82,183,136,0.12) 0%, transparent 55%),
-                radial-gradient(ellipse at 90% 80%, rgba(116,198,157,0.12) 0%, transparent 65%),
-                radial-gradient(ellipse at 65% 35%, rgba(27,67,50,0.08) 0%, transparent 70%);
-            animation: forestBreeze 14s ease-in-out infinite;
-        }
-
-        body.theme-sunset::after {
-            background: 
-                radial-gradient(ellipse at 85% 25%, rgba(255,215,0,0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 15% 75%, rgba(255,140,0,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(255,69,0,0.08) 0%, transparent 70%);
-            animation: heatWave 9s ease-in-out infinite;
-        }
-
-        body.theme-midnight::after {
-            background: 
-                radial-gradient(ellipse at 30% 25%, rgba(102,252,241,0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 75%, rgba(69,162,158,0.12) 0%, transparent 55%),
-                radial-gradient(ellipse at 45% 55%, rgba(11,12,16,0.15) 0%, transparent 65%);
-            animation: techPulse 7s ease-in-out infinite;
-        }
-
-        /* Smooth theme-specific animations */
-        @keyframes bubbleRise {
-            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-20px) scale(1.02); opacity: 0.7; }
-        }
-
-        @keyframes leafDance {
-            0%, 100% { transform: translateX(0px) rotate(0deg); opacity: 0.4; }
-            33% { transform: translateX(10px) rotate(1deg); opacity: 0.6; }
-            66% { transform: translateX(-8px) rotate(-1deg); opacity: 0.5; }
-        }
-
-        @keyframes sunShimmer {
-            0%, 100% { filter: brightness(1) saturate(1); opacity: 0.4; }
-            50% { filter: brightness(1.1) saturate(1.2); opacity: 0.6; }
-        }
-
-        @keyframes cyberPulse {
-            0%, 100% { transform: scale(1); opacity: 0.4; filter: hue-rotate(0deg); }
-            50% { transform: scale(1.02); opacity: 0.7; filter: hue-rotate(10deg); }
-        }
-
-        @keyframes waveFlow {
-            0%, 100% { transform: translateX(0px) scaleX(1); }
-            50% { transform: translateX(-15px) scaleX(1.05); }
-        }
-
-        @keyframes forestBreeze {
-            0%, 100% { transform: translateX(0px) scaleY(1); }
-            33% { transform: translateX(12px) scaleY(0.98); }
-            66% { transform: translateX(-8px) scaleY(1.02); }
-        }
-
-        @keyframes heatWave {
-            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-10px) scale(1.03); opacity: 0.6; }
-        }
-
-        @keyframes techPulse {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
-            50% { transform: scale(1.05) rotate(1deg); opacity: 0.7; }
         }
 
         .container {
