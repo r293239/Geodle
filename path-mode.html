@@ -1146,6 +1146,7 @@
         // Audio variables
         let musicEnabled = false;
         let sfxEnabled = true;
+        let masterVolume = 0.7;
         let backgroundMusic, winSound, clickSound;
 
         // Game state
@@ -1160,6 +1161,14 @@
         let pathMarkers = [];
         let countryNames = [];
 
+        // Game settings
+        let difficulty = 'normal';
+        let hintsEnabled = true;
+        let autoSaveEnabled = true;
+        let animationsEnabled = true;
+        let particlesEnabled = true;
+        let countryDisplay = 'name';
+
         // Cache for optimal paths to avoid recalculating
         let pathCache = new Map();
 
@@ -1169,85 +1178,21 @@
             winSound = document.getElementById('winSound');
             clickSound = document.getElementById('clickSound');
 
-            // Create simple tones using Web Audio API as fallback
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Background music simulation - Light and cheerful melody
-            function playBackgroundTone() {
-                if (!musicEnabled) return;
-                
-                // Create a pleasant major scale melody
-                const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77]; // C5 to B5
-                const melody = [0, 2, 4, 2, 0, 4, 2, 0]; // Simple pleasant melody pattern
-                
-                melody.forEach((noteIndex, i) => {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        // Use a softer waveform
-                        oscillator.type = 'sine';
-                        oscillator.frequency.setValueAtTime(notes[noteIndex], audioContext.currentTime);
-                        
-                        // Gentle envelope
-                        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                        gainNode.gain.linearRampToValueAtTime(0.02, audioContext.currentTime + 0.1);
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.8);
-                        
-                        oscillator.start();
-                        oscillator.stop(audioContext.currentTime + 0.8);
-                    }, i * 600);
-                });
-                
-                // Schedule next melody loop
-                setTimeout(playBackgroundTone, 8000);
-            }
+            // Update volume for all audio elements
+            updateAudioVolume();
+        }
 
-            // Win sound
-            window.playWinSound = function() {
-                if (!sfxEnabled) return;
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-                oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
-                oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-                
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.5);
-            };
-
-            // Click sound
-            window.playClickSound = function() {
-                if (!sfxEnabled) return;
-                
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.1);
-            };
+        function updateAudioVolume() {
+            const volume = masterVolume;
+            if (backgroundMusic) backgroundMusic.volume = volume;
+            if (winSound) winSound.volume = volume;
+            if (clickSound) clickSound.volume = volume;
         }
 
         // Particle effect for winning
         function createWinningEffect() {
+            if (!particlesEnabled) return;
+            
             const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
             
             for (let i = 0; i < 50; i++) {
@@ -1306,16 +1251,30 @@
             const sfxToggle = document.getElementById('sfxToggle');
             const volumeSlider = document.getElementById('volumeSlider');
             const languageSelect = document.getElementById('languageSelect');
+            const countryDisplaySelect = document.getElementById('countryDisplaySelect');
             const difficultySelect = document.getElementById('difficultySelect');
+            const hintsToggle = document.getElementById('hintsToggle');
+            const autoSaveToggle = document.getElementById('autoSaveToggle');
+            const animationsToggle = document.getElementById('animationsToggle');
+            const particlesToggle = document.getElementById('particlesToggle');
+
+            // Set initial states
+            musicToggle.classList.toggle('active', musicEnabled);
+            sfxToggle.classList.toggle('active', sfxEnabled);
+            hintsToggle.classList.toggle('active', hintsEnabled);
+            autoSaveToggle.classList.toggle('active', autoSaveEnabled);
+            animationsToggle.classList.toggle('active', animationsEnabled);
+            particlesToggle.classList.toggle('active', particlesEnabled);
+            volumeSlider.value = masterVolume * 100;
 
             // Menu open/close
             menuButton.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 menuOverlay.classList.add('active');
             });
 
             closeMenuBtn.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 menuOverlay.classList.remove('active');
             });
 
@@ -1327,11 +1286,13 @@
 
             // Audio toggles
             musicToggle.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 musicEnabled = !musicEnabled;
                 this.classList.toggle('active', musicEnabled);
                 if (musicEnabled) {
-                    playBackgroundTone();
+                    backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+                } else {
+                    backgroundMusic.pause();
                 }
             });
 
@@ -1339,42 +1300,93 @@
                 sfxEnabled = !sfxEnabled;
                 this.classList.toggle('active', sfxEnabled);
                 if (sfxEnabled) {
-                    window.playClickSound && window.playClickSound();
+                    playClickSound();
                 }
             });
 
             // Volume control
             volumeSlider.addEventListener('input', function() {
-                const volume = this.value / 100;
-                console.log('Volume set to:', volume);
+                masterVolume = this.value / 100;
+                updateAudioVolume();
             });
 
             // Language selection
             languageSelect.addEventListener('change', function() {
-                window.playClickSound && window.playClickSound();
-                const selectedLanguage = this.value;
-                console.log('Language changed to:', selectedLanguage);
+                playClickSound();
                 showNotification(`Language changed to ${this.options[this.selectedIndex].text}`);
+            });
+
+            // Country display selection
+            countryDisplaySelect.addEventListener('change', function() {
+                playClickSound();
+                countryDisplay = this.value;
+                showNotification(`Country display changed to ${this.options[this.selectedIndex].text}`);
+                updateCountryDisplay();
             });
 
             // Difficulty selection
             difficultySelect.addEventListener('change', function() {
-                window.playClickSound && window.playClickSound();
-                const difficulty = this.value;
-                console.log('Difficulty changed to:', difficulty);
+                playClickSound();
+                difficulty = this.value;
                 updateDifficulty(difficulty);
                 showNotification(`Difficulty set to ${this.options[this.selectedIndex].text}`);
+            });
+
+            // Game settings toggles
+            hintsToggle.addEventListener('click', function() {
+                playClickSound();
+                hintsEnabled = !hintsEnabled;
+                this.classList.toggle('active', hintsEnabled);
+                showNotification(`Hint system ${hintsEnabled ? 'enabled' : 'disabled'}`);
+            });
+
+            autoSaveToggle.addEventListener('click', function() {
+                playClickSound();
+                autoSaveEnabled = !autoSaveEnabled;
+                this.classList.toggle('active', autoSaveEnabled);
+                showNotification(`Auto-save ${autoSaveEnabled ? 'enabled' : 'disabled'}`);
+            });
+
+            animationsToggle.addEventListener('click', function() {
+                playClickSound();
+                animationsEnabled = !animationsEnabled;
+                this.classList.toggle('active', animationsEnabled);
+                showNotification(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
+                // Apply animation changes
+                document.body.style.animationPlayState = animationsEnabled ? 'running' : 'paused';
+            });
+
+            particlesToggle.addEventListener('click', function() {
+                playClickSound();
+                particlesEnabled = !particlesEnabled;
+                this.classList.toggle('active', particlesEnabled);
+                showNotification(`Particle effects ${particlesEnabled ? 'enabled' : 'disabled'}`);
             });
 
             // Add toggle functionality to all toggle switches
             document.querySelectorAll('.toggle-switch').forEach(toggle => {
                 toggle.addEventListener('click', function() {
-                    if (this !== musicToggle && this !== sfxToggle) {
-                        window.playClickSound && window.playClickSound();
+                    if (this !== musicToggle && this !== sfxToggle && 
+                        this !== hintsToggle && this !== autoSaveToggle && 
+                        this !== animationsToggle && this !== particlesToggle) {
+                        playClickSound();
                         this.classList.toggle('active');
                     }
                 });
             });
+        }
+
+        // Audio functions
+        function playClickSound() {
+            if (!sfxEnabled) return;
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => console.log('Click sound play failed:', e));
+        }
+
+        function playWinSound() {
+            if (!sfxEnabled) return;
+            winSound.currentTime = 0;
+            winSound.play().catch(e => console.log('Win sound play failed:', e));
         }
 
         // Update difficulty based on selection
@@ -1392,6 +1404,13 @@
                 attempts = maxAttempts;
                 document.getElementById('attempts').textContent = attempts;
             }
+        }
+
+        // Update country display based on setting
+        function updateCountryDisplay() {
+            // This would update how countries are displayed in the game
+            // For now, it just shows a notification
+            console.log('Country display mode:', countryDisplay);
         }
 
         // Show notification
@@ -1436,17 +1455,17 @@
 
         // Navigation functions
         function goToCountryMode() {
-            window.playClickSound && window.playClickSound();
+            playClickSound();
             window.location.href = "https://geodle-game.netlify.app/country-mode";
         }
 
         function goToClassicMode() {
-            window.playClickSound && window.playClickSound();
+            playClickSound();
             window.location.href = "https://geodle-game.netlify.app/index.html";
         }
 
         function goToFlagMode() {
-            window.playClickSound && window.playClickSound();
+            playClickSound();
             window.location.href = "flag-mode.html";
         }
 
@@ -1468,7 +1487,7 @@
             return country && country.borders ? country.borders : [];
         }
 
-        // SIMPLE: Daily challenge pairs - randomly selects countries and ensures minimum 4 steps between them
+        // SIMPLE: Daily challenge pairs - randomly selects countries and ensures minimum 3 steps between them
         function getDailyChallengeFromData() {
             if (!countryNames.length) return ['France', 'Germany'];
             
@@ -1488,7 +1507,7 @@
                 return ['France', 'Germany'];
             }
             
-            // Try to find a pair that's at least 4 steps apart
+            // Try to find a pair that's at least 3 steps apart
             for (let attempt = 0; attempt < 100; attempt++) {
                 // Select random countries using seeded random
                 const startIndex = (seed + attempt) % eligibleCountries.length;
@@ -1508,15 +1527,15 @@
                     
                     const path = pathCache.get(pathKey);
                     
-                    // Check if path exists and has minimum 4 steps (5 countries)
-                    if (path && path.length >= 5) {
+                    // Check if path exists and has minimum 3 steps (4 countries)
+                    if (path && path.length >= 4) {
                         console.log(`Found valid pair: ${start} -> ${end} (${path.length - 1} steps)`);
                         return [start, end];
                     }
                 }
             }
             
-            // If no pair found with 4+ steps, use a fallback
+            // If no pair found with 3+ steps, use a fallback
             return ['France', 'China'];
         }
 
@@ -1722,7 +1741,7 @@
                         div.addEventListener('click', () => {
                             countryInput.value = country;
                             suggestions.style.display = 'none';
-                            window.playClickSound && window.playClickSound();
+                            playClickSound();
                         });
                         suggestions.appendChild(div);
                     });
@@ -1740,33 +1759,33 @@
 
             // Add country to path
             addBtn.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 addCountryToPath();
             });
 
             // Enter key to add country
             countryInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    window.playClickSound && window.playClickSound();
+                    playClickSound();
                     addCountryToPath();
                 }
             });
 
             // Finish path
             finishBtn.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 finishPath();
             });
 
             // Reset path
             resetBtn.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 resetPath();
             });
 
             // New game
             newGameBtn.addEventListener('click', function() {
-                window.playClickSound && window.playClickSound();
+                playClickSound();
                 newGame();
             });
         }
@@ -1863,7 +1882,7 @@
                 scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Journey Efficiency: <strong>${efficiency}%</strong>`;
                 
                 // Play win sound and create particle effect
-                window.playWinSound && window.playWinSound();
+                playWinSound();
                 createWinningEffect();
             } else {
                 titleElement.textContent = 'Journey Incomplete!';
