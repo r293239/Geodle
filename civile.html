@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,14 +15,14 @@
         }
 
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #ffd700;
+            --primary-color: #2c5530;
+            --secondary-color: #4a7c59;
+            --accent-color: #f2c94c;
             --success-color: #27ae60;
             --error-color: #e74c3c;
             --warning-color: #f39c12;
-            --dark-bg: #2c3e50;
-            --light-text: #ecf0f1;
+            --dark-bg: #1a2f1a;
+            --light-text: #f5f5f5;
             --glass-bg: rgba(255,255,255,0.1);
             --glass-border: rgba(255,255,255,0.2);
         }
@@ -34,39 +35,36 @@
             overflow-x: hidden;
         }
 
-        /* Animated background particles */
-        .bg-particles {
+        /* Natural Background */
+        .natural-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(76, 175, 80, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 195, 74, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(56, 142, 60, 0.1) 0%, transparent 50%);
         }
 
-        .particle {
+        .natural-bg::before {
+            content: '';
             position: absolute;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></svg>') repeat,
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M100,20 C120,40 140,60 160,80 C140,100 120,120 100,140 C80,120 60,100 40,80 C60,60 80,40 100,20 Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>') repeat;
+            animation: floatBackground 60s infinite linear;
         }
 
-        .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; }
-        .particle:nth-child(2) { width: 6px; height: 6px; left: 20%; animation-delay: 2s; }
-        .particle:nth-child(3) { width: 3px; height: 3px; left: 30%; animation-delay: 4s; }
-        .particle:nth-child(4) { width: 5px; height: 5px; left: 40%; animation-delay: 6s; }
-        .particle:nth-child(5) { width: 4px; height: 4px; left: 50%; animation-delay: 8s; }
-        .particle:nth-child(6) { width: 3px; height: 3px; left: 60%; animation-delay: 10s; }
-        .particle:nth-child(7) { width: 6px; height: 6px; left: 70%; animation-delay: 12s; }
-        .particle:nth-child(8) { width: 4px; height: 4px; left: 80%; animation-delay: 14s; }
-        .particle:nth-child(9) { width: 5px; height: 5px; left: 90%; animation-delay: 16s; }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        @keyframes floatBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100px, -50px); }
         }
 
         /* Navigation */
@@ -542,6 +540,28 @@
         .score-rank {
             font-weight: bold;
             color: var(--accent-color);
+            min-width: 40px;
+        }
+
+        .score-details {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .score-main {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .score-meta {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .score-date {
+            text-align: right;
+            min-width: 80px;
         }
 
         /* Responsive Design */
@@ -687,18 +707,8 @@
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
+    <!-- Natural Background -->
+    <div class="natural-bg"></div>
 
     <!-- Navigation -->
     <nav class="nav-bar">
@@ -762,7 +772,7 @@
             </div>
 
             <div class="leaderboard" id="leaderboard">
-                <h3><i class="fas fa-trophy"></i> Leaderboard</h3>
+                <h3><i class="fas fa-trophy"></i> Your Best Runs</h3>
                 <div id="scoresList"></div>
             </div>
         </div>
@@ -960,25 +970,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
-        // Enhanced Game Data
-        const CITIES_DATA = [
-            { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower and Louvre Museum", difficulty: 1, country: "France", population: "2.1M", landmark: "Eiffel Tower" },
-            { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi, technology, and cherry blossoms", difficulty: 1, country: "Japan", population: "37M", landmark: "Tokyo Tower" },
-            { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty and Times Square", difficulty: 1, country: "USA", population: "8.3M", landmark: "Statue of Liberty" },
-            { name: "London", lat: 51.5074, lng: -0.1278, hint: "UK capital, famous for Big Ben, red buses, and the Thames", difficulty: 1, country: "United Kingdom", population: "9.5M", landmark: "Big Ben" },
-            { name: "Rome", lat: 41.9028, lng: 12.4964, hint: "Eternal City, home to the Colosseum and Vatican City", difficulty: 1, country: "Italy", population: "2.9M", landmark: "Colosseum" },
-            { name: "Moscow", lat: 55.7558, lng: 37.6176, hint: "Russian capital, famous for Red Square and the Kremlin", difficulty: 1, country: "Russia", population: "12.5M", landmark: "Red Square" },
-            { name: "Sydney", lat: -33.8688, lng: 151.2093, hint: "Australian harbor city famous for its Opera House and bridge", difficulty: 2, country: "Australia", population: "5.3M", landmark: "Sydney Opera House" },
-            { name: "Cairo", lat: 30.0444, lng: 31.2357, hint: "Egyptian capital near the Great Pyramids and Sphinx", difficulty: 2, country: "Egypt", population: "20M", landmark: "Great Pyramid of Giza" },
-            { name: "Mumbai", lat: 19.0760, lng: 72.8777, hint: "Bollywood's home city, India's financial capital", difficulty: 2, country: "India", population: "20M", landmark: "Gateway of India" },
-            { name: "Berlin", lat: 52.5200, lng: 13.4050, hint: "German capital, once divided by a famous wall", difficulty: 2, country: "Germany", population: "3.7M", landmark: "Brandenburg Gate" },
-            { name: "Reykjavik", lat: 64.1466, lng: -21.9426, hint: "Northernmost capital city in the world", difficulty: 3, country: "Iceland", population: "131K", landmark: "Hallgrímskirkja" },
-            { name: "Ulaanbaatar", lat: 47.8864, lng: 106.9057, hint: "Mongolia's capital, means 'Red Hero'", difficulty: 3, country: "Mongolia", population: "1.5M", landmark: "Gandan Monastery" },
-            { name: "Thimphu", lat: 27.4728, lng: 89.6390, hint: "Mountain capital of Bhutan, no traffic lights", difficulty: 3, country: "Bhutan", population: "115K", landmark: "Tashichho Dzong" },
-            { name: "Wellington", lat: -41.2924, lng: 174.7787, hint: "New Zealand's windy capital city", difficulty: 3, country: "New Zealand", population: "418K", landmark: "Beehive Building" },
-            { name: "Canberra", lat: -35.2809, lng: 149.1300, hint: "Australia's purpose-built capital city", difficulty: 3, country: "Australia", population: "431K", landmark: "Parliament House" }
-        ];
-
         // Game Settings
         let gameSettings = {
             sound: true,
@@ -999,7 +990,7 @@
 
         class EnhancedCivileGame {
             constructor() {
-                this.cities = CITIES_DATA;
+                this.cities = [];
                 this.score = 0;
                 this.round = 1;
                 this.streak = 0;
@@ -1023,10 +1014,26 @@
                 this.loadSettings();
                 this.loadStats();
                 this.initializeElements();
+                this.loadCitiesData();
                 this.initializeMap();
                 this.setupEventListeners();
                 this.updateDisplay();
                 this.showLeaderboard();
+            }
+            
+            async loadCitiesData() {
+                try {
+                    const response = await fetch('cities-data.json');
+                    this.cities = await response.json();
+                } catch (error) {
+                    console.error('Error loading cities data:', error);
+                    // Fallback to a small set of cities if the file can't be loaded
+                    this.cities = [
+                        { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower and Louvre Museum", difficulty: 1, country: "France", population: "2.1M", landmark: "Eiffel Tower" },
+                        { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi, technology, and cherry blossoms", difficulty: 1, country: "Japan", population: "37M", landmark: "Tokyo Tower" },
+                        { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty and Times Square", difficulty: 1, country: "USA", population: "8.3M", landmark: "Statue of Liberty" }
+                    ];
+                }
             }
             
             loadSettings() {
@@ -1255,7 +1262,7 @@
             }
             
             nextRound() {
-                if (!this.gameActive || this.round > 15) {
+                if (!this.gameActive || this.round > 15 || this.cities.length === 0) {
                     this.endGame();
                     return;
                 }
@@ -1691,15 +1698,12 @@
                 this.leaderboardEl.style.display = 'block';
                 this.scoresListEl.innerHTML = this.highScores.map((score, index) => `
                     <div class="score-entry">
-                        <div>
-                            <span class="score-rank">#${index + 1}</span>
-                            <strong>${score.score.toLocaleString()}</strong> pts
-                            <small style="opacity: 0.7;">(${score.rounds} rounds, ${score.accuracy}% accuracy)</small>
+                        <div class="score-rank">#${index + 1}</div>
+                        <div class="score-details">
+                            <div class="score-main">${score.score.toLocaleString()} points</div>
+                            <div class="score-meta">${score.rounds} rounds • ${score.accuracy}% accuracy</div>
                         </div>
-                        <div style="text-align: right;">
-                            <div>${score.bestTime ? (score.bestTime/1000).toFixed(1) + 's' : '--'}</div>
-                            <small style="opacity: 0.7;">${score.date}</small>
-                        </div>
+                        <div class="score-date">${score.date}</div>
                     </div>
                 `).join('');
             }
@@ -1718,7 +1722,7 @@
             const toggle = document.getElementById(setting + 'Toggle');
             const isActive = toggle.classList.contains('active');
             
-            toggle.classList.toggle('active');
+            toggle.classList.toggle('active', !isActive);
             gameSettings[setting] = !isActive;
             
             if (window.game) {
