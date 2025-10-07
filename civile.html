@@ -75,6 +75,8 @@
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 1000; /* Increased z-index */
         }
 
         .logo {
@@ -87,6 +89,7 @@
             display: flex;
             gap: 20px;
             align-items: center;
+            position: relative;
         }
 
         .nav-link {
@@ -118,7 +121,7 @@
             padding: 10px;
             min-width: 200px;
             display: none;
-            z-index: 1000;
+            z-index: 1001; /* Higher than nav-bar */
             margin-top: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
@@ -146,6 +149,8 @@
         .page {
             display: none;
             min-height: calc(100vh - 80px);
+            position: relative;
+            z-index: 1; /* Lower than navigation */
         }
 
         .page.active {
@@ -159,6 +164,8 @@
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
@@ -210,6 +217,8 @@
             padding: 30px;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .city-prompt {
