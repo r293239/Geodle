@@ -1,63 +1,1427 @@
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geodle - Daily Geography Clue Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: gradientShift 10s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Three-line Menu Button - Improved */
+        #menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #menu-button:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 18px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-icon span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background: white;
+            border-radius: 1px;
+            transition: all 0.25s ease-in-out;
+            position: relative;
+        }
+
+        .menu-icon span:nth-child(1) {
+            transform-origin: center;
+        }
+
+        .menu-icon span:nth-child(2) {
+            transform-origin: center;
+        }
+
+        .menu-icon span:nth-child(3) {
+            transform-origin: center;
+        }
+
+        /* Menu open animation */
+        #menu-button.open .menu-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        #menu-button.open .menu-icon span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        #menu-button.open .menu-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Menu Dropdown */
+        #menu-dropdown {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 240px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #menu-dropdown.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Language Dropdown */
+        .language-dropdown {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .language-selector:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .language-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid rgba(0,0,0,0.1);
+            max-height: 0;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1002;
+        }
+
+        .language-options.show {
+            max-height: 250px;
+        }
+
+        .language-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .language-options::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .language-options::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+
+        .language-options::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .language-option {
+            padding: 10px 16px;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .language-option:last-child {
+            border-bottom: none;
+        }
+
+        .language-option:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .language-option.selected {
+            background: rgba(102, 126, 234, 0.15);
+            font-weight: 600;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .language-dropdown.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-logo {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: logoFloat 2s ease-in-out infinite;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: fadeInOut 1.5s ease-in-out infinite;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: dotBounce 1.4s ease-in-out infinite both;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Invisible Easter Egg Button */
+        #invisible-btn {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: none;
+            cursor: default;
+            z-index: 999;
+            opacity: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.2);
+            letter-spacing: -0.02em;
+            animation: fadeInDown 0.8s ease;
+            position: relative;
+        }
+        
+        #worldMap {
+            height: 320px;
+            width: 100%;
+            border-radius: 20px;
+            margin: 25px 0;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeInUp 0.8s ease 0.2s both;
+            transition: transform 0.3s ease;
+        }
+        
+        #worldMap:hover {
+            transform: translateY(-2px) scale(1.001);
+        }
+        
+        #clueBox {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 24px;
+            margin: 25px 0;
+            font-weight: 500;
+            font-size: 1.25em;
+            border-radius: 18px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+            color: #333;
+            animation: fadeInUp 0.8s ease 0.3s both;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #clueBox::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 2s ease;
+        }
+        
+        #clueBox:hover::before {
+            left: 100%;
+        }
+        
+        #clueBox:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        #progressInfo {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1em;
+            color: rgba(255,255,255,0.95);
+            font-weight: 500;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+        
+        #progressBar {
+            width: 100%;
+            height: 28px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 
+                inset 0 2px 4px rgba(0,0,0,0.1),
+                0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        #progressFill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A, #CDDC39);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 10%;
+            border-radius: 14px;
+            box-shadow: 
+                0 0 30px rgba(76, 175, 80, 0.6),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #progressFill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+            border-radius: 14px;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        #guessForm {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        
+        #guessInput {
+            flex: 1;
+            font-size: 1.1em;
+            padding: 18px 22px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 16px 0 0 16px;
+            outline: none;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 400;
+            color: #333;
+            font-family: inherit;
+        }
+        
+        #guessInput:focus {
+            border-color: #4CAF50;
+            box-shadow: 
+                0 0 30px rgba(76, 175, 80, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            background: rgba(255,255,255,1);
+        }
+        
+        #guessInput::placeholder {
+            color: rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease;
+        }
+        
+        #guessInput:focus::placeholder {
+            opacity: 0.7;
+        }
+        
+        #guessButton {
+            padding: 18px 26px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 0 16px 16px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        #guessButton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        #guessButton:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        #guessButton:hover:not(:disabled) {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
+        }
+        
+        #guessButton:active {
+            transform: translateY(0);
+        }
+        
+        #guessButton:disabled {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            color: rgba(255,255,255,0.8);
+        }
+        
+        #feedback {
+            text-align: center;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 16px;
+            border-radius: 12px;
+            transition: all 0.4s ease;
+            font-size: 1.1em;
+            min-height: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Mode Selector Styles */
+        .mode-selector {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeInUp 0.8s ease 0.1s both;
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .mode-selector h3 {
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .mode-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.25);
+            padding: 14px 24px;
+            margin: 0 8px 12px 8px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            border-color: rgba(255,255,255,0.3);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .mode-btn.active:hover {
+            background: linear-gradient(135deg, #FF5252, #FF3D3D);
+            box-shadow: 0 10px 35px rgba(255, 107, 107, 0.5);
+        }
+
+        .mode-description {
+            font-size: 0.95rem;
+            margin-top: 15px;
+            opacity: 0.9;
+            font-weight: 300;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        }
+        
+        /* Card Styles */
+        .glass-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 18px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: fadeInUp 0.6s ease both;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        .glass-card h3 {
+            margin-bottom: 18px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.3em;
+        }
+        
+        #pastHints, #history {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 18px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: fadeInUp 0.6s ease both;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #pastHints:hover, #history:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        #pastHints h3, #history h3 {
+            margin-bottom: 18px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.3em;
+        }
+        
+        #pastHintsList, #historyList {
+            list-style: none;
+            padding-left: 0;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        
+        #pastHintsList::-webkit-scrollbar, #historyList::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #pastHintsList::-webkit-scrollbar-track, #historyList::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+        
+        #pastHintsList::-webkit-scrollbar-thumb, #historyList::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        #pastHintsList::-webkit-scrollbar-thumb:hover, #historyList::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+        
+        #pastHintsList li {
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            margin-bottom: 10px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideInLeft 0.5s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        #pastHintsList li:hover {
+            transform: translateX(8px) translateY(-1px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+            background: linear-gradient(135deg, #dff5df, #e8f5e8);
+        }
+        
+        #historyList li {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.8);
+            margin-bottom: 10px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            font-size: 0.95em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideInRight 0.5s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        #historyList li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        #historyList li.correct {
+            background: linear-gradient(135deg, rgba(200, 230, 201, 0.9), rgba(232, 245, 232, 0.9));
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+        }
+        
+        #historyList li.incorrect {
+            background: linear-gradient(135deg, rgba(255, 205, 210, 0.9), rgba(255, 235, 238, 0.9));
+            color: #c62828;
+            border-left: 4px solid #f44336;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
+        }
+        
+        #streak {
+            text-align: center;
+            font-size: 1.25em;
+            margin: 20px 0;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeInUp 0.8s ease 0.6s both;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        /* Enhanced Button Styles */
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+            overflow: hidden;
+            margin: 8px;
+            font-family: inherit;
+            backdrop-filter: blur(10px);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        #resetBtn {
+            background: linear-gradient(135deg, #dc3545, #bd2130);
+            color: white;
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        #resetBtn:hover {
+            background: linear-gradient(135deg, #c82333, #a71e2a);
+            box-shadow: 0 12px 35px rgba(220, 53, 69, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        #resetWinsBtn {
+            background: linear-gradient(135deg, #6f42c1, #5a2d91);
+            color: white;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        #resetWinsBtn:hover {
+            background: linear-gradient(135deg, #5a2d91, #4e2779);
+            box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        #endScreen {
+            background: linear-gradient(135deg, rgba(194, 240, 194, 0.95), rgba(168, 230, 168, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 25px;
+            text-align: center;
+            display: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+            animation: bounceIn 0.8s ease;
+        }
+        
+        #shareBtn, #newGameBtn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            margin: 10px 8px;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        #shareBtn:hover, #newGameBtn:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        #newGameBtn {
+            background: linear-gradient(135deg, #fd7e14, #e8590c);
+            box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        #newGameBtn:hover {
+            background: linear-gradient(135deg, #e8590c, #d63384);
+            box-shadow: 0 12px 35px rgba(253, 126, 20, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        #dailyLimitMsg, #loadingError {
+            background: linear-gradient(135deg, rgba(255, 211, 211, 0.95), rgba(255, 235, 238, 0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid #d64c4c;
+            padding: 24px;
+            border-radius: 18px;
+            text-align: center;
+            color: #d64c4c;
+            font-weight: 600;
+            margin: 25px 0;
+            box-shadow: 
+                0 15px 50px rgba(214, 76, 76, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: shakeX 0.8s ease;
+        }
+        
+        #help-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 16px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
+            text-decoration: none;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-family: inherit;
+        }
+
+        #help-button:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 123, 255, 0.5);
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Enhanced Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes shakeX {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-8px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(8px);
+            }
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                margin-bottom: 20px;
+            }
+
+            #menu-button {
+                top: 15px;
+                left: 15px;
+            }
+
+            #menu-dropdown {
+                top: 75px;
+                left: 15px;
+                right: 15px;
+                width: auto;
+            }
+            
+            .mode-btn {
+                display: block;
+                margin: 12px auto;
+                width: 90%;
+                max-width: 280px;
+                padding: 16px 20px;
+            }
+            
+            #worldMap {
+                height: 280px;
+                margin: 20px 0;
+            }
+            
+            #clueBox {
+                font-size: 1.1em;
+                padding: 20px 16px;
+            }
+            
+            #guessForm {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            #guessInput, #guessButton {
+                border-radius: 14px;
+            }
+            
+            #guessInput {
+                padding: 16px 18px;
+            }
+            
+            #guessButton {
+                padding: 16px 20px;
+            }
+            
+            #pastHints, #history {
+                padding: 20px 16px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
+            #help-button {
+                bottom: 20px;
+                right: 20px;
+                padding: 14px 22px;
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.9rem;
+            }
+            
+            #worldMap {
+                height: 240px;
+            }
+            
+            .mode-selector {
+                padding: 20px 16px;
+            }
+            
+            .mode-btn {
+                width: 95%;
+                padding: 14px 18px;
+                font-size: 0.95rem;
+            }
+            
+            #clueBox {
+                font-size: 1.05em;
+                padding: 18px 14px;
+            }
+            
+            #pastHints, #history {
+                padding: 18px 14px;
+            }
+            
+            #pastHintsList, #historyList {
+                max-height: 180px;
+            }
+            
+            .btn {
+                padding: 12px 18px;
+                font-size: 0.85em;
+                margin: 6px;
+            }
+            
+            #endScreen {
+                padding: 24px 18px;
+            }
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Focus styles for accessibility */
+        button:focus,
+        input:focus,
+        a:focus {
+            outline: 2px solid rgba(255,255,255,0.8);
+            outline-offset: 2px;
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Pulse animation for loading */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Terms & Cookies Consent Banner */
+        #consent-banner {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background-color: #222;
+            color: #fff;
+            padding: 15px 20px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            transition: bottom 0.5s ease-in-out;
+        }
+        #consent-banner.show { bottom: 0; }
+        #consent-banner button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        #consent-banner button:hover { background-color: #45a049; }
+        #consent-banner a {
+            color: #4CAF50;
+            text-decoration: underline;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        #consent-banner span { flex: 1 1 auto; margin-right: 10px; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 700px;
+            font-family: Arial, sans-serif;
+            color: #000;
+            line-height: 1.5;
+            position: relative;
+        }
+        .modal-content h2 { text-align: center; }
+        .modal-content h3 { margin-top: 15px; }
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+    </style>
 </head>
 <body>
 
 <!-- Loading Screen -->
 <div id="loading-screen">
-  <div class="loading-content">
-    <div class="loading-logo">🌍 Geodle</div>
-    <div class="loading-text">Loading geography data...</div>
-    <div class="loading-spinner"></div>
-    <div class="loading-dots">
-      <div class="loading-dot"></div>
-      <div class="loading-dot"></div>
-      <div class="loading-dot"></div>
+    <div class="loading-content">
+        <div class="loading-logo">🌍 Geodle</div>
+        <div class="loading-text">Loading geography data...</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-dots">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Three-line Menu Button -->
 <div id="menu-button">
-  <div class="menu-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+    <div class="menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 </div>
 
 <!-- Menu Dropdown -->
 <div id="menu-dropdown">
-  <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
-  <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
-  
-  <!-- Language Selector -->
-  <div class="language-dropdown" id="language-dropdown">
-    <div class="language-selector" id="language-selector">
-      <span>🌐 <span id="current-language">English</span></span>
-      <span class="dropdown-arrow">▼</span>
+    <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
+    <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
+    
+    <!-- Language Selector -->
+    <div class="language-dropdown" id="language-dropdown">
+        <div class="language-selector" id="language-selector">
+            <span>🌐 <span id="current-language">English</span></span>
+            <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="language-options" id="language-options">
+            <div class="language-option selected" data-lang="en" data-name="English">🇺🇸 English</div>
+            <div class="language-option" data-lang="es" data-name="Español">🇪🇸 Español</div>
+            <div class="language-option" data-lang="fr" data-name="Français">🇫🇷 Français</div>
+            <div class="language-option" data-lang="de" data-name="Deutsch">🇩🇪 Deutsch</div>
+            <div class="language-option" data-lang="it" data-name="Italiano">🇮🇹 Italiano</div>
+            <div class="language-option" data-lang="pt" data-name="Português">🇵🇹 Português</div>
+            <div class="language-option" data-lang="ru" data-name="Русский">🇷🇺 Русский</div>
+            <div class="language-option" data-lang="zh" data-name="中文">🇨🇳 中文</div>
+            <div class="language-option" data-lang="ja" data-name="日本語">🇯🇵 日本語</div>
+            <div class="language-option" data-lang="ko" data-name="한국어">🇰🇷 한국어</div>
+        </div>
     </div>
-    <div class="language-options" id="language-options">
-      <div class="language-option selected" data-lang="en" data-name="English">🇺🇸 English</div>
-      <div class="language-option" data-lang="es" data-name="Español">🇪🇸 Español</div>
-      <div class="language-option" data-lang="fr" data-name="Français">🇫🇷 Français</div>
-      <div class="language-option" data-lang="de" data-name="Deutsch">🇩🇪 Deutsch</div>
-      <div class="language-option" data-lang="it" data-name="Italiano">🇮🇹 Italiano</div>
-      <div class="language-option" data-lang="pt" data-name="Português">🇵🇹 Português</div>
-      <div class="language-option" data-lang="ru" data-name="Русский">🇷🇺 Русский</div>
-      <div class="language-option" data-lang="zh" data-name="中文">🇨🇳 中文</div>
-      <div class="language-option" data-lang="ja" data-name="日本語">🇯🇵 日本語</div>
-      <div class="language-option" data-lang="ko" data-name="한국어">🇰🇷 한국어</div>
+    
+    <!-- Music Toggle -->
+    <div class="toggle-item">
+        <span>🎵 <span data-translate="music">Music</span></span>
+        <label class="switch">
+            <input type="checkbox" id="music-toggle">
+            <span class="slider"></span>
+        </label>
     </div>
-  </div>
-  
-  <!-- Music Toggle -->
-  <div class="toggle-item">
-    <span>🎵 <span data-translate="music">Music</span></span>
-    <label class="switch">
-      <input type="checkbox" id="music-toggle">
-      <span class="slider"></span>
-    </label>
-  </div>
 </div>
 
 <!-- Invisible Easter Egg Button -->
@@ -67,58 +1431,61 @@
 
 <!-- Mode Selector -->
 <div class="mode-selector">
-  <h3 data-translate="gameModes">🎮 Game Modes</h3>
-  <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
-    <span data-translate="pathMode">🛤️Routele</span>
-  </a>
-  <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
-    <span data-translate="countryMode">🌍 Countryle</span>
-  </a>
-  <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
-    <span data-translate="flagMode">🏳️ Flagle</span>
-  </a>
-  <div class="mode-description">
-    <span id="modeDescription" data-translate="pathModeDesc">Get geographic clues and guess the mystery location!</span>
-  </div>
+    <h3 data-translate="gameModes">🎮 Game Modes</h3>
+    <a href="https://geodle-game.netlify.app/path-mode.html" class="mode-btn active" id="pathModeBtn">
+        <span data-translate="pathMode">🛤️ Routele</span>
+    </a>
+    <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
+        <span data-translate="countryMode">🌍 Countryle</span>
+    </a>
+    <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
+        <span data-translate="flagMode">🏳️ Flagle</span>
+    </a>
+    <a href="https://geodle-game.netlify.app/civile" class="mode-btn" id="civileModeBtn">
+        <span>🏛️ Civile</span>
+    </a>
+    <div class="mode-description">
+        <span id="modeDescription" data-translate="pathModeDesc">Get geographic clues and guess the mystery location!</span>
+    </div>
 </div>
 
 <div id="worldMap"></div>
 <div id="progressInfo">
-  <div><span data-translate="clue">Clue</span> <span id="currentClue">1</span> <span data-translate="of">of</span> 10</div>
-  <div id="progressBar">
-    <div id="progressFill"></div>
-  </div>
+    <div><span data-translate="clue">Clue</span> <span id="currentClue">1</span> <span data-translate="of">of</span> 10</div>
+    <div id="progressBar">
+        <div id="progressFill"></div>
+    </div>
 </div>
 <div id="clueBox" data-translate="loadingClue">Loading clue...</div>
 <form id="guessForm">
-  <input type="text" id="guessInput" data-translate-placeholder="guessPlaceholder" placeholder="Type your guess here" autocomplete="off" />
-  <button id="guessButton" type="submit" data-translate="guess">Guess</button>
+    <input type="text" id="guessInput" data-translate-placeholder="guessPlaceholder" placeholder="Type your guess here" autocomplete="off" />
+    <button id="guessButton" type="submit" data-translate="guess">Guess</button>
 </form>
 <div id="feedback"></div>
 <div id="streak">🏆 <span data-translate="totalWins">Total Wins</span>: 0</div>
 <div style="text-align: center;">
-  <button id="resetBtn" class="btn">🔄 <span data-translate="resetGame">Reset Game</span></button>
-  <button id="resetWinsBtn" class="btn">🏆 <span data-translate="resetWinCount">Reset Win Count</span></button>
+    <button id="resetBtn" class="btn">🔄 <span data-translate="resetGame">Reset Game</span></button>
+    <button id="resetWinsBtn" class="btn">🏆 <span data-translate="resetWinCount">Reset Win Count</span></button>
 </div>
 <div id="pastHints">
-  <h3 data-translate="pastHints">Past Hints</h3>
-  <ul id="pastHintsList"></ul>
+    <h3 data-translate="pastHints">Past Hints</h3>
+    <ul id="pastHintsList"></ul>
 </div>
 <div id="history">
-  <h3 data-translate="guessHistory">Guess History</h3>
-  <ul id="historyList"></ul>
+    <h3 data-translate="guessHistory">Guess History</h3>
+    <ul id="historyList"></ul>
 </div>
 <div id="endScreen">
-  <div id="resultMsg"></div>
-  <button id="shareBtn" class="btn" data-translate="shareScore">Share My Score</button>
-  <button id="newGameBtn" class="btn" data-translate="newGame">New Game</button>
+    <div id="resultMsg"></div>
+    <button id="shareBtn" class="btn" data-translate="shareScore">Share My Score</button>
+    <button id="newGameBtn" class="btn" data-translate="newGame">New Game</button>
 </div>
 <div id="dailyLimitMsg" style="display:none;">
-  <span data-translate="dailyLimit">You've already played today! Come back tomorrow 👀</span>
+    <span data-translate="dailyLimit">You've already played today! Come back tomorrow 👀</span>
 </div>
 <div id="loadingError">
-  <h3>⚠️ <span data-translate="dataLoadingError">Data Loading Error</span></h3>
-  <p data-translate="dataLoadingErrorDesc">There has been an error on our side. Please report to a developer. Thanks!</p>
+    <h3>⚠️ <span data-translate="dataLoadingError">Data Loading Error</span></h3>
+    <p data-translate="dataLoadingErrorDesc">There has been an error on our side. Please report to a developer. Thanks!</p>
 </div>
 
 <!-- Sticky Help Button -->
@@ -126,392 +1493,622 @@
    href="https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform?usp=sharing&ouid=111077547070042896084" 
    target="_blank" 
    rel="noopener noreferrer">
-  <span data-translate="helpImprove">Help Us Improve</span>
+    <span data-translate="helpImprove">Help Us Improve</span>
 </a>
 
+<!-- Terms & Cookies Consent Banner -->
+<div id="consent-banner">
+    <span>
+        We use cookies and display ads to improve your experience. By using this site, you agree to our 
+        <a id="open-terms">Terms & Conditions</a> and 
+        <a id="open-privacy">Privacy Policy</a>.
+    </span>
+    <button id="accept-btn">Accept</button>
+</div>
+
+<!-- Terms Modal -->
+<div id="terms-modal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" id="close-terms">&times;</button>
+        <h2>Terms & Conditions</h2>
+        <p>Effective Date: August 21, 2025</p>
+
+        <h3>1. Agreement to Terms</h3>
+        <p>By clicking "I Agree" or by opening and playing the Game, you acknowledge that:</p>
+        <ul>
+            <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
+            <li>Your use of the Game is voluntary and at your own risk.</li>
+            <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
+        </ul>
+        <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
+
+        <h3>2. Use of the Game</h3>
+        <ul>
+            <li>Geodle is intended for entertainment and educational purposes only.</li>
+            <li>You may use the Game on your personal device only. You may not:
+                <ul>
+                    <li>Copy, distribute, modify, or create derivative works without permission</li>
+                    <li>Reverse engineer or attempt to extract the source code</li>
+                    <li>Use the Game for commercial purposes without written consent</li>
+                </ul>
+            </li>
+            <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
+        </ul>
+
+        <h3>3. Account and Data</h3>
+        <ul>
+            <li>Geodle does not require personal accounts. All game progress, scores, and settings are stored locally on your device via local storage.</li>
+            <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
+            <li>The Game does not collect, transmit, or store personal information externally.</li>
+        </ul>
+
+        <h3>4. Content and Intellectual Property</h3>
+        <ul>
+            <li>All content, including graphics, text, sounds, and mechanics, is owned by Reuben Yee or used with permission.</li>
+            <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
+            <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
+        </ul>
+
+        <h3>5. Third-Party Services and Ads</h3>
+        <ul>
+            <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
+            <li>We do not control or store data collected by third-party networks.</li>
+            <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
+        </ul>
+
+        <h3>6. Children</h3>
+        <ul>
+            <li>The Game is safe for all ages. No personal info is collected, so children under 13 can play safely.</li>
+            <li>Parents/guardians can manage local storage to remove game data at any time.</li>
+        </ul>
+
+        <h3>7. Limitation of Liability</h3>
+        <ul>
+            <li>The Game is provided "as is" without warranties.</li>
+            <li>We are not responsible for any damages or losses arising from:
+                <ul>
+                    <li>Use of the Game</li>
+                    <li>Loss of local storage data</li>
+                    <li>Technical issues or interruptions</li>
+                    <li>Interactions with third-party ads</li>
+                </ul>
+            </li>
+            <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
+        </ul>
+
+        <h3>8. Governing Law</h3>
+        <p>These Terms are governed by Singapore law.</p>
+
+        <h3>9. Changes to Terms</h3>
+        <p>We may update these Terms. Continued use constitutes acceptance of updates.</p>
+
+        <h3>10. Contact</h3>
+        <p>Email: reubenyee2012@gmail.com</p>
+    </div>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacy-modal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" id="close-privacy">&times;</button>
+        <h2>Privacy Policy</h2>
+        <p>Effective Date: August 21, 2025</p>
+
+        <h3>1. Information We Collect</h3>
+        <p>Geodle does not collect personal information. The only information stored locally on your device includes:</p>
+        <ul>
+            <li>Game progress</li>
+            <li>High scores</li>
+            <li>User settings (sound, difficulty, themes)</li>
+        </ul>
+
+        <h3>2. Local Storage</h3>
+        <ul>
+            <li>All data is stored locally and is not transmitted to any server.</li>
+            <li>You can clear your local storage at any time, which will reset all progress and settings.</li>
+        </ul>
+
+        <h3>3. No Tracking or Analytics</h3>
+        <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
+
+        <h3>4. Third-Party Advertising</h3>
+        <ul>
+            <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
+            <li>We do not control or store this information.</li>
+        </ul>
+
+        <h3>5. Children's Privacy</h3>
+        <ul>
+            <li>Game is safe for children under 13.</li>
+            <li>Parents can manage local storage to remove saved data.</li>
+        </ul>
+
+        <h3>6. Data Retention</h3>
+        <p>All game progress and settings remain on your device until you clear local storage.</p>
+
+        <h3>7. Your Rights</h3>
+        <ul>
+            <li>You do not need to request access or deletion because no personal info is collected.</li>
+            <li>Clearing local storage deletes all saved data.</li>
+        </ul>
+
+        <h3>8. International Users</h3>
+        <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
+
+        <h3>9. Third-Party Links</h3>
+        <p>We are not responsible for the content or privacy practices of external websites.</p>
+
+        <h3>10. Changes to This Privacy Policy</h3>
+        <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
+
+        <h3>11. Contact</h3>
+        <p>Email: reubenyee2012@gmail.com</p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
+// Sample geography data (in a real implementation, this would be in data.js)
+const geographyData = [
+    {
+        answer: "FRANCE",
+        clues: [
+            "This country is known as the 'Hexagon' due to its shape.",
+            "It is the most visited country in the world.",
+            "Its capital city is known as the 'City of Light'.",
+            "This country is famous for its wine and cheese.",
+            "It is home to the Eiffel Tower.",
+            "The official language is French.",
+            "It shares borders with Germany, Belgium, and Spain.",
+            "The currency used here is the Euro.",
+            "This country is famous for the Louvre Museum.",
+            "It is located in Western Europe."
+        ]
+    },
+    {
+        answer: "JAPAN",
+        clues: [
+            "This country is an archipelago in East Asia.",
+            "It is known as the 'Land of the Rising Sun'.",
+            "Its capital is Tokyo, one of the most populous cities in the world.",
+            "This country is famous for sushi and ramen.",
+            "Mount Fuji is its highest peak.",
+            "The currency used here is the Yen.",
+            "It has a constitutional monarchy with an emperor.",
+            "This country is known for its bullet trains (Shinkansen).",
+            "Cherry blossom season is a major cultural event here.",
+            "It consists of four main islands: Honshu, Hokkaido, Kyushu, and Shikoku."
+        ]
+    },
+    {
+        answer: "BRAZIL",
+        clues: [
+            "This is the largest country in South America.",
+            "It is the only Portuguese-speaking country in the Americas.",
+            "Its capital is Brasília.",
+            "This country is home to the Amazon Rainforest.",
+            "It is famous for its Carnival festival.",
+            "The currency used here is the Real.",
+            "This country has won the FIFA World Cup five times.",
+            "It shares borders with ten other countries.",
+            "The Christ the Redeemer statue is located here.",
+            "It was a Portuguese colony until 1822."
+        ]
+    },
+    {
+        answer: "EGYPT",
+        clues: [
+            "This country is located in Northeast Africa.",
+            "It is home to one of the Seven Wonders of the Ancient World.",
+            "Its capital is Cairo.",
+            "This country is famous for its pyramids.",
+            "The Nile River flows through this country.",
+            "The official language is Arabic.",
+            "It was ruled by pharaohs in ancient times.",
+            "The currency used here is the Egyptian Pound.",
+            "This country connects Africa to the Middle East.",
+            "It is known for the Sphinx and Valley of the Kings."
+        ]
+    },
+    {
+        answer: "CANADA",
+        clues: [
+            "This is the second largest country in the world by area.",
+            "Its flag features a maple leaf.",
+            "The capital is Ottawa.",
+            "This country has two official languages: English and French.",
+            "It is known for its cold winters and natural beauty.",
+            "The currency used here is the Canadian Dollar.",
+            "It shares the world's longest border with the United States.",
+            "This country is a constitutional monarchy.",
+            "It is famous for hockey and maple syrup.",
+            "This country has ten provinces and three territories."
+        ]
+    }
+];
+
 // Language translations
 const translations = {
-  en: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Game Modes",
-    pathMode: "🛤️ Path Mode",
-    countryMode: "🌍 Country Mode",
-    flagMode: "🏳️ Flag Mode",
-    pathModeDesc: "Get geographic clues and guess the mystery location!",
-    countryModeDesc: "Compare countries by continent, population, GDP, and more!",
-    flagModeDesc: "Identify countries by their flags!",
-    clue: "Clue",
-    of: "of",
-    loadingClue: "Loading clue...",
-    guessPlaceholder: "Type your guess here",
-    guess: "Guess",
-    totalWins: "Total Wins",
-    resetGame: "Reset Game",
-    resetWinCount: "Reset Win Count",
-    pastHints: "Past Hints",
-    guessHistory: "Guess History",
-    shareScore: "Share My Score",
-    newGame: "New Game",
-    dailyLimit: "You've already played today! Come back tomorrow 👀",
-    dataLoadingError: "Data Loading Error",
-    dataLoadingErrorDesc: "Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.",
-    helpImprove: "Help Us Improve",
-    music: "Music",
-    correct: "🎉 Correct! The answer is",
-    incorrect: "❌ {guess} is not correct. Here's the next clue...",
-    gameOver: "😔 Game Over! The answer was",
-    resetGameConfirm: "🔄 Game reset! New country selected.",
-    resetWinsConfirm: "Are you sure you want to reset your win count? This cannot be undone.",
-    resetWinsSuccess: "🏆 Win count reset to 0!",
-    congratulations: "🎉 Congratulations!<br>You guessed \"{answer}\" after {clues} clue{plural}!",
-    betterLuck: "😔 Better luck next time!<br>The answer was \"{answer}\"",
-    scoreCopied: "Score copied to clipboard!",
-    scoreWon: "🌍 Geodle - I guessed \"{answer}\" in {clues}/10 clues! Total Wins: {wins}",
-    scoreLost: "🌍 Geodle - I couldn't guess \"{answer}\" in 10 clues. Can you?"
-  },
-  es: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Modos de Juego",
-    pathMode: "🛤️ Modo Ruta",
-    countryMode: "🌍 Modo País",
-    flagMode: "🏳️ Modo Bandera",
-    pathModeDesc: "¡Obtén pistas geográficas y adivina la ubicación misteriosa!",
-    countryModeDesc: "¡Compara países por continente, población, PIB y más!",
-    flagModeDesc: "¡Identifica países por sus banderas!",
-    clue: "Pista",
-    of: "de",
-    loadingClue: "Cargando pista...",
-    guessPlaceholder: "Escribe tu respuesta aquí",
-    guess: "Adivinar",
-    totalWins: "Victorias Totales",
-    resetGame: "Reiniciar Juego",
-    resetWinCount: "Reiniciar Contador",
-    pastHints: "Pistas Anteriores",
-    guessHistory: "Historial de Respuestas",
-    shareScore: "Compartir Puntuación",
-    newGame: "Nuevo Juego",
-    dailyLimit: "¡Ya has jugado hoy! Vuelve mañana 👀",
-    dataLoadingError: "Error al Cargar Datos",
-    dataLoadingErrorDesc: "No se pudo cargar el archivo de datos geográficos (data.js). Asegúrate de que el archivo existe y está formateado correctamente.",
-    helpImprove: "Ayúdanos a Mejorar",
-    music: "Música",
-    correct: "🎉 ¡Correcto! La respuesta es",
-    incorrect: "❌ {guess} no es correcto. Aquí tienes la siguiente pista...",
-    gameOver: "😔 ¡Juego Terminado! La respuesta era",
-    resetGameConfirm: "🔄 ¡Juego reiniciado! Nuevo país seleccionado.",
-    resetWinsConfirm: "¿Estás seguro de que quieres reiniciar tu contador de victorias? Esto no se puede deshacer.",
-    resetWinsSuccess: "🏆 ¡Contador de victorias reiniciado a 0!",
-    congratulations: "🎉 ¡Felicidades!<br>¡Adivinaste \"{answer}\" después de {clues} pista{plural}!",
-    betterLuck: "😔 ¡Mejor suerte la próxima vez!<br>La respuesta era \"{answer}\"",
-    scoreCopied: "¡Puntuación copiada al portapapeles!",
-    scoreWon: "🌍 Geodle - ¡Adiviné \"{answer}\" en {clues}/10 pistas! Victorias Totales: {wins}",
-    scoreLost: "🌍 Geodle - No pude adivinar \"{answer}\" en 10 pistas. ¿Puedes tú?"
-  },
-  fr: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Modes de Jeu",
-    pathMode: "🛤️ Mode Chemin",
-    countryMode: "🌍 Mode Pays",
-    flagMode: "🏳️ Mode Drapeau",
-    pathModeDesc: "Obtenez des indices géographiques et devinez le lieu mystérieux !",
-    countryModeDesc: "Comparez les pays par continent, population, PIB et plus !",
-    flagModeDesc: "Identifiez les pays par leurs drapeaux !",
-    clue: "Indice",
-    of: "sur",
-    loadingClue: "Chargement de l'indice...",
-    guessPlaceholder: "Tapez votre réponse ici",
-    guess: "Deviner",
-    totalWins: "Victoires Totales",
-    resetGame: "Réinitialiser le Jeu",
-    resetWinCount: "Réinitialiser le Compteur",
-    pastHints: "Indices Précédents",
-    guessHistory: "Historique des Réponses",
-    shareScore: "Partager mon Score",
-    newGame: "Nouveau Jeu",
-    dailyLimit: "Vous avez déjà joué aujourd'hui ! Revenez demain 👀",
-    dataLoadingError: "Erreur de Chargement des Données",
-    dataLoadingErrorDesc: "Impossible de charger le fichier de données géographiques (data.js). Assurez-vous que le fichier existe et est correctement formaté.",
-    helpImprove: "Aidez-nous à Améliorer",
-    music: "Musique",
-    correct: "🎉 Correct ! La réponse est",
-    incorrect: "❌ {guess} n'est pas correct. Voici le prochain indice...",
-    gameOver: "😔 Jeu Terminé ! La réponse était",
-    resetGameConfirm: "🔄 Jeu réinitialisé ! Nouveau pays sélectionné.",
-    resetWinsConfirm: "Êtes-vous sûr de vouloir réinitialiser votre compteur de victoires ? Cela ne peut pas être annulé.",
-    resetWinsSuccess: "🏆 Compteur de victoires réinitialisé à 0 !",
-    congratulations: "🎉 Félicitations !<br>Vous avez deviné \"{answer}\" après {clues} indice{plural} !",
-    betterLuck: "😔 Bonne chance la prochaine fois !<br>La réponse était \"{answer}\"",
-    scoreCopied: "Score copié dans le presse-papiers !",
-    scoreWon: "🌍 Geodle - J'ai deviné \"{answer}\" en {clues}/10 indices ! Victoires Totales : {wins}",
-    scoreLost: "🌍 Geodle - Je n'ai pas pu deviner \"{answer}\" en 10 indices. Pouvez-vous ?"
-  },
-  de: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Spielmodi",
-    pathMode: "🛤️ Pfad-Modus",
-    countryMode: "🌍 Land-Modus",
-    flagMode: "🏳️ Flaggen-Modus",
-    pathModeDesc: "Erhalten Sie geografische Hinweise und erraten Sie den geheimnisvollen Ort!",
-    countryModeDesc: "Vergleichen Sie Länder nach Kontinent, Bevölkerung, BIP und mehr!",
-    flagModeDesc: "Identifizieren Sie Länder anhand ihrer Flaggen!",
-    clue: "Hinweis",
-    of: "von",
-    loadingClue: "Hinweis wird geladen...",
-    guessPlaceholder: "Geben Sie Ihre Antwort hier ein",
-    guess: "Raten",
-    totalWins: "Gesamtsiege",
-    resetGame: "Spiel Zurücksetzen",
-    resetWinCount: "Siegzähler Zurücksetzen",
-    pastHints: "Frühere Hinweise",
-    guessHistory: "Ratehistorie",
-    shareScore: "Punktzahl Teilen",
-    newGame: "Neues Spiel",
-    dailyLimit: "Sie haben heute schon gespielt! Kommen Sie morgen wieder 👀",
-    dataLoadingError: "Datenladefehler",
-    dataLoadingErrorDesc: "Die geografische Datendatei (data.js) konnte nicht geladen werden. Stellen Sie sicher, dass die Datei existiert und korrekt formatiert ist.",
-    helpImprove: "Helfen Sie uns zu Verbessern",
-    music: "Musik",
-    correct: "🎉 Richtig! Die Antwort ist",
-    incorrect: "❌ {guess} ist nicht richtig. Hier ist der nächste Hinweis...",
-    gameOver: "😔 Spiel Vorbei! Die Antwort war",
-    resetGameConfirm: "🔄 Spiel zurückgesetzt! Neues Land ausgewählt.",
-    resetWinsConfirm: "Sind Sie sicher, dass Sie Ihren Siegzähler zurücksetzen möchten? Dies kann nicht rückgängig gemacht werden.",
-    resetWinsSuccess: "🏆 Siegzähler auf 0 zurückgesetzt!",
-    congratulations: "🎉 Glückwunsch!<br>Sie haben \"{answer}\" nach {clues} Hinweis{plural} erraten!",
-    betterLuck: "😔 Viel Glück beim nächsten Mal!<br>Die Antwort war \"{answer}\"",
-    scoreCopied: "Punktzahl in die Zwischenablage kopiert!",
-    scoreWon: "🌍 Geodle - Ich habe \"{answer}\" in {clues}/10 Hinweisen erraten! Gesamtsiege: {wins}",
-    scoreLost: "🌍 Geodle - Ich konnte \"{answer}\" nicht in 10 Hinweisen erraten. Können Sie es?"
-  },
-  it: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Modalità di Gioco",
-    pathMode: "🛤️ Modalità Percorso",
-    countryMode: "🌍 Modalità Paese",
-    flagMode: "🏳️ Modalità Bandiera",
-    pathModeDesc: "Ottieni indizi geografici e indovina la località misteriosa!",
-    countryModeDesc: "Confronta i paesi per continente, popolazione, PIL e altro!",
-    flagModeDesc: "Identifica i paesi dalle loro bandiere!",
-    clue: "Indizio",
-    of: "di",
-    loadingClue: "Caricamento indizio...",
-    guessPlaceholder: "Digita la tua risposta qui",
-    guess: "Indovina",
-    totalWins: "Vittorie Totali",
-    resetGame: "Reimposta Gioco",
-    resetWinCount: "Reimposta Contatore",
-    pastHints: "Indizi Precedenti",
-    guessHistory: "Cronologia Risposte",
-    shareScore: "Condividi Punteggio",
-    newGame: "Nuovo Gioco",
-    dailyLimit: "Hai già giocato oggi! Torna domani 👀",
-    dataLoadingError: "Errore Caricamento Dati",
-    dataLoadingErrorDesc: "Impossibile caricare il file dei dati geografici (data.js). Assicurati che il file esista e sia formattato correttamente.",
-    helpImprove: "Aiutaci a Migliorare",
-    music: "Musica",
-    correct: "🎉 Corretto! La risposta è",
-    incorrect: "❌ {guess} non è corretto. Ecco il prossimo indizio...",
-    gameOver: "😔 Gioco Finito! La risposta era",
-    resetGameConfirm: "🔄 Gioco reimpostato! Nuovo paese selezionato.",
-    resetWinsConfirm: "Sei sicuro di voler reimpostare il contatore delle vittorie? Questo non può essere annullato.",
-    resetWinsSuccess: "🏆 Contatore vittorie reimpostato a 0!",
-    congratulations: "🎉 Congratulazioni!<br>Hai indovinato \"{answer}\" dopo {clues} indizi{plural}!",
-    betterLuck: "😔 Buona fortuna la prossima volta!<br>La risposta era \"{answer}\"",
-    scoreCopied: "Punteggio copiato negli appunti!",
-    scoreWon: "🌍 Geodle - Ho indovinato \"{answer}\" in {clues}/10 indizi! Vittorie Totali: {wins}",
-    scoreLost: "🌍 Geodle - Non sono riuscito a indovinare \"{answer}\" in 10 indizi. Riesci tu?"
-  },
-  pt: {
-    title: "Geodle 🌍",
-    gameModes: "🎮 Modos de Jogo",
-    pathMode: "🛤️ Modo Caminho",
-    countryMode: "🌍 Modo País",
-    flagMode: "🏳️ Modo Bandeira",
-    pathModeDesc: "Obtenha pistas geográficas e adivinhe o local misterioso!",
-    countryModeDesc: "Compare países por continente, população, PIB e mais!",
-    flagModeDesc: "Identifique países pelas suas bandeiras!",
-    clue: "Pista",
-    of: "de",
-    loadingClue: "Carregando pista...",
-    guessPlaceholder: "Digite sua resposta aqui",
-    guess: "Adivinhar",
-    totalWins: "Vitórias Totais",
-    resetGame: "Reiniciar Jogo",
-    resetWinCount: "Reiniciar Contador",
-    pastHints: "Pistas Anteriores",
-    guessHistory: "Histórico de Respostas",
-    shareScore: "Compartilhar Pontuação",
-    newGame: "Novo Jogo",
-    dailyLimit: "Você já jogou hoje! Volte amanhã 👀",
-    dataLoadingError: "Erro ao Carregar Dados",
-    dataLoadingErrorDesc: "Não foi possível carregar o arquivo de dados geográficos (data.js). Certifique-se de que o arquivo existe e está formatado corretamente.",
-    helpImprove: "Ajude-nos a Melhorar",
-    music: "Música",
-    correct: "🎉 Correto! A resposta é",
-    incorrect: "❌ {guess} não está correto. Aqui está a próxima pista...",
-    gameOver: "😔 Fim de Jogo! A resposta era",
-    resetGameConfirm: "🔄 Jogo reiniciado! Novo país selecionado.",
-    resetWinsConfirm: "Tem certeza de que deseja reiniciar seu contador de vitórias? Isso não pode ser desfeito.",
-    resetWinsSuccess: "🏆 Contador de vitórias reiniciado para 0!",
-    congratulations: "🎉 Parabéns!<br>Você adivinhou \"{answer}\" após {clues} pista{plural}!",
-    betterLuck: "😔 Boa sorte na próxima vez!<br>A resposta era \"{answer}\"",
-    scoreCopied: "Pontuação copiada para a área de transferência!",
-    scoreWon: "🌍 Geodle - Eu adivinhei \"{answer}\" em {clues}/10 pistas! Vitórias Totais: {wins}",
-    scoreLost: "🌍 Geodle - Não consegui adivinhar \"{answer}\" em 10 pistas. Consegue você?"
-  },
-  ru: {
-    title: "Геодл 🌍",
-    gameModes: "🎮 Режимы Игры",
-    pathMode: "🛤️ Режим Пути",
-    countryMode: "🌍 Режим Страны",
-    flagMode: "🏳️ Режим Флага",
-    pathModeDesc: "Получайте географические подсказки и угадывайте загадочное место!",
-    countryModeDesc: "Сравнивайте страны по континенту, населению, ВВП и многому другому!",
-    flagModeDesc: "Определяйте страны по их флагам!",
-    clue: "Подсказка",
-    of: "из",
-    loadingClue: "Загрузка подсказки...",
-    guessPlaceholder: "Введите ваш ответ здесь",
-    guess: "Угадать",
-    totalWins: "Всего Побед",
-    resetGame: "Сбросить Игру",
-    resetWinCount: "Сбросить Счетчик",
-    pastHints: "Предыдущие Подсказки",
-    guessHistory: "История Ответов",
-    shareScore: "Поделиться Счетом",
-    newGame: "Новая Игра",
-    dailyLimit: "Вы уже играли сегодня! Возвращайтесь завтра 👀",
-    dataLoadingError: "Ошибка Загрузки Данных",
-    dataLoadingErrorDesc: "Не удалось загрузить файл географических данных (data.js). Убедитесь, что файл существует и правильно отформатирован.",
-    helpImprove: "Помогите Нам Улучшить",
-    music: "Музыка",
-    correct: "🎉 Правильно! Ответ:",
-    incorrect: "❌ {guess} неправильно. Вот следующая подсказка...",
-    gameOver: "😔 Игра Окончена! Ответ был:",
-    resetGameConfirm: "🔄 Игра сброшена! Выбрана новая страна.",
-    resetWinsConfirm: "Вы уверены, что хотите сбросить счетчик побед? Это действие нельзя отменить.",
-    resetWinsSuccess: "🏆 Счетчик побед сброшен до 0!",
-    congratulations: "🎉 Поздравляем!<br>Вы угадали \"{answer}\" за {clues} подсказк{plural}!",
-    betterLuck: "😔 Удачи в следующий раз!<br>Ответ был \"{answer}\"",
-    scoreCopied: "Результат скопирован в буфер обмена!",
-    scoreWon: "🌍 Геодл - Я угадал \"{answer}\" за {clues}/10 подсказок! Всего Побед: {wins}",
-    scoreLost: "🌍 Геодл - Я не смог угадать \"{answer}\" за 10 подсказок. Сможете ли вы?"
-  },
-  zh: {
-    title: "地理猜猜 🌍",
-    gameModes: "🎮 游戏模式",
-    pathMode: "🛤️ 路径模式",
-    countryMode: "🌍 国家模式", 
-    flagMode: "🏳️ 国旗模式",
-    pathModeDesc: "获得地理线索，猜出神秘地点！",
-    countryModeDesc: "按大洲、人口、GDP等比较国家！",
-    flagModeDesc: "通过国旗识别国家！",
-    clue: "线索",
-    of: "/",
-    loadingClue: "加载线索中...",
-    guessPlaceholder: "在此输入您的猜测",
-    guess: "猜测",
-    totalWins: "总胜利次数",
-    resetGame: "重置游戏",
-    resetWinCount: "重置胜利次数",
-    pastHints: "过往提示",
-    guessHistory: "猜测历史",
-    shareScore: "分享我的分数",
-    newGame: "新游戏",
-    dailyLimit: "您今天已经玩过了！明天再来 👀",
-    dataLoadingError: "数据加载错误",
-    dataLoadingErrorDesc: "无法加载地理数据文件 (data.js)。请确保文件存在且格式正确。",
-    helpImprove: "帮助我们改进",
-    music: "音乐",
-    correct: "🎉 正确！答案是",
-    incorrect: "❌ {guess} 不正确。这是下一个线索...",
-    gameOver: "😔 游戏结束！答案是",
-    resetGameConfirm: "🔄 游戏已重置！选择了新国家。",
-    resetWinsConfirm: "您确定要重置胜利次数吗？此操作无法撤销。",
-    resetWinsSuccess: "🏆 胜利次数已重置为0！",
-    congratulations: "🎉 恭喜！<br>您在{clues}个线索后猜出了\"{answer}\"！",
-    betterLuck: "😔 下次好运！<br>答案是\"{answer}\"",
-    scoreCopied: "分数已复制到剪贴板！",
-    scoreWon: "🌍 地理猜猜 - 我在{clues}/10个线索中猜出了\"{answer}\"！总胜利次数：{wins}",
-    scoreLost: "🌍 地理猜猜 - 我无法在10个线索中猜出\"{answer}\"。你能吗？"
-  },
-  ja: {
-    title: "ジオドル 🌍",
-    gameModes: "🎮 ゲームモード",
-    pathMode: "🛤️ パスモード",
-    countryMode: "🌍 国モード",
-    flagMode: "🏳️ 旗モード",
-    pathModeDesc: "地理的なヒントを得て、謎の場所を当ててください！",
-    countryModeDesc: "大陸、人口、GDP などで国を比較しよう！",
-    flagModeDesc: "国旗で国を特定しよう！",
-    clue: "ヒント",
-    of: "/",
-    loadingClue: "ヒント読み込み中...",
-    guessPlaceholder: "あなたの回答をここに入力",
-    guess: "推測",
-    totalWins: "総勝利数",
-    resetGame: "ゲームリセット",
-    resetWinCount: "勝利数リセット",
-    pastHints: "過去のヒント",
-    guessHistory: "推測履歴",
-    shareScore: "スコアを共有",
-    newGame: "新しいゲーム",
-    dailyLimit: "今日はもうプレイしました！明日また来てください 👀",
-    dataLoadingError: "データ読み込みエラー",
-    dataLoadingErrorDesc: "地理データファイル (data.js) を読み込めませんでした。ファイルが存在し、正しく形式化されていることを確認してください。",
-    helpImprove: "改善にご協力ください",
-    music: "音楽",
-    correct: "🎉 正解！答えは",
-    incorrect: "❌ {guess} は正しくありません。次のヒントです...",
-    gameOver: "😔 ゲーム終了！答えは",
-    resetGameConfirm: "🔄 ゲームがリセットされました！新しい国が選択されました。",
-    resetWinsConfirm: "勝利数をリセットしてもよろしいですか？この操作は元に戻せません。",
-    resetWinsSuccess: "🏆 勝利数を0にリセットしました！",
-    congratulations: "🎉 おめでとうございます！<br>{clues}個のヒントで\"{answer}\"を当てました！",
-    betterLuck: "😔 次回頑張りましょう！<br>答えは\"{answer}\"でした",
-    scoreCopied: "スコアがクリップボードにコピーされました！",
-    scoreWon: "🌍 ジオドル - {clues}/10個のヒントで\"{answer}\"を当てました！総勝利数：{wins}",
-    scoreLost: "🌍 ジオドル - 10個のヒントで\"{answer}\"を当てられませんでした。あなたはできますか？"
-  },
-  ko: {
-    title: "지오들 🌍",
-    gameModes: "🎮 게임 모드",
-    pathMode: "🛤️ 경로 모드",
-    countryMode: "🌍 국가 모드",
-    flagMode: "🏳️ 국기 모드", 
-    pathModeDesc: "지리적 단서를 얻고 신비로운 장소를 맞춰보세요!",
-    countryModeDesc: "대륙, 인구, GDP 등으로 국가를 비교해보세요!",
-    flagModeDesc: "국기로 국가를 식별해보세요!",
-    clue: "단서",
-    of: "/",
-    loadingClue: "단서 로딩 중...",
-    guessPlaceholder: "여기에 답을 입력하세요",
-    guess: "추측",
-    totalWins: "총 승리 횟수",
-    resetGame: "게임 재시작",
-    resetWinCount: "승리 횟수 재설정",
-    pastHints: "이전 힌트",
-    guessHistory: "추측 기록",
-    shareScore: "점수 공유하기",
-    newGame: "새 게임",
-    dailyLimit: "오늘 이미 플레이했습니다! 내일 다시 오세요 👀",
-    dataLoadingError: "데이터 로딩 오류",
-    dataLoadingErrorDesc: "지리 데이터 파일(data.js)을 로드할 수 없습니다. 파일이 존재하고 올바르게 형식화되어 있는지 확인하세요.",
-    helpImprove: "개선에 도움주기",
-    music: "음악",
-    correct: "🎉 정답! 답은",
-    incorrect: "❌ {guess}는 정답이 아닙니다. 다음 단서입니다...",
-    gameOver: "😔 게임 오버! 정답은",
-    resetGameConfirm: "🔄 게임이 재시작되었습니다! 새로운 국가가 선택되었습니다.",
-    resetWinsConfirm: "승리 횟수를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-    resetWinsSuccess: "🏆 승리 횟수가 0으로 재설정되었습니다!",
-    congratulations: "🎉 축하합니다!<br>{clues}개의 단서로 \"{answer}\"을(를) 맞췄습니다!",
-    betterLuck: "😔 다음에 더 잘해보세요!<br>정답은 \"{answer}\"였습니다",
-    scoreCopied: "점수가 클립보드에 복사되었습니다!",
-    scoreWon: "🌍 지오들 - {clues}/10개 단서로 \"{answer}\"을(를) 맞췄습니다! 총 승리 횟수: {wins}",
-    scoreLost: "🌍 지오들 - 10개 단서로 \"{answer}\"을(를) 맞추지 못했습니다. 당신은 할 수 있나요?"
-  }
+    en: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Game Modes",
+        pathMode: "🛤️ Routele",
+        countryMode: "🌍 Countryle",
+        flagMode: "🏳️ Flagle",
+        pathModeDesc: "Get geographic clues and guess the mystery location!",
+        countryModeDesc: "Compare countries by continent, population, GDP, and more!",
+        flagModeDesc: "Identify countries by their flags!",
+        clue: "Clue",
+        of: "of",
+        loadingClue: "Loading clue...",
+        guessPlaceholder: "Type your guess here",
+        guess: "Guess",
+        totalWins: "Total Wins",
+        resetGame: "Reset Game",
+        resetWinCount: "Reset Win Count",
+        pastHints: "Past Hints",
+        guessHistory: "Guess History",
+        shareScore: "Share My Score",
+        newGame: "New Game",
+        dailyLimit: "You've already played today! Come back tomorrow 👀",
+        dataLoadingError: "Data Loading Error",
+        dataLoadingErrorDesc: "Could not load the geography data file (data.js). Please make sure the file exists and is properly formatted.",
+        helpImprove: "Help Us Improve",
+        music: "Music",
+        correct: "🎉 Correct! The answer is",
+        incorrect: "❌ {guess} is not correct. Here's the next clue...",
+        gameOver: "😔 Game Over! The answer was",
+        resetGameConfirm: "🔄 Game reset! New country selected.",
+        resetWinsConfirm: "Are you sure you want to reset your win count? This cannot be undone.",
+        resetWinsSuccess: "🏆 Win count reset to 0!",
+        congratulations: "🎉 Congratulations!<br>You guessed \"{answer}\" after {clues} clue{plural}!",
+        betterLuck: "😔 Better luck next time!<br>The answer was \"{answer}\"",
+        scoreCopied: "Score copied to clipboard!",
+        scoreWon: "🌍 Geodle - I guessed \"{answer}\" in {clues}/10 clues! Total Wins: {wins}",
+        scoreLost: "🌍 Geodle - I couldn't guess \"{answer}\" in 10 clues. Can you?"
+    },
+    es: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Modos de Juego",
+        pathMode: "🛤️ Modo Ruta",
+        countryMode: "🌍 Modo País",
+        flagMode: "🏳️ Modo Bandera",
+        pathModeDesc: "¡Obtén pistas geográficas y adivina la ubicación misteriosa!",
+        countryModeDesc: "¡Compara países por continente, población, PIB y más!",
+        flagModeDesc: "¡Identifica países por sus banderas!",
+        clue: "Pista",
+        of: "de",
+        loadingClue: "Cargando pista...",
+        guessPlaceholder: "Escribe tu respuesta aquí",
+        guess: "Adivinar",
+        totalWins: "Victorias Totales",
+        resetGame: "Reiniciar Juego",
+        resetWinCount: "Reiniciar Contador",
+        pastHints: "Pistas Anteriores",
+        guessHistory: "Historial de Respuestas",
+        shareScore: "Compartir Puntuación",
+        newGame: "Nuevo Juego",
+        dailyLimit: "¡Ya has jugado hoy! Vuelve mañana 👀",
+        dataLoadingError: "Error al Cargar Datos",
+        dataLoadingErrorDesc: "No se pudo cargar el archivo de datos geográficos (data.js). Asegúrate de que el archivo existe y está formateado correctamente.",
+        helpImprove: "Ayúdanos a Mejorar",
+        music: "Música",
+        correct: "🎉 ¡Correcto! La respuesta es",
+        incorrect: "❌ {guess} no es correcto. Aquí tienes la siguiente pista...",
+        gameOver: "😔 ¡Juego Terminado! La respuesta era",
+        resetGameConfirm: "🔄 ¡Juego reiniciado! Nuevo país seleccionado.",
+        resetWinsConfirm: "¿Estás seguro de que quieres reiniciar tu contador de victorias? Esto no se puede deshacer.",
+        resetWinsSuccess: "🏆 ¡Contador de victorias reiniciado a 0!",
+        congratulations: "🎉 ¡Felicidades!<br>¡Adivinaste \"{answer}\" después de {clues} pista{plural}!",
+        betterLuck: "😔 ¡Mejor suerte la próxima vez!<br>La respuesta era \"{answer}\"",
+        scoreCopied: "¡Puntuación copiada al portapapeles!",
+        scoreWon: "🌍 Geodle - ¡Adiviné \"{answer}\" en {clues}/10 pistas! Victorias Totales: {wins}",
+        scoreLost: "🌍 Geodle - No pude adivinar \"{answer}\" en 10 pistas. ¿Puedes tú?"
+    },
+    fr: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Modes de Jeu",
+        pathMode: "🛤️ Mode Chemin",
+        countryMode: "🌍 Mode Pays",
+        flagMode: "🏳️ Mode Drapeau",
+        pathModeDesc: "Obtenez des indices géographiques et devinez le lieu mystérieux !",
+        countryModeDesc: "Comparez les pays par continent, population, PIB et plus !",
+        flagModeDesc: "Identifiez les pays par leurs drapeaux !",
+        clue: "Indice",
+        of: "sur",
+        loadingClue: "Chargement de l'indice...",
+        guessPlaceholder: "Tapez votre réponse ici",
+        guess: "Deviner",
+        totalWins: "Victoires Totales",
+        resetGame: "Réinitialiser le Jeu",
+        resetWinCount: "Réinitialiser le Compteur",
+        pastHints: "Indices Précédents",
+        guessHistory: "Historique des Réponses",
+        shareScore: "Partager mon Score",
+        newGame: "Nouveau Jeu",
+        dailyLimit: "Vous avez déjà joué aujourd'hui ! Revenez demain 👀",
+        dataLoadingError: "Erreur de Chargement des Données",
+        dataLoadingErrorDesc: "Impossible de charger le fichier de données géographiques (data.js). Assurez-vous que le fichier existe et est correctement formaté.",
+        helpImprove: "Aidez-nous à Améliorer",
+        music: "Musique",
+        correct: "🎉 Correct ! La réponse est",
+        incorrect: "❌ {guess} n'est pas correct. Voici le prochain indice...",
+        gameOver: "😔 Jeu Terminé ! La réponse était",
+        resetGameConfirm: "🔄 Jeu réinitialisé ! Nouveau pays sélectionné.",
+        resetWinsConfirm: "Êtes-vous sûr de vouloir réinitialiser votre compteur de victoires ? Cela ne peut pas être annulé.",
+        resetWinsSuccess: "🏆 Compteur de victoires réinitialisé à 0 !",
+        congratulations: "🎉 Félicitations !<br>Vous avez deviné \"{answer}\" après {clues} indice{plural} !",
+        betterLuck: "😔 Bonne chance la prochaine fois !<br>La réponse était \"{answer}\"",
+        scoreCopied: "Score copié dans le presse-papiers !",
+        scoreWon: "🌍 Geodle - J'ai deviné \"{answer}\" en {clues}/10 indices ! Victoires Totales : {wins}",
+        scoreLost: "🌍 Geodle - Je n'ai pas pu deviner \"{answer}\" en 10 indices. Pouvez-vous ?"
+    },
+    de: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Spielmodi",
+        pathMode: "🛤️ Pfad-Modus",
+        countryMode: "🌍 Land-Modus",
+        flagMode: "🏳️ Flaggen-Modus",
+        pathModeDesc: "Erhalten Sie geografische Hinweise und erraten Sie den geheimnisvollen Ort!",
+        countryModeDesc: "Vergleichen Sie Länder nach Kontinent, Bevölkerung, BIP und mehr!",
+        flagModeDesc: "Identifizieren Sie Länder anhand ihrer Flaggen!",
+        clue: "Hinweis",
+        of: "von",
+        loadingClue: "Hinweis wird geladen...",
+        guessPlaceholder: "Geben Sie Ihre Antwort hier ein",
+        guess: "Raten",
+        totalWins: "Gesamtsiege",
+        resetGame: "Spiel Zurücksetzen",
+        resetWinCount: "Siegzähler Zurücksetzen",
+        pastHints: "Frühere Hinweise",
+        guessHistory: "Ratehistorie",
+        shareScore: "Punktzahl Teilen",
+        newGame: "Neues Spiel",
+        dailyLimit: "Sie haben heute schon gespielt! Kommen Sie morgen wieder 👀",
+        dataLoadingError: "Datenladefehler",
+        dataLoadingErrorDesc: "Die geografische Datendatei (data.js) konnte nicht geladen werden. Stellen Sie sicher, dass die Datei existiert und korrekt formatiert ist.",
+        helpImprove: "Helfen Sie uns zu Verbessern",
+        music: "Musik",
+        correct: "🎉 Richtig! Die Antwort ist",
+        incorrect: "❌ {guess} ist nicht richtig. Hier ist der nächste Hinweis...",
+        gameOver: "😔 Spiel Vorbei! Die Antwort war",
+        resetGameConfirm: "🔄 Spiel zurückgesetzt! Neues Land ausgewählt.",
+        resetWinsConfirm: "Sind Sie sicher, dass Sie Ihren Siegzähler zurücksetzen möchten? Dies kann nicht rückgängig gemacht werden.",
+        resetWinsSuccess: "🏆 Siegzähler auf 0 zurückgesetzt!",
+        congratulations: "🎉 Glückwunsch!<br>Sie haben \"{answer}\" nach {clues} Hinweis{plural} erraten!",
+        betterLuck: "😔 Viel Glück beim nächsten Mal!<br>Die Antwort war \"{answer}\"",
+        scoreCopied: "Punktzahl in die Zwischenablage kopiert!",
+        scoreWon: "🌍 Geodle - Ich habe \"{answer}\" in {clues}/10 Hinweisen erraten! Gesamtsiege: {wins}",
+        scoreLost: "🌍 Geodle - Ich konnte \"{answer}\" nicht in 10 Hinweisen erraten. Können Sie es?"
+    },
+    it: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Modalità di Gioco",
+        pathMode: "🛤️ Modalità Percorso",
+        countryMode: "🌍 Modalità Paese",
+        flagMode: "🏳️ Modalità Bandiera",
+        pathModeDesc: "Ottieni indizi geografici e indovina la località misteriosa!",
+        countryModeDesc: "Confronta i paesi per continente, popolazione, PIL e altro!",
+        flagModeDesc: "Identifica i paesi dalle loro bandiere!",
+        clue: "Indizio",
+        of: "di",
+        loadingClue: "Caricamento indizio...",
+        guessPlaceholder: "Digita la tua risposta qui",
+        guess: "Indovina",
+        totalWins: "Vittorie Totali",
+        resetGame: "Reimposta Gioco",
+        resetWinCount: "Reimposta Contatore",
+        pastHints: "Indizi Precedenti",
+        guessHistory: "Cronologia Risposte",
+        shareScore: "Condividi Punteggio",
+        newGame: "Nuovo Gioco",
+        dailyLimit: "Hai già giocato oggi! Torna domani 👀",
+        dataLoadingError: "Errore Caricamento Dati",
+        dataLoadingErrorDesc: "Impossibile caricare il file dei dati geografici (data.js). Assicurati che il file esista e sia formattato correttamente.",
+        helpImprove: "Aiutaci a Migliorare",
+        music: "Musica",
+        correct: "🎉 Corretto! La risposta è",
+        incorrect: "❌ {guess} non è corretto. Ecco il prossimo indizio...",
+        gameOver: "😔 Gioco Finito! La risposta era",
+        resetGameConfirm: "🔄 Gioco reimpostato! Nuovo paese selezionato.",
+        resetWinsConfirm: "Sei sicuro di voler reimpostare il contatore delle vittorie? Questo non può essere annullato.",
+        resetWinsSuccess: "🏆 Contatore vittorie reimpostato a 0!",
+        congratulations: "🎉 Congratulazioni!<br>Hai indovinato \"{answer}\" dopo {clues} indizi{plural}!",
+        betterLuck: "😔 Buona fortuna la prossima volta!<br>La risposta era \"{answer}\"",
+        scoreCopied: "Punteggio copiato negli appunti!",
+        scoreWon: "🌍 Geodle - Ho indovinato \"{answer}\" in {clues}/10 indizi! Vittorie Totali: {wins}",
+        scoreLost: "🌍 Geodle - Non sono riuscito a indovinare \"{answer}\" in 10 indizi. Riesci tu?"
+    },
+    pt: {
+        title: "Geodle 🌍",
+        gameModes: "🎮 Modos de Jogo",
+        pathMode: "🛤️ Modo Caminho",
+        countryMode: "🌍 Modo País",
+        flagMode: "🏳️ Modo Bandeira",
+        pathModeDesc: "Obtenha pistas geográficas e adivinhe o local misterioso!",
+        countryModeDesc: "Compare países por continente, população, PIB e mais!",
+        flagModeDesc: "Identifique países pelas suas bandeiras!",
+        clue: "Pista",
+        of: "de",
+        loadingClue: "Carregando pista...",
+        guessPlaceholder: "Digite sua resposta aqui",
+        guess: "Adivinhar",
+        totalWins: "Vitórias Totais",
+        resetGame: "Reiniciar Jogo",
+        resetWinCount: "Reiniciar Contador",
+        pastHints: "Pistas Anteriores",
+        guessHistory: "Histórico de Respostas",
+        shareScore: "Compartilhar Pontuação",
+        newGame: "Novo Jogo",
+        dailyLimit: "Você já jogou hoje! Volte amanhã 👀",
+        dataLoadingError: "Erro ao Carregar Dados",
+        dataLoadingErrorDesc: "Não foi possível carregar o arquivo de dados geográficos (data.js). Certifique-se de que o arquivo existe e está formatado corretamente.",
+        helpImprove: "Ajude-nos a Melhorar",
+        music: "Música",
+        correct: "🎉 Correto! A resposta é",
+        incorrect: "❌ {guess} não está correto. Aqui está a próxima pista...",
+        gameOver: "😔 Fim de Jogo! A resposta era",
+        resetGameConfirm: "🔄 Jogo reiniciado! Novo país selecionado.",
+        resetWinsConfirm: "Tem certeza de que deseja reiniciar seu contador de vitórias? Isso não pode ser desfeito.",
+        resetWinsSuccess: "🏆 Contador de vitórias reiniciado para 0!",
+        congratulations: "🎉 Parabéns!<br>Você adivinhou \"{answer}\" após {clues} pista{plural}!",
+        betterLuck: "😔 Boa sorte na próxima vez!<br>A resposta era \"{answer}\"",
+        scoreCopied: "Pontuação copiada para a área de transferência!",
+        scoreWon: "🌍 Geodle - Eu adivinhei \"{answer}\" em {clues}/10 pistas! Vitórias Totais: {wins}",
+        scoreLost: "🌍 Geodle - Não consegui adivinhar \"{answer}\" em 10 pistas. Consegue você?"
+    },
+    ru: {
+        title: "Геодл 🌍",
+        gameModes: "🎮 Режимы Игры",
+        pathMode: "🛤️ Режим Пути",
+        countryMode: "🌍 Режим Страны",
+        flagMode: "🏳️ Режим Флага",
+        pathModeDesc: "Получайте географические подсказки и угадывайте загадочное место!",
+        countryModeDesc: "Сравнивайте страны по континенту, населению, ВВП и многому другому!",
+        flagModeDesc: "Определяйте страны по их флагам!",
+        clue: "Подсказка",
+        of: "из",
+        loadingClue: "Загрузка подсказки...",
+        guessPlaceholder: "Введите ваш ответ здесь",
+        guess: "Угадать",
+        totalWins: "Всего Побед",
+        resetGame: "Сбросить Игру",
+        resetWinCount: "Сбросить Счетчик",
+        pastHints: "Предыдущие Подсказки",
+        guessHistory: "История Ответов",
+        shareScore: "Поделиться Счетом",
+        newGame: "Новая Игра",
+        dailyLimit: "Вы уже играли сегодня! Возвращайтесь завтра 👀",
+        dataLoadingError: "Ошибка Загрузки Данных",
+        dataLoadingErrorDesc: "Не удалось загрузить файл географических данных (data.js). Убедитесь, что файл существует и правильно отформатирован.",
+        helpImprove: "Помогите Нам Улучшить",
+        music: "Музыка",
+        correct: "🎉 Правильно! Ответ:",
+        incorrect: "❌ {guess} неправильно. Вот следующая подсказка...",
+        gameOver: "😔 Игра Окончена! Ответ был:",
+        resetGameConfirm: "🔄 Игра сброшена! Выбрана новая страна.",
+        resetWinsConfirm: "Вы уверены, что хотите сбросить счетчик побед? Это действие нельзя отменить.",
+        resetWinsSuccess: "🏆 Счетчик побед сброшен до 0!",
+        congratulations: "🎉 Поздравляем!<br>Вы угадали \"{answer}\" за {clues} подсказк{plural}!",
+        betterLuck: "😔 Удачи в следующий раз!<br>Ответ был \"{answer}\"",
+        scoreCopied: "Результат скопирован в буфер обмена!",
+        scoreWon: "🌍 Геодл - Я угадал \"{answer}\" за {clues}/10 подсказок! Всего Побед: {wins}",
+        scoreLost: "🌍 Геодл - Я не смог угадать \"{answer}\" за 10 подсказок. Сможете ли вы?"
+    },
+    zh: {
+        title: "地理猜猜 🌍",
+        gameModes: "🎮 游戏模式",
+        pathMode: "🛤️ 路径模式",
+        countryMode: "🌍 国家模式", 
+        flagMode: "🏳️ 国旗模式",
+        pathModeDesc: "获得地理线索，猜出神秘地点！",
+        countryModeDesc: "按大洲、人口、GDP等比较国家！",
+        flagModeDesc: "通过国旗识别国家！",
+        clue: "线索",
+        of: "/",
+        loadingClue: "加载线索中...",
+        guessPlaceholder: "在此输入您的猜测",
+        guess: "猜测",
+        totalWins: "总胜利次数",
+        resetGame: "重置游戏",
+        resetWinCount: "重置胜利次数",
+        pastHints: "过往提示",
+        guessHistory: "猜测历史",
+        shareScore: "分享我的分数",
+        newGame: "新游戏",
+        dailyLimit: "您今天已经玩过了！明天再来 👀",
+        dataLoadingError: "数据加载错误",
+        dataLoadingErrorDesc: "无法加载地理数据文件 (data.js)。请确保文件存在且格式正确。",
+        helpImprove: "帮助我们改进",
+        music: "音乐",
+        correct: "🎉 正确！答案是",
+        incorrect: "❌ {guess} 不正确。这是下一个线索...",
+        gameOver: "😔 游戏结束！答案是",
+        resetGameConfirm: "🔄 游戏已重置！选择了新国家。",
+        resetWinsConfirm: "您确定要重置胜利次数吗？此操作无法撤销。",
+        resetWinsSuccess: "🏆 胜利次数已重置为0！",
+        congratulations: "🎉 恭喜！<br>您在{clues}个线索后猜出了\"{answer}\"！",
+        betterLuck: "😔 下次好运！<br>答案是\"{answer}\"",
+        scoreCopied: "分数已复制到剪贴板！",
+        scoreWon: "🌍 地理猜猜 - 我在{clues}/10个线索中猜出了\"{answer}\"！总胜利次数：{wins}",
+        scoreLost: "🌍 地理猜猜 - 我无法在10个线索中猜出\"{answer}\"。你能吗？"
+    },
+    ja: {
+        title: "ジオドル 🌍",
+        gameModes: "🎮 ゲームモード",
+        pathMode: "🛤️ パスモード",
+        countryMode: "🌍 国モード",
+        flagMode: "🏳️ 旗モード",
+        pathModeDesc: "地理的なヒントを得て、謎の場所を当ててください！",
+        countryModeDesc: "大陸、人口、GDP などで国を比較しよう！",
+        flagModeDesc: "国旗で国を特定しよう！",
+        clue: "ヒント",
+        of: "/",
+        loadingClue: "ヒント読み込み中...",
+        guessPlaceholder: "あなたの回答をここに入力",
+        guess: "推測",
+        totalWins: "総勝利数",
+        resetGame: "ゲームリセット",
+        resetWinCount: "勝利数リセット",
+        pastHints: "過去のヒント",
+        guessHistory: "推測履歴",
+        shareScore: "スコアを共有",
+        newGame: "新しいゲーム",
+        dailyLimit: "今日はもうプレイしました！明日また来てください 👀",
+        dataLoadingError: "データ読み込みエラー",
+        dataLoadingErrorDesc: "地理データファイル (data.js) を読み込めませんでした。ファイルが存在し、正しく形式化されていることを確認してください。",
+        helpImprove: "改善にご協力ください",
+        music: "音楽",
+        correct: "🎉 正解！答えは",
+        incorrect: "❌ {guess} は正しくありません。次のヒントです...",
+        gameOver: "😔 ゲーム終了！答えは",
+        resetGameConfirm: "🔄 ゲームがリセットされました！新しい国が選択されました。",
+        resetWinsConfirm: "勝利数をリセットしてもよろしいですか？この操作は元に戻せません。",
+        resetWinsSuccess: "🏆 勝利数を0にリセットしました！",
+        congratulations: "🎉 おめでとうございます！<br>{clues}個のヒントで\"{answer}\"を当てました！",
+        betterLuck: "😔 次回頑張りましょう！<br>答えは\"{answer}\"でした",
+        scoreCopied: "スコアがクリップボードにコピーされました！",
+        scoreWon: "🌍 ジオドル - {clues}/10個のヒントで\"{answer}\"を当てました！総勝利数：{wins}",
+        scoreLost: "🌍 ジオドル - 10個のヒントで\"{answer}\"を当てられませんでした。あなたはできますか？"
+    },
+    ko: {
+        title: "지오들 🌍",
+        gameModes: "🎮 게임 모드",
+        pathMode: "🛤️ 경로 모드",
+        countryMode: "🌍 국가 모드",
+        flagMode: "🏳️ 국기 모드", 
+        pathModeDesc: "지리적 단서를 얻고 신비로운 장소를 맞춰보세요!",
+        countryModeDesc: "대륙, 인구, GDP 등으로 국가를 비교해보세요!",
+        flagModeDesc: "국기로 국가를 식별해보세요!",
+        clue: "단서",
+        of: "/",
+        loadingClue: "단서 로딩 중...",
+        guessPlaceholder: "여기에 답을 입력하세요",
+        guess: "추측",
+        totalWins: "총 승리 횟수",
+        resetGame: "게임 재시작",
+        resetWinCount: "승리 횟수 재설정",
+        pastHints: "이전 힌트",
+        guessHistory: "추측 기록",
+        shareScore: "점수 공유하기",
+        newGame: "새 게임",
+        dailyLimit: "오늘 이미 플레이했습니다! 내일 다시 오세요 👀",
+        dataLoadingError: "데이터 로딩 오류",
+        dataLoadingErrorDesc: "지리 데이터 파일(data.js)을 로드할 수 없습니다. 파일이 존재하고 올바르게 형식화되어 있는지 확인하세요.",
+        helpImprove: "개선에 도움주기",
+        music: "음악",
+        correct: "🎉 정답! 답은",
+        incorrect: "❌ {guess}는 정답이 아닙니다. 다음 단서입니다...",
+        gameOver: "😔 게임 오버! 정답은",
+        resetGameConfirm: "🔄 게임이 재시작되었습니다! 새로운 국가가 선택되었습니다.",
+        resetWinsConfirm: "승리 횟수를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        resetWinsSuccess: "🏆 승리 횟수가 0으로 재설정되었습니다!",
+        congratulations: "🎉 축하합니다!<br>{clues}개의 단서로 \"{answer}\"을(를) 맞췄습니다!",
+        betterLuck: "😔 다음에 더 잘해보세요!<br>정답은 \"{answer}\"였습니다",
+        scoreCopied: "점수가 클립보드에 복사되었습니다!",
+        scoreWon: "🌍 지오들 - {clues}/10개 단서로 \"{answer}\"을(를) 맞췄습니다! 총 승리 횟수: {wins}",
+        scoreLost: "🌍 지오들 - 10개 단서로 \"{answer}\"을(를) 맞추지 못했습니다. 당신은 할 수 있나요?"
+    }
 };
 
 let currentLanguage = 'en';
@@ -525,2102 +2122,578 @@ let musicEnabled = true;
 
 // Translation function
 function translate(key, replacements = {}) {
-  let text = translations[currentLanguage][key] || translations['en'][key] || key;
-  
-  // Replace placeholders
-  Object.keys(replacements).forEach(placeholder => {
-    text = text.replace(`{${placeholder}}`, replacements[placeholder]);
-  });
-  
-  return text;
+    let text = translations[currentLanguage][key] || translations['en'][key] || key;
+    
+    // Replace placeholders
+    Object.keys(replacements).forEach(placeholder => {
+        text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+    });
+    
+    return text;
 }
 
 // Update all translatable elements
 function updateLanguage() {
-  document.querySelectorAll('[data-translate]').forEach(element => {
-    const key = element.getAttribute('data-translate');
-    if (element.tagName === 'INPUT') {
-      element.placeholder = translate(key);
-    } else {
-      element.textContent = translate(key);
-    }
-  });
-  
-  // Update placeholder specifically
-  const guessInput = document.getElementById('guessInput');
-  if (guessInput) {
-    guessInput.placeholder = translate('guessPlaceholder');
-  }
-  
-  // Update current language display
-  document.getElementById('current-language').textContent = 
-    translations[currentLanguage].title ? 
-    translations[currentLanguage].title.replace(' 🌍', '').replace('Geodle', 'English').replace('지오들', '한국어').replace('ジオドル', '日本語').replace('地理猜猜', '中文').replace('Геодл', 'Русский').replace('Geodle', 'Português').replace('Geodle', 'Italiano').replace('Geodle', 'Deutsch').replace('Geodle', 'Français').replace('Geodle', 'Español') :
-    'English';
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (element.tagName === 'INPUT') {
+            element.placeholder = translate(key);
+        } else {
+            element.textContent = translate(key);
+        }
+    });
     
-  // Update language display properly
-  const langMap = {
-    'en': 'English',
-    'es': 'Español', 
-    'fr': 'Français',
-    'de': 'Deutsch',
-    'it': 'Italiano',
-    'pt': 'Português',
-    'ru': 'Русский',
-    'zh': '中文',
-    'ja': '日本語',
-    'ko': '한국어'
-  };
-  
-  document.getElementById('current-language').textContent = langMap[currentLanguage] || 'English';
-  
-  // Update mode descriptions
-  updateModeDescriptions();
+    // Update placeholder specifically
+    const guessInput = document.getElementById('guessInput');
+    if (guessInput) {
+        guessInput.placeholder = translate('guessPlaceholder');
+    }
+    
+    // Update current language display
+    document.getElementById('current-language').textContent = 
+        translations[currentLanguage].title ? 
+        translations[currentLanguage].title.replace(' 🌍', '').replace('Geodle', 'English').replace('지오들', '한국어').replace('ジオドル', '日本語').replace('地理猜猜', '中文').replace('Геодл', 'Русский').replace('Geodle', 'Português').replace('Geodle', 'Italiano').replace('Geodle', 'Deutsch').replace('Geodle', 'Français').replace('Geodle', 'Español') :
+        'English';
+        
+    // Update language display properly
+    const langMap = {
+        'en': 'English',
+        'es': 'Español', 
+        'fr': 'Français',
+        'de': 'Deutsch',
+        'it': 'Italiano',
+        'pt': 'Português',
+        'ru': 'Русский',
+        'zh': '中文',
+        'ja': '日本語',
+        'ko': '한국어'
+    };
+    
+    document.getElementById('current-language').textContent = langMap[currentLanguage] || 'English';
+    
+    // Update mode descriptions
+    updateModeDescriptions();
 }
 
 // Update mode descriptions based on current language
 function updateModeDescriptions() {
-  const pathBtn = document.getElementById('pathModeBtn');
-  const countryBtn = document.getElementById('countryModeBtn');
-  const flagBtn = document.getElementById('flagModeBtn');
-  const description = document.getElementById('modeDescription');
-  
-  if (pathBtn && pathBtn.classList.contains('active')) {
-    description.textContent = translate('pathModeDesc');
-  } else if (countryBtn && countryBtn.classList.contains('active')) {
-    description.textContent = translate('countryModeDesc');
-  } else if (flagBtn && flagBtn.classList.contains('active')) {
-    description.textContent = translate('flagModeDesc');
-  }
+    const pathBtn = document.getElementById('pathModeBtn');
+    const countryBtn = document.getElementById('countryModeBtn');
+    const flagBtn = document.getElementById('flagModeBtn');
+    const description = document.getElementById('modeDescription');
+    
+    if (pathBtn && pathBtn.classList.contains('active')) {
+        description.textContent = translate('pathModeDesc');
+    } else if (countryBtn && countryBtn.classList.contains('active')) {
+        description.textContent = translate('countryModeDesc');
+    } else if (flagBtn && flagBtn.classList.contains('active')) {
+        description.textContent = translate('flagModeDesc');
+    }
 }
 
 // Load and save settings
 function loadSettings() {
-  // Load language
-  const savedLanguage = localStorage.getItem('geodle_language');
-  if (savedLanguage && translations[savedLanguage]) {
-    currentLanguage = savedLanguage;
-  }
-  
-  // Load music setting
-  const savedMusic = localStorage.getItem('geodle_music_enabled');
-  musicEnabled = savedMusic !== null ? savedMusic === 'true' : true;
-  document.getElementById('music-toggle').checked = musicEnabled;
-  
-  // Load win count
-  const savedWins = localStorage.getItem('geodle_total_wins');
-  totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+    // Load language
+    const savedLanguage = localStorage.getItem('geodle_language');
+    if (savedLanguage && translations[savedLanguage]) {
+        currentLanguage = savedLanguage;
+    }
+    
+    // Load music setting
+    const savedMusic = localStorage.getItem('geodle_music_enabled');
+    musicEnabled = savedMusic !== null ? savedMusic === 'true' : true;
+    document.getElementById('music-toggle').checked = musicEnabled;
+    
+    // Load win count
+    const savedWins = localStorage.getItem('geodle_total_wins');
+    totalWins = savedWins ? parseInt(savedWins, 10) : 0;
 }
 
 function saveSettings() {
-  localStorage.setItem('geodle_language', currentLanguage);
-  localStorage.setItem('geodle_music_enabled', musicEnabled.toString());
-  localStorage.setItem('geodle_total_wins', totalWins.toString());
+    localStorage.setItem('geodle_language', currentLanguage);
+    localStorage.setItem('geodle_music_enabled', musicEnabled.toString());
+    localStorage.setItem('geodle_total_wins', totalWins.toString());
 }
 
 function toggleMusic() {
-  musicEnabled = !musicEnabled;
-  saveSettings();
-  console.log('Music ' + (musicEnabled ? 'enabled' : 'disabled'));
+    musicEnabled = !musicEnabled;
+    saveSettings();
+    console.log('Music ' + (musicEnabled ? 'enabled' : 'disabled'));
 }
 
 // Language functions
 function changeLanguage(langCode) {
-  if (translations[langCode]) {
-    currentLanguage = langCode;
-    saveSettings();
-    updateLanguage();
-    
-    // Update selected language option
-    document.querySelectorAll('.language-option').forEach(option => {
-      option.classList.remove('selected');
-      if (option.getAttribute('data-lang') === langCode) {
-        option.classList.add('selected');
-      }
-    });
-  }
+    if (translations[langCode]) {
+        currentLanguage = langCode;
+        saveSettings();
+        updateLanguage();
+        
+        // Update selected language option
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.classList.remove('selected');
+            if (option.getAttribute('data-lang') === langCode) {
+                option.classList.add('selected');
+            }
+        });
+    }
 }
 
 // Show loading screen initially
 function showLoadingScreen() {
-  document.getElementById('loading-screen').classList.remove('hidden');
+    document.getElementById('loading-screen').classList.remove('hidden');
 }
 
 function hideLoadingScreen() {
-  setTimeout(() => {
-    document.getElementById('loading-screen').classList.add('hidden');
-  }, 500); // Small delay to show the loading screen briefly
+    setTimeout(() => {
+        document.getElementById('loading-screen').classList.add('hidden');
+    }, 500); // Small delay to show the loading screen briefly
 }
 
 // Check if data is loaded and validate it
 function validateData() {
-  if (typeof geographyData === 'undefined') {
-    console.error('geographyData is not defined. Make sure data.js is loaded.');
-    return false;
-  }
-  
-  if (!Array.isArray(geographyData)) {
-    console.error('geographyData should be an array.');
-    return false;
-  }
-  
-  if (geographyData.length === 0) {
-    console.error('geographyData array is empty.');
-    return false;
-  }
-  
-  // Validate structure of first item
-  const firstItem = geographyData[0];
-  if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
-    console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
-    return false;
-  }
-  
-  return true;
+    if (typeof geographyData === 'undefined') {
+        console.error('geographyData is not defined. Make sure data.js is loaded.');
+        return false;
+    }
+    
+    if (!Array.isArray(geographyData)) {
+        console.error('geographyData should be an array.');
+        return false;
+    }
+    
+    if (geographyData.length === 0) {
+        console.error('geographyData array is empty.');
+        return false;
+    }
+    
+    // Validate structure of first item
+    const firstItem = geographyData[0];
+    if (!firstItem.answer || !firstItem.clues || !Array.isArray(firstItem.clues)) {
+        console.error('Invalid data structure. Each item should have "answer" and "clues" properties.');
+        return false;
+    }
+    
+    return true;
 }
 
 // Initialize the game
 function initGame() {
-  // Show loading screen
-  showLoadingScreen();
-  
-  // Simulate loading time for better UX
-  setTimeout(() => {
-    // Validate data first
-    if (!validateData()) {
-      document.getElementById('loadingError').style.display = 'block';
-      document.getElementById('guessInput').disabled = true;
-      document.getElementById('guessButton').disabled = true;
-      hideLoadingScreen();
-      return;
-    }
+    // Show loading screen
+    showLoadingScreen();
     
-    // Hide error message if it was shown
-    document.getElementById('loadingError').style.display = 'none';
-    
-    // Initialize or reset the world map
-    if (worldMap) {
-      worldMap.remove();
-      worldMap = null;
-    }
-    initWorldMap();
-    
-    // Get random question from external data
-    const randomIndex = Math.floor(Math.random() * geographyData.length);
-    currentQuestion = geographyData[randomIndex];
-    currentClueIndex = 0;
-    guessHistory = [];
-    gameEnded = false;
-    
-    // Display the first clue
-    updateClueDisplay();
-    updateProgressBar();
-    
-    // Reset UI
-    document.getElementById('guessInput').disabled = false;
-    document.getElementById('guessButton').disabled = false;
-    document.getElementById('guessInput').value = '';
-    document.getElementById('feedback').textContent = '';
-    document.getElementById('historyList').innerHTML = '';
-    document.getElementById('pastHintsList').innerHTML = '';
-    document.getElementById('endScreen').style.display = 'none';
-    
-    // Focus on input
-    document.getElementById('guessInput').focus();
-    
-    updateWinDisplay();
-    
-    // Hide loading screen
-    hideLoadingScreen();
-  }, Math.random() * 800 + 400); // Random loading time between 400-1200ms for realism
+    // Simulate loading time for better UX
+    setTimeout(() => {
+        // Validate data first
+        if (!validateData()) {
+            document.getElementById('loadingError').style.display = 'block';
+            document.getElementById('guessInput').disabled = true;
+            document.getElementById('guessButton').disabled = true;
+            hideLoadingScreen();
+            return;
+        }
+        
+        // Hide error message if it was shown
+        document.getElementById('loadingError').style.display = 'none';
+        
+        // Initialize or reset the world map
+        if (worldMap) {
+            worldMap.remove();
+            worldMap = null;
+        }
+        initWorldMap();
+        
+        // Get random question from external data
+        const randomIndex = Math.floor(Math.random() * geographyData.length);
+        currentQuestion = geographyData[randomIndex];
+        currentClueIndex = 0;
+        guessHistory = [];
+        gameEnded = false;
+        
+        // Display the first clue
+        updateClueDisplay();
+        updateProgressBar();
+        
+        // Reset UI
+        document.getElementById('guessInput').disabled = false;
+        document.getElementById('guessButton').disabled = false;
+        document.getElementById('guessInput').value = '';
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('historyList').innerHTML = '';
+        document.getElementById('pastHintsList').innerHTML = '';
+        document.getElementById('endScreen').style.display = 'none';
+        
+        // Focus on input
+        document.getElementById('guessInput').focus();
+        
+        updateWinDisplay();
+        
+        // Hide loading screen
+        hideLoadingScreen();
+    }, Math.random() * 800 + 400); // Random loading time between 400-1200ms for realism
 }
 
 function resetGame() {
-  showLoadingScreen();
-  setTimeout(() => {
-    initGame();
-    showFeedback(translate('resetGameConfirm'), '#0078d7');
-  }, 600);
+    showLoadingScreen();
+    setTimeout(() => {
+        initGame();
+        showFeedback(translate('resetGameConfirm'), '#0078d7');
+    }, 600);
 }
 
 function updateClueDisplay() {
-  document.getElementById('currentClue').textContent = currentClueIndex + 1;
-  document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
-  updatePastHints();
+    document.getElementById('currentClue').textContent = currentClueIndex + 1;
+    document.getElementById('clueBox').textContent = currentQuestion.clues[currentClueIndex];
+    updatePastHints();
 }
 
 function updatePastHints() {
-  const pastHintsList = document.getElementById('pastHintsList');
-  pastHintsList.innerHTML = '';
-  
-  // Show all hints up to current clue index
-  for (let i = 0; i <= currentClueIndex; i++) {
-    const li = document.createElement('li');
-    li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
-    pastHintsList.appendChild(li);
-  }
+    const pastHintsList = document.getElementById('pastHintsList');
+    pastHintsList.innerHTML = '';
+    
+    // Show all hints up to current clue index
+    for (let i = 0; i <= currentClueIndex; i++) {
+        const li = document.createElement('li');
+        li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+        pastHintsList.appendChild(li);
+    }
 }
 
 function updateProgressBar() {
-  const progress = ((currentClueIndex + 1) / 10) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
+    const progress = ((currentClueIndex + 1) / 10) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
 }
 
 function updateWinDisplay() {
-  const streakElement = document.getElementById('streak');
-  streakElement.innerHTML = `🏆 <span data-translate="totalWins">${translate('totalWins')}</span>: ${totalWins}`;
+    const streakElement = document.getElementById('streak');
+    streakElement.innerHTML = `🏆 <span data-translate="totalWins">${translate('totalWins')}</span>: ${totalWins}`;
 }
 
 // Initialize Leaflet world map
 function initWorldMap() {
-  worldMap = L.map('worldMap', {
-    center: [20, 0],
-    zoom: 1,
-    minZoom: 1,
-    maxZoom: 10,
-    zoomControl: true,
-    dragging: true,
-    scrollWheelZoom: true,
-    doubleClickZoom: true,
-    touchZoom: true
-  });
+    worldMap = L.map('worldMap', {
+        center: [20, 0],
+        zoom: 1,
+        minZoom: 1,
+        maxZoom: 10,
+        zoomControl: true,
+        dragging: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        touchZoom: true
+    });
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 18
-  }).addTo(worldMap);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(worldMap);
 }
 
 function handleGuess(e) {
-  e.preventDefault();
-  
-  if (gameEnded) return;
-  
-  const guess = document.getElementById('guessInput').value.trim().toUpperCase();
-  
-  if (!guess) return;
-  
-  // Check if correct
-  const isCorrect = guess === currentQuestion.answer;
-  
-  // Add to history
-  guessHistory.push({
-    text: guess,
-    correct: isCorrect,
-    clueNumber: currentClueIndex + 1
-  });
-  
-  if (isCorrect) {
-    showFeedback(`${translate('correct')} ${currentQuestion.answer}`, 'green');
-    totalWins++;
-    saveSettings();
-    updateWinDisplay();
-    endGame(true);
-  } else {
-    if (currentClueIndex < 9) {
-      currentClueIndex++;
-      updateClueDisplay();
-      updateProgressBar();
-      showFeedback(translate('incorrect', {guess: guess}), 'red');
+    e.preventDefault();
+    
+    if (gameEnded) return;
+    
+    const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+    
+    if (!guess) return;
+    
+    // Check if correct
+    const isCorrect = guess === currentQuestion.answer;
+    
+    // Add to history
+    guessHistory.push({
+        text: guess,
+        correct: isCorrect,
+        clueNumber: currentClueIndex + 1
+    });
+    
+    if (isCorrect) {
+        showFeedback(`${translate('correct')} ${currentQuestion.answer}`, 'green');
+        totalWins++;
+        saveSettings();
+        updateWinDisplay();
+        endGame(true);
     } else {
-      showFeedback(`${translate('gameOver')} ${currentQuestion.answer}`, 'orange');
-      endGame(false);
+        if (currentClueIndex < 9) {
+            currentClueIndex++;
+            updateClueDisplay();
+            updateProgressBar();
+            showFeedback(translate('incorrect', {guess: guess}), 'red');
+        } else {
+            showFeedback(`${translate('gameOver')} ${currentQuestion.answer}`, 'orange');
+            endGame(false);
+        }
     }
-  }
-  
-  // Update history display
-  updateHistoryDisplay();
-  
-  // Clear input
-  document.getElementById('guessInput').value = '';
+    
+    // Update history display
+    updateHistoryDisplay();
+    
+    // Clear input
+    document.getElementById('guessInput').value = '';
 }
 
 function showFeedback(message, color) {
-  const feedback = document.getElementById('feedback');
-  feedback.textContent = message;
-  feedback.style.color = color;
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = message;
+    feedback.style.color = color;
 }
 
 function updateHistoryDisplay() {
-  const historyList = document.getElementById('historyList');
-  historyList.innerHTML = '';
-  
-  guessHistory.forEach((guess, index) => {
-    const li = document.createElement('li');
-    li.className = guess.correct ? 'correct' : 'incorrect';
-    li.innerHTML = `
-      <span>${translate('clue')} ${guess.clueNumber}: ${guess.text}</span>
-      <span>${guess.correct ? '✓' : '✗'}</span>
-    `;
-    historyList.appendChild(li);
-  });
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '';
+    
+    guessHistory.forEach((guess, index) => {
+        const li = document.createElement('li');
+        li.className = guess.correct ? 'correct' : 'incorrect';
+        li.innerHTML = `
+            <span>${translate('clue')} ${guess.clueNumber}: ${guess.text}</span>
+            <span>${guess.correct ? '✓' : '✗'}</span>
+        `;
+        historyList.appendChild(li);
+    });
 }
 
 function endGame(won) {
-  gameEnded = true;
-  document.getElementById('guessInput').disabled = true;
-  document.getElementById('guessButton').disabled = true;
-  
-  const endScreen = document.getElementById('endScreen');
-  const resultMsg = document.getElementById('resultMsg');
-  
-  if (won) {
-    const plural = currentClueIndex + 1 > 1 ? 's' : '';
-    resultMsg.innerHTML = translate('congratulations', {
-      answer: currentQuestion.answer,
-      clues: currentClueIndex + 1,
-      plural: plural
-    });
-  } else {
-    resultMsg.innerHTML = translate('betterLuck', {
-      answer: currentQuestion.answer
-    });
-  }
-  
-  endScreen.style.display = 'block';
+    gameEnded = true;
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    
+    const endScreen = document.getElementById('endScreen');
+    const resultMsg = document.getElementById('resultMsg');
+    
+    if (won) {
+        const plural = currentClueIndex + 1 > 1 ? 's' : '';
+        resultMsg.innerHTML = translate('congratulations', {
+            answer: currentQuestion.answer,
+            clues: currentClueIndex + 1,
+            plural: plural
+        });
+    } else {
+        resultMsg.innerHTML = translate('betterLuck', {
+            answer: currentQuestion.answer
+        });
+    }
+    
+    endScreen.style.display = 'block';
 }
 
 function shareScore() {
-  const won = guessHistory.some(guess => guess.correct);
-  const cluesUsed = won ? currentClueIndex + 1 : 10;
-  
-  const scoreText = won ? 
-    translate('scoreWon', {
-      answer: currentQuestion.answer,
-      clues: cluesUsed,
-      wins: totalWins
-    }) :
-    translate('scoreLost', {
-      answer: currentQuestion.answer
-    });
-  
-  if (navigator.share) {
-    navigator.share({
-      title: 'Geodle Score',
-      text: scoreText,
-      url: window.location.href
-    });
-  } else {
-    // Fallback - copy to clipboard
-    navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-    alert(translate('scoreCopied'));
-  }
+    const won = guessHistory.some(guess => guess.correct);
+    const cluesUsed = won ? currentClueIndex + 1 : 10;
+    
+    const scoreText = won ? 
+        translate('scoreWon', {
+            answer: currentQuestion.answer,
+            clues: cluesUsed,
+            wins: totalWins
+        }) :
+        translate('scoreLost', {
+            answer: currentQuestion.answer
+        });
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Geodle Score',
+            text: scoreText,
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
+        alert(translate('scoreCopied'));
+    }
 }
 
 // Menu functionality
 function toggleMenu() {
-  const dropdown = document.getElementById('menu-dropdown');
-  const menuButton = document.getElementById('menu-button');
-  
-  dropdown.classList.toggle('show');
-  menuButton.classList.toggle('open');
+    const dropdown = document.getElementById('menu-dropdown');
+    const menuButton = document.getElementById('menu-button');
+    
+    dropdown.classList.toggle('show');
+    menuButton.classList.toggle('open');
 }
 
 function closeMenu() {
-  const dropdown = document.getElementById('menu-dropdown');
-  const menuButton = document.getElementById('menu-button');
-  
-  dropdown.classList.remove('show');
-  menuButton.classList.remove('open');
+    const dropdown = document.getElementById('menu-dropdown');
+    const menuButton = document.getElementById('menu-button');
+    
+    dropdown.classList.remove('show');
+    menuButton.classList.remove('open');
 }
 
 // Language dropdown functionality
 function toggleLanguageDropdown() {
-  const dropdown = document.getElementById('language-dropdown');
-  const options = document.getElementById('language-options');
-  
-  dropdown.classList.toggle('open');
-  options.classList.toggle('show');
+    const dropdown = document.getElementById('language-dropdown');
+    const options = document.getElementById('language-options');
+    
+    dropdown.classList.toggle('open');
+    options.classList.toggle('show');
 }
 
 function closeLanguageDropdown() {
-  const dropdown = document.getElementById('language-dropdown');
-  const options = document.getElementById('language-options');
-  
-  dropdown.classList.remove('open');
-  options.classList.remove('show');
+    const dropdown = document.getElementById('language-dropdown');
+    const options = document.getElementById('language-options');
+    
+    dropdown.classList.remove('open');
+    options.classList.remove('show');
 }
 
 // Mode selector functionality
 document.addEventListener('DOMContentLoaded', function() {
-  // Load settings
-  loadSettings();
-  updateLanguage();
-  
-  // Menu event listeners
-  document.getElementById('menu-button').addEventListener('click', function(e) {
-    e.stopPropagation();
-    toggleMenu();
-  });
-  
-  // Close menu when clicking outside
-  document.addEventListener('click', function(e) {
-    const menu = document.getElementById('menu-button');
-    const dropdown = document.getElementById('menu-dropdown');
-    const langDropdown = document.getElementById('language-dropdown');
+    // Load settings
+    loadSettings();
+    updateLanguage();
     
-    if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
-      closeMenu();
+    // Menu event listeners
+    document.getElementById('menu-button').addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleMenu();
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('menu-button');
+        const dropdown = document.getElementById('menu-dropdown');
+        const langDropdown = document.getElementById('language-dropdown');
+        
+        if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
+            closeMenu();
+        }
+        
+        if (!langDropdown.contains(e.target)) {
+            closeLanguageDropdown();
+        }
+    });
+    
+    // Language selector
+    document.getElementById('language-selector').addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleLanguageDropdown();
+    });
+    
+    // Language options
+    document.querySelectorAll('.language-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const langCode = this.getAttribute('data-lang');
+            changeLanguage(langCode);
+            closeLanguageDropdown();
+        });
+    });
+    
+    // Menu items
+    document.getElementById('menu-terms').addEventListener('click', function() {
+        closeMenu();
+        document.getElementById('terms-modal').style.display = 'block';
+    });
+    
+    document.getElementById('menu-privacy').addEventListener('click', function() {
+        closeMenu();
+        document.getElementById('privacy-modal').style.display = 'block';
+    });
+    
+    // Music toggle
+    document.getElementById('music-toggle').addEventListener('change', toggleMusic);
+    
+    // Easter egg button
+    document.getElementById('invisible-btn').addEventListener('dblclick', function() {
+        alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
+    });
+    
+    // Update mode descriptions on hover
+    const pathBtn = document.getElementById('pathModeBtn');
+    const countryBtn = document.getElementById('countryModeBtn');
+    const flagBtn = document.getElementById('flagModeBtn');
+    const description = document.getElementById('modeDescription');
+    
+    if (pathBtn && countryBtn && flagBtn && description) {
+        pathBtn.addEventListener('mouseenter', function() {
+            description.textContent = translate('pathModeDesc');
+        });
+        
+        countryBtn.addEventListener('mouseenter', function() {
+            description.textContent = translate('countryModeDesc');
+        });
+        
+        flagBtn.addEventListener('mouseenter', function() {
+            description.textContent = translate('flagModeDesc');
+        });
+        
+        // Reset to current mode description on mouse leave
+        const resetDescription = function() {
+            updateModeDescriptions();
+        };
+        
+        pathBtn.addEventListener('mouseleave', resetDescription);
+        countryBtn.addEventListener('mouseleave', resetDescription);
+        flagBtn.addEventListener('mouseleave', resetDescription);
     }
     
-    if (!langDropdown.contains(e.target)) {
-      closeLanguageDropdown();
-    }
-  });
-  
-  // Language selector
-  document.getElementById('language-selector').addEventListener('click', function(e) {
-    e.stopPropagation();
-    toggleLanguageDropdown();
-  });
-  
-  // Language options
-  document.querySelectorAll('.language-option').forEach(option => {
-    option.addEventListener('click', function() {
-      const langCode = this.getAttribute('data-lang');
-      changeLanguage(langCode);
-      closeLanguageDropdown();
-    });
-  });
-  
-  // Menu items
-  document.getElementById('menu-terms').addEventListener('click', function() {
-    closeMenu();
-    document.getElementById('terms-modal').style.display = 'block';
-  });
-  
-  document.getElementById('menu-privacy').addEventListener('click', function() {
-    closeMenu();
-    document.getElementById('privacy-modal').style.display = 'block';
-  });
-  
-  // Music toggle
-  document.getElementById('music-toggle').addEventListener('change', toggleMusic);
-  
-  // Easter egg button
-  document.getElementById('invisible-btn').addEventListener('dblclick', function() {
-    alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
-  });
-  
-  // Update mode descriptions on hover
-  const pathBtn = document.getElementById('pathModeBtn');
-  const countryBtn = document.getElementById('countryModeBtn');
-  const flagBtn = document.getElementById('flagModeBtn');
-  const description = document.getElementById('modeDescription');
-  
-  if (pathBtn && countryBtn && flagBtn && description) {
-    pathBtn.addEventListener('mouseenter', function() {
-      description.textContent = translate('pathModeDesc');
-    });
-    
-    countryBtn.addEventListener('mouseenter', function() {
-      description.textContent = translate('countryModeDesc');
-    });
-    
-    flagBtn.addEventListener('mouseenter', function() {
-      description.textContent = translate('flagModeDesc');
-    });
-    
-    // Reset to current mode description on mouse leave
-    const resetDescription = function() {
-      updateModeDescriptions();
-    };
-    
-    pathBtn.addEventListener('mouseleave', resetDescription);
-    countryBtn.addEventListener('mouseleave', resetDescription);
-    flagBtn.addEventListener('mouseleave', resetDescription);
-  }
-  
-  // Add a small delay to ensure data.js is fully loaded
-  setTimeout(() => {
-    initGame();
-  }, 100);
-  
-  // Set up event listeners
-  document.getElementById('guessForm').addEventListener('submit', handleGuess);
-  document.getElementById('resetBtn').addEventListener('click', resetGame);
-  document.getElementById('resetWinsBtn').addEventListener('click', function() {
-    if (confirm(translate('resetWinsConfirm'))) {
-      totalWins = 0;
-      saveSettings();
-      updateWinDisplay();
-      showFeedback(translate('resetWinsSuccess'), '#6f42c1');
-    }
-  });
-  document.getElementById('shareBtn').addEventListener('click', shareScore);
-  document.getElementById('newGameBtn').addEventListener('click', function() {
-    showLoadingScreen();
+    // Add a small delay to ensure data.js is fully loaded
     setTimeout(() => {
-      initGame();
-    }, 600);
-  });
-  
-  // Show initial loading screen
-  showLoadingScreen();
+        initGame();
+    }, 100);
+    
+    // Set up event listeners
+    document.getElementById('guessForm').addEventListener('submit', handleGuess);
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    document.getElementById('resetWinsBtn').addEventListener('click', function() {
+        if (confirm(translate('resetWinsConfirm'))) {
+            totalWins = 0;
+            saveSettings();
+            updateWinDisplay();
+            showFeedback(translate('resetWinsSuccess'), '#6f42c1');
+        }
+    });
+    document.getElementById('shareBtn').addEventListener('click', shareScore);
+    document.getElementById('newGameBtn').addEventListener('click', function() {
+        showLoadingScreen();
+        setTimeout(() => {
+            initGame();
+        }, 600);
+    });
+    
+    // Show initial loading screen
+    showLoadingScreen();
 });
-</script>
 
-<!-- Terms & Cookies Consent Banner -->
-<style>
-  /* Banner */
-  #consent-banner {
-    position: fixed;
-    bottom: -100px;
-    left: 0;
-    width: 100%;
-    background-color: #222;
-    color: #fff;
-    padding: 15px 20px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
-    z-index: 1000;
-    transition: bottom 0.5s ease-in-out;
-  }
-  #consent-banner.show { bottom: 0; }
-  #consent-banner button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  #consent-banner button:hover { background-color: #45a049; }
-  #consent-banner a {
-    color: #4CAF50;
-    text-decoration: underline;
-    margin-left: 5px;
-    cursor: pointer;
-  }
-  #consent-banner span { flex: 1 1 auto; margin-right: 10px; }
+// Terms & Cookies Consent Banner functionality
+const banner = document.getElementById('consent-banner');
+const termsModal = document.getElementById('terms-modal');
+const privacyModal = document.getElementById('privacy-modal');
 
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    background-color: rgba(0,0,0,0.6);
-  }
-  .modal-content {
-    background-color: #fff;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 700px;
-    font-family: Arial, sans-serif;
-    color: #000;
-    line-height: 1.5;
-    position: relative;
-  }
-  .modal-content h2 { text-align: center; }
-  .modal-content h3 { margin-top: 15px; }
-  .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 18px;
-    cursor: pointer;
-    background: none;
-    border: none;
-  }
-</style>
-
-<div id="consent-banner">
-  <span>
-    We use cookies and display ads to improve your experience. By using this site, you agree to our 
-    <a id="open-terms">Terms & Conditions</a> and 
-    <a id="open-privacy">Privacy Policy</a>.
-  </span>
-  <button id="accept-btn">Accept</button>
-</div>
-
-<!-- Terms Modal -->
-<div id="terms-modal" class="modal">
-  <div class="modal-content">
-    <button class="close-modal" id="close-terms">&times;</button>
-    <h2>Terms & Conditions</h2>
-    <p>Effective Date: August 21, 2025</p>
-
-    <h3>1. Agreement to Terms</h3>
-    <p>By clicking "I Agree" or by opening and playing the Game, you acknowledge that:</p>
-    <ul>
-      <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
-      <li>Your use of the Game is voluntary and at your own risk.</li>
-      <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
-    </ul>
-    <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
-
-    <h3>2. Use of the Game</h3>
-    <ul>
-      <li>Geodle is intended for entertainment and educational purposes only.</li>
-      <li>You may use the Game on your personal device only. You may not:
-        <ul>
-          <li>Copy, distribute, modify, or create derivative works without permission</li>
-          <li>Reverse engineer or attempt to extract the source code</li>
-          <li>Use the Game for commercial purposes without written consent</li>
-        </ul>
-      </li>
-      <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
-    </ul>
-
-    <h3>3. Account and Data</h3>
-    <ul>
-      <li>Geodle does not require personal accounts. All game progress, scores, and settings are stored locally on your device via local storage.</li>
-      <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
-      <li>The Game does not collect, transmit, or store personal information externally.</li>
-    </ul>
-
-    <h3>4. Content and Intellectual Property</h3>
-    <ul>
-      <li>All content, including graphics, text, sounds, and mechanics, is owned by Reuben Yee or used with permission.</li>
-      <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
-      <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
-    </ul>
-
-    <h3>5. Third-Party Services and Ads</h3>
-    <ul>
-      <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
-      <li>We do not control or store data collected by third-party networks.</li>
-      <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
-    </ul>
-
-    <h3>6. Children</h3>
-    <ul>
-      <li>The Game is safe for all ages. No personal info is collected, so children under 13 can play safely.</li>
-      <li>Parents/guardians can manage local storage to remove game data at any time.</li>
-    </ul>
-
-    <h3>7. Limitation of Liability</h3>
-    <ul>
-      <li>The Game is provided "as is" without warranties.</li>
-      <li>We are not responsible for any damages or losses arising from:
-        <ul>
-          <li>Use of the Game</li>
-          <li>Loss of local storage data</li>
-          <li>Technical issues or interruptions</li>
-          <li>Interactions with third-party ads</li>
-        </ul>
-      </li>
-      <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
-    </ul>
-
-    <h3>8. Governing Law</h3>
-    <p>These Terms are governed by Singapore law.</p>
-
-    <h3>9. Changes to Terms</h3>
-    <p>We may update these Terms. Continued use constitutes acceptance of updates.</p>
-
-    <h3>10. Contact</h3>
-    <p>Email: reubenyee2012@gmail.com</p>
-  </div>
-</div>
-
-<!-- Privacy Modal -->
-<div id="privacy-modal" class="modal">
-  <div class="modal-content">
-    <button class="close-modal" id="close-privacy">&times;</button>
-    <h2>Privacy Policy</h2>
-    <p>Effective Date: August 21, 2025</p>
-
-    <h3>1. Information We Collect</h3>
-    <p>Geodle does not collect personal information. The only information stored locally on your device includes:</p>
-    <ul>
-      <li>Game progress</li>
-      <li>High scores</li>
-      <li>User settings (sound, difficulty, themes)</li>
-    </ul>
-
-    <h3>2. Local Storage</h3>
-    <ul>
-      <li>All data is stored locally and is not transmitted to any server.</li>
-      <li>You can clear your local storage at any time, which will reset all progress and settings.</li>
-    </ul>
-
-    <h3>3. No Tracking or Analytics</h3>
-    <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
-
-    <h3>4. Third-Party Advertising</h3>
-    <ul>
-      <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
-      <li>We do not control or store this information.</li>
-    </ul>
-
-    <h3>5. Children's Privacy</h3>
-    <ul>
-      <li>Game is safe for children under 13.</li>
-      <li>Parents can manage local storage to remove saved data.</li>
-    </ul>
-
-    <h3>6. Data Retention</h3>
-    <p>All game progress and settings remain on your device until you clear local storage.</p>
-
-    <h3>7. Your Rights</h3>
-    <ul>
-      <li>You do not need to request access or deletion because no personal info is collected.</li>
-      <li>Clearing local storage deletes all saved data.</li>
-    </ul>
-
-    <h3>8. International Users</h3>
-    <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
-
-    <h3>9. Third-Party Links</h3>
-    <p>We are not responsible for the content or privacy practices of external websites.</p>
-
-    <h3>10. Changes to This Privacy Policy</h3>
-    <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
-
-    <h3>11. Contact</h3>
-    <p>Email: reubenyee2012@gmail.com</p>
-  </div>
-</div>
-
-<script>
-  const banner = document.getElementById('consent-banner');
-  const termsModal = document.getElementById('terms-modal');
-  const privacyModal = document.getElementById('privacy-modal');
-
-  // Show banner if not accepted
-  if(localStorage.getItem('geodleConsentAccepted') !== 'true'){
+// Show banner if not accepted
+if(localStorage.getItem('geodleConsentAccepted') !== 'true'){
     setTimeout(() => { banner.classList.add('show'); }, 500);
-  } else { banner.style.display = 'none'; }
+} else { banner.style.display = 'none'; }
 
-  // Accept button
-  document.getElementById('accept-btn').addEventListener('click', () => {
+// Accept button
+document.getElementById('accept-btn').addEventListener('click', () => {
     localStorage.setItem('geodleConsentAccepted', 'true');
     banner.classList.remove('show');
     setTimeout(() => { banner.style.display = 'none'; }, 500);
-  });
+});
 
-  // Open modals
-  document.getElementById('open-terms').addEventListener('click', () => {
+// Open modals
+document.getElementById('open-terms').addEventListener('click', () => {
     termsModal.style.display = 'block';
-  });
-  document.getElementById('open-privacy').addEventListener('click', () => {
+});
+document.getElementById('open-privacy').addEventListener('click', () => {
     privacyModal.style.display = 'block';
-  });
+});
 
-  // Close modals
-  document.getElementById('close-terms').addEventListener('click', () => {
+// Close modals
+document.getElementById('close-terms').addEventListener('click', () => {
     termsModal.style.display = 'none';
-  });
-  document.getElementById('close-privacy').addEventListener('click', () => {
+});
+document.getElementById('close-privacy').addEventListener('click', () => {
     privacyModal.style.display = 'none';
-  });
+});
 
-  // Close modals when clicking outside content
-  window.addEventListener('click', (e) => {
+// Close modals when clicking outside content
+window.addEventListener('click', (e) => {
     if(e.target === termsModal) termsModal.style.display = 'none';
     if(e.target === privacyModal) privacyModal.style.display = 'none';
-  });
+});
 </script>
-
 </body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Geodle - Daily Geography Clue Game</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="data.js"></script>
-<script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var a=window,p="bf128af1619960cff9b8bb4a42e55104",o=[["siteId",452-963+149+5221091],["minBid",0.00000001],["popundersPerIP","9999999,9999999"],["delayBetween",0],["default","https://2048-unblocked.netlify.app/"],["defaultPerDay",1],["topmostLayer","auto"]],t=["d3d3LmJldHRlcmFkc3lzdGVtLmNvbS95aG9wc2NvdGNoLm1pbi5jc3M=","ZDJrazBvM2ZyN2VkMDEuY2xvdWRmcm9udC5uZXQvWkx4US9vY3VzdG9tLm1pbi5qcw=="],d=-1,q,k,n=function(){clearTimeout(k);d++;if(t[d]&&!(1779163013000<(new Date).getTime()&&1<d)){q=a.document.createElement("script");q.type="text/javascript";q.async=!0;var w=a.document.getElementsByTagName("script")[0];q.src="https://"+atob(t[d]);q.crossOrigin="anonymous";q.onerror=n;q.onload=function(){clearTimeout(k);a[p.slice(0,16)+p.slice(0,16)]||n()};k=setTimeout(n,5E3);w.parentNode.insertBefore(q,w)}};if(!a[p]){try{Object.freeze(a[p]=o)}catch(e){}n()}})();
-/*]]>/* */
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: #333;
-    position: relative;
-  }
-  
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
-    z-index: -1;
-    animation: gradientShift 10s ease-in-out infinite;
-  }
-  
-  @keyframes gradientShift {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-  }
-
-  /* Three-line Menu Button - Improved */
-  #menu-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px;
-    padding: 12px;
-    cursor: pointer;
-    z-index: 1001;
-    transition: all 0.3s ease;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #menu-button:hover {
-    background: rgba(255,255,255,0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  }
-
-  .menu-icon {
-    width: 24px;
-    height: 18px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .menu-icon span {
-    display: block;
-    height: 2px;
-    width: 100%;
-    background: white;
-    border-radius: 1px;
-    transition: all 0.25s ease-in-out;
-    position: relative;
-  }
-
-  .menu-icon span:nth-child(1) {
-    transform-origin: center;
-  }
-
-  .menu-icon span:nth-child(2) {
-    transform-origin: center;
-  }
-
-  .menu-icon span:nth-child(3) {
-    transform-origin: center;
-  }
-
-  /* Menu open animation */
-  #menu-button.open .menu-icon span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-
-  #menu-button.open .menu-icon span:nth-child(2) {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  #menu-button.open .menu-icon span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
-  }
-
-  /* Menu Dropdown */
-  #menu-dropdown {
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 15px;
-    padding: 20px;
-    min-width: 240px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    z-index: 1000;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  #menu-dropdown.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: all;
-  }
-
-  .menu-item {
-    display: block;
-    padding: 12px 16px;
-    color: #333;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-    font-family: inherit;
-    font-size: 14px;
-  }
-
-  .menu-item:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: translateX(5px);
-  }
-
-  .menu-item:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Toggle Switch Styles */
-  .toggle-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    color: #333;
-    font-weight: 500;
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-  }
-
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 24px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
-
-  input:checked + .slider {
-    background-color: #667eea;
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
-
-  /* Language Dropdown */
-  .language-dropdown {
-    position: relative;
-    margin-bottom: 8px;
-  }
-
-  .language-selector {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    color: #333;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    background: rgba(102, 126, 234, 0.05);
-  }
-
-  .language-selector:hover {
-    background: rgba(102, 126, 234, 0.1);
-  }
-
-  .language-options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    border: 1px solid rgba(0,0,0,0.1);
-    max-height: 0;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-    z-index: 1002;
-  }
-
-  .language-options.show {
-    max-height: 250px;
-  }
-
-  .language-options::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .language-options::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.05);
-    border-radius: 3px;
-  }
-
-  .language-options::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 3px;
-  }
-
-  .language-options::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #764ba2, #667eea);
-  }
-
-  .language-option {
-    padding: 10px 16px;
-    color: #333;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    font-size: 13px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
-
-  .language-option:last-child {
-    border-bottom: none;
-  }
-
-  .language-option:hover {
-    background: rgba(102, 126, 234, 0.1);
-  }
-
-  .language-option.selected {
-    background: rgba(102, 126, 234, 0.15);
-    font-weight: 600;
-  }
-
-  .dropdown-arrow {
-    transition: transform 0.3s ease;
-  }
-
-  .language-dropdown.open .dropdown-arrow {
-    transform: rotate(180deg);
-  }
-
-  /* Loading Screen */
-  #loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-  }
-
-  #loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .loading-content {
-    text-align: center;
-    color: white;
-  }
-
-  .loading-logo {
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    animation: logoFloat 2s ease-in-out infinite;
-  }
-
-  .loading-text {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin-bottom: 30px;
-    opacity: 0.9;
-    animation: fadeInOut 1.5s ease-in-out infinite;
-  }
-
-  .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255,255,255,0.3);
-    border-top: 4px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-  }
-
-  .loading-dots {
-    display: flex;
-    gap: 8px;
-    margin-top: 20px;
-    justify-content: center;
-  }
-
-  .loading-dot {
-    width: 8px;
-    height: 8px;
-    background: white;
-    border-radius: 50%;
-    animation: dotBounce 1.4s ease-in-out infinite both;
-  }
-
-  .loading-dot:nth-child(1) { animation-delay: -0.32s; }
-  .loading-dot:nth-child(2) { animation-delay: -0.16s; }
-  .loading-dot:nth-child(3) { animation-delay: 0s; }
-
-  @keyframes logoFloat {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @keyframes fadeInOut {
-    0%, 100% {
-      opacity: 0.7;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @keyframes dotBounce {
-    0%, 80%, 100% {
-      transform: scale(0);
-      opacity: 0.5;
-    }
-    40% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  /* Invisible Easter Egg Button */
-  #invisible-btn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    cursor: default;
-    z-index: 999;
-    opacity: 0;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: white;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.2);
-    letter-spacing: -0.02em;
-    animation: fadeInDown 0.8s ease;
-    position: relative;
-  }
-  
-  #worldMap {
-    height: 320px;
-    width: 100%;
-    border-radius: 20px;
-    margin: 25px 0;
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.2);
-    animation: fadeInUp 0.8s ease 0.2s both;
-    transition: transform 0.3s ease;
-  }
-  
-  #worldMap:hover {
-    transform: translateY(-2px) scale(1.001);
-  }
-  
-  #clueBox {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    padding: 24px;
-    margin: 25px 0;
-    font-weight: 500;
-    font-size: 1.25em;
-    border-radius: 18px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 
-      0 15px 50px rgba(0,0,0,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.4);
-    color: #333;
-    animation: fadeInUp 0.8s ease 0.3s both;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  #clueBox::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 2s ease;
-  }
-  
-  #clueBox:hover::before {
-    left: 100%;
-  }
-  
-  #clueBox:hover {
-    transform: translateY(-3px);
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.5);
-  }
-  
-  #progressInfo {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 1.1em;
-    color: rgba(255,255,255,0.95);
-    font-weight: 500;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    animation: fadeInUp 0.8s ease 0.4s both;
-  }
-  
-  #progressBar {
-    width: 100%;
-    height: 28px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 14px;
-    overflow: hidden;
-    margin: 15px 0;
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 
-      inset 0 2px 4px rgba(0,0,0,0.1),
-      0 4px 20px rgba(0,0,0,0.1);
-    position: relative;
-  }
-  
-  #progressFill {
-    height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #8BC34A, #CDDC39);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 10%;
-    border-radius: 14px;
-    box-shadow: 
-      0 0 30px rgba(76, 175, 80, 0.6),
-      inset 0 1px 0 rgba(255,255,255,0.3);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  #progressFill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: shimmer 2s infinite;
-    border-radius: 14px;
-  }
-  
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  
-  #guessForm {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 20px;
-    animation: fadeInUp 0.8s ease 0.5s both;
-  }
-  
-  #guessInput {
-    flex: 1;
-    font-size: 1.1em;
-    padding: 18px 22px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 16px 0 0 16px;
-    outline: none;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 400;
-    color: #333;
-    font-family: inherit;
-  }
-  
-  #guessInput:focus {
-    border-color: #4CAF50;
-    box-shadow: 
-      0 0 30px rgba(76, 175, 80, 0.4),
-      inset 0 1px 0 rgba(255,255,255,0.5);
-    transform: translateY(-2px);
-    background: rgba(255,255,255,1);
-  }
-  
-  #guessInput::placeholder {
-    color: rgba(0,0,0,0.5);
-    transition: opacity 0.3s ease;
-  }
-  
-  #guessInput:focus::placeholder {
-    opacity: 0.7;
-  }
-  
-  #guessButton {
-    padding: 18px 26px;
-    font-size: 1.1em;
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 0 16px 16px 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    position: relative;
-    overflow: hidden;
-    font-family: inherit;
-    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-  
-  #guessButton::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-  }
-  
-  #guessButton:hover:not(:disabled)::before {
-    left: 100%;
-  }
-  
-  #guessButton:hover:not(:disabled) {
-    background: linear-gradient(135deg, #218838, #1e7e34);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
-  }
-  
-  #guessButton:active {
-    transform: translateY(0);
-  }
-  
-  #guessButton:disabled {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-    color: rgba(255,255,255,0.8);
-  }
-  
-  #feedback {
-    text-align: center;
-    font-weight: 600;
-    margin: 20px 0;
-    padding: 16px;
-    border-radius: 12px;
-    transition: all 0.4s ease;
-    font-size: 1.1em;
-    min-height: 20px;
-    backdrop-filter: blur(10px);
-  }
-  
-  /* Mode Selector Styles */
-  .mode-selector {
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 25px;
-    text-align: center;
-    color: white;
-    border: 1px solid rgba(255,255,255,0.2);
-    animation: fadeInUp 0.8s ease 0.1s both;
-    box-shadow: 
-      0 15px 50px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-  }
-
-  .mode-selector h3 {
-    margin-bottom: 20px;
-    font-size: 1.4rem;
-    font-weight: 600;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  }
-
-  .mode-btn {
-    background: rgba(255,255,255,0.15);
-    color: white;
-    border: 2px solid rgba(255,255,255,0.25);
-    padding: 14px 24px;
-    margin: 0 8px 12px 8px;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  }
-
-  .mode-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
-  }
-
-  .mode-btn:hover::before {
-    left: 100%;
-  }
-
-  .mode-btn:hover {
-    background: rgba(255,255,255,0.25);
-    border-color: rgba(255,255,255,0.4);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    color: white;
-    text-decoration: none;
-  }
-
-  .mode-btn.active {
-    background: linear-gradient(135deg, #FF6B6B, #FF5252);
-    border-color: rgba(255,255,255,0.3);
-    color: white;
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-  }
-
-  .mode-btn.active:hover {
-    background: linear-gradient(135deg, #FF5252, #FF3D3D);
-    box-shadow: 0 10px 35px rgba(255, 107, 107, 0.5);
-  }
-
-  .mode-description {
-    font-size: 0.95rem;
-    margin-top: 15px;
-    opacity: 0.9;
-    font-weight: 300;
-    text-shadow: 0 1px 5px rgba(0,0,0,0.2);
-  }
-  
-  /* Card Styles */
-  .glass-card {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 18px;
-    padding: 24px;
-    margin: 20px 0;
-    box-shadow: 
-      0 15px 50px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.4);
-    border: 1px solid rgba(255,255,255,0.3);
-    animation: fadeInUp 0.6s ease both;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .glass-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.5);
-  }
-  
-  .glass-card h3 {
-    margin-bottom: 18px;
-    color: #333;
-    font-weight: 600;
-    font-size: 1.3em;
-  }
-  
-  #pastHints, #history {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 18px;
-    padding: 24px;
-    margin: 20px 0;
-    box-shadow: 
-      0 15px 50px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.4);
-    border: 1px solid rgba(255,255,255,0.3);
-    animation: fadeInUp 0.6s ease both;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  #pastHints:hover, #history:hover {
-    transform: translateY(-3px);
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.5);
-  }
-  
-  #pastHints h3, #history h3 {
-    margin-bottom: 18px;
-    color: #333;
-    font-weight: 600;
-    font-size: 1.3em;
-  }
-  
-  #pastHintsList, #historyList {
-    list-style: none;
-    padding-left: 0;
-    max-height: 220px;
-    overflow-y: auto;
-  }
-  
-  #pastHintsList::-webkit-scrollbar, #historyList::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  #pastHintsList::-webkit-scrollbar-track, #historyList::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.05);
-    border-radius: 4px;
-  }
-  
-  #pastHintsList::-webkit-scrollbar-thumb, #historyList::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 4px;
-    transition: background 0.3s ease;
-  }
-  
-  #pastHintsList::-webkit-scrollbar-thumb:hover, #historyList::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #764ba2, #667eea);
-  }
-  
-  #pastHintsList li {
-    padding: 14px 18px;
-    background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
-    margin-bottom: 10px;
-    border-radius: 12px;
-    font-size: 0.95em;
-    border-left: 4px solid #4CAF50;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: slideInLeft 0.5s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  }
-  
-  #pastHintsList li:hover {
-    transform: translateX(8px) translateY(-1px);
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
-    background: linear-gradient(135deg, #dff5df, #e8f5e8);
-  }
-  
-  #historyList li {
-    padding: 16px 20px;
-    background: rgba(255,255,255,0.8);
-    margin-bottom: 10px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    font-size: 0.95em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: slideInRight 0.5s ease;
-    border: 1px solid rgba(0,0,0,0.05);
-    backdrop-filter: blur(10px);
-  }
-  
-  #historyList li:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-  }
-  
-  #historyList li.correct {
-    background: linear-gradient(135deg, rgba(200, 230, 201, 0.9), rgba(232, 245, 232, 0.9));
-    color: #2e7d32;
-    border-left: 4px solid #4CAF50;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
-  }
-  
-  #historyList li.incorrect {
-    background: linear-gradient(135deg, rgba(255, 205, 210, 0.9), rgba(255, 235, 238, 0.9));
-    color: #c62828;
-    border-left: 4px solid #f44336;
-    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
-  }
-  
-  #streak {
-    text-align: center;
-    font-size: 1.25em;
-    margin: 20px 0;
-    color: white;
-    font-weight: 600;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    padding: 20px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.2);
-    animation: fadeInUp 0.8s ease 0.6s both;
-    box-shadow: 
-      0 10px 40px rgba(0,0,0,0.1),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-  }
-  
-  /* Enhanced Button Styles */
-  .btn {
-    padding: 14px 24px;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    position: relative;
-    overflow: hidden;
-    margin: 8px;
-    font-family: inherit;
-    backdrop-filter: blur(10px);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-  
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-  }
-  
-  .btn:hover::before {
-    left: 100%;
-  }
-  
-  .btn:hover {
-    transform: translateY(-3px);
-  }
-  
-  .btn:active {
-    transform: translateY(-1px);
-  }
-  
-  #resetBtn {
-    background: linear-gradient(135deg, #dc3545, #bd2130);
-    color: white;
-    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  #resetBtn:hover {
-    background: linear-gradient(135deg, #c82333, #a71e2a);
-    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.5);
-    transform: translateY(-3px);
-  }
-  
-  #resetWinsBtn {
-    background: linear-gradient(135deg, #6f42c1, #5a2d91);
-    color: white;
-    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  #resetWinsBtn:hover {
-    background: linear-gradient(135deg, #5a2d91, #4e2779);
-    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
-    transform: translateY(-3px);
-  }
-  
-  #endScreen {
-    background: linear-gradient(135deg, rgba(194, 240, 194, 0.95), rgba(168, 230, 168, 0.95));
-    backdrop-filter: blur(20px);
-    padding: 30px;
-    border-radius: 20px;
-    margin-top: 25px;
-    text-align: center;
-    display: none;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 
-      0 20px 60px rgba(0,0,0,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.4);
-    animation: bounceIn 0.8s ease;
-  }
-  
-  #shareBtn, #newGameBtn {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    margin: 10px 8px;
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  #shareBtn:hover, #newGameBtn:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
-    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
-    transform: translateY(-3px);
-  }
-  
-  #newGameBtn {
-    background: linear-gradient(135deg, #fd7e14, #e8590c);
-    box-shadow: 0 8px 25px rgba(253, 126, 20, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  
-  #newGameBtn:hover {
-    background: linear-gradient(135deg, #e8590c, #d63384);
-    box-shadow: 0 12px 35px rgba(253, 126, 20, 0.5);
-    transform: translateY(-3px);
-  }
-  
-  #dailyLimitMsg, #loadingError {
-    background: linear-gradient(135deg, rgba(255, 211, 211, 0.95), rgba(255, 235, 238, 0.95));
-    backdrop-filter: blur(20px);
-    border: 1px solid #d64c4c;
-    padding: 24px;
-    border-radius: 18px;
-    text-align: center;
-    color: #d64c4c;
-    font-weight: 600;
-    margin: 25px 0;
-    box-shadow: 
-      0 15px 50px rgba(214, 76, 76, 0.2),
-      inset 0 1px 0 rgba(255,255,255,0.3);
-    animation: shakeX 0.8s ease;
-  }
-  
-  #help-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 16px 28px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
-    text-decoration: none;
-    z-index: 9999;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.2);
-    font-family: inherit;
-  }
-
-  #help-button:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 15px 40px rgba(0, 123, 255, 0.5);
-    color: white;
-    text-decoration: none;
-  }
-  
-  /* Enhanced Animations */
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes bounceIn {
-    0% {
-      opacity: 0;
-      transform: scale(0.3);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    70% {
-      transform: scale(0.9);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  
-  @keyframes shakeX {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    10%, 30%, 50%, 70%, 90% {
-      transform: translateX(-8px);
-    }
-    20%, 40%, 60%, 80% {
-      transform: translateX(8px);
-    }
-  }
-  
-  /* Mobile Responsiveness */
-  @media (max-width: 768px) {
-    body {
-      padding: 15px;
-    }
-    
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 20px;
-    }
-
-    #menu-button {
-      top: 15px;
-      left: 15px;
-    }
-
-    #menu-dropdown {
-      top: 75px;
-      left: 15px;
-      right: 15px;
-      width: auto;
-    }
-    
-    .mode-btn {
-      display: block;
-      margin: 12px auto;
-      width: 90%;
-      max-width: 280px;
-      padding: 16px 20px;
-    }
-    
-    #worldMap {
-      height: 280px;
-      margin: 20px 0;
-    }
-    
-    #clueBox {
-      font-size: 1.1em;
-      padding: 20px 16px;
-    }
-    
-    #guessForm {
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    #guessInput, #guessButton {
-      border-radius: 14px;
-    }
-    
-    #guessInput {
-      padding: 16px 18px;
-    }
-    
-    #guessButton {
-      padding: 16px 20px;
-    }
-    
-    #pastHints, #history {
-      padding: 20px 16px;
-    }
-    
-    .btn {
-      padding: 12px 20px;
-      font-size: 0.9em;
-    }
-    
-    #help-button {
-      bottom: 20px;
-      right: 20px;
-      padding: 14px 22px;
-      font-size: 13px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    body {
-      padding: 12px;
-    }
-    
-    h1 {
-      font-size: 1.9rem;
-    }
-    
-    #worldMap {
-      height: 240px;
-    }
-    
-    .mode-selector {
-      padding: 20px 16px;
-    }
-    
-    .mode-btn {
-      width: 95%;
-      padding: 14px 18px;
-      font-size: 0.95rem;
-    }
-    
-    #clueBox {
-      font-size: 1.05em;
-      padding: 18px 14px;
-    }
-    
-    #pastHints, #history {
-      padding: 18px 14px;
-    }
-    
-    #pastHintsList, #historyList {
-      max-height: 180px;
-    }
-    
-    .btn {
-      padding: 12px 18px;
-      font-size: 0.85em;
-      margin: 6px;
-    }
-    
-    #endScreen {
-      padding: 24px 18px;
-    }
-  }
-  
-  /* Smooth scroll behavior */
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* Focus styles for accessibility */
-  button:focus,
-  input:focus,
-  a:focus {
-    outline: 2px solid rgba(255,255,255,0.8);
-    outline-offset: 2px;
-  }
-  
-  /* Loading states */
-  .loading {
-    opacity: 0.7;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  
-  /* Pulse animation for loading */
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-  
-  .pulse {
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+</html>
