@@ -1,23 +1,4 @@
-saveAchievements() {
-                try {
-                    localStorage.setItem('civile_achievements', JSON.stringify(this.achievements));
-                } catch (error) {
-                    console.error('Error saving achievements:', error);
-                }
-            }
-
-            loadWeekendPlays() {
-                try {
-                    const saved = localStorage.getItem('civile_weekend_plays');
-                    return saved ? JSON.parse(saved) : { saturday: false, sunday: false };
-                } catch (error) {
-                    return { saturday: false, sunday: false };
-                }
-            }
-
-            saveWeekendPlays() {
-                try {
-                    localStorage.setItem('civile_<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -980,7 +961,7 @@ saveAchievements() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
         // Enhanced Game Data
-        let CITIES_DATA = [
+        const CITIES_DATA = [
             { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower and Louvre Museum", difficulty: 1, country: "France", population: "2.1M", landmark: "Eiffel Tower" },
             { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi, technology, and cherry blossoms", difficulty: 1, country: "Japan", population: "37M", landmark: "Tokyo Tower" },
             { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty and Times Square", difficulty: 1, country: "USA", population: "8.3M", landmark: "Statue of Liberty" },
@@ -1049,23 +1030,56 @@ saveAchievements() {
             }
             
             loadSettings() {
-                // In a real app, this would load from localStorage
-                this.settings = { ...gameSettings };
+                try {
+                    const saved = localStorage.getItem('civile_settings');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        this.settings = { ...gameSettings, ...parsed };
+                    } else {
+                        this.settings = { ...gameSettings };
+                    }
+                } catch (error) {
+                    console.error('Error loading settings:', error);
+                    this.settings = { ...gameSettings };
+                }
+            }
+
+            saveSettings() {
+                try {
+                    localStorage.setItem('civile_settings', JSON.stringify(this.settings));
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                }
             }
 
             loadStats() {
-                // In a real app, this would load from localStorage
-                this.stats = { ...gameStats };
+                try {
+                    const saved = localStorage.getItem('civile_stats');
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        this.stats = { ...gameStats, ...parsed };
+                    } else {
+                        this.stats = { ...gameStats };
+                    }
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                    this.stats = { ...gameStats };
+                }
                 this.updateStatsDisplay();
             }
 
             saveStats() {
-                // In a real app, this would save to localStorage
                 this.stats.totalGames++;
                 this.stats.totalScore += this.score;
                 if (this.totalAnswers > 0) {
                     this.stats.correctAnswers += this.correctAnswers;
                     this.stats.totalAnswers += this.totalAnswers;
+                }
+                
+                try {
+                    localStorage.setItem('civile_stats', JSON.stringify(this.stats));
+                } catch (error) {
+                    console.error('Error saving stats:', error);
                 }
                 this.updateStatsDisplay();
             }
@@ -1094,6 +1108,8 @@ saveAchievements() {
                 this.skipBtn = document.getElementById('skipBtn');
                 this.hintBtn = document.getElementById('hintBtn');
                 this.resetBtn = document.getElementById('resetBtn');
+                this.leaderboardEl = document.getElementById('leaderboard');
+                this.scoresListEl = document.getElementById('scoresList');
             }
             
             initializeMap() {
@@ -1309,7 +1325,7 @@ saveAchievements() {
                 this.cityHintEl.textContent += ` • ${randomHint}`;
                 this.hintBtn.disabled = true;
                 
-                this.showFeedback('incorrect', 'Hint used (-25 points)');
+                this.showFeedback('Hint used (-25 points)', 'incorrect');
                 this.updateDisplay();
             }
             
@@ -1454,7 +1470,7 @@ saveAchievements() {
                 
                 this.playSound('correct');
                 this.showCityLocation();
-                this.showFeedback('correct', `🎉 +${roundScore} points! (${Math.round(distance)}km away)`);
+                this.showFeedback(`🎉 +${roundScore} points! (${Math.round(distance)}km away)`, 'correct');
                 this.updateDisplay();
                 this.checkAchievements();
                 
@@ -1468,7 +1484,7 @@ saveAchievements() {
                 this.score = Math.max(0, this.score - 25);
                 this.streak = 0;
                 this.playSound('incorrect');
-                this.showFeedback('incorrect', `❌ -25 points (${Math.round(distance)}km away)`);
+                this.showFeedback(`❌ -25 points (${Math.round(distance)}km away)`, 'incorrect');
                 this.updateDisplay();
             }
             
@@ -1478,7 +1494,7 @@ saveAchievements() {
                 this.totalAnswers++;
                 this.updateAccuracy();
                 this.showCityLocation();
-                this.showFeedback('incorrect', '⏰ Time\'s up!');
+                this.showFeedback('⏰ Time\'s up!', 'incorrect');
                 this.updateDisplay();
                 
                 setTimeout(() => {
@@ -1496,7 +1512,7 @@ saveAchievements() {
                 this.totalAnswers++;
                 this.updateAccuracy();
                 this.showCityLocation();
-                this.showFeedback('incorrect', '⏭️ City skipped (-50 points)');
+                this.showFeedback('⏭️ City skipped (-50 points)', 'incorrect');
                 this.updateDisplay();
                 
                 setTimeout(() => {
@@ -1505,7 +1521,7 @@ saveAchievements() {
                 }, 3500);
             }
             
-            showFeedback(type, message) {
+            showFeedback(message, type) {
                 const existingFeedback = document.querySelector('.feedback');
                 if (existingFeedback) {
                     existingFeedback.remove();
@@ -1645,9 +1661,28 @@ saveAchievements() {
                 this.highScores.push(newScore);
                 this.highScores.sort((a, b) => b.score - a.score);
                 this.highScores = this.highScores.slice(0, 5);
+                
+                try {
+                    localStorage.setItem('civile_highscores', JSON.stringify(this.highScores));
+                } catch (error) {
+                    console.error('Error saving high scores:', error);
+                }
+            }
+            
+            loadHighScores() {
+                try {
+                    const saved = localStorage.getItem('civile_highscores');
+                    if (saved) {
+                        this.highScores = JSON.parse(saved);
+                    }
+                } catch (error) {
+                    console.error('Error loading high scores:', error);
+                }
             }
             
             showLeaderboard() {
+                this.loadHighScores();
+                
                 if (this.highScores.length === 0) {
                     this.leaderboardEl.style.display = 'none';
                     return;
@@ -1688,6 +1723,7 @@ saveAchievements() {
             
             if (window.game) {
                 window.game.settings[setting] = !isActive;
+                window.game.saveSettings();
                 
                 // Apply setting changes
                 if (setting === 'darkMap') {
@@ -1700,6 +1736,7 @@ saveAchievements() {
             gameSettings.difficulty = parseInt(value);
             if (window.game) {
                 window.game.settings.difficulty = parseInt(value);
+                window.game.saveSettings();
             }
         }
 
@@ -1722,11 +1759,6 @@ saveAchievements() {
         window.addEventListener('load', () => {
             initializeSettings();
             window.game = new EnhancedCivileGame();
-            
-            // Initialize achievements page
-            if (window.game) {
-                window.game.updateAchievementDisplay();
-            }
             
             // Add keyboard shortcuts
             document.addEventListener('keydown', (e) => {
