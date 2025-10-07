@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +86,7 @@
         .nav-links {
             display: flex;
             gap: 20px;
+            align-items: center;
         }
 
         .nav-link {
@@ -98,11 +98,48 @@
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .nav-link:hover {
             background: var(--glass-bg);
             transform: translateY(-2px);
+        }
+
+        /* Game Modes Dropdown */
+        .game-modes-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 10px;
+            min-width: 200px;
+            display: none;
+            z-index: 1000;
+            margin-top: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .game-modes-dropdown.show {
+            display: block;
+        }
+
+        .mode-link {
+            display: block;
+            padding: 10px 15px;
+            color: var(--light-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+        }
+
+        .mode-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
         }
 
         /* Page containers */
@@ -607,6 +644,11 @@
             h1 {
                 font-size: 2.2em;
             }
+            
+            .game-modes-dropdown {
+                min-width: 180px;
+                left: -50px;
+            }
         }
 
         /* Achievement Popup */
@@ -717,6 +759,26 @@
             <a href="#" class="nav-link" onclick="showPage('game')"><i class="fas fa-play"></i> Play</a>
             <a href="#" class="nav-link" onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</a>
             <a href="#" class="nav-link" onclick="showPage('help')"><i class="fas fa-question-circle"></i> Help</a>
+            
+            <!-- Game Modes Dropdown -->
+            <div class="nav-link" id="gameModesBtn">
+                <i class="fas fa-globe-americas"></i> Game Modes
+                <div class="game-modes-dropdown" id="gameModesDropdown">
+                    <a href="https://geodle-game.netlify.app/" target="_blank" class="mode-link">
+                        <i class="fas fa-map-marked-alt"></i> Geodle
+                    </a>
+                    <a href="https://geodle-game.netlify.app/path-mode.html" target="_blank" class="mode-link">
+                        <i class="fas fa-route"></i> Routele
+                    </a>
+                    <a href="https://geodle-game.netlify.app/country-mode.html" target="_blank" class="mode-link">
+                        <i class="fas fa-flag"></i> Countryle
+                    </a>
+                    <a href="https://geodle-game.netlify.app/flag-mode.html" target="_blank" class="mode-link">
+                        <i class="fas fa-flag-usa"></i> Flagle
+                    </a>
+                </div>
+            </div>
+            
             <a href="https://docs.google.com/forms/d/1Sr-6EWcdBa7Hst9nyJLvTz7oU-eGozoYBpZTMKj7_mU/edit" target="_blank" class="nav-link"><i class="fas fa-heart"></i> Help Us Improve</a>
         </div>
     </nav>
@@ -1717,6 +1779,29 @@
             document.getElementById(pageId + '-page').classList.add('active');
         }
 
+        // Game Modes Dropdown
+        function setupGameModesDropdown() {
+            const gameModesBtn = document.getElementById('gameModesBtn');
+            const gameModesDropdown = document.getElementById('gameModesDropdown');
+            
+            if (gameModesBtn && gameModesDropdown) {
+                gameModesBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    gameModesDropdown.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    gameModesDropdown.classList.remove('show');
+                });
+                
+                // Prevent dropdown from closing when clicking inside
+                gameModesDropdown.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        }
+
         // Settings Functions
         function toggleSetting(setting) {
             const toggle = document.getElementById(setting + 'Toggle');
@@ -1762,6 +1847,7 @@
         // Initialize game when page loads
         window.addEventListener('load', () => {
             initializeSettings();
+            setupGameModesDropdown();
             window.game = new EnhancedCivileGame();
             
             // Add keyboard shortcuts
