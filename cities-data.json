@@ -928,5 +928,965 @@
     "country": "East Timor",
     "population": "222K",
     "landmark": "Cristo Rei"
+  },
+  {
+    "name": "Manchester",
+    "lat": 53.4808,
+    "lng": -2.2426,
+    "hint": "Northern English city famous for football and music",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": "2.8M",
+    "landmark": "Old Trafford"
+  },
+  {
+    "name": "Liverpool",
+    "lat": 53.4084,
+    "lng": -2.9916,
+    "hint": "Merseyside city, home of The Beatles",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": "905K",
+    "landmark": "The Cavern Club"
+  },
+  {
+    "name": "Birmingham",
+    "lat": 52.4862,
+    "lng": -1.8904,
+    "hint": "England's second city in the West Midlands",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": "2.9M",
+    "landmark": "Bullring"
+  },
+  {
+    "name": "Glasgow",
+    "lat": 55.8642,
+    "lng": -4.2518,
+    "hint": "Scotland's largest city on the River Clyde",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": "1.7M",
+    "landmark": "Kelvingrove Art Gallery"
+  },
+  {
+    "name": "Edinburgh",
+    "lat": 55.9533,
+    "lng": -3.1883,
+    "hint": "Scotland's capital with a famous castle and festival",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": "537K",
+    "landmark": "Edinburgh Castle"
+  },
+  {
+    "name": "Belfast",
+    "lat": 54.5973,
+    "lng": -5.9301,
+    "hint": "Northern Ireland's capital where Titanic was built",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 639K,
+    "landmark": "Titanic Belfast"
+  },
+  {
+    "name": "Cardiff",
+    "lat": 51.4816,
+    "lng": -3.1791,
+    "hint": "Wales' capital with a medieval castle",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 479K,
+    "landmark": "Cardiff Castle"
+  },
+  {
+    "name": "Leeds",
+    "lat": 53.8008,
+    "lng": -1.5491,
+    "hint": "Yorkshire city known for shopping and universities",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.9M,
+    "landmark": "Royal Armouries"
+  },
+  {
+    "name": "Sheffield",
+    "lat": 53.3811,
+    "lng": -1.4701,
+    "hint": "Steel city in South Yorkshire with many parks",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.4M,
+    "landmark": "Winter Garden"
+  },
+  {
+    "name": "Newcastle",
+    "lat": 54.9783,
+    "lng": -1.6178,
+    "hint": "Northern city on the River Tyne with iconic bridges",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.1M,
+    "landmark": "Tyne Bridge"
+  },
+  {
+    "name": "Bristol",
+    "lat": 51.4545,
+    "lng": -2.5879,
+    "hint": "South West city famous for Brunel's engineering",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.1M,
+    "landmark": "Clifton Suspension Bridge"
+  },
+  {
+    "name": "Nottingham",
+    "lat": 52.9548,
+    "lng": -1.1581,
+    "hint": "Midlands city linked to Robin Hood legends",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.2M,
+    "landmark": "Nottingham Castle"
+  },
+  {
+    "name": "Leicester",
+    "lat": 52.6369,
+    "lng": -1.1398,
+    "hint": "East Midlands city with rich Roman history",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.0M,
+    "landmark": "King Richard III Visitor Centre"
+  },
+  {
+    "name": "Coventry",
+    "lat": 52.4068,
+    "lng": -1.5197,
+    "hint": "City rebuilt after WWII bombing, known for cars",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 651K,
+    "landmark": "Coventry Cathedral"
+  },
+  {
+    "name": "Hull",
+    "lat": 53.7457,
+    "lng": -0.3367,
+    "hint": "Port city in East Yorkshire, UK City of Culture 2017",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 573K,
+    "landmark": "The Deep"
+  },
+  {
+    "name": "Plymouth",
+    "lat": 50.3755,
+    "lng": -4.1427,
+    "hint": "Naval port city in Devon with maritime history",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 524K,
+    "landmark": "Plymouth Hoe"
+  },
+  {
+    "name": "Stoke-on-Trent",
+    "lat": 53.0027,
+    "lng": -2.1794,
+    "hint": "Pottery city in Staffordshire, home of Wedgwood",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.1M,
+    "landmark": "Potteries Museum"
+  },
+  {
+    "name": "Wolverhampton",
+    "lat": 52.5869,
+    "lng": -2.1288,
+    "hint": "West Midlands city with industrial heritage",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.2M,
+    "landmark": "Wolverhampton Art Gallery"
+  },
+  {
+    "name": "Derby",
+    "lat": 52.9225,
+    "lng": -1.4746,
+    "hint": "East Midlands city known for railways and engineering",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.5M,
+    "landmark": "Derby Cathedral"
+  },
+  {
+    "name": "Southampton",
+    "lat": 50.9097,
+    "lng": -1.4044,
+    "hint": "Major port city on England's south coast",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 855K,
+    "landmark": "SeaCity Museum"
+  },
+  {
+    "name": "Portsmouth",
+    "lat": 50.8198,
+    "lng": -1.0880,
+    "hint": "Naval port with historic dockyard and ships",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 855K,
+    "landmark": "Spinnaker Tower"
+  },
+  {
+    "name": "Brighton",
+    "lat": 50.8225,
+    "lng": -0.1372,
+    "hint": "Seaside resort with famous pier and Royal Pavilion",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 474K,
+    "landmark": "Brighton Palace Pier"
+  },
+  {
+    "name": "Reading",
+    "lat": 51.4543,
+    "lng": -0.9781,
+    "hint": "Thames Valley town known for technology and music festival",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 347K,
+    "landmark": "Reading Abbey"
+  },
+  {
+    "name": "Middlesbrough",
+    "lat": 54.5742,
+    "lng": -1.2350,
+    "hint": "Industrial town in North East England on River Tees",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 376K,
+    "landmark": "Transporter Bridge"
+  },
+  {
+    "name": "Aberdeen",
+    "lat": 57.1497,
+    "lng": -2.0943,
+    "hint": "Scottish city known as Granite City and oil capital",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 464K,
+    "landmark": "Marischal College"
+  },
+  {
+    "name": "Dundee",
+    "lat": 56.4620,
+    "lng": -2.9707,
+    "hint": "Scottish city on Firth of Tay, known for jute and jam",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 265K,
+    "landmark": "RRS Discovery"
+  },
+  {
+    "name": "Swansea",
+    "lat": 51.6214,
+    "lng": -3.9436,
+    "hint": "Welsh coastal city, second largest in Wales",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 300K,
+    "landmark": "Swansea Marina"
+  },
+  {
+    "name": "Exeter",
+    "lat": 50.7184,
+    "lng": -3.5339,
+    "hint": "Devon city with Roman walls and Norman cathedral",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 129K,
+    "landmark": "Exeter Cathedral"
+  },
+  {
+    "name": "Cambridge",
+    "lat": 52.2053,
+    "lng": 0.1218,
+    "hint": "University city on River Cam, famous for punting",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 145K,
+    "landmark": "King's College Chapel"
+  },
+  {
+    "name": "Oxford",
+    "lat": 51.7520,
+    "lng": -1.2577,
+    "hint": "University city of dreaming spires",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 152K,
+    "landmark": "Radcliffe Camera"
+  },
+  {
+    "name": "York",
+    "lat": 53.9590,
+    "lng": -1.0815,
+    "hint": "Historic walled city with Viking and Roman heritage",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 209K,
+    "landmark": "York Minster"
+  },
+  {
+    "name": "Bath",
+    "lat": 51.3811,
+    "lng": -2.3590,
+    "hint": "Georgian city with Roman baths and hot springs",
+    "difficulty": 1,
+    "country": "United Kingdom",
+    "population": 101K,
+    "landmark": "Roman Baths"
+  },
+  {
+    "name": "Canterbury",
+    "lat": 51.2802,
+    "lng": 1.0789,
+    "hint": "Historic cathedral city, seat of Church of England",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 156K,
+    "landmark": "Canterbury Cathedral"
+  },
+  {
+    "name": "Stratford-upon-Avon",
+    "lat": 52.1942,
+    "lng": -1.7084,
+    "hint": "Shakespeare's birthplace in Warwickshire",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 30K,
+    "landmark": "Shakespeare's Birthplace"
+  },
+  {
+    "name": "Chester",
+    "lat": 53.1934,
+    "lng": -2.8931,
+    "hint": "Roman walled city with unique black and white architecture",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 91K,
+    "landmark": "Chester Rows"
+  },
+  {
+    "name": "Lincoln",
+    "lat": 53.2307,
+    "lng": -0.5406,
+    "hint": "Cathedral city with steep hill and Roman history",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 130K,
+    "landmark": "Lincoln Cathedral"
+  },
+  {
+    "name": "Durham",
+    "lat": 54.7753,
+    "lng": -1.5849,
+    "hint": "Northeastern city with Norman cathedral and castle",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 48K,
+    "landmark": "Durham Cathedral"
+  },
+  {
+    "name": "Winchester",
+    "lat": 51.0632,
+    "lng": -1.3080,
+    "hint": "Ancient capital of England with medieval cathedral",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 45K,
+    "landmark": "Winchester Cathedral"
+  },
+  {
+    "name": "Salisbury",
+    "lat": 51.0688,
+    "lng": -1.7945,
+    "hint": "Cathedral city near Stonehenge in Wiltshire",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 45K,
+    "landmark": "Salisbury Cathedral"
+  },
+  {
+    "name": "Wells",
+    "lat": 51.2090,
+    "lng": -2.6470,
+    "hint": "Smallest city in England with magnificent cathedral",
+    "difficulty": 3,
+    "country": "United Kingdom",
+    "population": 12K,
+    "landmark": "Wells Cathedral"
+  },
+  {
+    "name": "Ely",
+    "lat": 52.3980,
+    "lng": 0.2623,
+    "hint": "Cathedral city in Cambridgeshire Fens",
+    "difficulty": 3,
+    "country": "United Kingdom",
+    "population": 20K,
+    "landmark": "Ely Cathedral"
+  },
+  {
+    "name": "Ripon",
+    "lat": 54.1352,
+    "lng": -1.5243,
+    "hint": "Small cathedral city in North Yorkshire",
+    "difficulty": 3,
+    "country": "United Kingdom",
+    "population": 17K,
+    "landmark": "Ripon Cathedral"
+  },
+  {
+    "name": "Carlisle",
+    "lat": 54.8925,
+    "lng": -2.9329,
+    "hint": "Border city with medieval castle near Scotland",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 108K,
+    "landmark": "Carlisle Castle"
+  },
+  {
+    "name": "Lancaster",
+    "lat": 54.0466,
+    "lng": -2.8007,
+    "hint": "Historic city with castle on River Lune",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 52K,
+    "landmark": "Lancaster Castle"
+  },
+  {
+    "name": "Chesterfield",
+    "lat": 53.2350,
+    "lng": -1.4216,
+    "hint": "Derbyshire town famous for crooked spire church",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 104K,
+    "landmark": "Crooked Spire"
+  },
+  {
+    "name": "Milton Keynes",
+    "lat": 52.0406,
+    "lng": -0.7594,
+    "hint": "New town in Buckinghamshire with grid road system",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 270K,
+    "landmark": "Bletchley Park"
+  },
+  {
+    "name": "Northampton",
+    "lat": 52.2405,
+    "lng": -0.9027,
+    "hint": "County town of Northamptonshire, known for shoe industry",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 245K,
+    "landmark": "Northampton Museum"
+  },
+  {
+    "name": "Norwich",
+    "lat": 52.6309,
+    "lng": 1.2974,
+    "hint": "Cathedral city in East Anglia with medieval streets",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 213K,
+    "landmark": "Norwich Cathedral"
+  },
+  {
+    "name": "Ipswich",
+    "lat": 52.0567,
+    "lng": 1.1482,
+    "hint": "County town of Suffolk and one of England's oldest towns",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 290K,
+    "landmark": "Christchurch Mansion"
+  },
+  {
+    "name": "Colchester",
+    "lat": 51.8959,
+    "lng": 0.8919,
+    "hint": "Britain's oldest recorded town with Roman walls",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 192K,
+    "landmark": "Colchester Castle"
+  },
+  {
+    "name": "Cheltenham",
+    "lat": 51.8994,
+    "lng": -2.0783,
+    "hint": "Regency spa town in Gloucestershire",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 117K,
+    "landmark": "Pittville Pump Room"
+  },
+  {
+    "name": "Gloucester",
+    "lat": 51.8642,
+    "lng": -2.2381,
+    "hint": "Cathedral city on River Severn with docks",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 145K,
+    "landmark": "Gloucester Cathedral"
+  },
+  {
+    "name": "Worcester",
+    "lat": 52.1920,
+    "lng": -2.2200,
+    "hint": "Cathedral city famous for porcelain and sauce",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 102K,
+    "landmark": "Worcester Cathedral"
+  },
+  {
+    "name": "Hereford",
+    "lat": 52.0565,
+    "lng": -2.7160,
+    "hint": "Cathedral city in Herefordshire near Wales border",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 63K,
+    "landmark": "Hereford Cathedral"
+  },
+  {
+    "name": "Shrewsbury",
+    "lat": 52.7083,
+    "lng": -2.7555,
+    "hint": "County town of Shropshire with medieval architecture",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 106K,
+    "landmark": "Shrewsbury Castle"
+  },
+  {
+    "name": "Telford",
+    "lat": 52.6784,
+    "lng": -2.4453,
+    "hint": "New town in Shropshire with Ironbridge Gorge",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 170K,
+    "landmark": "Iron Bridge"
+  },
+  {
+    "name": "Stafford",
+    "lat": 52.8067,
+    "lng": -2.1207,
+    "hint": "County town of Staffordshire with ancient castle",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 130K,
+    "landmark": "Stafford Castle"
+  },
+  {
+    "name": "St Albans",
+    "lat": 51.7527,
+    "lng": -0.3394,
+    "hint": "Cathedral city with Roman ruins north of London",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 147K,
+    "landmark": "St Albans Cathedral"
+  },
+  {
+    "name": "Luton",
+    "lat": 51.8787,
+    "lng": -0.4200,
+    "hint": "Town in Bedfordshire with airport and hat-making history",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 258K,
+    "landmark": "Luton Hoo"
+  },
+  {
+    "name": "Watford",
+    "lat": 51.6565,
+    "lng": -0.3903,
+    "hint": "Town in Hertfordshire with football club and Warner Bros studio",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 165K,
+    "landmark": "Watford Palace Theatre"
+  },
+  {
+    "name": "Slough",
+    "lat": 51.5105,
+    "lng": -0.5950,
+    "hint": "Berkshire town immortalized in poetry by John Betjeman",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 164K,
+    "landmark": "Slough Trading Estate"
+  },
+  {
+    "name": "High Wycombe",
+    "lat": 51.6286,
+    "lng": -0.7482,
+    "hint": "Buckinghamshire town known for furniture making",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 125K,
+    "landmark": "Wycombe Abbey"
+  },
+  {
+    "name": "Maidstone",
+    "lat": 51.2704,
+    "lng": 0.5227,
+    "hint": "County town of Kent, the Garden of England",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 176K,
+    "landmark": "Leeds Castle"
+  },
+  {
+    "name": "Gillingham",
+    "lat": 51.3864,
+    "lng": 0.5500,
+    "hint": "Town in Kent with naval and military connections",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 140K,
+    "landmark": "Royal Engineers Museum"
+  },
+  {
+    "name": "Basildon",
+    "lat": 51.5724,
+    "lng": 0.4708,
+    "hint": "New town in Essex established after WWII",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 185K,
+    "landmark": "Basildon Sporting Village"
+  },
+  {
+    "name": "Southend-on-Sea",
+    "lat": 51.5404,
+    "lng": 0.7117,
+    "hint": "Seaside resort in Essex with longest pleasure pier",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 183K,
+    "landmark": "Southend Pier"
+  },
+  {
+    "name": "Harlow",
+    "lat": 51.7729,
+    "lng": 0.1023,
+    "hint": "New town in Essex with modernist architecture",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 109K,
+    "landmark": "Harlow Sculpture Town"
+  },
+  {
+    "name": "Stevenage",
+    "lat": 51.9022,
+    "lng": -0.2026,
+    "hint": "First new town in Hertfordshire after WWII",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 89K,
+    "landmark": "Stevenage Old Town"
+  },
+  {
+    "name": "Hemel Hempstead",
+    "lat": 51.7537,
+    "lng": -0.4489,
+    "hint": "New town in Hertfordshire with famous magic roundabout",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 97K,
+    "landmark": "Old Town High Street"
+  },
+  {
+    "name": "Crawley",
+    "lat": 51.1092,
+    "lng": -0.1872,
+    "hint": "West Sussex town with major airport",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 180K,
+    "landmark": "Gatwick Airport"
+  },
+  {
+    "name": "Worthing",
+    "lat": 50.8179,
+    "lng": -0.3729,
+    "hint": "Seaside town in West Sussex with Victorian pier",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 110K,
+    "landmark": "Worthing Pier"
+  },
+  {
+    "name": "Eastbourne",
+    "lat": 50.7680,
+    "lng": 0.2905,
+    "hint": "Victorian seaside resort in East Sussex",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 119K,
+    "landmark": "Beachy Head"
+  },
+  {
+    "name": "Hastings",
+    "lat": 50.8543,
+    "lng": 0.5735,
+    "hint": "Historic seaside town where William the Conqueror landed",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 91K,
+    "landmark": "Hastings Castle"
+  },
+  {
+    "name": "Bognor Regis",
+    "lat": 50.7821,
+    "lng": -0.6728,
+    "hint": "Seaside resort in West Sussex favored by King George V",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 63K,
+    "landmark": "Butlins Bognor Regis"
+  },
+  {
+    "name": "Chichester",
+    "lat": 50.8365,
+    "lng": -0.7792,
+    "hint": "Cathedral city in West Sussex with Roman walls",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 30K,
+    "landmark": "Chichester Cathedral"
+  },
+  {
+    "name": "Portsmouth",
+    "lat": 50.8198,
+    "lng": -1.0880,
+    "hint": "Naval port with historic dockyard and ships",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 855K,
+    "landmark": "Spinnaker Tower"
+  },
+  {
+    "name": "Southampton",
+    "lat": 50.9097,
+    "lng": -1.4044,
+    "hint": "Major port city on England's south coast",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 855K,
+    "landmark": "SeaCity Museum"
+  },
+  {
+    "name": "Bournemouth",
+    "lat": 50.7208,
+    "lng": -1.9047,
+    "hint": "Seaside resort in Dorset with sandy beaches",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 196K,
+    "landmark": "Bournemouth Pier"
+  },
+  {
+    "name": "Poole",
+    "lat": 50.7150,
+    "lng": -1.9872,
+    "hint": "Coastal town in Dorset with large natural harbour",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 151K,
+    "landmark": "Poole Harbour"
+  },
+  {
+    "name": "Weymouth",
+    "lat": 50.6144,
+    "lng": -2.4575,
+    "hint": "Georgian seaside resort in Dorset",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 53K,
+    "landmark": "Weymouth Beach"
+  },
+  {
+    "name": "Dorchester",
+    "lat": 50.7150,
+    "lng": -2.4386,
+    "hint": "County town of Dorset, Thomas Hardy's Casterbridge",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 21K,
+    "landmark": "Maumbury Rings"
+  },
+  {
+    "name": "Taunton",
+    "lat": 51.0153,
+    "lng": -3.1069,
+    "hint": "County town of Somerset with cricket ground",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 69K,
+    "landmark": "Taunton Castle"
+  },
+  {
+    "name": "Yeovil",
+    "lat": 50.9429,
+    "lng": -2.6335,
+    "hint": "Town in Somerset known for helicopter manufacturing",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 49K,
+    "landmark": "Fleet Air Arm Museum"
+  },
+  {
+    "name": "Bridgwater",
+    "lat": 51.1279,
+    "lng": -2.9931,
+    "hint": "Town in Somerset on River Parrett with carnival tradition",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 41K,
+    "landmark": "Bridgwater Castle"
+  },
+  {
+    "name": "Weston-super-Mare",
+    "lat": 51.3460,
+    "lng": -2.9767,
+    "hint": "Seaside resort in North Somerset with Grand Pier",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 82K,
+    "landmark": "Weston-super-Mare Pier"
+  },
+  {
+    "name": "Bristol",
+    "lat": 51.4545,
+    "lng": -2.5879,
+    "hint": "South West city famous for Brunel's engineering",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 1.1M,
+    "landmark": "Clifton Suspension Bridge"
+  },
+  {
+    "name": "Swindon",
+    "lat": 51.5584,
+    "lng": -1.7819,
+    "hint": "Wiltshire town with railway heritage and magic roundabout",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 222K,
+    "landmark": "STEAM Museum"
+  },
+  {
+    "name": "Newport",
+    "lat": 51.5842,
+    "lng": -2.9977,
+    "hint": "City in South Wales with medieval castle and transporter bridge",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 306K,
+    "landmark": "Newport Castle"
+  },
+  {
+    "name": "Cwmbran",
+    "lat": 51.6542,
+    "lng": -3.0228,
+    "hint": "New town in South Wales with shopping centre",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 48K,
+    "landmark": "Cwmbran Centre"
+  },
+  {
+    "name": "Merthyr Tydfil",
+    "lat": 51.7439,
+    "lng": -3.3775,
+    "hint": "Town in South Wales with industrial heritage",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 58K,
+    "landmark": "Cyfarthfa Castle"
+  },
+  {
+    "name": "Aberystwyth",
+    "lat": 52.4153,
+    "lng": -4.0829,
+    "hint": "University town and seaside resort in mid Wales",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 18K,
+    "landmark": "Aberystwyth Castle"
+  },
+  {
+    "name": "Bangor",
+    "lat": 53.2274,
+    "lng": -4.1293,
+    "hint": "University city in North Wales with cathedral",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 18K,
+    "landmark": "Bangor Cathedral"
+  },
+  {
+    "name": "Wrexham",
+    "lat": 53.0430,
+    "lng": -2.9925,
+    "hint": "Largest town in North Wales with football club",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 135K,
+    "landmark": "St Giles' Church"
+  },
+  {
+    "name": "Rhyl",
+    "lat": 53.3215,
+    "lng": -3.4844,
+    "hint": "Seaside resort in North Wales with promenade",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 25K,
+    "landmark": "Rhyl Sky Tower"
+  },
+  {
+    "name": "Llandudno",
+    "lat": 53.3241,
+    "lng": -3.8276,
+    "hint": "Victorian seaside resort in North Wales with pier",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 20K,
+    "landmark": "Great Orme"
+  },
+  {
+    "name": "Conwy",
+    "lat": 53.2800,
+    "lng": -3.8300,
+    "hint": "Medieval walled town in North Wales with castle",
+    "difficulty": 2,
+    "country": "United Kingdom",
+    "population": 14K,
+    "landmark": "Conwy Castle"
   }
-]
+  ]
