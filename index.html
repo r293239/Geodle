@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geodle - Daily Geography Clue Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3367D6"/>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -1499,7 +1519,7 @@
 <!-- Terms & Cookies Consent Banner -->
 <div id="consent-banner">
     <span>
-        We use cookies and display ads to improve your experience. By using this site, you agree to our 
+        We use cookies to improve your experience. By using this site, you agree to our 
         <a id="open-terms">Terms & Conditions</a> and 
         <a id="open-privacy">Privacy Policy</a>.
     </span>
@@ -1549,10 +1569,8 @@
             <li>Any feedback or suggestions you provide become our property and may be used to improve the Game.</li>
         </ul>
 
-        <h3>5. Third-Party Services and Ads</h3>
+        <h3>5. Third-Party Services</h3>
         <ul>
-            <li>The Game may display ads from third-party networks. These third parties may collect anonymous info (device type, IP) to serve relevant ads.</li>
-            <li>We do not control or store data collected by third-party networks.</li>
             <li>The Game may link to external websites. We are not responsible for content or privacy practices of these sites.</li>
         </ul>
 
@@ -1570,7 +1588,6 @@
                     <li>Use of the Game</li>
                     <li>Loss of local storage data</li>
                     <li>Technical issues or interruptions</li>
-                    <li>Interactions with third-party ads</li>
                 </ul>
             </li>
             <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
@@ -1611,37 +1628,31 @@
         <h3>3. No Tracking or Analytics</h3>
         <p>No cookies, tracking, analytics, or third-party scripts are used to collect data beyond local storage.</p>
 
-        <h3>4. Third-Party Advertising</h3>
-        <ul>
-            <li>Ads may collect limited anonymous info (device type, IP, interaction with ad).</li>
-            <li>We do not control or store this information.</li>
-        </ul>
-
-        <h3>5. Children's Privacy</h3>
+        <h3>4. Children's Privacy</h3>
         <ul>
             <li>Game is safe for children under 13.</li>
             <li>Parents can manage local storage to remove saved data.</li>
         </ul>
 
-        <h3>6. Data Retention</h3>
+        <h3>5. Data Retention</h3>
         <p>All game progress and settings remain on your device until you clear local storage.</p>
 
-        <h3>7. Your Rights</h3>
+        <h3>6. Your Rights</h3>
         <ul>
             <li>You do not need to request access or deletion because no personal info is collected.</li>
             <li>Clearing local storage deletes all saved data.</li>
         </ul>
 
-        <h3>8. International Users</h3>
+        <h3>7. International Users</h3>
         <p>The Game can be accessed worldwide. No personal info is transmitted across borders.</p>
 
-        <h3>9. Third-Party Links</h3>
+        <h3>8. Third-Party Links</h3>
         <p>We are not responsible for the content or privacy practices of external websites.</p>
 
-        <h3>10. Changes to This Privacy Policy</h3>
+        <h3>9. Changes to This Privacy Policy</h3>
         <p>We may update this policy. Continued use constitutes acceptance of updates.</p>
 
-        <h3>11. Contact</h3>
+        <h3>10. Contact</h3>
         <p>Email: reubenyee2012@gmail.com</p>
     </div>
 </div>
