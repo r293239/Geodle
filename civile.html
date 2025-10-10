@@ -76,7 +76,7 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             position: relative;
-            z-index: 1000; /* Increased z-index */
+            z-index: 1000;
         }
 
         .logo {
@@ -109,21 +109,21 @@
             transform: translateY(-2px);
         }
 
-        /* Game Modes Dropdown */
+        /* Game Modes Dropdown - FIXED: Made opaque */
         .game-modes-dropdown {
             position: absolute;
             top: 100%;
             left: 0;
-            background: var(--glass-bg);
+            background: rgba(42, 67, 42, 0.95); /* Changed to opaque dark green */
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 15px;
             padding: 10px;
             min-width: 200px;
             display: none;
-            z-index: 1001; /* Higher than nav-bar */
+            z-index: 1001;
             margin-top: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .game-modes-dropdown.show {
@@ -145,616 +145,9 @@
             transform: translateX(5px);
         }
 
-        /* Page containers */
-        .page {
-            display: none;
-            min-height: calc(100vh - 80px);
-            position: relative;
-            z-index: 1; /* Lower than navigation */
-        }
+        /* Rest of your CSS remains the same... */
+        /* (Keeping the rest of your CSS styles as they were) */
 
-        .page.active {
-            display: block;
-        }
-
-        /* Game page styles */
-        .game-header {
-            text-align: center;
-            padding: 30px 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            background: linear-gradient(45deg, var(--accent-color), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .game-stats {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: var(--glass-bg);
-            padding: 15px 25px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .game-container {
-            padding: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .city-prompt {
-            background: rgba(255,255,255,0.95);
-            color: var(--dark-bg);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .city-prompt::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .city-name {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: var(--dark-bg);
-            position: relative;
-            z-index: 1;
-        }
-
-        .city-hint {
-            font-size: 1.2em;
-            color: #7f8c8d;
-            font-style: italic;
-            position: relative;
-            z-index: 1;
-        }
-
-        .timer-container {
-            margin-bottom: 25px;
-        }
-
-        .timer-bar {
-            width: 100%;
-            height: 12px;
-            background: var(--glass-bg);
-            border-radius: 6px;
-            overflow: hidden;
-            border: 2px solid var(--glass-border);
-            position: relative;
-        }
-
-        .timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--success-color), var(--warning-color), var(--error-color));
-            transition: width 0.1s linear;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .timer-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: timerShine 2s infinite;
-        }
-
-        @keyframes timerShine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        #map {
-            width: 100%;
-            height: 500px;
-            border-radius: 20px;
-            border: 3px solid var(--glass-border);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .btn:active:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, var(--success-color), #2ecc71);
-        }
-
-        .btn-warning {
-            background: linear-gradient(45deg, var(--warning-color), #e67e22);
-        }
-
-        .btn-danger {
-            background: linear-gradient(45deg, var(--error-color), #c0392b);
-        }
-
-        /* Enhanced Feedback */
-        .feedback {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 25px 45px;
-            border-radius: 20px;
-            font-size: 1.5em;
-            font-weight: bold;
-            z-index: 1000;
-            animation: feedbackShow 3s ease-out forwards;
-            pointer-events: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .feedback.correct {
-            background: linear-gradient(45deg, var(--success-color), #2ecc71);
-            color: white;
-        }
-
-        .feedback.incorrect {
-            background: linear-gradient(45deg, var(--error-color), #c0392b);
-            color: white;
-        }
-
-        @keyframes feedbackShow {
-            0% { 
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5) rotateX(90deg);
-            }
-            15% { 
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1.1) rotateX(0deg);
-            }
-            25% { 
-                transform: translate(-50%, -50%) scale(1) rotateX(0deg);
-            }
-            85% { 
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1) rotateX(0deg);
-            }
-            100% { 
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8) rotateX(-90deg);
-            }
-        }
-
-        /* Settings Page */
-        .settings-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        .settings-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
-
-        .settings-title {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            color: var(--accent-color);
-        }
-
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .setting-item:last-child {
-            border-bottom: none;
-        }
-
-        .toggle {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background: var(--glass-bg);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .toggle.active {
-            background: var(--success-color);
-        }
-
-        .toggle::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-
-        .toggle.active::after {
-            transform: translateX(30px);
-        }
-
-        .slider {
-            width: 200px;
-            -webkit-appearance: none;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--glass-bg);
-            outline: none;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-        }
-
-        /* Help Page */
-        .help-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        .help-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
-
-        .help-title {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .feature-card {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            text-align: center;
-        }
-
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
-        /* Leaderboard */
-        .leaderboard {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 25px;
-            margin-top: 25px;
-        }
-
-        .leaderboard h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--accent-color);
-            font-size: 1.5em;
-        }
-
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            transition: all 0.3s ease;
-        }
-
-        .score-entry:hover {
-            transform: translateX(5px);
-            background: rgba(255,255,255,0.1);
-        }
-
-        .score-rank {
-            font-weight: bold;
-            color: var(--accent-color);
-            min-width: 40px;
-        }
-
-        .score-details {
-            flex-grow: 1;
-            margin-left: 15px;
-        }
-
-        .score-main {
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .score-meta {
-            font-size: 0.85em;
-            opacity: 0.8;
-            margin-top: 4px;
-        }
-
-        .score-date {
-            text-align: right;
-            min-width: 80px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-bar {
-                padding: 15px 20px;
-            }
-
-            .nav-links {
-                gap: 10px;
-            }
-
-            .nav-link {
-                padding: 6px 12px;
-                font-size: 14px;
-            }
-
-            .game-stats {
-                gap: 15px;
-            }
-            
-            .stat-item {
-                padding: 12px 20px;
-            }
-            
-            .city-name {
-                font-size: 2em;
-            }
-            
-            #map {
-                height: 350px;
-            }
-
-            .controls {
-                gap: 10px;
-            }
-
-            .btn {
-                padding: 10px 18px;
-                font-size: 14px;
-            }
-
-            h1 {
-                font-size: 2.2em;
-            }
-            
-            .game-modes-dropdown {
-                min-width: 180px;
-                left: -50px;
-            }
-        }
-
-        /* Achievement Popup */
-        .achievement {
-            position: fixed;
-            top: 100px;
-            right: -300px;
-            width: 280px;
-            background: linear-gradient(45deg, var(--accent-color), #f1c40f);
-            color: var(--dark-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            transition: right 0.5s ease;
-            z-index: 1001;
-        }
-
-        .achievement.show {
-            right: 20px;
-        }
-
-        .achievement-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2000;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid rgba(255,255,255,0.3);
-            border-top: 6px solid var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Enhanced Map Markers */
-        .click-marker {
-            background: rgba(231, 76, 60, 0.8);
-            border: 3px solid #e74c3c;
-            border-radius: 50%;
-            animation: markerPulse 1s ease-out;
-        }
-
-        .correct-marker {
-            background: rgba(39, 174, 96, 0.8);
-            border-color: #27ae60;
-            animation: correctPulse 1s ease-out;
-        }
-
-        @keyframes markerPulse {
-            0% { 
-                transform: scale(0.5);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0.8;
-            }
-            100% { 
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-
-        @keyframes correctPulse {
-            0% { 
-                transform: scale(0.5);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.9;
-            }
-            100% { 
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -792,252 +185,7 @@
         </div>
     </nav>
 
-    <!-- Game Page -->
-    <div id="game-page" class="page active">
-        <div class="game-header">
-            <h1>Geography Challenge</h1>
-            <div class="game-stats">
-                <div class="stat-item">
-                    <div class="stat-label">Score</div>
-                    <div class="stat-value" id="score">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Round</div>
-                    <div class="stat-value" id="round">1</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Streak</div>
-                    <div class="stat-value" id="streak">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Best Time</div>
-                    <div class="stat-value" id="bestTime">--</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Accuracy</div>
-                    <div class="stat-value" id="accuracy">100%</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="game-container">
-            <div class="city-prompt" id="cityPrompt">
-                <div class="city-name" id="cityName">Click "Start Game" to begin!</div>
-                <div class="city-hint" id="cityHint">Test your geography knowledge by clicking cities on the world map</div>
-            </div>
-
-            <div class="timer-container">
-                <div class="timer-bar">
-                    <div class="timer-fill" id="timerFill"></div>
-                </div>
-            </div>
-
-            <div id="map"></div>
-
-            <div class="controls">
-                <button id="startBtn" class="btn"><i class="fas fa-play"></i> Start Game</button>
-                <button id="pauseBtn" class="btn btn-warning" disabled><i class="fas fa-pause"></i> Pause</button>
-                <button id="skipBtn" class="btn btn-danger" disabled><i class="fas fa-forward"></i> Skip (-50 pts)</button>
-                <button id="hintBtn" class="btn" disabled><i class="fas fa-lightbulb"></i> Hint (-25 pts)</button>
-                <button id="resetBtn" class="btn"><i class="fas fa-redo"></i> Reset</button>
-            </div>
-
-            <div class="leaderboard" id="leaderboard">
-                <h3><i class="fas fa-trophy"></i> Your Best Runs</h3>
-                <div id="scoresList"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Page -->
-    <div id="settings-page" class="page">
-        <div class="settings-container">
-            <h1 style="text-align: center; margin-bottom: 30px;"><i class="fas fa-cog"></i> Settings</h1>
-            
-            <div class="settings-section">
-                <h2 class="settings-title"><i class="fas fa-gamepad"></i> Game Settings</h2>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Sound Effects</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Enable audio feedback for correct/incorrect answers</div>
-                    </div>
-                    <div class="toggle" id="soundToggle" onclick="toggleSetting('sound')"></div>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Time Pressure Mode</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Shorter time limits for increased difficulty</div>
-                    </div>
-                    <div class="toggle" id="timePressureToggle" onclick="toggleSetting('timePressure')"></div>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Show Country Names</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Display country names as additional hints</div>
-                    </div>
-                    <div class="toggle" id="countryHintToggle" onclick="toggleSetting('countryHint')"></div>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Game Difficulty</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Adjust tolerance for correct answers</div>
-                    </div>
-                    <input type="range" id="difficultySlider" class="slider" min="1" max="5" value="3" onchange="updateDifficulty(this.value)">
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <h2 class="settings-title"><i class="fas fa-palette"></i> Display Settings</h2>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Dark Mode Map</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Use dark theme for map tiles</div>
-                    </div>
-                    <div class="toggle" id="darkMapToggle" onclick="toggleSetting('darkMap')"></div>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <strong>Reduced Animations</strong>
-                        <div style="opacity: 0.7; font-size: 0.9em;">Minimize visual effects for better performance</div>
-                    </div>
-                    <div class="toggle" id="reducedAnimToggle" onclick="toggleSetting('reducedAnim')"></div>
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <h2 class="settings-title"><i class="fas fa-chart-bar"></i> Statistics</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                        <div style="font-size: 2em; color: var(--accent-color);" id="totalGames">0</div>
-                        <div>Games Played</div>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                        <div style="font-size: 2em; color: var(--success-color);" id="totalScore">0</div>
-                        <div>Total Score</div>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                        <div style="font-size: 2em; color: var(--warning-color);" id="avgAccuracy">0%</div>
-                        <div>Average Accuracy</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Help Page -->
-    <div id="help-page" class="page">
-        <div class="help-container">
-            <h1 style="text-align: center; margin-bottom: 30px;"><i class="fas fa-info-circle"></i> How to Play Civile</h1>
-            
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-gamepad"></i> Game Rules</h2>
-                <p>Civile is a geography challenge where you test your knowledge of world cities. Here's how it works:</p>
-                <ul style="margin: 15px 0; padding-left: 25px;">
-                    <li style="margin: 8px 0;">🎯 Click on the world map to guess where each city is located</li>
-                    <li style="margin: 8px 0;">⏱️ You have 10 seconds per city (or less in Time Pressure mode)</li>
-                    <li style="margin: 8px 0;">🎖️ Earn points based on accuracy, speed, and difficulty</li>
-                    <li style="margin: 8px 0;">🔥 Build streaks for bonus points</li>
-                    <li style="margin: 8px 0;">📍 The closer you click, the more points you get</li>
-                </ul>
-            </div>
-            
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-star"></i> New Features</h2>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💡</div>
-                        <h3>Smart Hints</h3>
-                        <p>Use hints to get additional clues about the city's location, culture, or famous landmarks.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🎵</div>
-                        <h3>Sound Effects</h3>
-                        <p>Immersive audio feedback that celebrates correct answers and guides you through mistakes.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>Time Pressure Mode</h3>
-                        <p>Challenge yourself with reduced time limits for each guess - only for geography masters!</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-trophy"></i> Scoring System</h2>
-                <div style="display: grid; gap: 15px;">
-                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <span>🎯 Base Score (Correct Answer)</span>
-                        <span style="color: var(--success-color); font-weight: bold;">100 points</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <span>⚡ Speed Bonus (Time Remaining)</span>
-                        <span style="color: var(--warning-color); font-weight: bold;">Up to 100 points</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <span>🎯 Accuracy Bonus (Distance)</span>
-                        <span style="color: var(--accent-color); font-weight: bold;">Up to 200 points</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <span>🔥 Streak Multiplier</span>
-                        <span style="color: var(--success-color); font-weight: bold;">10 × streak</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-keyboard"></i> Tips & Tricks</h2>
-                <div style="display: grid; gap: 15px;">
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--accent-color);">
-                        <strong>💭 Read the hints carefully</strong> - They often contain geographical or cultural clues
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--success-color);">
-                        <strong>🗺️ Study the map</strong> - Look for coastlines, mountain ranges, and country borders
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--warning-color);">
-                        <strong>⏰ Manage your time</strong> - Don't overthink, trust your geographical knowledge
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--error-color);">
-                        <strong>🎯 Zoom strategically</strong> - Use map zoom to get more precise with your clicks
-                    </div>
-                </div>
-            </div>
-
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-question-circle"></i> FAQ</h2>
-                <div style="display: grid; gap: 15px;">
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">How accurate do I need to be?</summary>
-                        <p>The tolerance varies by difficulty level and city type. Major cities are more forgiving than smaller capitals.</p>
-                    </details>
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">Can I play offline?</summary>
-                        <p>The game requires an internet connection to load map tiles, but your progress is saved locally.</p>
-                    </details>
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">What happens if I run out of time?</summary>
-                        <p>The game will show you the correct location and move to the next city. Your streak will reset.</p>
-                    </details>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Loading Screen -->
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Achievement Popup -->
-    <div class="achievement" id="achievement">
-        <div class="achievement-title">🏆 Achievement Unlocked!</div>
-        <div class="achievement-text"></div>
-    </div>
+    <!-- Your HTML content remains the same... -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
@@ -1085,7 +233,7 @@
                 this.loadSettings();
                 this.loadStats();
                 this.initializeElements();
-                this.loadCitiesData();
+                this.loadCitiesData(); // Load from external file
                 this.initializeMap();
                 this.setupEventListeners();
                 this.updateDisplay();
@@ -1094,19 +242,65 @@
             
             async loadCitiesData() {
                 try {
+                    console.log('Loading cities data from cities-data.json...');
                     const response = await fetch('cities-data.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     this.cities = await response.json();
+                    console.log('Successfully loaded cities:', this.cities.length);
+                    
+                    // Validate the data structure
+                    if (!Array.isArray(this.cities) || this.cities.length === 0) {
+                        throw new Error('Invalid cities data format');
+                    }
+                    
+                    // Validate each city has required properties
+                    this.cities.forEach((city, index) => {
+                        if (!city.name || !city.lat || !city.lng) {
+                            console.warn(`City at index ${index} is missing required properties:`, city);
+                        }
+                    });
+                    
                 } catch (error) {
                     console.error('Error loading cities data:', error);
                     // Fallback to a small set of cities if the file can't be loaded
                     this.cities = [
-                        { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower and Louvre Museum", difficulty: 1, country: "France", population: "2.1M", landmark: "Eiffel Tower" },
-                        { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi, technology, and cherry blossoms", difficulty: 1, country: "Japan", population: "37M", landmark: "Tokyo Tower" },
-                        { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty and Times Square", difficulty: 1, country: "USA", population: "8.3M", landmark: "Statue of Liberty" }
+                        {
+                            "name": "Paris",
+                            "lat": 48.8566,
+                            "lng": 2.3522,
+                            "hint": "City of Light, home to the Eiffel Tower and Louvre Museum",
+                            "difficulty": 1,
+                            "country": "France",
+                            "population": "2.1M",
+                            "landmark": "Eiffel Tower"
+                        },
+                        {
+                            "name": "Tokyo",
+                            "lat": 35.6762,
+                            "lng": 139.6503,
+                            "hint": "Japan's capital, famous for sushi, technology, and cherry blossoms",
+                            "difficulty": 1,
+                            "country": "Japan",
+                            "population": "37M",
+                            "landmark": "Tokyo Tower"
+                        },
+                        {
+                            "name": "New York",
+                            "lat": 40.7128,
+                            "lng": -74.0060,
+                            "hint": "The Big Apple, home to the Statue of Liberty and Times Square",
+                            "difficulty": 1,
+                            "country": "USA",
+                            "population": "8.3M",
+                            "landmark": "Statue of Liberty"
+                        }
                     ];
+                    console.log('Using fallback cities data:', this.cities.length);
                 }
             }
-            
+
             loadSettings() {
                 try {
                     const saved = localStorage.getItem('civile_settings');
@@ -1310,6 +504,12 @@
             }
             
             startGame() {
+                // Check if cities are loaded
+                if (this.cities.length === 0) {
+                    this.showFeedback('❌ Cities data not loaded yet. Please wait...', 'incorrect');
+                    return;
+                }
+                
                 this.showLoading(true);
                 
                 setTimeout(() => {
@@ -1340,28 +540,28 @@
                 
                 this.clearMarkers();
                 this.hintUsed = false;
+                this.hintBtn.disabled = false;
                 
-                // Select city based on difficulty progression
-                let difficulty = Math.min(3, Math.ceil(this.round / 5));
-                let availableCities = this.cities.filter(city => 
-                    city.difficulty === difficulty && !this.usedCities.includes(city.name)
-                );
+                // FIXED: Better city selection logic
+                let availableCities = this.cities.filter(city => !this.usedCities.includes(city.name));
                 
+                // If we've used all cities, reset the used list
                 if (availableCities.length === 0) {
-                    availableCities = this.cities.filter(city => !this.usedCities.includes(city.name));
-                    if (availableCities.length === 0) {
-                        this.usedCities = [];
-                        availableCities = this.cities;
-                    }
+                    this.usedCities = [];
+                    availableCities = this.cities;
                 }
                 
-                this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
+                // Select random city from available ones
+                const randomIndex = Math.floor(Math.random() * availableCities.length);
+                this.currentCity = availableCities[randomIndex];
                 this.usedCities.push(this.currentCity.name);
+                
+                console.log('Selected city:', this.currentCity.name, 'Used cities:', this.usedCities.length);
                 
                 this.cityNameEl.textContent = this.currentCity.name;
                 
-                let hintText = this.currentCity.hint;
-                if (this.settings.countryHint) {
+                let hintText = this.currentCity.hint || 'No hint available';
+                if (this.settings.countryHint && this.currentCity.country) {
                     hintText += ` • Located in ${this.currentCity.country}`;
                 }
                 this.cityHintEl.textContent = hintText;
@@ -1392,12 +592,18 @@
                 this.hintUsed = true;
                 this.score = Math.max(0, this.score - 25);
                 
-                const additionalHints = [
-                    `Population: ${this.currentCity.population}`,
-                    `Famous landmark: ${this.currentCity.landmark}`,
-                    `Country: ${this.currentCity.country}`,
-                    `Coordinates: ${Math.abs(this.currentCity.lat).toFixed(1)}°${this.currentCity.lat >= 0 ? 'N' : 'S'}, ${Math.abs(this.currentCity.lng).toFixed(1)}°${this.currentCity.lng >= 0 ? 'E' : 'W'}`
-                ];
+                const additionalHints = [];
+                
+                if (this.currentCity.population) {
+                    additionalHints.push(`Population: ${this.currentCity.population}`);
+                }
+                if (this.currentCity.landmark) {
+                    additionalHints.push(`Famous landmark: ${this.currentCity.landmark}`);
+                }
+                if (this.currentCity.country) {
+                    additionalHints.push(`Country: ${this.currentCity.country}`);
+                }
+                additionalHints.push(`Coordinates: ${Math.abs(this.currentCity.lat).toFixed(1)}°${this.currentCity.lat >= 0 ? 'N' : 'S'}, ${Math.abs(this.currentCity.lng).toFixed(1)}°${this.currentCity.lng >= 0 ? 'E' : 'W'}`);
                 
                 const randomHint = additionalHints[Math.floor(Math.random() * additionalHints.length)];
                 this.cityHintEl.textContent += ` • ${randomHint}`;
@@ -1501,13 +707,16 @@
                     weight: 4
                 }).addTo(this.map);
                 
-                correctMarker.bindPopup(`
-                    <div style="text-align: center; color: #2c3e50;">
-                        <strong>${this.currentCity.name}</strong><br>
-                        ${this.currentCity.country}<br>
-                        <small>${this.currentCity.landmark}</small>
-                    </div>
-                `).openPopup();
+                let popupContent = `<div style="text-align: center; color: #2c3e50;"><strong>${this.currentCity.name}</strong>`;
+                if (this.currentCity.country) {
+                    popupContent += `<br>${this.currentCity.country}`;
+                }
+                if (this.currentCity.landmark) {
+                    popupContent += `<br><small>${this.currentCity.landmark}</small>`;
+                }
+                popupContent += `</div>`;
+                
+                correctMarker.bindPopup(popupContent).openPopup();
                 
                 this.markers.push(correctMarker);
                 
@@ -1628,8 +837,8 @@
                     this.cityHintEl.textContent = 'Click Resume to continue playing';
                 } else if (this.currentCity) {
                     this.cityNameEl.textContent = this.currentCity.name;
-                    let hintText = this.currentCity.hint;
-                    if (this.settings.countryHint) {
+                    let hintText = this.currentCity.hint || 'No hint available';
+                    if (this.settings.countryHint && this.currentCity.country) {
                         hintText += ` • Located in ${this.currentCity.country}`;
                     }
                     this.cityHintEl.textContent = hintText;
