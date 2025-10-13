@@ -76,7 +76,7 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             position: relative;
-            z-index: 1000; /* Increased z-index */
+            z-index: 1000;
         }
 
         .logo {
@@ -121,7 +121,7 @@
             padding: 10px;
             min-width: 200px;
             display: none;
-            z-index: 1001; /* Higher than nav-bar */
+            z-index: 1001;
             margin-top: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
@@ -150,7 +150,7 @@
             display: none;
             min-height: calc(100vh - 80px);
             position: relative;
-            z-index: 1; /* Lower than navigation */
+            z-index: 1;
         }
 
         .page.active {
@@ -1096,6 +1096,7 @@
                 try {
                     const response = await fetch('cities-data.json');
                     this.cities = await response.json();
+                    console.log(`Loaded ${this.cities.length} cities`);
                 } catch (error) {
                     console.error('Error loading cities data:', error);
                     // Fallback to a small set of cities if the file can't be loaded
@@ -1343,20 +1344,68 @@
                 
                 // Select city based on difficulty progression
                 let difficulty = Math.min(3, Math.ceil(this.round / 5));
+                
+                // Get recently used countries (last 3 rounds) to avoid repetition
+                const recentCountries = this.usedCities.slice(-3).map(cityName => {
+                    const city = this.cities.find(c => c.name === cityName);
+                    return city ? city.country : null;
+                }).filter(Boolean);
+                
+                // Filter available cities
                 let availableCities = this.cities.filter(city => 
-                    city.difficulty === difficulty && !this.usedCities.includes(city.name)
+                    city.difficulty === difficulty && 
+                    !this.usedCities.includes(city.name) &&
+                    !recentCountries.includes(city.country)
                 );
                 
+                // If no cities available with country diversity, relax the country constraint
+                if (availableCities.length === 0) {
+                    availableCities = this.cities.filter(city => 
+                        city.difficulty === difficulty && 
+                        !this.usedCities.includes(city.name)
+                    );
+                }
+                
+                // If still no cities, try other difficulties
                 if (availableCities.length === 0) {
                     availableCities = this.cities.filter(city => !this.usedCities.includes(city.name));
+                }
+                
+                // If still no cities available, reset used cities but keep some diversity
+                if (availableCities.length === 0) {
+                    // Reset but keep track of which countries were heavily used
+                    const countryCounts = {};
+                    this.usedCities.forEach(cityName => {
+                        const city = this.cities.find(c => c.name === cityName);
+                        if (city) {
+                            countryCounts[city.country] = (countryCounts[city.country] || 0) + 1;
+                        }
+                    });
+                    
+                    // Reset used cities but prioritize less-used countries
+                    this.usedCities = [];
+                    availableCities = this.cities.filter(city => 
+                        city.difficulty === difficulty && 
+                        (!countryCounts[city.country] || countryCounts[city.country] < 2)
+                    );
+                    
+                    // If still no cities, take any city
                     if (availableCities.length === 0) {
-                        this.usedCities = [];
                         availableCities = this.cities;
                     }
                 }
                 
+                // Ensure we have cities to choose from
+                if (availableCities.length === 0) {
+                    console.error('No cities available');
+                    this.endGame();
+                    return;
+                }
+                
                 this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
                 this.usedCities.push(this.currentCity.name);
+                
+                console.log(`Round ${this.round}: ${this.currentCity.name}, ${this.currentCity.country}, Difficulty: ${this.currentCity.difficulty}`);
                 
                 this.cityNameEl.textContent = this.currentCity.name;
                 
@@ -1572,7 +1621,7 @@
                 this.totalAnswers++;
                 this.updateAccuracy();
                 this.showCityLocation();
-                this.showFeedback('⏰ Time\'s up!', 'incorrect');
+                this.showFeedback('⏰ Time's up!', 'incorrect');
                 this.updateDisplay();
                 
                 setTimeout(() => {
