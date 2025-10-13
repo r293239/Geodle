@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Civile - Geography Challenge</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -292,6 +293,7 @@
             transition: width 0.1s linear;
             border-radius: 4px;
             position: relative;
+            width: 100%;
         }
 
         .timer-fill::after {
@@ -857,8 +859,8 @@
 
         <div class="game-container">
             <div class="city-prompt" id="cityPrompt">
-                <div class="city-name" id="cityName">Click "Start Game" to begin!</div>
-                <div class="city-hint" id="cityHint">Test your geography knowledge by clicking cities on the world map</div>
+                <div class="city-name" id="cityName">Loading cities data...</div>
+                <div class="city-hint" id="cityHint">Please wait while we load the game data</div>
             </div>
 
             <div class="timer-container">
@@ -880,7 +882,7 @@
             </div>
 
             <div class="controls">
-                <button id="startBtn" class="btn"><i class="fas fa-play"></i> Start Game</button>
+                <button id="startBtn" class="btn" disabled><i class="fas fa-play"></i> Start Game</button>
                 <button id="pauseBtn" class="btn btn-warning" disabled><i class="fas fa-pause"></i> Pause</button>
                 <button id="skipBtn" class="btn btn-danger" disabled><i class="fas fa-forward"></i> Skip (-50 pts)</button>
                 <button id="hintBtn" class="btn" disabled><i class="fas fa-lightbulb"></i> Hint (-25 pts)</button>
@@ -889,7 +891,7 @@
 
             <div class="leaderboard" id="leaderboard">
                 <h3><i class="fas fa-trophy"></i> Your Best Runs</h3>
-                <div id="scoresList"></div>
+                <div id="scoresList">No scores yet!</div>
             </div>
         </div>
     </div>
@@ -907,7 +909,7 @@
                         <strong>Sound Effects</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Enable audio feedback for correct/incorrect answers</div>
                     </div>
-                    <div class="toggle" id="soundToggle" onclick="toggleSetting('sound')"></div>
+                    <div class="toggle" id="soundToggle"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -915,7 +917,7 @@
                         <strong>Time Pressure Mode</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Shorter time limits for increased difficulty</div>
                     </div>
-                    <div class="toggle" id="timePressureToggle" onclick="toggleSetting('timePressure')"></div>
+                    <div class="toggle" id="timePressureToggle"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -923,7 +925,7 @@
                         <strong>Blind Mode</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Hide the map - guess based on geography knowledge only</div>
                     </div>
-                    <div class="toggle" id="blindModeToggle" onclick="toggleSetting('blindMode')"></div>
+                    <div class="toggle" id="blindModeToggle"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -931,7 +933,7 @@
                         <strong>Show Country Names</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Display country names as additional hints</div>
                     </div>
-                    <div class="toggle" id="countryHintToggle" onclick="toggleSetting('countryHint')"></div>
+                    <div class="toggle" id="countryHintToggle"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -939,7 +941,7 @@
                         <strong>Game Difficulty</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Adjust tolerance for correct answers</div>
                     </div>
-                    <input type="range" id="difficultySlider" class="slider" min="1" max="5" value="3" onchange="updateDifficulty(this.value)">
+                    <input type="range" id="difficultySlider" class="slider" min="1" max="5" value="3">
                 </div>
             </div>
             
@@ -951,7 +953,7 @@
                         <strong>Dark Mode Map</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Use dark theme for map tiles</div>
                     </div>
-                    <div class="toggle" id="darkMapToggle" onclick="toggleSetting('darkMap')"></div>
+                    <div class="toggle" id="darkMapToggle"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -959,7 +961,7 @@
                         <strong>Reduced Animations</strong>
                         <div style="opacity: 0.7; font-size: 0.9em;">Minimize visual effects for better performance</div>
                     </div>
-                    <div class="toggle" id="reducedAnimToggle" onclick="toggleSetting('reducedAnim')"></div>
+                    <div class="toggle" id="reducedAnimToggle"></div>
                 </div>
             </div>
 
@@ -1052,49 +1054,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-keyboard"></i> Tips & Tricks</h2>
-                <div style="display: grid; gap: 15px;">
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--accent-color);">
-                        <strong>💭 Read the hints carefully</strong> - They often contain geographical or cultural clues
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--success-color);">
-                        <strong>🗺️ Study the map</strong> - Look for coastlines, mountain ranges, and country borders
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--warning-color);">
-                        <strong>⏰ Manage your time</strong> - Don't overthink, trust your geographical knowledge
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--error-color);">
-                        <strong>🎯 Zoom strategically</strong> - Use map zoom to get more precise with your clicks
-                    </div>
-                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid #9b59b6;">
-                        <strong>👁️ Master Blind Mode</strong> - Practice mental mapping and continental positioning
-                    </div>
-                </div>
-            </div>
-
-            <div class="help-section">
-                <h2 class="help-title"><i class="fas fa-question-circle"></i> FAQ</h2>
-                <div style="display: grid; gap: 15px;">
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">How accurate do I need to be?</summary>
-                        <p>The tolerance varies by difficulty level and city type. Major cities are more forgiving than smaller capitals.</p>
-                    </details>
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">Can I play offline?</summary>
-                        <p>The game requires an internet connection to load map tiles, but your progress is saved locally.</p>
-                    </details>
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">What happens if I run out of time?</summary>
-                        <p>The game will show you the correct location and move to the next city. Your streak will reset.</p>
-                    </details>
-                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
-                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">What is Blind Mode?</summary>
-                        <p>Blind Mode hides the map completely, forcing you to rely on your geographical knowledge. You get bonus points for this extra challenge!</p>
-                    </details>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1109,27 +1068,8 @@
         <div class="achievement-text"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
-        // Game Settings
-        let gameSettings = {
-            sound: true,
-            timePressure: false,
-            blindMode: false,
-            countryHint: false,
-            difficulty: 3,
-            darkMap: false,
-            reducedAnim: false
-        };
-
-        // Game Statistics
-        let gameStats = {
-            totalGames: 0,
-            totalScore: 0,
-            correctAnswers: 0,
-            totalAnswers: 0
-        };
-
         class EnhancedCivileGame {
             constructor() {
                 this.cities = [];
@@ -1152,142 +1092,100 @@
                 this.correctAnswers = 0;
                 this.totalAnswers = 0;
                 this.achievements = [];
-                this.mapOverlay = document.getElementById('mapOverlay');
                 
+                this.settings = {
+                    sound: true,
+                    timePressure: false,
+                    blindMode: false,
+                    countryHint: true,
+                    difficulty: 3,
+                    darkMap: false,
+                    reducedAnim: false
+                };
+                
+                this.stats = {
+                    totalGames: 0,
+                    totalScore: 0,
+                    correctAnswers: 0,
+                    totalAnswers: 0
+                };
+                
+                this.initializeGame();
+            }
+            
+            async initializeGame() {
+                await this.loadCitiesData();
                 this.loadSettings();
                 this.loadStats();
-                this.initializeElements();
-                this.loadCitiesData();
+                this.loadHighScores();
                 this.initializeMap();
+                this.initializeElements();
                 this.setupEventListeners();
                 this.updateDisplay();
                 this.showLeaderboard();
-                this.updateBlindMode();
+                this.updateSettingsDisplay();
+                
+                // Enable start button now that cities are loaded
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('cityName').textContent = 'Click "Start Game" to begin!';
+                document.getElementById('cityHint').textContent = 'Test your geography knowledge by clicking cities on the world map';
             }
             
             async loadCitiesData() {
                 try {
+                    this.showLoading(true);
                     const response = await fetch('cities-data.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to load cities data');
+                    }
                     this.cities = await response.json();
-                    console.log(`Loaded ${this.cities.length} cities`);
+                    console.log(`Loaded ${this.cities.length} cities from external file`);
+                    this.showLoading(false);
                 } catch (error) {
                     console.error('Error loading cities data:', error);
                     // Fallback to a small set of cities if the file can't be loaded
                     this.cities = [
-                        { name: "Paris", lat: 48.8566, lng: 2.3522, hint: "City of Light, home to the Eiffel Tower and Louvre Museum", difficulty: 1, country: "France", population: "2.1M", landmark: "Eiffel Tower" },
-                        { name: "Tokyo", lat: 35.6762, lng: 139.6503, hint: "Japan's capital, famous for sushi, technology, and cherry blossoms", difficulty: 1, country: "Japan", population: "37M", landmark: "Tokyo Tower" },
-                        { name: "New York", lat: 40.7128, lng: -74.0060, hint: "The Big Apple, home to the Statue of Liberty and Times Square", difficulty: 1, country: "USA", population: "8.3M", landmark: "Statue of Liberty" }
+                        {
+                            "name": "Paris",
+                            "lat": 48.8566,
+                            "lng": 2.3522,
+                            "hint": "City of Light, home to the Eiffel Tower",
+                            "difficulty": 1,
+                            "country": "France"
+                        },
+                        {
+                            "name": "Tokyo",
+                            "lat": 35.6762,
+                            "lng": 139.6503,
+                            "hint": "Japan's capital, famous for technology",
+                            "difficulty": 1,
+                            "country": "Japan"
+                        },
+                        {
+                            "name": "New York",
+                            "lat": 40.7128,
+                            "lng": -74.0060,
+                            "hint": "The Big Apple, home to Statue of Liberty",
+                            "difficulty": 1,
+                            "country": "USA"
+                        }
                     ];
+                    this.showLoading(false);
                 }
-            }
-            
-            loadSettings() {
-                try {
-                    const saved = localStorage.getItem('civile_settings');
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        this.settings = { ...gameSettings, ...parsed };
-                    } else {
-                        this.settings = { ...gameSettings };
-                    }
-                } catch (error) {
-                    console.error('Error loading settings:', error);
-                    this.settings = { ...gameSettings };
-                }
-            }
-
-            saveSettings() {
-                try {
-                    localStorage.setItem('civile_settings', JSON.stringify(this.settings));
-                } catch (error) {
-                    console.error('Error saving settings:', error);
-                }
-            }
-
-            updateBlindMode() {
-                const mapElement = document.getElementById('map');
-                if (this.settings.blindMode && this.gameActive && this.currentCity) {
-                    mapElement.classList.add('blind-mode');
-                    this.mapOverlay.classList.add('show');
-                } else {
-                    mapElement.classList.remove('blind-mode');
-                    this.mapOverlay.classList.remove('show');
-                }
-            }
-
-            loadStats() {
-                try {
-                    const saved = localStorage.getItem('civile_stats');
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        this.stats = { ...gameStats, ...parsed };
-                    } else {
-                        this.stats = { ...gameStats };
-                    }
-                } catch (error) {
-                    console.error('Error loading stats:', error);
-                    this.stats = { ...gameStats };
-                }
-                this.updateStatsDisplay();
-            }
-
-            saveStats() {
-                this.stats.totalGames++;
-                this.stats.totalScore += this.score;
-                if (this.totalAnswers > 0) {
-                    this.stats.correctAnswers += this.correctAnswers;
-                    this.stats.totalAnswers += this.totalAnswers;
-                }
-                
-                try {
-                    localStorage.setItem('civile_stats', JSON.stringify(this.stats));
-                } catch (error) {
-                    console.error('Error saving stats:', error);
-                }
-                this.updateStatsDisplay();
-            }
-
-            updateStatsDisplay() {
-                if (document.getElementById('totalGames')) {
-                    document.getElementById('totalGames').textContent = this.stats.totalGames;
-                    document.getElementById('totalScore').textContent = this.stats.totalScore.toLocaleString();
-                    const avgAccuracy = this.stats.totalAnswers > 0 ? 
-                        Math.round((this.stats.correctAnswers / this.stats.totalAnswers) * 100) : 0;
-                    document.getElementById('avgAccuracy').textContent = avgAccuracy + '%';
-                }
-            }
-            
-            initializeElements() {
-                this.scoreEl = document.getElementById('score');
-                this.roundEl = document.getElementById('round');
-                this.streakEl = document.getElementById('streak');
-                this.bestTimeEl = document.getElementById('bestTime');
-                this.accuracyEl = document.getElementById('accuracy');
-                this.cityNameEl = document.getElementById('cityName');
-                this.cityHintEl = document.getElementById('cityHint');
-                this.timerFillEl = document.getElementById('timerFill');
-                this.startBtn = document.getElementById('startBtn');
-                this.pauseBtn = document.getElementById('pauseBtn');
-                this.skipBtn = document.getElementById('skipBtn');
-                this.hintBtn = document.getElementById('hintBtn');
-                this.resetBtn = document.getElementById('resetBtn');
-                this.leaderboardEl = document.getElementById('leaderboard');
-                this.scoresListEl = document.getElementById('scoresList');
             }
             
             initializeMap() {
+                // Initialize Leaflet map with proper options
                 this.map = L.map('map', {
                     center: [20, 0],
                     zoom: 2,
                     minZoom: 2,
                     maxZoom: 8,
-                    worldCopyJump: true,
-                    maxBounds: [[-90, -180], [90, 180]],
-                    maxBoundsViscosity: 1.0
+                    worldCopyJump: true
                 });
-
+                
                 this.updateMapTheme();
-                this.map.doubleClickZoom.disable();
+                console.log('Map initialized successfully');
             }
 
             updateMapTheme() {
@@ -1309,6 +1207,30 @@
                 }).addTo(this.map);
             }
             
+            initializeElements() {
+                this.scoreEl = document.getElementById('score');
+                this.roundEl = document.getElementById('round');
+                this.streakEl = document.getElementById('streak');
+                this.bestTimeEl = document.getElementById('bestTime');
+                this.accuracyEl = document.getElementById('accuracy');
+                this.cityNameEl = document.getElementById('cityName');
+                this.cityHintEl = document.getElementById('cityHint');
+                this.timerFillEl = document.getElementById('timerFill');
+                this.startBtn = document.getElementById('startBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.skipBtn = document.getElementById('skipBtn');
+                this.hintBtn = document.getElementById('hintBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.leaderboardEl = document.getElementById('leaderboard');
+                this.scoresListEl = document.getElementById('scoresList');
+                this.mapOverlay = document.getElementById('mapOverlay');
+                
+                // Stats elements
+                this.totalGamesEl = document.getElementById('totalGames');
+                this.totalScoreEl = document.getElementById('totalScore');
+                this.avgAccuracyEl = document.getElementById('avgAccuracy');
+            }
+            
             setupEventListeners() {
                 this.startBtn.addEventListener('click', () => this.startGame());
                 this.pauseBtn.addEventListener('click', () => this.togglePause());
@@ -1324,192 +1246,212 @@
                         const rect = this.map.getContainer().getBoundingClientRect();
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
-                        const point = new L.Point(x, y);
+                        const point = L.point(x, y);
                         const latlng = this.map.containerPointToLatLng(point);
                         this.handleMapClick({ latlng: latlng });
                     }
                 });
+
+                // Setup game modes dropdown
+                this.setupGameModesDropdown();
             }
 
-            playSound(type) {
-                if (!this.settings.sound) return;
+            setupGameModesDropdown() {
+                const gameModesBtn = document.getElementById('gameModesBtn');
+                const gameModesDropdown = document.getElementById('gameModesDropdown');
                 
-                // Create simple audio feedback using Web Audio API
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                if (type === 'correct') {
-                    // Happy ascending tone
-                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
-                } else if (type === 'incorrect') {
-                    // Sad descending tone
-                    oscillator.frequency.setValueAtTime(392, audioContext.currentTime); // G4
-                    oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime + 0.1); // E4
-                    oscillator.frequency.setValueAtTime(261.63, audioContext.currentTime + 0.2); // C4
-                } else if (type === 'achievement') {
-                    // Victory fanfare
-                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
-                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.15);
-                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.3);
-                    oscillator.frequency.setValueAtTime(1046.5, audioContext.currentTime + 0.45);
-                }
-                
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            }
-
-            showAchievement(title, description) {
-                const achievementEl = document.getElementById('achievement');
-                achievementEl.querySelector('.achievement-title').textContent = title;
-                achievementEl.querySelector('.achievement-text').textContent = description;
-                
-                achievementEl.classList.add('show');
-                this.playSound('achievement');
-                
-                setTimeout(() => {
-                    achievementEl.classList.remove('show');
-                }, 4000);
-            }
-
-            checkAchievements() {
-                // First Correct Answer
-                if (this.correctAnswers === 1 && !this.achievements.includes('first_correct')) {
-                    this.achievements.push('first_correct');
-                    this.showAchievement('🎯 First Success!', 'You got your first city correct!');
-                }
-                
-                // Perfect Streak
-                if (this.streak === 5 && !this.achievements.includes('streak_5')) {
-                    this.achievements.push('streak_5');
-                    this.showAchievement('🔥 Hot Streak!', 'Five correct answers in a row!');
-                }
-                
-                // Speed Demon
-                if (this.bestTime && this.bestTime < 2000 && !this.achievements.includes('speed_demon')) {
-                    this.achievements.push('speed_demon');
-                    this.showAchievement('⚡ Lightning Fast!', 'Answered in under 2 seconds!');
-                }
-                
-                // Geography Expert
-                if (this.score > 2000 && !this.achievements.includes('expert')) {
-                    this.achievements.push('expert');
-                    this.showAchievement('🌍 Geography Expert!', 'Scored over 2000 points!');
-                }
-                
-                // Blind Mode Master
-                if (this.settings.blindMode && this.streak >= 3 && !this.achievements.includes('blind_master')) {
-                    this.achievements.push('blind_master');
-                    this.showAchievement('👁️ Blind Master!', '3+ streak in Blind Mode!');
+                if (gameModesBtn && gameModesDropdown) {
+                    gameModesBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        gameModesDropdown.classList.toggle('show');
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', () => {
+                        gameModesDropdown.classList.remove('show');
+                    });
+                    
+                    // Prevent dropdown from closing when clicking inside
+                    gameModesDropdown.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
                 }
             }
             
-            startGame() {
-                this.showLoading(true);
-                
-                setTimeout(() => {
-                    this.gameActive = true;
-                    this.startBtn.disabled = true;
-                    this.pauseBtn.disabled = false;
-                    this.skipBtn.disabled = false;
-                    this.hintBtn.disabled = false;
-                    this.leaderboardEl.style.display = 'none';
-                    this.usedCities = [];
-                    this.correctAnswers = 0;
-                    this.totalAnswers = 0;
-                    this.achievements = [];
-                    this.showLoading(false);
-                    this.updateBlindMode();
-                    this.nextRound();
-                }, 1000);
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem('civile_settings');
+                    if (saved) {
+                        this.settings = { ...this.settings, ...JSON.parse(saved) };
+                    }
+                } catch (error) {
+                    console.error('Error loading settings:', error);
+                }
             }
 
+            saveSettings() {
+                try {
+                    localStorage.setItem('civile_settings', JSON.stringify(this.settings));
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                }
+            }
+
+            loadStats() {
+                try {
+                    const saved = localStorage.getItem('civile_stats');
+                    if (saved) {
+                        this.stats = { ...this.stats, ...JSON.parse(saved) };
+                    }
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+                this.updateStatsDisplay();
+            }
+
+            saveStats() {
+                this.stats.totalGames++;
+                this.stats.totalScore += this.score;
+                if (this.totalAnswers > 0) {
+                    this.stats.correctAnswers += this.correctAnswers;
+                    this.stats.totalAnswers += this.totalAnswers;
+                }
+                
+                try {
+                    localStorage.setItem('civile_stats', JSON.stringify(this.stats));
+                } catch (error) {
+                    console.error('Error saving stats:', error);
+                }
+                this.updateStatsDisplay();
+            }
+
+            updateStatsDisplay() {
+                if (this.totalGamesEl) {
+                    this.totalGamesEl.textContent = this.stats.totalGames;
+                    this.totalScoreEl.textContent = this.stats.totalScore.toLocaleString();
+                    const avgAccuracy = this.stats.totalAnswers > 0 ? 
+                        Math.round((this.stats.correctAnswers / this.stats.totalAnswers) * 100) : 0;
+                    this.avgAccuracyEl.textContent = avgAccuracy + '%';
+                }
+            }
+            
+            loadHighScores() {
+                try {
+                    const saved = localStorage.getItem('civile_highscores');
+                    if (saved) {
+                        this.highScores = JSON.parse(saved);
+                    }
+                } catch (error) {
+                    console.error('Error loading high scores:', error);
+                }
+            }
+            
+            updateSettingsDisplay() {
+                Object.keys(this.settings).forEach(setting => {
+                    const toggle = document.getElementById(setting + 'Toggle');
+                    if (toggle) {
+                        toggle.classList.toggle('active', this.settings[setting]);
+                        // Add click event listener
+                        toggle.onclick = () => this.toggleSetting(setting);
+                    }
+                });
+                
+                const difficultySlider = document.getElementById('difficultySlider');
+                if (difficultySlider) {
+                    difficultySlider.value = this.settings.difficulty;
+                    difficultySlider.onchange = (e) => this.updateDifficulty(e.target.value);
+                }
+            }
+
+            toggleSetting(setting) {
+                this.settings[setting] = !this.settings[setting];
+                this.saveSettings();
+                this.updateSettingsDisplay();
+                
+                if (setting === 'darkMap') {
+                    this.updateMapTheme();
+                } else if (setting === 'blindMode') {
+                    this.updateBlindMode();
+                }
+            }
+
+            updateDifficulty(value) {
+                this.settings.difficulty = parseInt(value);
+                this.saveSettings();
+            }
+            
+            updateBlindMode() {
+                const mapElement = document.getElementById('map');
+                if (this.settings.blindMode && this.gameActive && this.currentCity) {
+                    mapElement.classList.add('blind-mode');
+                    this.mapOverlay.classList.add('show');
+                } else {
+                    mapElement.classList.remove('blind-mode');
+                    this.mapOverlay.classList.remove('show');
+                }
+            }
+            
             showLoading(show) {
                 document.getElementById('loading').classList.toggle('show', show);
             }
             
+            startGame() {
+                if (this.cities.length === 0) {
+                    this.showFeedback('No cities loaded!', 'incorrect');
+                    return;
+                }
+
+                this.gameActive = true;
+                this.startBtn.disabled = true;
+                this.pauseBtn.disabled = false;
+                this.skipBtn.disabled = false;
+                this.hintBtn.disabled = false;
+                this.leaderboardEl.style.display = 'none';
+                this.usedCities = [];
+                this.correctAnswers = 0;
+                this.totalAnswers = 0;
+                this.achievements = [];
+                this.score = 0;
+                this.round = 1;
+                this.streak = 0;
+                this.bestTime = null;
+                this.accuracy = 100;
+                
+                this.updateBlindMode();
+                this.nextRound();
+            }
+            
             nextRound() {
-                if (!this.gameActive || this.round > 15 || this.cities.length === 0) {
+                if (!this.gameActive || this.round > 10 || this.cities.length === 0) {
                     this.endGame();
                     return;
                 }
                 
                 this.clearMarkers();
                 this.hintUsed = false;
+                this.hintBtn.disabled = false;
                 this.updateBlindMode();
                 
                 // Select city based on difficulty progression
-                let difficulty = Math.min(3, Math.ceil(this.round / 5));
+                let difficulty = Math.min(3, Math.ceil(this.round / 4));
                 
-                // Get recently used countries (last 3 rounds) to avoid repetition
-                const recentCountries = this.usedCities.slice(-3).map(cityName => {
-                    const city = this.cities.find(c => c.name === cityName);
-                    return city ? city.country : null;
-                }).filter(Boolean);
-                
-                // Filter available cities
+                // Get available cities
                 let availableCities = this.cities.filter(city => 
                     city.difficulty === difficulty && 
-                    !this.usedCities.includes(city.name) &&
-                    !recentCountries.includes(city.country)
+                    !this.usedCities.includes(city.name)
                 );
                 
-                // If no cities available with country diversity, relax the country constraint
-                if (availableCities.length === 0) {
-                    availableCities = this.cities.filter(city => 
-                        city.difficulty === difficulty && 
-                        !this.usedCities.includes(city.name)
-                    );
-                }
-                
-                // If still no cities, try other difficulties
                 if (availableCities.length === 0) {
                     availableCities = this.cities.filter(city => !this.usedCities.includes(city.name));
                 }
                 
-                // If still no cities available, reset used cities but keep some diversity
                 if (availableCities.length === 0) {
-                    // Reset but keep track of which countries were heavily used
-                    const countryCounts = {};
-                    this.usedCities.forEach(cityName => {
-                        const city = this.cities.find(c => c.name === cityName);
-                        if (city) {
-                            countryCounts[city.country] = (countryCounts[city.country] || 0) + 1;
-                        }
-                    });
-                    
-                    // Reset used cities but prioritize less-used countries
+                    availableCities = this.cities;
                     this.usedCities = [];
-                    availableCities = this.cities.filter(city => 
-                        city.difficulty === difficulty && 
-                        (!countryCounts[city.country] || countryCounts[city.country] < 2)
-                    );
-                    
-                    // If still no cities, take any city
-                    if (availableCities.length === 0) {
-                        availableCities = this.cities;
-                    }
-                }
-                
-                // Ensure we have cities to choose from
-                if (availableCities.length === 0) {
-                    console.error('No cities available');
-                    this.endGame();
-                    return;
                 }
                 
                 this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
                 this.usedCities.push(this.currentCity.name);
-                
-                console.log(`Round ${this.round}: ${this.currentCity.name}, ${this.currentCity.country}, Difficulty: ${this.currentCity.difficulty}`);
                 
                 this.cityNameEl.textContent = this.currentCity.name;
                 
@@ -1527,12 +1469,13 @@
                 this.timeLeft = this.settings.timePressure ? 7000 : 10000;
                 this.startTime = Date.now();
                 this.startTimer();
+                this.updateDisplay();
             }
             
             startTimer() {
                 clearInterval(this.timer);
                 this.timer = setInterval(() => {
-                    if (this.isPaused) return;
+                    if (this.isPaused || !this.gameActive) return;
                     
                     this.timeLeft -= 100;
                     const percentage = (this.timeLeft / (this.settings.timePressure ? 7000 : 10000)) * 100;
@@ -1549,17 +1492,17 @@
                 
                 this.hintUsed = true;
                 this.score = Math.max(0, this.score - 25);
+                this.hintBtn.disabled = true;
                 
                 const additionalHints = [
-                    `Population: ${this.currentCity.population}`,
-                    `Famous landmark: ${this.currentCity.landmark}`,
+                    `Population: ${this.currentCity.population || 'Large city'}`,
+                    `Famous landmark: ${this.currentCity.landmark || 'Historic center'}`,
                     `Country: ${this.currentCity.country}`,
                     `Coordinates: ${Math.abs(this.currentCity.lat).toFixed(1)}°${this.currentCity.lat >= 0 ? 'N' : 'S'}, ${Math.abs(this.currentCity.lng).toFixed(1)}°${this.currentCity.lng >= 0 ? 'E' : 'W'}`
                 ];
                 
                 const randomHint = additionalHints[Math.floor(Math.random() * additionalHints.length)];
                 this.cityHintEl.textContent += ` • ${randomHint}`;
-                this.hintBtn.disabled = true;
                 
                 this.showFeedback('Hint used (-25 points)', 'incorrect');
                 this.updateDisplay();
@@ -1600,18 +1543,14 @@
             }
             
             calculateDistance(lat1, lng1, lat2, lng2) {
-                const R = 6371;
-                const dLat = this.toRadians(lat2 - lat1);
-                const dLng = this.toRadians(lng2 - lng1);
-                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
-                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const R = 6371; // Earth radius in km
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLng = (lng2 - lng1) * Math.PI / 180;
+                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLng/2) * Math.sin(dLng/2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                 return R * c;
-            }
-            
-            toRadians(degrees) {
-                return degrees * (Math.PI / 180);
             }
             
             getCurrentTolerance() {
@@ -1619,7 +1558,7 @@
                 const difficulty = Math.min(3, Math.ceil(this.round / 5));
                 
                 let baseTolerance = 500;
-                baseTolerance *= (6 - this.settings.difficulty) / 5; // Adjust for user setting
+                baseTolerance *= (6 - this.settings.difficulty) / 5;
                 
                 if (difficulty === 2) baseTolerance *= 0.6;
                 if (difficulty === 3) baseTolerance *= 0.4;
@@ -1631,7 +1570,6 @@
             addClickMarker(lat, lng, isCorrect) {
                 const marker = L.circleMarker([lat, lng], {
                     radius: 12,
-                    className: isCorrect ? 'correct-marker' : 'click-marker',
                     color: isCorrect ? '#27ae60' : '#e74c3c',
                     fillColor: isCorrect ? 'rgba(39, 174, 96, 0.8)' : 'rgba(231, 76, 60, 0.8)',
                     fillOpacity: 0.8,
@@ -1670,7 +1608,7 @@
                     <div style="text-align: center; color: #2c3e50;">
                         <strong>${this.currentCity.name}</strong><br>
                         ${this.currentCity.country}<br>
-                        <small>${this.currentCity.landmark}</small>
+                        <small>${this.currentCity.landmark || 'Major city'}</small>
                     </div>
                 `).openPopup();
                 
@@ -1749,7 +1687,7 @@
                 this.totalAnswers++;
                 this.updateAccuracy();
                 this.showCityLocation();
-                this.showFeedback('⏰ Time's up!', 'incorrect');
+                this.showFeedback('⏰ Time\'s up!', 'incorrect');
                 this.updateDisplay();
                 
                 setTimeout(() => {
@@ -1774,6 +1712,83 @@
                     this.round++;
                     this.nextRound();
                 }, 3500);
+            }
+            
+            playSound(type) {
+                if (!this.settings.sound) return;
+                
+                // Create simple audio feedback using Web Audio API
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    if (type === 'correct') {
+                        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+                    } else if (type === 'incorrect') {
+                        oscillator.frequency.setValueAtTime(392, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(261.63, audioContext.currentTime + 0.2);
+                    }
+                    
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } catch (error) {
+                    console.log('Audio not supported');
+                }
+            }
+
+            showAchievement(title, description) {
+                const achievementEl = document.getElementById('achievement');
+                achievementEl.querySelector('.achievement-title').textContent = title;
+                achievementEl.querySelector('.achievement-text').textContent = description;
+                
+                achievementEl.classList.add('show');
+                this.playSound('correct');
+                
+                setTimeout(() => {
+                    achievementEl.classList.remove('show');
+                }, 4000);
+            }
+
+            checkAchievements() {
+                // First Correct Answer
+                if (this.correctAnswers === 1 && !this.achievements.includes('first_correct')) {
+                    this.achievements.push('first_correct');
+                    this.showAchievement('🎯 First Success!', 'You got your first city correct!');
+                }
+                
+                // Perfect Streak
+                if (this.streak === 5 && !this.achievements.includes('streak_5')) {
+                    this.achievements.push('streak_5');
+                    this.showAchievement('🔥 Hot Streak!', 'Five correct answers in a row!');
+                }
+                
+                // Speed Demon
+                if (this.bestTime && this.bestTime < 2000 && !this.achievements.includes('speed_demon')) {
+                    this.achievements.push('speed_demon');
+                    this.showAchievement('⚡ Lightning Fast!', 'Answered in under 2 seconds!');
+                }
+                
+                // Geography Expert
+                if (this.score > 2000 && !this.achievements.includes('expert')) {
+                    this.achievements.push('expert');
+                    this.showAchievement('🌍 Geography Expert!', 'Scored over 2000 points!');
+                }
+                
+                // Blind Mode Master
+                if (this.settings.blindMode && this.streak >= 3 && !this.achievements.includes('blind_master')) {
+                    this.achievements.push('blind_master');
+                    this.showAchievement('👁️ Blind Master!', '3+ streak in Blind Mode!');
+                }
             }
             
             showFeedback(message, type) {
@@ -1877,16 +1892,14 @@
             
             resetGame() {
                 clearInterval(this.timer);
-                this.clearMarkers();
-                
+                this.gameActive = false;
+                this.isPaused = false;
                 this.score = 0;
                 this.round = 1;
                 this.streak = 0;
                 this.bestTime = null;
                 this.accuracy = 100;
                 this.currentCity = null;
-                this.gameActive = false;
-                this.isPaused = false;
                 this.usedCities = [];
                 this.correctAnswers = 0;
                 this.totalAnswers = 0;
@@ -1903,11 +1916,13 @@
                 mapElement.classList.remove('blind-mode');
                 this.mapOverlay.classList.remove('show');
                 
+                this.clearMarkers();
+                this.map.setView([20, 0], 2);
+                
                 this.cityNameEl.textContent = 'Click "Start Game" to begin!';
                 this.cityHintEl.textContent = 'Test your geography knowledge by clicking cities on the world map';
                 this.timerFillEl.style.width = '100%';
                 
-                this.map.setView([20, 0], 2);
                 this.updateDisplay();
                 this.showLeaderboard();
             }
@@ -1942,22 +1957,9 @@
                 }
             }
             
-            loadHighScores() {
-                try {
-                    const saved = localStorage.getItem('civile_highscores');
-                    if (saved) {
-                        this.highScores = JSON.parse(saved);
-                    }
-                } catch (error) {
-                    console.error('Error loading high scores:', error);
-                }
-            }
-            
             showLeaderboard() {
-                this.loadHighScores();
-                
                 if (this.highScores.length === 0) {
-                    this.leaderboardEl.style.display = 'none';
+                    this.scoresListEl.innerHTML = 'No scores yet!';
                     return;
                 }
                 
@@ -1975,7 +1977,7 @@
             }
         }
 
-        // Page Navigation
+        // Global functions
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
@@ -1983,120 +1985,9 @@
             document.getElementById(pageId + '-page').classList.add('active');
         }
 
-        // Game Modes Dropdown
-        function setupGameModesDropdown() {
-            const gameModesBtn = document.getElementById('gameModesBtn');
-            const gameModesDropdown = document.getElementById('gameModesDropdown');
-            
-            if (gameModesBtn && gameModesDropdown) {
-                gameModesBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    gameModesDropdown.classList.toggle('show');
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', () => {
-                    gameModesDropdown.classList.remove('show');
-                });
-                
-                // Prevent dropdown from closing when clicking inside
-                gameModesDropdown.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-            }
-        }
-
-        // Settings Functions
-        function toggleSetting(setting) {
-            const toggle = document.getElementById(setting + 'Toggle');
-            const isActive = toggle.classList.contains('active');
-            
-            toggle.classList.toggle('active', !isActive);
-            gameSettings[setting] = !isActive;
-            
-            if (window.game) {
-                window.game.settings[setting] = !isActive;
-                window.game.saveSettings();
-                
-                // Apply setting changes
-                if (setting === 'darkMap') {
-                    window.game.updateMapTheme();
-                } else if (setting === 'blindMode') {
-                    window.game.updateBlindMode();
-                }
-            }
-        }
-
-        function updateDifficulty(value) {
-            gameSettings.difficulty = parseInt(value);
-            if (window.game) {
-                window.game.settings.difficulty = parseInt(value);
-                window.game.saveSettings();
-            }
-        }
-
-        // Initialize settings display
-        function initializeSettings() {
-            Object.keys(gameSettings).forEach(setting => {
-                const toggle = document.getElementById(setting + 'Toggle');
-                if (toggle) {
-                    toggle.classList.toggle('active', gameSettings[setting]);
-                }
-            });
-            
-            const difficultySlider = document.getElementById('difficultySlider');
-            if (difficultySlider) {
-                difficultySlider.value = gameSettings.difficulty;
-            }
-        }
-
         // Initialize game when page loads
         window.addEventListener('load', () => {
-            initializeSettings();
-            setupGameModesDropdown();
             window.game = new EnhancedCivileGame();
-            
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (!window.game.gameActive) return;
-                
-                switch(e.key) {
-                    case ' ':
-                        e.preventDefault();
-                        window.game.togglePause();
-                        break;
-                    case 's':
-                        if (e.ctrlKey) {
-                            e.preventDefault();
-                            window.game.skipCity();
-                        }
-                        break;
-                    case 'h':
-                        if (e.ctrlKey) {
-                            e.preventDefault();
-                            window.game.showHint();
-                        }
-                        break;
-                    case 'r':
-                        if (e.ctrlKey) {
-                            e.preventDefault();
-                            window.game.resetGame();
-                        }
-                        break;
-                }
-            });
-            
-            // Add fullscreen support
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'F11') {
-                    e.preventDefault();
-                    if (!document.fullscreenElement) {
-                        document.documentElement.requestFullscreen();
-                    } else {
-                        document.exitFullscreen();
-                    }
-                }
-            });
         });
 
         // Add smooth scrolling for better UX
@@ -2112,24 +2003,6 @@
                 }
             });
         });
-
-        // Performance optimization: Lazy load map tiles
-        if ('IntersectionObserver' in window) {
-            const mapObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && window.game && window.game.map) {
-                        window.game.map.invalidateSize();
-                    }
-                });
-            });
-            
-            setTimeout(() => {
-                const mapElement = document.getElementById('map');
-                if (mapElement) {
-                    mapObserver.observe(mapElement);
-                }
-            }, 1000);
-        }
     </script>
 </body>
 </html>
