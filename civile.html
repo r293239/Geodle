@@ -317,6 +317,41 @@
             border: 3px solid var(--glass-border);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #map.blind-mode {
+            filter: blur(20px) brightness(0.3);
+            pointer-events: none;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            z-index: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .map-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .blind-mode-message {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
         }
 
         .controls {
@@ -832,7 +867,17 @@
                 </div>
             </div>
 
-            <div id="map"></div>
+            <div style="position: relative;">
+                <div id="map"></div>
+                <div class="map-overlay" id="mapOverlay">
+                    <div class="blind-mode-message">
+                        <i class="fas fa-eye-slash" style="font-size: 3em; margin-bottom: 20px;"></i>
+                        <h3>Blind Mode Active</h3>
+                        <p>Click anywhere on the map to guess the location!</p>
+                        <p style="font-size: 0.8em; margin-top: 10px; opacity: 0.7;">Map revealed after each guess</p>
+                    </div>
+                </div>
+            </div>
 
             <div class="controls">
                 <button id="startBtn" class="btn"><i class="fas fa-play"></i> Start Game</button>
@@ -871,6 +916,14 @@
                         <div style="opacity: 0.7; font-size: 0.9em;">Shorter time limits for increased difficulty</div>
                     </div>
                     <div class="toggle" id="timePressureToggle" onclick="toggleSetting('timePressure')"></div>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <strong>Blind Mode</strong>
+                        <div style="opacity: 0.7; font-size: 0.9em;">Hide the map - guess based on geography knowledge only</div>
+                    </div>
+                    <div class="toggle" id="blindModeToggle" onclick="toggleSetting('blindMode')"></div>
                 </div>
                 
                 <div class="setting-item">
@@ -944,12 +997,18 @@
                     <li style="margin: 8px 0;">🎖️ Earn points based on accuracy, speed, and difficulty</li>
                     <li style="margin: 8px 0;">🔥 Build streaks for bonus points</li>
                     <li style="margin: 8px 0;">📍 The closer you click, the more points you get</li>
+                    <li style="margin: 8px 0;">👁️ Try <strong>Blind Mode</strong> for ultimate challenge - no map visible!</li>
                 </ul>
             </div>
             
             <div class="help-section">
                 <h2 class="help-title"><i class="fas fa-star"></i> New Features</h2>
                 <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">👁️</div>
+                        <h3>Blind Mode</h3>
+                        <p>Test your pure geography knowledge - the map is completely hidden until after each guess!</p>
+                    </div>
                     <div class="feature-card">
                         <div class="feature-icon">💡</div>
                         <h3>Smart Hints</h3>
@@ -987,6 +1046,10 @@
                         <span>🔥 Streak Multiplier</span>
                         <span style="color: var(--success-color); font-weight: bold;">10 × streak</span>
                     </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <span>👁️ Blind Mode Bonus</span>
+                        <span style="color: var(--accent-color); font-weight: bold;">+50 points per round</span>
+                    </div>
                 </div>
             </div>
             
@@ -1005,6 +1068,9 @@
                     <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--error-color);">
                         <strong>🎯 Zoom strategically</strong> - Use map zoom to get more precise with your clicks
                     </div>
+                    <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid #9b59b6;">
+                        <strong>👁️ Master Blind Mode</strong> - Practice mental mapping and continental positioning
+                    </div>
                 </div>
             </div>
 
@@ -1022,6 +1088,10 @@
                     <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
                         <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">What happens if I run out of time?</summary>
                         <p>The game will show you the correct location and move to the next city. Your streak will reset.</p>
+                    </details>
+                    <details style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                        <summary style="cursor: pointer; font-weight: bold; margin-bottom: 10px;">What is Blind Mode?</summary>
+                        <p>Blind Mode hides the map completely, forcing you to rely on your geographical knowledge. You get bonus points for this extra challenge!</p>
                     </details>
                 </div>
             </div>
@@ -1045,6 +1115,7 @@
         let gameSettings = {
             sound: true,
             timePressure: false,
+            blindMode: false,
             countryHint: false,
             difficulty: 3,
             darkMap: false,
@@ -1081,6 +1152,7 @@
                 this.correctAnswers = 0;
                 this.totalAnswers = 0;
                 this.achievements = [];
+                this.mapOverlay = document.getElementById('mapOverlay');
                 
                 this.loadSettings();
                 this.loadStats();
@@ -1090,6 +1162,7 @@
                 this.setupEventListeners();
                 this.updateDisplay();
                 this.showLeaderboard();
+                this.updateBlindMode();
             }
             
             async loadCitiesData() {
@@ -1128,6 +1201,17 @@
                     localStorage.setItem('civile_settings', JSON.stringify(this.settings));
                 } catch (error) {
                     console.error('Error saving settings:', error);
+                }
+            }
+
+            updateBlindMode() {
+                const mapElement = document.getElementById('map');
+                if (this.settings.blindMode && this.gameActive && this.currentCity) {
+                    mapElement.classList.add('blind-mode');
+                    this.mapOverlay.classList.add('show');
+                } else {
+                    mapElement.classList.remove('blind-mode');
+                    this.mapOverlay.classList.remove('show');
                 }
             }
 
@@ -1233,6 +1317,18 @@
                 this.resetBtn.addEventListener('click', () => this.resetGame());
                 
                 this.map.on('click', (e) => this.handleMapClick(e));
+                
+                // Allow clicking through overlay in blind mode
+                this.mapOverlay.addEventListener('click', (e) => {
+                    if (this.settings.blindMode && this.gameActive && this.currentCity) {
+                        const rect = this.map.getContainer().getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const point = new L.Point(x, y);
+                        const latlng = this.map.containerPointToLatLng(point);
+                        this.handleMapClick({ latlng: latlng });
+                    }
+                });
             }
 
             playSound(type) {
@@ -1308,6 +1404,12 @@
                     this.achievements.push('expert');
                     this.showAchievement('🌍 Geography Expert!', 'Scored over 2000 points!');
                 }
+                
+                // Blind Mode Master
+                if (this.settings.blindMode && this.streak >= 3 && !this.achievements.includes('blind_master')) {
+                    this.achievements.push('blind_master');
+                    this.showAchievement('👁️ Blind Master!', '3+ streak in Blind Mode!');
+                }
             }
             
             startGame() {
@@ -1325,6 +1427,7 @@
                     this.totalAnswers = 0;
                     this.achievements = [];
                     this.showLoading(false);
+                    this.updateBlindMode();
                     this.nextRound();
                 }, 1000);
             }
@@ -1341,6 +1444,7 @@
                 
                 this.clearMarkers();
                 this.hintUsed = false;
+                this.updateBlindMode();
                 
                 // Select city based on difficulty progression
                 let difficulty = Math.min(3, Math.ceil(this.round / 5));
@@ -1413,6 +1517,11 @@
                 if (this.settings.countryHint) {
                     hintText += ` • Located in ${this.currentCity.country}`;
                 }
+                
+                if (this.settings.blindMode) {
+                    hintText += ` • 👁️ Blind Mode Active`;
+                }
+                
                 this.cityHintEl.textContent = hintText;
                 
                 this.timeLeft = this.settings.timePressure ? 7000 : 10000;
@@ -1542,6 +1651,13 @@
             }
             
             showCityLocation() {
+                // Temporarily reveal the map in blind mode
+                if (this.settings.blindMode) {
+                    const mapElement = document.getElementById('map');
+                    mapElement.classList.remove('blind-mode');
+                    this.mapOverlay.classList.remove('show');
+                }
+                
                 const correctMarker = L.circleMarker([this.currentCity.lat, this.currentCity.lng], {
                     radius: 15,
                     color: '#27ae60',
@@ -1565,6 +1681,10 @@
                         this.map.removeLayer(correctMarker);
                         this.markers = this.markers.filter(m => m !== correctMarker);
                     }
+                    // Re-enable blind mode after showing location
+                    if (this.settings.blindMode && this.gameActive) {
+                        this.updateBlindMode();
+                    }
                 }, 4000);
             }
             
@@ -1586,7 +1706,8 @@
                 const accuracyBonus = Math.max(0, Math.floor(300 - distance / 2));
                 const streakBonus = this.streak * 15;
                 const hintPenalty = this.hintUsed ? 25 : 0;
-                const roundScore = 100 + timeBonus + accuracyBonus + streakBonus - hintPenalty;
+                const blindModeBonus = this.settings.blindMode ? 50 : 0;
+                const roundScore = 100 + timeBonus + accuracyBonus + streakBonus + blindModeBonus - hintPenalty;
                 
                 this.score += roundScore;
                 this.streak++;
@@ -1597,7 +1718,13 @@
                 
                 this.playSound('correct');
                 this.showCityLocation();
-                this.showFeedback(`🎉 +${roundScore} points! (${Math.round(distance)}km away)`, 'correct');
+                
+                let feedbackMessage = `🎉 +${roundScore} points! (${Math.round(distance)}km away)`;
+                if (this.settings.blindMode) {
+                    feedbackMessage += ` 👁️`;
+                }
+                
+                this.showFeedback(feedbackMessage, 'correct');
                 this.updateDisplay();
                 this.checkAchievements();
                 
@@ -1611,6 +1738,7 @@
                 this.score = Math.max(0, this.score - 25);
                 this.streak = 0;
                 this.playSound('incorrect');
+                this.showCityLocation();
                 this.showFeedback(`❌ -25 points (${Math.round(distance)}km away)`, 'incorrect');
                 this.updateDisplay();
             }
@@ -1681,6 +1809,9 @@
                     if (this.settings.countryHint) {
                         hintText += ` • Located in ${this.currentCity.country}`;
                     }
+                    if (this.settings.blindMode) {
+                        hintText += ` • 👁️ Blind Mode Active`;
+                    }
                     this.cityHintEl.textContent = hintText;
                 }
             }
@@ -1695,6 +1826,11 @@
                 this.skipBtn.disabled = true;
                 this.hintBtn.disabled = true;
                 
+                // Ensure map is visible when game ends
+                const mapElement = document.getElementById('map');
+                mapElement.classList.remove('blind-mode');
+                this.mapOverlay.classList.remove('show');
+                
                 this.saveHighScore();
                 this.saveStats();
                 this.showGameOver();
@@ -1707,6 +1843,10 @@
                 else if (this.accuracy >= 75) performanceMessage = '🎖️ Great job!';
                 else if (this.accuracy >= 60) performanceMessage = '👍 Good effort!';
                 else performanceMessage = '📚 Keep practicing!';
+                
+                if (this.settings.blindMode && this.accuracy >= 70) {
+                    performanceMessage += ' 👁️ Blind Mode Master!';
+                }
                 
                 this.cityNameEl.innerHTML = `
                     <div style="background: linear-gradient(45deg, var(--success-color), #2ecc71); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
@@ -1758,6 +1898,11 @@
                 this.hintBtn.disabled = true;
                 this.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                 
+                // Ensure map is visible when resetting
+                const mapElement = document.getElementById('map');
+                mapElement.classList.remove('blind-mode');
+                this.mapOverlay.classList.remove('show');
+                
                 this.cityNameEl.textContent = 'Click "Start Game" to begin!';
                 this.cityHintEl.textContent = 'Test your geography knowledge by clicking cities on the world map';
                 this.timerFillEl.style.width = '100%';
@@ -1782,7 +1927,8 @@
                     accuracy: this.accuracy,
                     bestTime: this.bestTime,
                     date: new Date().toLocaleDateString(),
-                    achievements: this.achievements.length
+                    achievements: this.achievements.length,
+                    blindMode: this.settings.blindMode
                 };
                 
                 this.highScores.push(newScore);
@@ -1820,7 +1966,7 @@
                     <div class="score-entry">
                         <div class="score-rank">#${index + 1}</div>
                         <div class="score-details">
-                            <div class="score-main">${score.score.toLocaleString()} points</div>
+                            <div class="score-main">${score.score.toLocaleString()} points ${score.blindMode ? '👁️' : ''}</div>
                             <div class="score-meta">${score.rounds} rounds • ${score.accuracy}% accuracy</div>
                         </div>
                         <div class="score-date">${score.date}</div>
@@ -1875,6 +2021,8 @@
                 // Apply setting changes
                 if (setting === 'darkMap') {
                     window.game.updateMapTheme();
+                } else if (setting === 'blindMode') {
+                    window.game.updateBlindMode();
                 }
             }
         }
