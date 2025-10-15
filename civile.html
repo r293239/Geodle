@@ -319,11 +319,11 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             overflow: hidden;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         #map.blind-mode {
-            filter: blur(20px) brightness(0.3);
-            pointer-events: none;
+            filter: blur(15px) brightness(0.2);
         }
 
         .map-overlay {
@@ -332,20 +332,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             border-radius: 20px;
-            z-index: 500;
-            opacity: 0;
+            z-index: 400;
             pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .map-overlay.show {
-            opacity: 1;
-            pointer-events: all;
+            background: transparent;
         }
 
         .blind-mode-message {
@@ -353,6 +346,12 @@
             color: white;
             font-size: 1.5em;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
         }
 
         .controls {
@@ -1194,7 +1193,7 @@
                 this.correctAnswers = 0;
                 this.totalAnswers = 0;
                 this.achievements = [];
-                this.canGuess = true; // New: prevent multiple guesses
+                this.canGuess = true;
                 
                 this.settings = {
                     sound: true,
@@ -1325,16 +1324,15 @@
                 this.loadSettings();
                 this.loadStats();
                 this.loadHighScores();
-                this.loadAchievements(); // Load achievements from localStorage
+                this.loadAchievements();
                 this.initializeMap();
                 this.initializeElements();
                 this.setupEventListeners();
                 this.updateDisplay();
                 this.showLeaderboard();
                 this.updateSettingsDisplay();
-                this.showAchievementsPage(); // Initialize achievements page
+                this.showAchievementsPage();
                 
-                // Enable start button now that cities are loaded
                 document.getElementById('startBtn').disabled = false;
                 document.getElementById('cityName').textContent = 'Click "Start Game" to begin!';
                 document.getElementById('cityHint').textContent = 'Test your geography knowledge by clicking cities on the world map';
@@ -1352,7 +1350,6 @@
                     this.showLoading(false);
                 } catch (error) {
                     console.error('Error loading cities data:', error);
-                    // Fallback to a small set of cities if the file can't be loaded
                     this.cities = [
                         {
                             "name": "Paris",
@@ -1384,7 +1381,6 @@
             }
             
             initializeMap() {
-                // Initialize Leaflet map with proper options
                 this.map = L.map('map', {
                     center: [20, 0],
                     zoom: 2,
@@ -1398,14 +1394,12 @@
             }
 
             updateMapTheme() {
-                // Remove existing tile layer
                 this.map.eachLayer((layer) => {
                     if (layer._url) {
                         this.map.removeLayer(layer);
                     }
                 });
 
-                // Add appropriate tile layer
                 const tileUrl = this.settings.darkMap ? 
                     'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' :
                     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -1434,7 +1428,6 @@
                 this.scoresListEl = document.getElementById('scoresList');
                 this.mapOverlay = document.getElementById('mapOverlay');
                 
-                // Stats elements
                 this.totalGamesEl = document.getElementById('totalGames');
                 this.totalScoreEl = document.getElementById('totalScore');
                 this.avgAccuracyEl = document.getElementById('avgAccuracy');
@@ -1449,19 +1442,6 @@
                 
                 this.map.on('click', (e) => this.handleMapClick(e));
                 
-                // Allow clicking through overlay in blind mode
-                this.mapOverlay.addEventListener('click', (e) => {
-                    if (this.settings.blindMode && this.gameActive && this.currentCity && this.canGuess) {
-                        const rect = this.map.getContainer().getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        const point = L.point(x, y);
-                        const latlng = this.map.containerPointToLatLng(point);
-                        this.handleMapClick({ latlng: latlng });
-                    }
-                });
-
-                // Setup game modes dropdown
                 this.setupGameModesDropdown();
             }
 
@@ -1475,12 +1455,10 @@
                         gameModesDropdown.classList.toggle('show');
                     });
                     
-                    // Close dropdown when clicking outside
                     document.addEventListener('click', () => {
                         gameModesDropdown.classList.remove('show');
                     });
                     
-                    // Prevent dropdown from closing when clicking inside
                     gameModesDropdown.addEventListener('click', (e) => {
                         e.stopPropagation();
                     });
@@ -1539,7 +1517,6 @@
                     const saved = localStorage.getItem('civile_achievements');
                     if (saved) {
                         const savedAchievements = JSON.parse(saved);
-                        // Merge saved achievements with default ones
                         Object.keys(this.allAchievements).forEach(key => {
                             if (savedAchievements[key]) {
                                 this.allAchievements[key] = { ...this.allAchievements[key], ...savedAchievements[key] };
@@ -1554,11 +1531,8 @@
             saveAchievements() {
                 try {
                     localStorage.setItem('civile_achievements', JSON.stringify(this.allAchievements));
-                this.showAchievementsPage(); // Refresh achievements display
-                this.updateAchievementStats();
-                console.log('Achievements saved to localStorage');
-                console.log('Current achievements:', this.allAchievements);
-                console.log('LocalStorage content:', localStorage.getItem('civile_achievements'));
+                    this.showAchievementsPage();
+                    this.updateAchievementStats();
                 } catch (error) {
                     console.error('Error saving achievements:', error);
                 }
@@ -1628,7 +1602,6 @@
                     const toggle = document.getElementById(setting + 'Toggle');
                     if (toggle) {
                         toggle.classList.toggle('active', this.settings[setting]);
-                        // Add click event listener
                         toggle.onclick = () => this.toggleSetting(setting);
                     }
                 });
@@ -1659,12 +1632,15 @@
             
             updateBlindMode() {
                 const mapElement = document.getElementById('map');
-                if (this.settings.blindMode && this.gameActive && this.currentCity) {
+                const mapOverlay = document.getElementById('mapOverlay');
+                
+                // Always show blind mode when enabled and game is active (even when paused)
+                if (this.settings.blindMode && this.gameActive) {
                     mapElement.classList.add('blind-mode');
-                    this.mapOverlay.classList.add('show');
+                    mapOverlay.style.display = 'flex';
                 } else {
                     mapElement.classList.remove('blind-mode');
-                    this.mapOverlay.classList.remove('show');
+                    mapOverlay.style.display = 'none';
                 }
             }
             
@@ -1679,7 +1655,7 @@
                 }
 
                 this.gameActive = true;
-                this.canGuess = true; // Reset guessing ability
+                this.canGuess = true;
                 this.startBtn.disabled = true;
                 this.pauseBtn.disabled = false;
                 this.skipBtn.disabled = false;
@@ -1707,18 +1683,15 @@
                 this.clearMarkers();
                 this.hintUsed = false;
                 this.hintBtn.disabled = false;
-                this.canGuess = true; // Allow guessing for new round
+                this.canGuess = true;
                 this.updateBlindMode();
                 
-                // Select city based on difficulty progression
                 let targetDifficulty = Math.min(3, Math.ceil(this.round / 4));
                 
-                // Get available cities - prioritize target difficulty but include others if needed
                 let availableCities = this.cities.filter(city => 
                     !this.usedCities.includes(city.name)
                 );
                 
-                // If we have cities of the target difficulty, prefer those
                 const preferredCities = availableCities.filter(city => 
                     city.difficulty === targetDifficulty
                 );
@@ -1727,13 +1700,11 @@
                     availableCities = preferredCities;
                 }
                 
-                // If no available cities, reset used cities
                 if (availableCities.length === 0) {
                     this.usedCities = [];
                     availableCities = this.cities;
                 }
                 
-                // Random selection from available cities
                 this.currentCity = availableCities[Math.floor(Math.random() * availableCities.length)];
                 this.usedCities.push(this.currentCity.name);
                 
@@ -1795,7 +1766,7 @@
             handleMapClick(e) {
                 if (!this.gameActive || this.isPaused || !this.currentCity || !this.canGuess) return;
                 
-                this.canGuess = false; // Prevent further guesses for this round
+                this.canGuess = false;
                 const clickLat = e.latlng.lat;
                 const clickLng = e.latlng.lng;
                 
@@ -1828,7 +1799,7 @@
             }
             
             calculateDistance(lat1, lng1, lat2, lng2) {
-                const R = 6371; // Earth radius in km
+                const R = 6371;
                 const dLat = (lat2 - lat1) * Math.PI / 180;
                 const dLng = (lng2 - lng1) * Math.PI / 180;
                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1877,8 +1848,9 @@
                 // Temporarily reveal the map in blind mode
                 if (this.settings.blindMode) {
                     const mapElement = document.getElementById('map');
+                    const mapOverlay = document.getElementById('mapOverlay');
                     mapElement.classList.remove('blind-mode');
-                    this.mapOverlay.classList.remove('show');
+                    mapOverlay.style.display = 'none';
                 }
                 
                 const correctMarker = L.circleMarker([this.currentCity.lat, this.currentCity.lng], {
@@ -1965,7 +1937,6 @@
                 this.showFeedback(`❌ -25 points (${Math.round(distance)}km away)`, 'incorrect');
                 this.updateDisplay();
                 
-                // Still proceed to next round after delay
                 setTimeout(() => {
                     this.round++;
                     this.nextRound();
@@ -1976,7 +1947,7 @@
                 clearInterval(this.timer);
                 this.streak = 0;
                 this.totalAnswers++;
-                this.canGuess = false; // Prevent guessing after timeout
+                this.canGuess = false;
                 this.updateAccuracy();
                 this.showCityLocation();
                 this.showFeedback('⏰ Time\'s up!', 'incorrect');
@@ -1995,7 +1966,7 @@
                 this.score = Math.max(0, this.score - 50);
                 this.streak = 0;
                 this.totalAnswers++;
-                this.canGuess = false; // Prevent guessing after skip
+                this.canGuess = false;
                 this.updateAccuracy();
                 this.showCityLocation();
                 this.showFeedback('⏭️ City skipped (-50 points)', 'incorrect');
@@ -2010,7 +1981,6 @@
             playSound(type) {
                 if (!this.settings.sound) return;
                 
-                // Create simple audio feedback using Web Audio API
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     const oscillator = audioContext.createOscillator();
@@ -2055,7 +2025,6 @@
             checkAchievements(responseTime) {
                 const currentDate = new Date().toLocaleDateString();
                 
-                // First Correct Answer
                 if (this.correctAnswers === 1 && !this.allAchievements.first_correct.unlocked) {
                     this.allAchievements.first_correct.unlocked = true;
                     this.allAchievements.first_correct.date = currentDate;
@@ -2064,7 +2033,6 @@
                     this.showAchievement('🎯 First Success!', 'You got your first city correct!');
                 }
                 
-                // Streak achievements
                 if (this.streak >= 5 && !this.allAchievements.streak_5.unlocked) {
                     this.allAchievements.streak_5.unlocked = true;
                     this.allAchievements.streak_5.date = currentDate;
@@ -2081,7 +2049,6 @@
                     this.showAchievement('⚡ Lightning Streak!', 'Ten correct answers in a row!');
                 }
                 
-                // Speed achievement
                 if (responseTime < 2000 && !this.allAchievements.speed_demon.unlocked) {
                     this.allAchievements.speed_demon.unlocked = true;
                     this.allAchievements.speed_demon.date = currentDate;
@@ -2090,7 +2057,6 @@
                     this.showAchievement('⚡ Lightning Fast!', 'Answered in under 2 seconds!');
                 }
                 
-                // Score achievement
                 if (this.score > 2000 && !this.allAchievements.expert.unlocked) {
                     this.allAchievements.expert.unlocked = true;
                     this.allAchievements.expert.date = currentDate;
@@ -2099,7 +2065,6 @@
                     this.showAchievement('🌍 Geography Expert!', 'Scored over 2000 points!');
                 }
                 
-                // Blind mode achievement
                 if (this.settings.blindMode && this.streak >= 3 && !this.allAchievements.blind_master.unlocked) {
                     this.allAchievements.blind_master.unlocked = true;
                     this.allAchievements.blind_master.date = currentDate;
@@ -2108,27 +2073,22 @@
                     this.showAchievement('👁️ Blind Master!', '3+ streak in Blind Mode!');
                 }
                 
-                // Update progress for ongoing achievements
                 this.updateAchievementProgress();
             }
 
             updateAchievementProgress() {
-                // World Traveler - total cities played
                 this.allAchievements.world_traveler.progress = Math.min(
                     this.allAchievements.world_traveler.maxProgress,
                     this.allAchievements.world_traveler.progress + 1
                 );
                 
-                // Marathon - games played (updated when game ends)
                 this.allAchievements.marathon.progress = this.stats.totalGames;
                 
-                // High Roller - total score
                 this.allAchievements.high_roller.progress = Math.min(
                     this.allAchievements.high_roller.maxProgress,
                     this.stats.totalScore + this.score
                 );
                 
-                // Perfect Game - check at game end
                 if (this.round === 10 && this.accuracy === 100) {
                     this.allAchievements.perfect_game.progress = 10;
                 }
@@ -2163,6 +2123,8 @@
                 if (this.isPaused) {
                     this.cityNameEl.textContent = '⏸️ Game Paused';
                     this.cityHintEl.textContent = 'Click Resume to continue playing';
+                    // Keep blind mode active when paused
+                    this.updateBlindMode();
                 } else if (this.currentCity) {
                     this.cityNameEl.textContent = this.currentCity.name;
                     let hintText = this.currentCity.hint;
@@ -2173,6 +2135,8 @@
                         hintText += ` • 👁️ Blind Mode Active`;
                     }
                     this.cityHintEl.textContent = hintText;
+                    // Ensure blind mode is still active when resuming
+                    this.updateBlindMode();
                 }
             }
             
@@ -2186,12 +2150,11 @@
                 this.skipBtn.disabled = true;
                 this.hintBtn.disabled = true;
                 
-                // Ensure map is visible when game ends
                 const mapElement = document.getElementById('map');
+                const mapOverlay = document.getElementById('mapOverlay');
                 mapElement.classList.remove('blind-mode');
-                this.mapOverlay.classList.remove('show');
+                mapOverlay.style.display = 'none';
                 
-                // Check for perfect game achievement
                 if (this.round > 1 && this.accuracy === 100 && !this.allAchievements.perfect_game.unlocked) {
                     this.allAchievements.perfect_game.unlocked = true;
                     this.allAchievements.perfect_game.date = new Date().toLocaleDateString();
@@ -2266,10 +2229,10 @@
                 this.hintBtn.disabled = true;
                 this.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                 
-                // Ensure map is visible when resetting
                 const mapElement = document.getElementById('map');
+                const mapOverlay = document.getElementById('mapOverlay');
                 mapElement.classList.remove('blind-mode');
-                this.mapOverlay.classList.remove('show');
+                mapOverlay.style.display = 'none';
                 
                 this.clearMarkers();
                 this.map.setView([20, 0], 2);
@@ -2339,7 +2302,6 @@
             });
             document.getElementById(pageId + '-page').classList.add('active');
             
-            // Refresh achievements page when shown
             if (pageId === 'achievements' && window.game) {
                 window.game.showAchievementsPage();
             }
