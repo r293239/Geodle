@@ -14,6 +14,96 @@
             box-sizing: border-box;
         }
 
+        /* Loading Screen Styles */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .loading-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 3px;
+            animation: gradientText 4s ease infinite;
+        }
+
+        .loading-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #ffd700;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 30px;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .loading-tip {
+            margin-top: 30px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 400px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, 
@@ -30,6 +120,7 @@
             overflow-x: hidden;
         }
 
+        /* Rest of the existing CSS styles remain unchanged */
         /* Enhanced cosmic background animation */
         @keyframes cosmicShift {
             0% { background-position: 0% 50%; }
@@ -149,11 +240,6 @@
             font-weight: 900;
             letter-spacing: 3px;
             animation: gradientText 4s ease infinite, glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes gradientText {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
         }
 
         @keyframes glow {
@@ -991,10 +1077,31 @@
                 padding: 10px 15px;
                 font-size: 14px;
             }
+            
+            .loading-title {
+                font-size: 2.5rem;
+            }
+            
+            .loading-progress {
+                width: 250px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h1 class="loading-title">Routele 🗺️</h1>
+            <div class="loading-subtitle">Navigating the world...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgress"></div>
+            </div>
+            <div class="loading-tip" id="loadingTip">Loading game assets...</div>
+        </div>
+    </div>
+
     <!-- Daily Streak Counter -->
     <div class="streak-container">
         <span class="streak-icon">🔥</span>
@@ -1193,6 +1300,41 @@
     </a>
 
     <script>
+        // Loading screen functionality
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingTip = document.getElementById('loadingTip');
+        
+        const loadingTips = [
+            "Did you know? The shortest border between two countries is between Zambia and Botswana at just 150 meters!",
+            "Travel tip: Russia shares borders with 14 different countries!",
+            "Fun fact: Canada has the longest coastline in the world!",
+            "Geography fact: There are 195 countries in the world today!",
+            "Strategy tip: Try to find countries with many neighbors for more path options!",
+            "Game hint: Use the map to visualize your path as you build it!",
+            "Did you know? France has the most time zones of any country (12)!",
+            "Geography fact: The Vatican City is the smallest country in the world!"
+        ];
+
+        function updateLoadingProgress(percent, message) {
+            loadingProgress.style.width = percent + '%';
+            if (message) {
+                loadingTip.textContent = message;
+            }
+        }
+
+        function hideLoadingScreen() {
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+
+        function showRandomTip() {
+            const randomTip = loadingTips[Math.floor(Math.random() * loadingTips.length)];
+            loadingTip.textContent = randomTip;
+        }
+
         // Daily streak functionality
         let dailyStreak = 0;
         let lastPlayedDate = null;
@@ -1366,18 +1508,51 @@
 
         // Initialize the game when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            initAudio();
-            initSettingsMenu();
-            initDailyStreak();
+            // Show initial loading state
+            updateLoadingProgress(10, "Initializing game...");
+            showRandomTip();
             
-            // Extract country names from the imported data
-            if (typeof countries !== 'undefined') {
-                countryNames = countries.map(country => country.name);
-                initializeGame();
-            } else {
-                console.error('Countries data not loaded. Make sure country-data.js is included.');
-            }
+            // Initialize components with progress updates
+            setTimeout(() => {
+                updateLoadingProgress(30, "Loading audio...");
+                initAudio();
+            }, 500);
+            
+            setTimeout(() => {
+                updateLoadingProgress(50, "Loading settings...");
+                initSettingsMenu();
+            }, 1000);
+            
+            setTimeout(() => {
+                updateLoadingProgress(70, "Loading daily streak...");
+                initDailyStreak();
+            }, 1500);
+            
+            setTimeout(() => {
+                updateLoadingProgress(90, "Setting up game world...");
+                
+                // Extract country names from the imported data
+                if (typeof countries !== 'undefined') {
+                    countryNames = countries.map(country => country.name);
+                    initializeGame();
+                    
+                    // Final loading step
+                    setTimeout(() => {
+                        updateLoadingProgress(100, "Ready to play!");
+                        setTimeout(hideLoadingScreen, 800);
+                    }, 500);
+                } else {
+                    console.error('Countries data not loaded. Make sure country-data.js is included.');
+                    updateLoadingProgress(100, "Error loading game data");
+                    setTimeout(hideLoadingScreen, 1500);
+                }
+            }, 2000);
         });
+
+        // Rest of the JavaScript code remains unchanged...
+        // [The rest of the JavaScript code from the previous implementation goes here]
+        // Including: initSettingsMenu(), playClickSound(), playWinSound(), updateDifficulty(),
+        // showNotification(), navigation functions, game logic functions, etc.
 
         // Settings menu functionality
         function initSettingsMenu() {
