@@ -173,6 +173,41 @@
             font-weight: 600;
         }
 
+        /* Daily Streak Counter */
+        .streak-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 20px;
+            padding: 12px 20px;
+            color: #fff;
+            backdrop-filter: blur(20px);
+            z-index: 1001;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .streak-icon {
+            font-size: 1.5rem;
+            animation: flame 2s ease infinite;
+        }
+
+        @keyframes flame {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .streak-count {
+            font-size: 1.2rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
         /* Menu Button */
         .menu-button {
             position: fixed;
@@ -949,10 +984,24 @@
                 padding: 12px 20px;
                 font-size: 12px;
             }
+            
+            .streak-container {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Daily Streak Counter -->
+    <div class="streak-container">
+        <span class="streak-icon">🔥</span>
+        <span>Daily Streak:</span>
+        <span class="streak-count" id="streakCount">0</span>
+    </div>
+
     <!-- Menu Button -->
     <button class="menu-button" id="menuButton">⚙️</button>
 
@@ -1062,6 +1111,7 @@
           <button onclick="goToCountryMode()" class="game-button">🌍 Countryle</button>
           <button onclick="goToClassicMode()" class="game-button">🎯 Geodle</button>
           <button onclick="goToFlagMode()" class="game-button">🚩 Flagle</button>
+          <button onclick="goToCivileMode()" class="game-button">🏛️ Civile</button>
         </div>
 
         <div class="game-layout">
@@ -1143,6 +1193,92 @@
     </a>
 
     <script>
+        // Daily streak functionality
+        let dailyStreak = 0;
+        let lastPlayedDate = null;
+
+        // Initialize daily streak from localStorage
+        function initDailyStreak() {
+            const savedStreak = localStorage.getItem('routeleDailyStreak');
+            const savedDate = localStorage.getItem('routeleLastPlayedDate');
+            
+            if (savedStreak && savedDate) {
+                dailyStreak = parseInt(savedStreak);
+                lastPlayedDate = new Date(savedDate);
+                
+                // Check if the streak should continue
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                // If last played was yesterday, increment streak
+                if (lastPlayedDate.toDateString() === yesterday.toDateString()) {
+                    // Continue streak
+                } 
+                // If last played was today, keep current streak
+                else if (lastPlayedDate.toDateString() === today.toDateString()) {
+                    // Keep current streak
+                }
+                // If last played was more than 1 day ago, reset streak
+                else if (lastPlayedDate < yesterday) {
+                    dailyStreak = 0;
+                }
+            }
+            
+            updateStreakDisplay();
+        }
+
+        // Update streak when game is completed
+        function updateStreak() {
+            const today = new Date();
+            const todayString = today.toDateString();
+            
+            // Check if already played today
+            if (lastPlayedDate && lastPlayedDate.toDateString() === todayString) {
+                return; // Already updated streak today
+            }
+            
+            // Check if streak should continue (played yesterday)
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (!lastPlayedDate || lastPlayedDate.toDateString() !== yesterday.toDateString()) {
+                // If not played yesterday, reset streak
+                dailyStreak = 0;
+            }
+            
+            // Increment streak
+            dailyStreak++;
+            lastPlayedDate = today;
+            
+            // Save to localStorage
+            localStorage.setItem('routeleDailyStreak', dailyStreak.toString());
+            localStorage.setItem('routeleLastPlayedDate', lastPlayedDate.toISOString());
+            
+            updateStreakDisplay();
+            
+            // Show streak notification if streak increased
+            if (dailyStreak > 1) {
+                showNotification(`🔥 Daily streak: ${dailyStreak} days!`);
+            }
+        }
+
+        // Update streak display
+        function updateStreakDisplay() {
+            const streakElement = document.getElementById('streakCount');
+            if (streakElement) {
+                streakElement.textContent = dailyStreak;
+                
+                // Add animation for new streaks
+                if (dailyStreak > 0) {
+                    streakElement.style.animation = 'pulse 1s ease';
+                    setTimeout(() => {
+                        streakElement.style.animation = '';
+                    }, 1000);
+                }
+            }
+        }
+
         // Audio variables
         let musicEnabled = false;
         let sfxEnabled = true;
@@ -1232,6 +1368,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initAudio();
             initSettingsMenu();
+            initDailyStreak();
             
             // Extract country names from the imported data
             if (typeof countries !== 'undefined') {
@@ -1467,6 +1604,11 @@
         function goToFlagMode() {
             playClickSound();
             window.location.href = "flag-mode.html";
+        }
+
+        function goToCivileMode() {
+            playClickSound();
+            window.location.href = "https://geodle-game.netlify.app/civile";
         }
 
         // Create a mapping function to get country data by name
@@ -1884,6 +2026,9 @@
                 // Play win sound and create particle effect
                 playWinSound();
                 createWinningEffect();
+                
+                // Update daily streak for successful completion
+                updateStreak();
             } else {
                 titleElement.textContent = 'Journey Incomplete!';
                 titleElement.className = 'lose';
