@@ -6,7 +6,6 @@
     <title>Routele</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="country-data.js"></script>
     <style>
         * {
             margin: 0;
@@ -120,7 +119,6 @@
             overflow-x: hidden;
         }
 
-        /* Rest of the existing CSS styles remain unchanged */
         /* Enhanced cosmic background animation */
         @keyframes cosmicShift {
             0% { background-position: 0% 50%; }
@@ -1021,6 +1019,163 @@
             }
         }
 
+        /* Legal Section Styles */
+        #consent-banner {
+            position: fixed;
+            bottom: -100px;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: #fff;
+            padding: 15px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.5);
+            z-index: 10000;
+            transition: bottom 0.5s ease-in-out;
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(138, 43, 226, 0.5);
+        }
+        #consent-banner.show { 
+            bottom: 0; 
+        }
+        #consent-banner button {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        #consent-banner button:hover { 
+            background: linear-gradient(135deg, #45b7d1, #4ecdc4);
+            transform: translateY(-2px);
+        }
+        #consent-banner a {
+            color: #4ecdc4;
+            text-decoration: underline;
+            margin-left: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        #consent-banner a:hover {
+            color: #ffd700;
+        }
+        #consent-banner span { 
+            flex: 1 1 auto; 
+            margin-right: 10px; 
+            line-height: 1.4;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 800px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            line-height: 1.6;
+            position: relative;
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            box-shadow: 0 20px 60px rgba(138, 43, 226, 0.3);
+            backdrop-filter: blur(20px);
+        }
+        .modal-content h2 { 
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        .modal-content h3 { 
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+            font-size: 1.3rem;
+        }
+        .modal-content p, .modal-content li {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.9);
+        }
+        .modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .modal-content li {
+            margin-bottom: 10px;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Legal Links in Menu */
+        .legal-menu-item {
+            display: block;
+            padding: 12px 16px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+            font-size: 14px;
+            background: rgba(255,255,255,0.1);
+        }
+        .legal-menu-item:hover {
+            background: rgba(78, 205, 196, 0.2);
+            transform: translateX(5px);
+        }
+
         @media (max-width: 1024px) {
             .game-layout {
                 grid-template-columns: 1fr;
@@ -1118,6 +1273,13 @@
             <button class="close-menu-btn" id="closeMenuBtn">×</button>
             <h2 class="menu-title">⚙️ Game Settings</h2>
             
+            <!-- Legal Section -->
+            <div class="menu-section">
+                <h3>📄 Legal</h3>
+                <button class="legal-menu-item" id="menu-terms">📝 Terms & Conditions</button>
+                <button class="legal-menu-item" id="menu-privacy">🔒 Privacy Policy</button>
+            </div>
+
             <div class="menu-section">
                 <h3>🔊 Audio Settings</h3>
                 <div class="setting-item">
@@ -1193,6 +1355,191 @@
                     <div class="toggle-switch active" id="particlesToggle"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Terms & Cookies Consent Banner -->
+    <div id="consent-banner">
+        <span>
+            We use cookies to improve your experience. By using this site, you agree to our 
+            <a id="open-terms">Terms & Conditions</a> and 
+            <a id="open-privacy">Privacy Policy</a>.
+        </span>
+        <button id="accept-btn">Accept</button>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="terms-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-terms">&times;</button>
+            <h2>Terms & Conditions</h2>
+            <p><strong>Effective Date:</strong> December 21, 2024</p>
+
+            <h3>1. Agreement to Terms</h3>
+            <p>By clicking "I Agree" or by playing Routele, you acknowledge that:</p>
+            <ul>
+                <li>You have read, understood, and accepted these Terms and the associated Privacy Policy.</li>
+                <li>Your use of the Game is voluntary and at your own risk.</li>
+                <li>You agree to comply with all rules and restrictions outlined in these Terms.</li>
+            </ul>
+            <p>If you do not agree with any part of these Terms, you must not use the Game.</p>
+
+            <h3>2. Use of the Game</h3>
+            <ul>
+                <li>Routele is intended for entertainment and educational purposes only.</li>
+                <li>You may use the Game on your personal device only. You may not:
+                    <ul>
+                        <li>Copy, distribute, modify, or create derivative works without permission</li>
+                        <li>Reverse engineer or attempt to extract the source code</li>
+                        <li>Use the Game for commercial purposes without written consent</li>
+                        <li>Use automated systems or bots to play the game</li>
+                    </ul>
+                </li>
+                <li>We may update or modify the Game at any time. Continued use constitutes acceptance of updates.</li>
+            </ul>
+
+            <h3>3. Game Data and Progress</h3>
+            <ul>
+                <li>Routele stores game progress, scores, daily streaks, and settings locally on your device via localStorage.</li>
+                <li>You are responsible for maintaining your local storage. We are not responsible for lost progress due to clearing storage or device changes.</li>
+                <li>The Game does not collect, transmit, or store personal information externally.</li>
+                <li>Daily challenges are generated based on the current date and may vary by player due to random selection.</li>
+            </ul>
+
+            <h3>4. Content and Intellectual Property</h3>
+            <ul>
+                <li>All game content, including graphics, text, game mechanics, and country data is owned by the creators or used with permission.</li>
+                <li>Country border data and geographical information are based on publicly available data and may not reflect current political boundaries.</li>
+                <li>You may not reproduce, distribute, publicly display, or create derivative works without written consent.</li>
+                <li>Any feedback or suggestions you provide may be used to improve the Game.</li>
+            </ul>
+
+            <h3>5. Third-Party Services</h3>
+            <ul>
+                <li>The Game uses Leaflet.js for map functionality and OpenStreetMap for map tiles.</li>
+                <li>We are not responsible for content or privacy practices of these third-party services.</li>
+                <li>The Game may link to external websites for feedback or other game modes.</li>
+            </ul>
+
+            <h3>6. Children's Usage</h3>
+            <ul>
+                <li>Routele is safe for all ages. No personal information is collected, so children under 13 can play safely.</li>
+                <li>Parents/guardians can manage local storage to remove game data at any time by clearing browser data.</li>
+            </ul>
+
+            <h3>7. Limitation of Liability</h3>
+            <ul>
+                <li>Routele is provided "as is" without warranties of any kind.</li>
+                <li>We are not responsible for any damages or losses arising from:
+                    <ul>
+                        <li>Use of or inability to use the Game</li>
+                        <li>Loss of local storage data or game progress</li>
+                        <li>Technical issues, interruptions, or game unavailability</li>
+                        <li>Accuracy of geographical or country border information</li>
+                    </ul>
+                </li>
+                <li>By agreeing, you acknowledge you use the Game at your own risk.</li>
+            </ul>
+
+            <h3>8. Game Rules and Fair Play</h3>
+            <ul>
+                <li>Players are expected to play fairly and not use external tools or assistance to solve puzzles.</li>
+                <li>Daily streaks are based on local storage and may reset if storage is cleared.</li>
+                <li>We reserve the right to modify game mechanics, difficulty, or features at any time.</li>
+            </ul>
+
+            <h3>9. Governing Law</h3>
+            <p>These Terms are governed by and construed in accordance with the laws of Singapore.</p>
+
+            <h3>10. Changes to Terms</h3>
+            <p>We may update these Terms at any time. Continued use of Routele after changes constitutes acceptance of the updated Terms.</p>
+
+            <h3>11. Contact Information</h3>
+            <p>For questions about these Terms, please contact: reubenyee2012@gmail.com</p>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-privacy">&times;</button>
+            <h2>Privacy Policy</h2>
+            <p><strong>Effective Date:</strong> December 21, 2024</p>
+
+            <h3>1. Information We Collect</h3>
+            <p>Routele is designed with privacy in mind. We do not collect any personal information. The only information stored includes:</p>
+            <ul>
+                <li>Game progress and scores</li>
+                <li>Daily streak counter</li>
+                <li>User preferences (audio settings, difficulty levels, display options)</li>
+                <li>Game history and country paths</li>
+            </ul>
+            <p><strong>All data is stored locally on your device and is not transmitted to any server.</strong></p>
+
+            <h3>2. Local Storage Usage</h3>
+            <ul>
+                <li>Routele uses your browser's localStorage to save game state and preferences.</li>
+                <li>This includes: daily challenges attempted, win/loss records, streak counters, and settings.</li>
+                <li>You can clear this data at any time through your browser settings, which will reset all game progress.</li>
+                <li>No data is shared with third parties or stored on external servers.</li>
+            </ul>
+
+            <h3>3. No Tracking or Analytics</h3>
+            <p>Routele does not use:</p>
+            <ul>
+                <li>Cookies for tracking purposes</li>
+                <li>Third-party analytics services</li>
+                <li>Advertising networks</li>
+                <li>User behavior tracking</li>
+                <li>Personal data collection</li>
+            </ul>
+
+            <h3>4. Third-Party Services</h3>
+            <ul>
+                <li><strong>Leaflet.js:</strong> Used for map display functionality</li>
+                <li><strong>OpenStreetMap:</strong> Provides map tile data</li>
+                <li><strong>CDN Services:</strong> For loading Leaflet library files</li>
+            </ul>
+            <p>These services may have their own privacy policies, but Routele does not share any user data with them.</p>
+
+            <h3>5. Children's Privacy</h3>
+            <ul>
+                <li>Routele is completely safe for children under 13.</li>
+                <li>No personal information is required or collected.</li>
+                <li>Parents can easily manage or delete game data by clearing browser storage.</li>
+                <li>The game contains no inappropriate content or external links that could compromise children's safety.</li>
+            </ul>
+
+            <h3>6. Data Retention and Control</h3>
+            <ul>
+                <li><strong>Retention:</strong> All game data remains on your device until you choose to clear it.</li>
+                <li><strong>Your Control:</strong> You have complete control over your data through browser settings.</li>
+                <li><strong>Deletion:</strong> Clear your browser's localStorage for this site to delete all game data instantly.</li>
+            </ul>
+
+            <h3>7. Your Privacy Rights</h3>
+            <p>Since we don't collect personal data, traditional data rights requests don't apply. However, you always have the ability to:</p>
+            <ul>
+                <li>View your game data through the game interface</li>
+                <li>Delete all data by clearing browser storage</li>
+                <li>Control what is stored through game settings</li>
+            </ul>
+
+            <h3>8. International Users</h3>
+            <p>Routele can be accessed worldwide. Since no personal data is collected or transferred, international data transfer regulations do not apply.</p>
+
+            <h3>9. Security</h3>
+            <ul>
+                <li>All data remains on your local device</li>
+                <li>No data transmission occurs</li>
+                <li>Your game data is as secure as your device and browser</li>
+            </ul>
+
+            <h3>10. Changes to This Privacy Policy</h3>
+            <p>We may update this privacy policy. Continued use of Routele after changes constitutes acceptance of the updated policy.</p>
+
+            <h3>11. Contact Us</h3>
+            <p>If you have any questions about this Privacy Policy, please contact: reubenyee2012@gmail.com</p>
         </div>
     </div>
 
@@ -1512,21 +1859,25 @@
             updateLoadingProgress(10, "Initializing game...");
             showRandomTip();
             
+            // Start timer for minimum loading time
+            const startTime = Date.now();
+            const minLoadingTime = 500; // 0.5 seconds minimum
+            
             // Initialize components with progress updates
             setTimeout(() => {
                 updateLoadingProgress(30, "Loading audio...");
                 initAudio();
-            }, 500);
+            }, 100);
             
             setTimeout(() => {
                 updateLoadingProgress(50, "Loading settings...");
                 initSettingsMenu();
-            }, 1000);
+            }, 200);
             
             setTimeout(() => {
                 updateLoadingProgress(70, "Loading daily streak...");
                 initDailyStreak();
-            }, 1500);
+            }, 300);
             
             setTimeout(() => {
                 updateLoadingProgress(90, "Setting up game world...");
@@ -1536,23 +1887,28 @@
                     countryNames = countries.map(country => country.name);
                     initializeGame();
                     
-                    // Final loading step
+                    // Ensure minimum loading time
+                    const elapsed = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
+                    
                     setTimeout(() => {
                         updateLoadingProgress(100, "Ready to play!");
-                        setTimeout(hideLoadingScreen, 800);
-                    }, 500);
+                        setTimeout(hideLoadingScreen, 300);
+                    }, remainingTime);
                 } else {
                     console.error('Countries data not loaded. Make sure country-data.js is included.');
                     updateLoadingProgress(100, "Error loading game data");
-                    setTimeout(hideLoadingScreen, 1500);
+                    
+                    // Still respect minimum loading time
+                    const elapsed = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
+                    
+                    setTimeout(() => {
+                        hideLoadingScreen();
+                    }, remainingTime);
                 }
-            }, 2000);
+            }, 400);
         });
-
-        // Rest of the JavaScript code remains unchanged...
-        // [The rest of the JavaScript code from the previous implementation goes here]
-        // Including: initSettingsMenu(), playClickSound(), playWinSound(), updateDifficulty(),
-        // showNotification(), navigation functions, game logic functions, etc.
 
         // Settings menu functionality
         function initSettingsMenu() {
@@ -2274,6 +2630,64 @@
                 optimalDiv.innerHTML = '<h4>No direct path found between these countries.</h4>';
             }
         }
+
+        // Legal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Terms & Cookies Consent Banner functionality
+            const banner = document.getElementById('consent-banner');
+            const termsModal = document.getElementById('terms-modal');
+            const privacyModal = document.getElementById('privacy-modal');
+
+            // Show banner if not accepted
+            if(localStorage.getItem('routeleConsentAccepted') !== 'true'){
+                setTimeout(() => { 
+                    banner.classList.add('show'); 
+                }, 2000);
+            } else { 
+                banner.style.display = 'none'; 
+            }
+
+            // Accept button
+            document.getElementById('accept-btn').addEventListener('click', () => {
+                localStorage.setItem('routeleConsentAccepted', 'true');
+                banner.classList.remove('show');
+                setTimeout(() => { banner.style.display = 'none'; }, 500);
+            });
+
+            // Open modals from banner
+            document.getElementById('open-terms').addEventListener('click', () => {
+                termsModal.style.display = 'block';
+            });
+            document.getElementById('open-privacy').addEventListener('click', () => {
+                privacyModal.style.display = 'block';
+            });
+
+            // Open modals from menu
+            document.getElementById('menu-terms').addEventListener('click', () => {
+                termsModal.style.display = 'block';
+                // Close settings menu
+                document.getElementById('menuOverlay').classList.remove('active');
+            });
+            document.getElementById('menu-privacy').addEventListener('click', () => {
+                privacyModal.style.display = 'block';
+                // Close settings menu
+                document.getElementById('menuOverlay').classList.remove('active');
+            });
+
+            // Close modals
+            document.getElementById('close-terms').addEventListener('click', () => {
+                termsModal.style.display = 'none';
+            });
+            document.getElementById('close-privacy').addEventListener('click', () => {
+                privacyModal.style.display = 'none';
+            });
+
+            // Close modals when clicking outside content
+            window.addEventListener('click', (e) => {
+                if(e.target === termsModal) termsModal.style.display = 'none';
+                if(e.target === privacyModal) privacyModal.style.display = 'none';
+            });
+        });
     </script>
 </body>
 </html>
