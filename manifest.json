@@ -1,23 +1,105 @@
 {
-  "name": "Geodle - Geography Challenge Game",
   "short_name": "Geodle",
-  "description": "Daily country guessing geography puzzle game",
+  "name": "Geodle - Daily Geography Game",
+  "description": "A fun daily geography challenge game with multiple modes",
   "start_url": "/",
-  "display": "standalone",
   "background_color": "#667eea",
-  "theme_color": "#3367D6",
-  "orientation": "portrait",
+  "theme_color": "#667eea",
+  "display": "standalone",
+  "scope": "/",
+  "orientation": "portrait-primary",
+  "categories": ["education", "games", "puzzle"],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "icons/icon-192x192.png",
+      "src": "/images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "/images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "games", "puzzle"]
+  "screenshots": [
+    {
+      "src": "/images/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/images/screenshot-mobile.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Play Routele",
+      "short_name": "Routele",
+      "description": "Play the Routele game mode",
+      "url": "/path-mode.html",
+      "icons": [
+        {
+          "src": "/images/routele-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Play Countryle",
+      "short_name": "Countryle",
+      "description": "Play the Countryle game mode",
+      "url": "/country-mode.html",
+      "icons": [
+        {
+          "src": "/images/countryle-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Play Flagle",
+      "short_name": "Flagle",
+      "description": "Play the Flagle game mode",
+      "url": "/flag-mode.html",
+      "icons": [
+        {
+          "src": "/images/flagle-icon.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "features": [
+    "Cross Platform",
+    "fast",
+    "simple"
+  ]
 }
