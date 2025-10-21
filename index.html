@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geodle - Daily Geography Clue Game</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     
     <!-- Service Worker Registration -->
     <script>
@@ -1427,7 +1427,7 @@
             <div class="language-option" data-lang="fr" data-name="Français">🇫🇷 Français</div>
             <div class="language-option" data-lang="de" data-name="Deutsch">🇩🇪 Deutsch</div>
             <div class="language-option" data-lang="it" data-name="Italiano">🇮🇹 Italiano</div>
-            <div class="language-option" data-lang="pt" data-name="Português">🇵🇹 Português</div>
+            <div class="language-option" data-lang="pt" data-name="Português">🇵🇹 Portuguguês</div>
             <div class="language-option" data-lang="ru" data-name="Русский">🇷🇺 Русский</div>
             <div class="language-option" data-lang="zh" data-name="中文">🇨🇳 中文</div>
             <div class="language-option" data-lang="ja" data-name="日本語">🇯🇵 日本語</div>
@@ -1659,86 +1659,8 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data.js"></script>
 <script>
-// Sample geography data (in a real implementation, this would be in data.js)
-const geographyData = [
-    {
-        answer: "FRANCE",
-        clues: [
-            "This country is known as the 'Hexagon' due to its shape.",
-            "It is the most visited country in the world.",
-            "Its capital city is known as the 'City of Light'.",
-            "This country is famous for its wine and cheese.",
-            "It is home to the Eiffel Tower.",
-            "The official language is French.",
-            "It shares borders with Germany, Belgium, and Spain.",
-            "The currency used here is the Euro.",
-            "This country is famous for the Louvre Museum.",
-            "It is located in Western Europe."
-        ]
-    },
-    {
-        answer: "JAPAN",
-        clues: [
-            "This country is an archipelago in East Asia.",
-            "It is known as the 'Land of the Rising Sun'.",
-            "Its capital is Tokyo, one of the most populous cities in the world.",
-            "This country is famous for sushi and ramen.",
-            "Mount Fuji is its highest peak.",
-            "The currency used here is the Yen.",
-            "It has a constitutional monarchy with an emperor.",
-            "This country is known for its bullet trains (Shinkansen).",
-            "Cherry blossom season is a major cultural event here.",
-            "It consists of four main islands: Honshu, Hokkaido, Kyushu, and Shikoku."
-        ]
-    },
-    {
-        answer: "BRAZIL",
-        clues: [
-            "This is the largest country in South America.",
-            "It is the only Portuguese-speaking country in the Americas.",
-            "Its capital is Brasília.",
-            "This country is home to the Amazon Rainforest.",
-            "It is famous for its Carnival festival.",
-            "The currency used here is the Real.",
-            "This country has won the FIFA World Cup five times.",
-            "It shares borders with ten other countries.",
-            "The Christ the Redeemer statue is located here.",
-            "It was a Portuguese colony until 1822."
-        ]
-    },
-    {
-        answer: "EGYPT",
-        clues: [
-            "This country is located in Northeast Africa.",
-            "It is home to one of the Seven Wonders of the Ancient World.",
-            "Its capital is Cairo.",
-            "This country is famous for its pyramids.",
-            "The Nile River flows through this country.",
-            "The official language is Arabic.",
-            "It was ruled by pharaohs in ancient times.",
-            "The currency used here is the Egyptian Pound.",
-            "This country connects Africa to the Middle East.",
-            "It is known for the Sphinx and Valley of the Kings."
-        ]
-    },
-    {
-        answer: "CANADA",
-        clues: [
-            "This is the second largest country in the world by area.",
-            "Its flag features a maple leaf.",
-            "The capital is Ottawa.",
-            "This country has two official languages: English and French.",
-            "It is known for its cold winters and natural beauty.",
-            "The currency used here is the Canadian Dollar.",
-            "It shares the world's longest border with the United States.",
-            "This country is a constitutional monarchy.",
-            "It is famous for hockey and maple syrup.",
-            "This country has ten provinces and three territories."
-        ]
-    }
-];
-
 // Language translations
 const translations = {
     en: {
@@ -1966,7 +1888,7 @@ const translations = {
         congratulations: "🎉 Parabéns!<br>Você adivinhou \"{answer}\" após {clues} pista{plural}!",
         betterLuck: "😔 Boa sorte na próxima vez!<br>A resposta era \"{answer}\"",
         scoreCopied: "Pontuação copiada para a área de transferência!",
-        scoreWon: "🌍 Geodle - Eu adivinhei \"{answer}\" em {clues}/10 pistas! Vitórias Totais: {wins}",
+        scoreWon: "🌍 Geodle - Eu adivinhei \"{answer}\" em {clues}/10 pistas! Vitórias Totales: {wins}",
         scoreLost: "🌍 Geodle - Não consegui adivinhar \"{answer}\" em 10 pistas. Consegue você?"
     },
     ru: {
