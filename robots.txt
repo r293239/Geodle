@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://r293239.github.io/Geodle/sitemap.xml
