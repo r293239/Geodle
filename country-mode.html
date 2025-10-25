@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -465,8 +466,10 @@
 
         /* Dropdown Menu Styles */
         .dropdown {
-            position: relative;
-            display: inline-block;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
         }
 
         .dropdown-btn {
@@ -494,16 +497,16 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            background: rgba(30, 30, 60, 0.95);
+            background: rgba(20, 20, 40, 0.98);
             backdrop-filter: blur(20px);
             min-width: 200px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             border-radius: 12px;
             z-index: 1000;
             border: 1px solid rgba(255,255,255,0.2);
             overflow: hidden;
             top: 100%;
-            left: 0;
+            right: 0;
             margin-top: 5px;
         }
 
@@ -518,14 +521,14 @@
 
         .dropdown-content a:hover {
             background: rgba(102, 126, 234, 0.3);
-            transform: translateX(5px);
+            transform: translateX(-5px);
         }
 
         .dropdown-content a:last-child {
             border-bottom: none;
         }
 
-        .dropdown:hover .dropdown-content {
+        .dropdown.active .dropdown-content {
             display: block;
         }
 
@@ -603,29 +606,31 @@
             .map-container {
                 height: 300px;
             }
+            
+            .dropdown {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="dropdown">
+        <button class="dropdown-btn" id="dropdownBtn">
+            Game Modes ▼
+        </button>
+        <div class="dropdown-content" id="dropdownContent">
+            <a href="index.html">Geodle</a>
+            <a href="flag-mode.html">Flagle</a>
+            <a href="path-mode.html">Routele</a>
+            <a href="civile.html">Civile</a>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>Countryle</h1>
             <div class="subtitle">Guess the country!</div>
-        </div>
-
-        <div class="mode-selector">
-            <h3>Game Modes</h3>
-            <div class="dropdown">
-                <button class="dropdown-btn">
-                    Select Mode ▼
-                </button>
-                <div class="dropdown-content">
-                    <a href="index.html">Geodle</a>
-                    <a href="flag-mode.html">Flagle</a>
-                    <a href="path-mode.html">Routele</a>
-                    <a href="civile.html">Civile</a>
-                </div>
-            </div>
         </div>
 
         <div class="game-layout">
@@ -1025,6 +1030,21 @@
             document.getElementById('streak').textContent = streak;
             gameOverDiv.style.display = 'block';
         }
+
+        // Dropdown functionality
+        const dropdownBtn = document.getElementById('dropdownBtn');
+        const dropdownContent = document.getElementById('dropdownContent');
+        const dropdown = document.querySelector('.dropdown');
+
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            dropdown.classList.remove('active');
+        });
 
         // Event listeners
         document.getElementById('countryInput').addEventListener('input', function() {
