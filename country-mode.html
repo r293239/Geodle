@@ -1,13 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SEO Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countryle 🌍</title>
+    <title>Countryle 🌍 </title>
+    <meta name="description" content="Play Countryle - the daily geography challenge! Guess the mystery country using clues about continent, population, GDP, language and climate. Test your world knowledge with this fun educational game.">
+    <meta name="keywords" content="countryle, geography game, country guessing game, world map game, educational game, daily challenge, geoguessr alternative">
+    <meta name="author" content="Geodle Games">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Countryle 🌍 - Daily Country Guessing Game">
+    <meta property="og:description" content="Can you guess the country? Test your geography knowledge with this daily challenge game.">
+    <meta property="og:image" content="https://r293239.github.io/Geodle/images/countryle-preview.jpg">
+    <meta property="og:url" content="https://r293239.github.io/Geodle/country-mode.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Geodle Games">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://r293239.github.io/Geodle/country-mode.html">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Countryle",
+      "description": "A daily country guessing game that tests your geography knowledge",
+      "url": "https://r293239.github.io/Geodle/country-mode.html",
+      "applicationCategory": "Game",
+      "genre": "Educational, Puzzle, Geography",
+      "operatingSystem": "Web Browser",
+      "author": {
+        "@type": "Organization",
+        "name": "Geodle Games"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "screenshot": "https://r293239.github.io/Geodle/images/countryle-preview.jpg"
+    }
+    </script>
+    
+    <!-- Additional Schema for WebPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Countryle - Daily Country Guessing Game",
+      "description": "Play Countryle - the daily geography challenge! Guess the mystery country using clues about continent, population, GDP, language and climate.",
+      "url": "https://r293239.github.io/Geodle/country-mode.html",
+      "mainEntity": {
+        "@type": "VideoGame",
+        "name": "Countryle"
+      }
+    }
+    </script>
+    
+    <!-- Preconnect for external resources -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- CSS and JavaScript -->
     <script src="countries.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- Rest of your CSS styles remain the same -->
     <style>
         * {
             margin: 0;
@@ -567,6 +633,57 @@
             box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
         }
 
+        /* SEO Content Section */
+        .seo-content {
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            color: #f0f8ff;
+        }
+
+        .seo-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #f0f8ff;
+        }
+
+        .seo-content h3 {
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+            color: #f0f8ff;
+        }
+
+        .seo-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .seo-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .seo-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .seo-content a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .seo-content a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
         @media (max-width: 1024px) {
             .game-layout {
                 grid-template-columns: 1fr;
@@ -610,6 +727,10 @@
             .dropdown {
                 top: 10px;
                 right: 10px;
+            }
+            
+            .seo-content {
+                padding: 20px;
             }
         }
     </style>
@@ -683,6 +804,48 @@
             <div id="answerInfo"></div>
             <div class="country-info" id="countryInfo"></div>
             <button id="newGameBtn" class="new-game-btn">🎮 New Game</button>
+        </div>
+        
+        <!-- SEO Content Section -->
+        <div class="seo-content">
+            <h2>About Countryle - The Ultimate Country Guessing Game</h2>
+            
+            <p>Countryle is a fun and educational geography game that challenges your knowledge of world countries. Each day, you get 7 attempts to guess the mystery country using clues about its continent, population, GDP, language, and climate.</p>
+            
+            <h3>How to Play Countryle</h3>
+            <p>Playing Countryle is simple but challenging:</p>
+            <ul>
+                <li><strong>Enter a country name</strong> in the search box and make your guess</li>
+                <li><strong>Use the color-coded feedback</strong> to refine your next guesses:
+                    <ul>
+                        <li><span style="color:#22c55e">Green</span> means correct information</li>
+                        <li><span style="color:#f59e0b">Yellow</span> means partially correct or close</li>
+                        <li><span style="color:#ef4444">Red</span> means incorrect information</li>
+                    </ul>
+                </li>
+                <li><strong>Track your guesses</strong> on the interactive world map</li>
+                <li><strong>Build your win streak</strong> by correctly guessing countries</li>
+            </ul>
+            
+            <h3>Why Play Countryle?</h3>
+            <p>Countryle isn't just a game - it's a fun way to learn about world geography:</p>
+            <ul>
+                <li><strong>Educational</strong>: Learn about countries, their characteristics, and locations</li>
+                <li><strong>Daily Challenge</strong>: A new country to guess every day</li>
+                <li><strong>Visual Learning</strong>: Interactive map helps you understand country locations</li>
+                <li><strong>Free to Play</strong>: No cost, no registration required</li>
+            </ul>
+            
+            <h3>More Geography Games</h3>
+            <p>Countryle is part of the Geodle family of geography games. Check out our other exciting games:</p>
+            <ul>
+                <li><a href="flag-mode.html">Flagle</a> - Guess countries by their flags</li>
+                <li><a href="path-mode.html">Routele</a> - Navigate through country routes</li>
+                <li><a href="civile.html">Civile</a> - Test your knowledge of world civilizations</li>
+                <li><a href="index.html">Geodle</a> - Our original geography challenge</li>
+            </ul>
+            
+            <p>Whether you're a geography enthusiast, a student, or just looking for a fun daily challenge, Countryle offers an engaging way to test and expand your knowledge of the world's countries. Play daily to improve your geography skills and compete with friends!</p>
         </div>
     </div>
 
