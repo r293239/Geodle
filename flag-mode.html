@@ -1,9 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flagle 🌍</title>
+    <!-- SEO Meta Tags -->
+    <title>Flagle 🌍 - Guess the Country by its Flag</title>
+    <meta name="description" content="Test your geography knowledge with Flagle! Guess countries from progressively revealed flag clues. Multiple difficulty levels and game modes available.">
+    <meta name="keywords" content="Flagle, geography game, flag quiz, country guessing, flagdle, educational games">
+    <meta name="author" content="Flagle Game">
+    <meta property="og:title" content="Flagle 🌍 - Guess the Country by its Flag">
+    <meta property="og:description" content="Test your geography knowledge with Flagle! Guess countries from progressively revealed flag clues.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flagle.example.com">
+    <meta property="og:image" content="https://flagle.example.com/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Flagle 🌍 - Guess the Country by its Flag">
+    <meta name="twitter:description" content="Test your geography knowledge with Flagle! Guess countries from progressively revealed flag clues.">
+    <meta name="twitter:image" content="https://flagle.example.com/twitter-image.jpg">
+    <link rel="canonical" href="https://flagle.example.com">
+    <!-- End SEO Meta Tags -->
     <style>
         * {
             margin: 0;
@@ -69,6 +85,82 @@
             font-size: 2.8rem;
             font-weight: bold;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Game Mode Dropdown Styles */
+        .game-mode-dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .dropdown-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .dropdown-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .dropdown-item i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
         }
 
         .game-info {
@@ -386,6 +478,20 @@
                 padding: 20px;
             }
             
+            .game-mode-dropdown {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .dropdown-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .dropdown-content {
+                min-width: 180px;
+            }
+            
             .input-container {
                 width: 100%;
                 margin-bottom: 10px;
@@ -423,6 +529,28 @@
 </head>
 <body>
     <div class="stars" id="stars"></div>
+    
+    <!-- Game Mode Dropdown -->
+    <div class="game-mode-dropdown">
+        <button class="dropdown-btn">
+            <span>🌍 Game Modes</span>
+            <span>▼</span>
+        </button>
+        <div class="dropdown-content">
+            <a href="index.html" class="dropdown-item">
+                <i>🌎</i> Geodle
+            </a>
+            <a href="country-mode.html" class="dropdown-item active">
+                <i>🗺️</i> Countryle
+            </a>
+            <a href="path-mode.html" class="dropdown-item">
+                <i>🛤️</i> Routele
+            </a>
+            <a href="flag-mode.html" class="dropdown-item">
+                <i>🏴</i> Flagle
+            </a>
+        </div>
+    </div>
     
     <div class="game-container">
         <h1>🌍 Flagle</h1>
@@ -468,15 +596,6 @@
         </div>
 
         <div id="game-over" class="game-over" style="display: none;"></div>
-
-        <div class="navigation-section">
-            <div class="navigation-title">🎮 Try Other Game Modes</div>
-            <div class="nav-buttons">
-                <a href="index.html" class="control-btn nav-btn">🌎 Geodle</a>
-                <a href="country-mode.html" class="control-btn nav-btn">🗺️ Countryle</a>
-                <a href="path-mode.html" class="control-btn nav-btn">🛤️ Routele</a>
-            </div>
-        </div>
 
         <div class="controls">
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
@@ -682,7 +801,7 @@
             { name: "Yemen", alternatives: [], flag: "https://flagcdn.com/w320/ye.png", continent: "Asia", capital: "Sana'a", population: "Medium" },
             { name: "Zambia", alternatives: [], flag: "https://flagcdn.com/w320/zm.png", continent: "Africa", capital: "Lusaka", population: "Small" },
             { name: "Zimbabwe", alternatives: [], flag: "https://flagcdn.com/w320/zw.png", continent: "Africa", capital: "Harare", population: "Small" },
-            
+
             // Semi-autonomous regions and special territories
             { name: "Taiwan", alternatives: ["Republic of China", "ROC"], flag: "https://flagcdn.com/w320/tw.png", continent: "Asia", capital: "Taipei", population: "Medium" },
             { name: "Hong Kong", alternatives: ["Hong Kong SAR"], flag: "https://flagcdn.com/w320/hk.png", continent: "Asia", capital: "Hong Kong", population: "Small" },
@@ -714,6 +833,27 @@
                 star.style.animationDelay = Math.random() * 2 + 's';
                 starsContainer.appendChild(star);
             }
+        }
+
+        // Game Mode Dropdown Functionality
+        function setupGameModeDropdown() {
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            const dropdownContent = document.querySelector('.dropdown-content');
+            
+            dropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownContent.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                dropdownContent.classList.remove('show');
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            dropdownContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
         }
 
         // Game Statistics Management (using memory instead of localStorage)
@@ -848,6 +988,7 @@
                 this.initializeElements();
                 this.bindEvents();
                 createStars();
+                setupGameModeDropdown();
                 this.startNewGame();
             }
 
