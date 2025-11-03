@@ -417,6 +417,7 @@
                 <li>🏆 Get all 5 correct to win!</li>
                 <li>📅 One game per day</li>
                 <li>🔥 Questions include tricky borders like France-Brazil!</li>
+                <li>🚫 Watch out for fake borders that don't actually exist!</li>
             </ul>
         </div>
     </div>
@@ -1385,22 +1386,21 @@
             ], latitude: -20, longitude: 30 }
         ];
 
-        // Commonly thought of borders that don't actually exist
+        // Enhanced fake borders with more variety
         const fakeBorders = [
+            // Countries separated by water
             {country1: "Spain", country2: "Portugal", reason: "Separated by sea"},
             {country1: "Italy", country2: "Croatia", reason: "Separated by Adriatic Sea"},
             {country1: "Greece", country2: "Turkey", reason: "Separated by Aegean Sea"},
             {country1: "United Kingdom", country2: "France", reason: "Separated by English Channel"},
             {country1: "Japan", country2: "South Korea", reason: "Separated by Sea of Japan"},
             {country1: "India", country2: "Sri Lanka", reason: "Separated by Palk Strait"},
-            {country1: "Malaysia", country2: "Indonesia", reason: "Separated by Strait of Malacca"},
             {country1: "Philippines", country2: "Taiwan", reason: "Separated by Luzon Strait"},
             {country1: "Cuba", country2: "United States", reason: "Separated by Florida Strait"},
             {country1: "Madagascar", country2: "Mozambique", reason: "Separated by Mozambique Channel"},
             {country1: "Australia", country2: "Indonesia", reason: "Separated by Timor Sea"},
             {country1: "Canada", country2: "Greenland", reason: "Separated by Davis Strait"},
             {country1: "Norway", country2: "Iceland", reason: "Separated by Norwegian Sea"},
-            {country1: "Argentina", country2: "Chile", reason: "Separated by Andes Mountains"},
             {country1: "Egypt", country2: "Saudi Arabia", reason: "Separated by Red Sea"},
             {country1: "Morocco", country2: "Spain", reason: "Separated by Strait of Gibraltar"},
             {country1: "Russia", country2: "Alaska", reason: "Separated by Bering Strait"},
@@ -1411,7 +1411,63 @@
             {country1: "Tunisia", country2: "Italy", reason: "Separated by Mediterranean Sea"},
             {country1: "Oman", country2: "Iran", reason: "Separated by Gulf of Oman"},
             {country1: "United Arab Emirates", country2: "Iran", reason: "Separated by Persian Gulf"},
-            {country1: "Qatar", country2: "Bahrain", reason: "Separated by Persian Gulf"}
+            {country1: "Qatar", country2: "Bahrain", reason: "Separated by Persian Gulf"},
+            
+            // Countries with one country in between
+            {country1: "Mongolia", country2: "Kazakhstan", reason: "Russia is in between"},
+            {country1: "Afghanistan", country2: "Russia", reason: "Multiple countries in between"},
+            {country1: "Nepal", country2: "Bangladesh", reason: "India is in between"},
+            {country1: "Bhutan", country2: "Myanmar", reason: "India is in between"},
+            {country1: "Laos", country2: "Malaysia", reason: "Thailand is in between"},
+            {country1: "Cambodia", country2: "Myanmar", reason: "Thailand is in between"},
+            {country1: "Vietnam", country2: "Malaysia", reason: "Thailand is in between"},
+            {country1: "Uzbekistan", country2: "China", reason: "Kyrgyzstan/Tajikistan in between"},
+            {country1: "Turkmenistan", country2: "Pakistan", reason: "Afghanistan is in between"},
+            {country1: "Azerbaijan", country2: "Turkey", reason: "Armenia is in between"},
+            {country1: "Georgia", country2: "Iran", reason: "Armenia/Azerbaijan in between"},
+            {country1: "Armenia", country2: "Russia", reason: "Georgia is in between"},
+            {country1: "Belarus", country2: "Lithuania", reason: "Latvia is in between"},
+            {country1: "Ukraine", country2: "Slovakia", reason: "Poland is in between"},
+            {country1: "Romania", country2: "Czech Republic", reason: "Hungary is in between"},
+            {country1: "Bulgaria", country2: "Croatia", reason: "Serbia is in between"},
+            {country1: "Greece", country2: "Montenegro", reason: "Albania/North Macedonia in between"},
+            {country1: "Albania", country2: "Bulgaria", reason: "North Macedonia is in between"},
+            {country1: "Moldova", country2: "Hungary", reason: "Romania is in between"},
+            {country1: "Austria", country2: "Poland", reason: "Czech Republic is in between"},
+            {country1: "Switzerland", country2: "Germany", reason: "Austria is in between"},
+            {country1: "France", country2: "Czech Republic", reason: "Germany is in between"},
+            {country1: "Spain", country2: "Italy", reason: "France is in between"},
+            {country1: "Portugal", country2: "Andorra", reason: "Spain is in between"},
+            {country1: "Ireland", country2: "Iceland", reason: "Separated by sea"},
+            {country1: "United Kingdom", country2: "Norway", reason: "Separated by North Sea"},
+            {country1: "Egypt", country2: "Jordan", reason: "Israel is in between"},
+            {country1: "Syria", country2: "Saudi Arabia", reason: "Jordan is in between"},
+            {country1: "Iraq", country2: "Israel", reason: "Jordan is in between"},
+            {country1: "Iran", country2: "Jordan", reason: "Iraq is in between"},
+            {country1: "Turkey", country2: "Saudi Arabia", reason: "Syria/Jordan in between"},
+            {country1: "Lebanon", country2: "Egypt", reason: "Israel is in between"},
+            {country1: "Algeria", country2: "Mali", reason: "Niger is in between"},
+            {country1: "Libya", country2: "Chad", reason: "Niger is in between"},
+            {country1: "Egypt", country2: "Central African Republic", reason: "Sudan is in between"},
+            {country1: "Sudan", country2: "DR Congo", reason: "Central African Republic is in between"},
+            {country1: "Ethiopia", country2: "Uganda", reason: "South Sudan is in between"},
+            {country1: "Kenya", country2: "DR Congo", reason: "Uganda is in between"},
+            {country1: "Tanzania", country2: "Rwanda", reason: "Burundi is in between"},
+            {country1: "Zambia", country2: "Tanzania", reason: "Malawi is in between"},
+            {country1: "Zimbabwe", country2: "Mozambique", reason: "Zambia is in between"},
+            {country1: "Botswana", country2: "Angola", reason: "Namibia is in between"},
+            {country1: "South Africa", country2: "Zambia", reason: "Zimbabwe is in between"},
+            {country1: "Namibia", country2: "DR Congo", reason: "Angola is in between"},
+            {country1: "Mexico", country2: "Honduras", reason: "Guatemala is in between"},
+            {country1: "United States", country2: "Guatemala", reason: "Mexico is in between"},
+            {country1: "Canada", country2: "Cuba", reason: "Separated by sea"},
+            {country1: "Brazil", country2: "Ecuador", reason: "Peru is in between"},
+            {country1: "Argentina", country2: "Peru", reason: "Bolivia is in between"},
+            {country1: "Chile", country2: "Brazil", reason: "Bolivia is in between"},
+            {country1: "Colombia", country2: "Argentina", reason: "Multiple countries in between"},
+            {country1: "Venezuela", country2: "Chile", reason: "Multiple countries in between"},
+            {country1: "Uruguay", country2: "Bolivia", reason: "Brazil/Paraguay in between"},
+            {country1: "Paraguay", country2: "Ecuador", reason: "Peru is in between"}
         ];
 
         const TOTAL_QUESTIONS = 5;
