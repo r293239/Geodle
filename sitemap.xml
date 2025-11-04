@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://geodle-game.netlify.app/index.html</loc>
-    <lastmod>2025-10-22</lastmod>
+    <loc>https://r293239.github.io/Geodle</loc>
+    <lastmod>2025-11-03</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://geodle-game.netlify.app/country-mode.html</loc>
-    <lastmod>2025-10-22</lastmod>
+    <loc>https://r293239.github.io/Geodle/country-mode.html</loc>
+    <lastmod>2025-11-04</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://geodle-game.netlify.app/path-mode.html</loc>
-    <lastmod>2025-10-22</lastmod>
+    <loc>https://r293239.github.io/Geodle/path-mode.html</loc>
+    <lastmod>2025-11-04</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://geodle-game.netlify.app/flag-mode.html</loc>
-    <lastmod>2025-10-22</lastmod>
+    <loc>https://r293239.github.io/Geodle/flag-mode.html</loc>
+    <lastmod>2025-11-04</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://geodle-game.netlify.app/civile.html</loc>
-    <lastmod>2025-10-22</lastmod>
+    <loc>https://r293239.github.io/Geodle/civile.html</loc>
+    <lastmod>2025-11-04</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://r293239.github.io/Geodle/bordle.html</loc>
+    <lastmod>2025-11-04</lastmod>
     <priority>0.9</priority>
   </url>
 </urlset>
