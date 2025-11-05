@@ -64,7 +64,6 @@
             display: flex;
             gap: 20px;
             align-items: center;
-            position: relative;
         }
 
         .nav-link {
@@ -81,56 +80,6 @@
         .nav-link:hover {
             background: var(--glass-bg);
             transform: translateY(-2px);
-        }
-
-        /* Dropdown Styles */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            min-width: 200px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 1000;
-            top: 100%;
-            right: 0;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-item {
-            color: var(--light-text);
-            padding: 12px 20px;
-            text-decoration: none;
-            display: block;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-item:hover {
-            background: var(--glass-bg);
-            transform: translateX(5px);
-        }
-
-        .dropdown-item i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
         }
 
         .page {
@@ -432,15 +381,6 @@
                 width: 100px;
                 height: 70px;
             }
-            
-            .nav-links {
-                gap: 10px;
-            }
-            
-            .nav-link {
-                padding: 6px 12px;
-                font-size: 0.9em;
-            }
         }
     </style>
 </head>
@@ -451,28 +391,6 @@
         <div class="logo">🌍 Bordle</div>
         <div class="nav-links">
             <a href="#" class="nav-link" onclick="showPage('game')"><i class="fas fa-play"></i> Play</a>
-            
-            <div class="dropdown">
-                <a href="#" class="nav-link"><i class="fas fa-gamepad"></i> Game Modes</a>
-                <div class="dropdown-content">
-                    <a href="https://r293239.github.io/Geodle/" class="dropdown-item" target="_blank">
-                        <i class="fas fa-globe-americas"></i> Geodle
-                    </a>
-                    <a href="https://r293239.github.io/Geodle/path-mode.html" class="dropdown-item" target="_blank">
-                        <i class="fas fa-route"></i> Routele
-                    </a>
-                    <a href="https://r293239.github.io/Geodle/flag-mode.html" class="dropdown-item" target="_blank">
-                        <i class="fas fa-flag"></i> Flagle
-                    </a>
-                    <a href="https://r293239.github.io/Geodle/civile.html" class="dropdown-item" target="_blank">
-                        <i class="fas fa-landmark"></i> Civile
-                    </a>
-                    <a href="https://r293239.github.io/Geodle/country-mode.html" class="dropdown-item" target="_blank">
-                        <i class="fas fa-map"></i> Countryle
-                    </a>
-                </div>
-            </div>
-            
             <a href="#" class="nav-link" onclick="showPage('help')"><i class="fas fa-question-circle"></i> Help</a>
         </div>
     </nav>
@@ -514,45 +432,103 @@
                 <li>🏆 Get all 5 correct to win!</li>
                 <li>📅 One game per day</li>
                 <li>🔥 Questions include tricky borders like France-Brazil!</li>
-                <li>🚫 Watch out for fake borders that don't actually exist!</li>
-            </ul>
-            
-            <h2 class="help-title" style="margin-top: 30px;"><i class="fas fa-layer-group"></i> Other Game Modes</h2>
-            <p style="margin-bottom: 15px; color: var(--light-text);">Check out our other geography challenge games:</p>
-            <ul style="line-height: 2;">
-                <li>🌎 <strong>Geodle</strong> - Classic geography guessing game</li>
-                <li>🛣️ <strong>Routele</strong> - Find the path between countries</li>
-                <li>🚩 <strong>Flagle</strong> - Identify countries by their flags</li>
-                <li>🏛️ <strong>Civile</strong> - Civilization and history challenges</li>
-                <li>🗺️ <strong>Countryle</strong> - Advanced country identification</li>
             </ul>
         </div>
     </div>
 
     <script>
-        // [The rest of your JavaScript code remains exactly the same...]
-        // Countries data with difficulty ratings for borders
+        // Simple countries data - focused on key countries with clear borders
         const countries = [
             { 
-                name: "Afghanistan", 
-                borders: [
-                    {name: "Iran", difficulty: 1}, 
-                    {name: "Pakistan", difficulty: 1}, 
-                    {name: "Tajikistan", difficulty: 2}, 
-                    {name: "Turkmenistan", difficulty: 2}, 
-                    {name: "Uzbekistan", difficulty: 2}, 
-                    {name: "China", difficulty: 3}
-                ], 
-                latitude: 33, 
-                longitude: 65,
-                flag: "https://flagcdn.com/w320/af.png"
+                name: "France", 
+                borders: ["Belgium", "Luxembourg", "Germany", "Switzerland", "Italy", "Spain", "Andorra", "Monaco", "Brazil"],
+                flag: "https://flagcdn.com/w320/fr.png"
             },
-            // ... [rest of countries data remains the same]
-        ];
-
-        // Enhanced fake borders with more variety
-        const fakeBorders = [
-            // ... [fake borders data remains the same]
+            { 
+                name: "Germany", 
+                borders: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
+                flag: "https://flagcdn.com/w320/de.png"
+            },
+            { 
+                name: "Spain", 
+                borders: ["France", "Andorra", "Portugal", "Morocco"],
+                flag: "https://flagcdn.com/w320/es.png"
+            },
+            { 
+                name: "Italy", 
+                borders: ["France", "Switzerland", "Austria", "Slovenia", "San Marino", "Vatican City"],
+                flag: "https://flagcdn.com/w320/it.png"
+            },
+            { 
+                name: "United Kingdom", 
+                borders: ["Ireland"],
+                flag: "https://flagcdn.com/w320/gb.png"
+            },
+            { 
+                name: "Brazil", 
+                borders: ["French Guiana", "Suriname", "Guyana", "Venezuela", "Colombia", "Peru", "Bolivia", "Paraguay", "Argentina", "Uruguay"],
+                flag: "https://flagcdn.com/w320/br.png"
+            },
+            { 
+                name: "United States", 
+                borders: ["Canada", "Mexico", "Russia"],
+                flag: "https://flagcdn.com/w320/us.png"
+            },
+            { 
+                name: "Canada", 
+                borders: ["United States", "Denmark"],
+                flag: "https://flagcdn.com/w320/ca.png"
+            },
+            { 
+                name: "Mexico", 
+                borders: ["United States", "Guatemala", "Belize"],
+                flag: "https://flagcdn.com/w320/mx.png"
+            },
+            { 
+                name: "China", 
+                borders: ["North Korea", "Russia", "Mongolia", "Kazakhstan", "Kyrgyzstan", "Tajikistan", "Afghanistan", "Pakistan", "India", "Nepal", "Bhutan", "Myanmar", "Laos", "Vietnam"],
+                flag: "https://flagcdn.com/w320/cn.png"
+            },
+            { 
+                name: "India", 
+                borders: ["Pakistan", "China", "Nepal", "Bhutan", "Myanmar", "Bangladesh"],
+                flag: "https://flagcdn.com/w320/in.png"
+            },
+            { 
+                name: "Russia", 
+                borders: ["Norway", "Finland", "Estonia", "Latvia", "Lithuania", "Poland", "Belarus", "Ukraine", "Georgia", "Azerbaijan", "Kazakhstan", "China", "Mongolia", "North Korea"],
+                flag: "https://flagcdn.com/w320/ru.png"
+            },
+            { 
+                name: "Turkey", 
+                borders: ["Greece", "Bulgaria", "Georgia", "Armenia", "Azerbaijan", "Iran", "Iraq", "Syria"],
+                flag: "https://flagcdn.com/w320/tr.png"
+            },
+            { 
+                name: "Egypt", 
+                borders: ["Libya", "Sudan", "Israel", "Gaza Strip"],
+                flag: "https://flagcdn.com/w320/eg.png"
+            },
+            { 
+                name: "South Africa", 
+                borders: ["Namibia", "Botswana", "Zimbabwe", "Mozambique", "Eswatini", "Lesotho"],
+                flag: "https://flagcdn.com/w320/za.png"
+            },
+            { 
+                name: "Australia", 
+                borders: [],
+                flag: "https://flagcdn.com/w320/au.png"
+            },
+            { 
+                name: "Japan", 
+                borders: [],
+                flag: "https://flagcdn.com/w320/jp.png"
+            },
+            { 
+                name: "Argentina", 
+                borders: ["Chile", "Bolivia", "Paraguay", "Brazil", "Uruguay"],
+                flag: "https://flagcdn.com/w320/ar.png"
+            }
         ];
 
         const TOTAL_QUESTIONS = 5;
@@ -569,24 +545,34 @@
                 this.answered = false;
                 this.wins = parseInt(localStorage.getItem(WINS_KEY)) || 0;
                 
+                console.log('🎮 Bordle Game Initialized');
                 this.loadGameState();
             }
 
-            // ... [all other methods remain exactly the same]
             loadGameState() {
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) {
-                    const state = JSON.parse(saved);
-                    const lastPlayed = new Date(state.date);
-                    const today = new Date();
-                    
-                    if (this.isSameDay(lastPlayed, today)) {
-                        if (state.completed) {
-                            this.currentScreen = 'gameover';
-                            this.score = state.score;
-                            this.gameQuestions = state.gameQuestions;
-                            this.currentRound = TOTAL_QUESTIONS;
+                    try {
+                        const state = JSON.parse(saved);
+                        const lastPlayed = new Date(state.date);
+                        const today = new Date();
+                        
+                        if (this.isSameDay(lastPlayed, today)) {
+                            console.log('📅 Game already played today');
+                            if (state.completed) {
+                                this.currentScreen = 'gameover';
+                                this.score = state.score;
+                                this.gameQuestions = state.gameQuestions;
+                                this.currentRound = TOTAL_QUESTIONS;
+                                console.log('🏁 Loading completed game state');
+                            }
+                        } else {
+                            console.log('🆕 New day - game state cleared');
+                            localStorage.removeItem(STORAGE_KEY);
                         }
+                    } catch (e) {
+                        console.error('❌ Error loading game state:', e);
+                        localStorage.removeItem(STORAGE_KEY);
                     }
                 }
                 
@@ -608,23 +594,28 @@
                     completed: completed
                 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                console.log('💾 Game state saved');
             }
 
             startGame() {
+                console.log('🚀 Starting new game');
                 this.generateQuestions();
                 this.currentScreen = 'game';
                 this.currentRound = 0;
                 this.score = 0;
+                this.selectedAnswer = null;
+                this.answered = false;
                 this.render();
             }
 
             generateQuestions() {
+                console.log('🎲 Generating questions...');
                 const difficulties = [
-                    { name: 'Easy', targetDifficulty: 1, fakeBorders: 0 },
-                    { name: 'Medium', targetDifficulty: 2, fakeBorders: 1 },
-                    { name: 'Hard', targetDifficulty: 2.5, fakeBorders: 2 },
-                    { name: 'Expert', targetDifficulty: 3, fakeBorders: 2 },
-                    { name: 'Master', targetDifficulty: 3, fakeBorders: 3 }
+                    { name: 'Easy', minBorders: 3 },
+                    { name: 'Medium', minBorders: 2 },
+                    { name: 'Hard', minBorders: 1 },
+                    { name: 'Expert', minBorders: 1 },
+                    { name: 'Master', minBorders: 1 }
                 ];
 
                 this.gameQuestions = [];
@@ -632,81 +623,57 @@
                 for (let i = 0; i < TOTAL_QUESTIONS; i++) {
                     const difficulty = difficulties[i];
                     
-                    // Find a country with borders matching the target difficulty
-                    const validCountries = countries.filter(c => 
-                        c.borders.some(b => b.difficulty >= difficulty.targetDifficulty) &&
-                        c.borders.length >= 3
-                    );
+                    // Filter countries with enough borders
+                    const validCountries = countries.filter(c => c.borders.length >= difficulty.minBorders);
                     
-                    if (validCountries.length === 0) continue;
+                    if (validCountries.length === 0) {
+                        console.warn('No valid countries for difficulty:', difficulty.name);
+                        continue;
+                    }
                     
+                    // Pick a random country
                     const country = validCountries[Math.floor(Math.random() * validCountries.length)];
                     
-                    // Pick a border with appropriate difficulty
-                    const suitableBorders = country.borders.filter(b => 
-                        b.difficulty >= difficulty.targetDifficulty
-                    );
-                    const correctBorder = suitableBorders[Math.floor(Math.random() * suitableBorders.length)];
+                    // Pick a random border from that country
+                    const correctAnswer = country.borders[Math.floor(Math.random() * country.borders.length)];
                     
-                    // Generate decoys with fake borders
-                    const decoys = this.generateSmartDecoys(country, correctBorder.name, difficulty.fakeBorders);
-                    const options = this.shuffleArray([correctBorder.name, ...decoys]);
+                    // Generate decoys (non-bordering countries)
+                    const decoys = this.generateDecoys(country, correctAnswer);
+                    const options = this.shuffleArray([correctAnswer, ...decoys]);
                     
                     this.gameQuestions.push({
                         country: country.name,
                         borderCount: country.borders.length,
-                        correctAnswer: correctBorder.name,
+                        correctAnswer: correctAnswer,
                         options: options,
                         difficulty: difficulty.name,
-                        borderDifficulty: correctBorder.difficulty,
                         flag: country.flag
                     });
+
+                    console.log(`❓ Q${i+1}: ${country.name} -> ${correctAnswer} (${difficulty.name})`);
                 }
+
+                console.log('✅ Questions generated:', this.gameQuestions.length);
             }
 
-            generateSmartDecoys(country, correctAnswer, fakeBorderCount) {
+            generateDecoys(country, correctAnswer) {
                 const decoys = new Set();
                 const allCountryNames = countries.map(c => c.name);
                 
-                // Add real non-bordering countries from the same region
-                const regionCountries = countries
-                    .filter(c => {
-                        const distance = Math.sqrt(
-                            Math.pow(c.latitude - country.latitude, 2) + 
-                            Math.pow(c.longitude - country.longitude, 2)
-                        );
-                        return distance < 25 && 
-                               c.name !== country.name && 
-                               c.name !== correctAnswer &&
-                               !country.borders.some(b => b.name === c.name);
-                    })
-                    .map(c => c.name);
-                
-                regionCountries.slice(0, 2).forEach(name => decoys.add(name));
-                
-                // Add fake borders
-                const relevantFakeBorders = fakeBorders.filter(fb => 
-                    fb.country1 === country.name || fb.country2 === country.name
-                );
-                
-                for (let i = 0; i < Math.min(fakeBorderCount, relevantFakeBorders.length); i++) {
-                    const fakeBorder = relevantFakeBorders[i];
-                    const fakeNeighbor = fakeBorder.country1 === country.name ? 
-                        fakeBorder.country2 : fakeBorder.country1;
-                    decoys.add(fakeNeighbor);
-                }
-                
-                // Fill remaining slots with random countries
+                // Add countries that don't border the current country
                 while (decoys.size < 3) {
                     const randomCountry = allCountryNames[Math.floor(Math.random() * allCountryNames.length)];
                     if (randomCountry !== country.name && 
                         randomCountry !== correctAnswer && 
-                        !country.borders.some(b => b.name === randomCountry)) {
+                        !country.borders.includes(randomCountry)) {
                         decoys.add(randomCountry);
                     }
+                    
+                    // Prevent infinite loop
+                    if (decoys.size >= allCountryNames.length - 2) break;
                 }
                 
-                return this.shuffleArray([...decoys]).slice(0, 3);
+                return [...decoys];
             }
 
             shuffleArray(array) {
@@ -721,6 +688,7 @@
             selectAnswer(answer) {
                 if (this.answered) return;
                 
+                console.log('🎯 Answer selected:', answer);
                 this.selectedAnswer = answer;
                 this.answered = true;
                 
@@ -729,20 +697,26 @@
                 
                 if (isCorrect) {
                     this.score++;
+                    console.log('✅ Correct! Score:', this.score);
+                } else {
+                    console.log('❌ Wrong! Correct answer:', question.correctAnswer);
                 }
                 
                 this.render();
             }
 
             nextQuestion() {
+                console.log('➡️ Moving to next question');
                 this.currentRound++;
                 this.answered = false;
                 this.selectedAnswer = null;
                 
                 if (this.currentRound >= TOTAL_QUESTIONS) {
+                    console.log('🏁 Game completed! Score:', this.score);
                     if (this.score === TOTAL_QUESTIONS) {
                         this.wins++;
                         localStorage.setItem(WINS_KEY, this.wins.toString());
+                        console.log('🏆 Perfect score! Wins:', this.wins);
                     }
                     this.saveGameState(true);
                     this.currentScreen = 'gameover';
@@ -754,8 +728,9 @@
             }
 
             render() {
+                // Update stats
                 document.getElementById('questionNum').textContent = 
-                    this.currentScreen === 'game' ? `${this.currentRound + 1}/5` : '-';
+                    this.currentScreen === 'game' ? `${this.currentRound + 1}/${TOTAL_QUESTIONS}` : '-';
                 document.getElementById('score').textContent = this.score;
                 document.getElementById('winCount').textContent = this.wins;
 
@@ -776,6 +751,7 @@
 
             renderHome() {
                 const hasPlayedToday = localStorage.getItem(STORAGE_KEY) !== null;
+                console.log('🏠 Home screen - Played today:', hasPlayedToday);
                 
                 return `
                     <div class="question-card">
@@ -792,7 +768,7 @@
                                 <li>4 options per question</li>
                                 <li>Get 5/5 correct to win! 🏆</li>
                                 <li>One game per day</li>
-                                <li>Watch out for tricky fake borders!</li>
+                                <li>Watch out for tricky borders!</li>
                             </ul>
                         </div>
                         
@@ -802,7 +778,12 @@
                             ${hasPlayedToday ? '✓ Already Played Today' : '▶ Start Game'}
                         </button>
                         
-                        ${hasPlayedToday ? `<div class="countdown-timer">Next game in ${this.getTimeUntilTomorrow()}</div>` : ''}
+                        ${hasPlayedToday ? `
+                            <div class="countdown-timer">
+                                Next game in ${this.getTimeUntilTomorrow()}
+                                <br><small style="font-size: 0.8em; opacity: 0.8;">(Or use console: resetBordle())</small>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }
@@ -947,8 +928,29 @@
             document.getElementById(pageId + '-page').classList.add('active');
         }
 
+        // Reset function for console
+        function resetBordle() {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(WINS_KEY);
+            game.currentScreen = 'home';
+            game.currentRound = 0;
+            game.score = 0;
+            game.selectedAnswer = null;
+            game.gameQuestions = [];
+            game.answered = false;
+            game.wins = 0;
+            game.render();
+            console.log('🎮 Bordle completely reset! Ready to play again.');
+        }
+
+        // Make reset function available globally
+        window.resetBordle = resetBordle;
+
+        // Initialize game
         window.showPage = showPage;
         window.game = new BordleGame();
+
+        console.log('🎮 Bordle loaded! Use resetBordle() in console to reset the game.');
     </script>
 </body>
 </html>
