@@ -64,6 +64,7 @@
             display: flex;
             gap: 20px;
             align-items: center;
+            position: relative;
         }
 
         .nav-link {
@@ -80,6 +81,56 @@
         .nav-link:hover {
             background: var(--glass-bg);
             transform: translateY(-2px);
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            color: var(--light-text);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--glass-bg);
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         .page {
@@ -381,6 +432,15 @@
                 width: 100px;
                 height: 70px;
             }
+            
+            .nav-links {
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -391,6 +451,28 @@
         <div class="logo">🌍 Bordle</div>
         <div class="nav-links">
             <a href="#" class="nav-link" onclick="showPage('game')"><i class="fas fa-play"></i> Play</a>
+            
+            <div class="dropdown">
+                <a href="#" class="nav-link"><i class="fas fa-gamepad"></i> Game Modes</a>
+                <div class="dropdown-content">
+                    <a href="https://r293239.github.io/Geodle/" class="dropdown-item" target="_blank">
+                        <i class="fas fa-globe-americas"></i> Geodle
+                    </a>
+                    <a href="https://r293239.github.io/Geodle/path-mode.html" class="dropdown-item" target="_blank">
+                        <i class="fas fa-route"></i> Routele
+                    </a>
+                    <a href="https://r293239.github.io/Geodle/flag-mode.html" class="dropdown-item" target="_blank">
+                        <i class="fas fa-flag"></i> Flagle
+                    </a>
+                    <a href="https://r293239.github.io/Geodle/civile.html" class="dropdown-item" target="_blank">
+                        <i class="fas fa-landmark"></i> Civile
+                    </a>
+                    <a href="https://r293239.github.io/Geodle/country-mode.html" class="dropdown-item" target="_blank">
+                        <i class="fas fa-map"></i> Countryle
+                    </a>
+                </div>
+            </div>
+            
             <a href="#" class="nav-link" onclick="showPage('help')"><i class="fas fa-question-circle"></i> Help</a>
         </div>
     </nav>
@@ -432,103 +514,2081 @@
                 <li>🏆 Get all 5 correct to win!</li>
                 <li>📅 One game per day</li>
                 <li>🔥 Questions include tricky borders like France-Brazil!</li>
+                <li>🚫 Watch out for fake borders that don't actually exist!</li>
+            </ul>
+            
+            <h2 class="help-title" style="margin-top: 30px;"><i class="fas fa-layer-group"></i> Other Game Modes</h2>
+            <p style="margin-bottom: 15px; color: var(--light-text);">Check out our other geography challenge games:</p>
+            <ul style="line-height: 2;">
+                <li>🌎 <strong>Geodle</strong> - Classic geography guessing game</li>
+                <li>🛣️ <strong>Routele</strong> - Find the path between countries</li>
+                <li>🚩 <strong>Flagle</strong> - Identify countries by their flags</li>
+                <li>🏛️ <strong>Civile</strong> - Civilization and history challenges</li>
+                <li>🗺️ <strong>Countryle</strong> - Advanced country identification</li>
             </ul>
         </div>
     </div>
 
     <script>
-        // Simple countries data - focused on key countries with clear borders
+        // Enhanced countries data with difficulty ratings for borders
         const countries = [
             { 
-                name: "France", 
-                borders: ["Belgium", "Luxembourg", "Germany", "Switzerland", "Italy", "Spain", "Andorra", "Monaco", "Brazil"],
-                flag: "https://flagcdn.com/w320/fr.png"
+                name: "Afghanistan", 
+                borders: [
+                    {name: "Iran", difficulty: 1}, 
+                    {name: "Pakistan", difficulty: 1}, 
+                    {name: "Tajikistan", difficulty: 2}, 
+                    {name: "Turkmenistan", difficulty: 2}, 
+                    {name: "Uzbekistan", difficulty: 2}, 
+                    {name: "China", difficulty: 3}
+                ], 
+                latitude: 33, 
+                longitude: 65,
+                flag: "https://flagcdn.com/w320/af.png"
             },
             { 
-                name: "Germany", 
-                borders: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
-                flag: "https://flagcdn.com/w320/de.png"
+                name: "Albania", 
+                borders: [
+                    {name: "Montenegro", difficulty: 1}, 
+                    {name: "Kosovo", difficulty: 2}, 
+                    {name: "North Macedonia", difficulty: 1}, 
+                    {name: "Greece", difficulty: 1}
+                ], 
+                latitude: 41, 
+                longitude: 20,
+                flag: "https://flagcdn.com/w320/al.png"
             },
             { 
-                name: "Spain", 
-                borders: ["France", "Andorra", "Portugal", "Morocco"],
-                flag: "https://flagcdn.com/w320/es.png"
+                name: "Algeria", 
+                borders: [
+                    {name: "Tunisia", difficulty: 1}, 
+                    {name: "Libya", difficulty: 1}, 
+                    {name: "Niger", difficulty: 2}, 
+                    {name: "Mali", difficulty: 2}, 
+                    {name: "Mauritania", difficulty: 2}, 
+                    {name: "Western Sahara", difficulty: 3}, 
+                    {name: "Morocco", difficulty: 1}
+                ], 
+                latitude: 28, 
+                longitude: 3,
+                flag: "https://flagcdn.com/w320/dz.png"
             },
             { 
-                name: "Italy", 
-                borders: ["France", "Switzerland", "Austria", "Slovenia", "San Marino", "Vatican City"],
-                flag: "https://flagcdn.com/w320/it.png"
+                name: "Andorra", 
+                borders: [
+                    {name: "France", difficulty: 1}, 
+                    {name: "Spain", difficulty: 1}
+                ], 
+                latitude: 42.5, 
+                longitude: 1.5,
+                flag: "https://flagcdn.com/w320/ad.png"
             },
             { 
-                name: "United Kingdom", 
-                borders: ["Ireland"],
-                flag: "https://flagcdn.com/w320/gb.png"
-            },
-            { 
-                name: "Brazil", 
-                borders: ["French Guiana", "Suriname", "Guyana", "Venezuela", "Colombia", "Peru", "Bolivia", "Paraguay", "Argentina", "Uruguay"],
-                flag: "https://flagcdn.com/w320/br.png"
-            },
-            { 
-                name: "United States", 
-                borders: ["Canada", "Mexico", "Russia"],
-                flag: "https://flagcdn.com/w320/us.png"
-            },
-            { 
-                name: "Canada", 
-                borders: ["United States", "Denmark"],
-                flag: "https://flagcdn.com/w320/ca.png"
-            },
-            { 
-                name: "Mexico", 
-                borders: ["United States", "Guatemala", "Belize"],
-                flag: "https://flagcdn.com/w320/mx.png"
-            },
-            { 
-                name: "China", 
-                borders: ["North Korea", "Russia", "Mongolia", "Kazakhstan", "Kyrgyzstan", "Tajikistan", "Afghanistan", "Pakistan", "India", "Nepal", "Bhutan", "Myanmar", "Laos", "Vietnam"],
-                flag: "https://flagcdn.com/w320/cn.png"
-            },
-            { 
-                name: "India", 
-                borders: ["Pakistan", "China", "Nepal", "Bhutan", "Myanmar", "Bangladesh"],
-                flag: "https://flagcdn.com/w320/in.png"
-            },
-            { 
-                name: "Russia", 
-                borders: ["Norway", "Finland", "Estonia", "Latvia", "Lithuania", "Poland", "Belarus", "Ukraine", "Georgia", "Azerbaijan", "Kazakhstan", "China", "Mongolia", "North Korea"],
-                flag: "https://flagcdn.com/w320/ru.png"
-            },
-            { 
-                name: "Turkey", 
-                borders: ["Greece", "Bulgaria", "Georgia", "Armenia", "Azerbaijan", "Iran", "Iraq", "Syria"],
-                flag: "https://flagcdn.com/w320/tr.png"
-            },
-            { 
-                name: "Egypt", 
-                borders: ["Libya", "Sudan", "Israel", "Gaza Strip"],
-                flag: "https://flagcdn.com/w320/eg.png"
-            },
-            { 
-                name: "South Africa", 
-                borders: ["Namibia", "Botswana", "Zimbabwe", "Mozambique", "Eswatini", "Lesotho"],
-                flag: "https://flagcdn.com/w320/za.png"
-            },
-            { 
-                name: "Australia", 
-                borders: [],
-                flag: "https://flagcdn.com/w320/au.png"
-            },
-            { 
-                name: "Japan", 
-                borders: [],
-                flag: "https://flagcdn.com/w320/jp.png"
+                name: "Angola", 
+                borders: [
+                    {name: "Congo", difficulty: 2}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Namibia", difficulty: 1}
+                ], 
+                latitude: -12.5, 
+                longitude: 18.5,
+                flag: "https://flagcdn.com/w320/ao.png"
             },
             { 
                 name: "Argentina", 
-                borders: ["Chile", "Bolivia", "Paraguay", "Brazil", "Uruguay"],
+                borders: [
+                    {name: "Chile", difficulty: 1}, 
+                    {name: "Bolivia", difficulty: 2}, 
+                    {name: "Paraguay", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 1}, 
+                    {name: "Uruguay", difficulty: 1}
+                ], 
+                latitude: -34, 
+                longitude: -64,
                 flag: "https://flagcdn.com/w320/ar.png"
+            },
+            { 
+                name: "Armenia", 
+                borders: [
+                    {name: "Georgia", difficulty: 1}, 
+                    {name: "Azerbaijan", difficulty: 2}, 
+                    {name: "Iran", difficulty: 2}, 
+                    {name: "Turkey", difficulty: 3}
+                ], 
+                latitude: 40, 
+                longitude: 45,
+                flag: "https://flagcdn.com/w320/am.png"
+            },
+            { 
+                name: "Australia", 
+                borders: [], 
+                latitude: -25, 
+                longitude: 135,
+                flag: "https://flagcdn.com/w320/au.png"
+            },
+            { 
+                name: "Austria", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Czech Republic", difficulty: 1}, 
+                    {name: "Slovakia", difficulty: 2}, 
+                    {name: "Hungary", difficulty: 1}, 
+                    {name: "Slovenia", difficulty: 2}, 
+                    {name: "Italy", difficulty: 1}, 
+                    {name: "Switzerland", difficulty: 1}, 
+                    {name: "Liechtenstein", difficulty: 3}
+                ], 
+                latitude: 47.3333, 
+                longitude: 13.3333,
+                flag: "https://flagcdn.com/w320/at.png"
+            },
+            { 
+                name: "Azerbaijan", 
+                borders: [
+                    {name: "Russia", difficulty: 2}, 
+                    {name: "Georgia", difficulty: 1}, 
+                    {name: "Armenia", difficulty: 2}, 
+                    {name: "Iran", difficulty: 2}
+                ], 
+                latitude: 40.5, 
+                longitude: 47.5,
+                flag: "https://flagcdn.com/w320/az.png"
+            },
+            { 
+                name: "Bahrain", 
+                borders: [], 
+                latitude: 26, 
+                longitude: 50.55,
+                flag: "https://flagcdn.com/w320/bh.png"
+            },
+            { 
+                name: "Bangladesh", 
+                borders: [
+                    {name: "India", difficulty: 1}, 
+                    {name: "Myanmar", difficulty: 2}
+                ], 
+                latitude: 24, 
+                longitude: 90,
+                flag: "https://flagcdn.com/w320/bd.png"
+            },
+            { 
+                name: "Belarus", 
+                borders: [
+                    {name: "Latvia", difficulty: 2}, 
+                    {name: "Lithuania", difficulty: 2}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 1}
+                ], 
+                latitude: 53, 
+                longitude: 28,
+                flag: "https://flagcdn.com/w320/by.png"
+            },
+            { 
+                name: "Belgium", 
+                borders: [
+                    {name: "France", difficulty: 1}, 
+                    {name: "Luxembourg", difficulty: 2}, 
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Netherlands", difficulty: 1}
+                ], 
+                latitude: 50.8333, 
+                longitude: 4,
+                flag: "https://flagcdn.com/w320/be.png"
+            },
+            { 
+                name: "Belize", 
+                borders: [
+                    {name: "Mexico", difficulty: 2}, 
+                    {name: "Guatemala", difficulty: 1}
+                ], 
+                latitude: 17.25, 
+                longitude: -88.75,
+                flag: "https://flagcdn.com/w320/bz.png"
+            },
+            { 
+                name: "Benin", 
+                borders: [
+                    {name: "Togo", difficulty: 1}, 
+                    {name: "Burkina Faso", difficulty: 2}, 
+                    {name: "Niger", difficulty: 2}, 
+                    {name: "Nigeria", difficulty: 1}
+                ], 
+                latitude: 9.5, 
+                longitude: 2.25,
+                flag: "https://flagcdn.com/w320/bj.png"
+            },
+            { 
+                name: "Bhutan", 
+                borders: [
+                    {name: "China", difficulty: 3}, 
+                    {name: "India", difficulty: 1}
+                ], 
+                latitude: 27.5, 
+                longitude: 90.5,
+                flag: "https://flagcdn.com/w320/bt.png"
+            },
+            { 
+                name: "Bolivia", 
+                borders: [
+                    {name: "Brazil", difficulty: 1}, 
+                    {name: "Paraguay", difficulty: 2}, 
+                    {name: "Argentina", difficulty: 1}, 
+                    {name: "Chile", difficulty: 2}, 
+                    {name: "Peru", difficulty: 1}
+                ], 
+                latitude: -17, 
+                longitude: -65,
+                flag: "https://flagcdn.com/w320/bo.png"
+            },
+            { 
+                name: "Bosnia and Herzegovina", 
+                borders: [
+                    {name: "Croatia", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Montenegro", difficulty: 1}
+                ], 
+                latitude: 44, 
+                longitude: 18,
+                flag: "https://flagcdn.com/w320/ba.png"
+            },
+            { 
+                name: "Botswana", 
+                borders: [
+                    {name: "Namibia", difficulty: 1}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Zimbabwe", difficulty: 1}, 
+                    {name: "South Africa", difficulty: 1}
+                ], 
+                latitude: -22, 
+                longitude: 24,
+                flag: "https://flagcdn.com/w320/bw.png"
+            },
+            { 
+                name: "Brazil", 
+                borders: [
+                    {name: "French Guiana", difficulty: 3}, 
+                    {name: "Suriname", difficulty: 3}, 
+                    {name: "Guyana", difficulty: 3}, 
+                    {name: "Venezuela", difficulty: 2}, 
+                    {name: "Colombia", difficulty: 2}, 
+                    {name: "Peru", difficulty: 2}, 
+                    {name: "Bolivia", difficulty: 1}, 
+                    {name: "Paraguay", difficulty: 2}, 
+                    {name: "Argentina", difficulty: 1}, 
+                    {name: "Uruguay", difficulty: 1}
+                ], 
+                latitude: -10, 
+                longitude: -55,
+                flag: "https://flagcdn.com/w320/br.png"
+            },
+            { 
+                name: "Brunei", 
+                borders: [
+                    {name: "Malaysia", difficulty: 1}
+                ], 
+                latitude: 4.5, 
+                longitude: 114.6667,
+                flag: "https://flagcdn.com/w320/bn.png"
+            },
+            { 
+                name: "Bulgaria", 
+                borders: [
+                    {name: "Romania", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "North Macedonia", difficulty: 2}, 
+                    {name: "Greece", difficulty: 1}, 
+                    {name: "Turkey", difficulty: 1}
+                ], 
+                latitude: 43, 
+                longitude: 25,
+                flag: "https://flagcdn.com/w320/bg.png"
+            },
+            { 
+                name: "Burkina Faso", 
+                borders: [
+                    {name: "Mali", difficulty: 1}, 
+                    {name: "Niger", difficulty: 1}, 
+                    {name: "Benin", difficulty: 2}, 
+                    {name: "Togo", difficulty: 2}, 
+                    {name: "Ghana", difficulty: 1}, 
+                    {name: "Ivory Coast", difficulty: 1}
+                ], 
+                latitude: 13, 
+                longitude: -2,
+                flag: "https://flagcdn.com/w320/bf.png"
+            },
+            { 
+                name: "Burundi", 
+                borders: [
+                    {name: "Rwanda", difficulty: 1}, 
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "DR Congo", difficulty: 1}
+                ], 
+                latitude: -3.5, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/bi.png"
+            },
+            { 
+                name: "Cambodia", 
+                borders: [
+                    {name: "Thailand", difficulty: 1}, 
+                    {name: "Laos", difficulty: 2}, 
+                    {name: "Vietnam", difficulty: 1}
+                ], 
+                latitude: 13, 
+                longitude: 105,
+                flag: "https://flagcdn.com/w320/kh.png"
+            },
+            { 
+                name: "Cameroon", 
+                borders: [
+                    {name: "Nigeria", difficulty: 1}, 
+                    {name: "Chad", difficulty: 2}, 
+                    {name: "Central African Republic", difficulty: 2}, 
+                    {name: "Congo", difficulty: 2}, 
+                    {name: "Gabon", difficulty: 2}, 
+                    {name: "Equatorial Guinea", difficulty: 3}
+                ], 
+                latitude: 6, 
+                longitude: 12,
+                flag: "https://flagcdn.com/w320/cm.png"
+            },
+            { 
+                name: "Canada", 
+                borders: [
+                    {name: "United States", difficulty: 1}, 
+                    {name: "Denmark", difficulty: 3}
+                ], 
+                latitude: 60, 
+                longitude: -95,
+                flag: "https://flagcdn.com/w320/ca.png"
+            },
+            { 
+                name: "Central African Republic", 
+                borders: [
+                    {name: "Chad", difficulty: 2}, 
+                    {name: "Sudan", difficulty: 2}, 
+                    {name: "South Sudan", difficulty: 2}, 
+                    {name: "DR Congo", difficulty: 1}, 
+                    {name: "Congo", difficulty: 2}, 
+                    {name: "Cameroon", difficulty: 2}
+                ], 
+                latitude: 7, 
+                longitude: 21,
+                flag: "https://flagcdn.com/w320/cf.png"
+            },
+            { 
+                name: "Chad", 
+                borders: [
+                    {name: "Libya", difficulty: 2}, 
+                    {name: "Sudan", difficulty: 2}, 
+                    {name: "Central African Republic", difficulty: 2}, 
+                    {name: "Cameroon", difficulty: 2}, 
+                    {name: "Nigeria", difficulty: 2}, 
+                    {name: "Niger", difficulty: 1}
+                ], 
+                latitude: 15, 
+                longitude: 19,
+                flag: "https://flagcdn.com/w320/td.png"
+            },
+            { 
+                name: "Chile", 
+                borders: [
+                    {name: "Peru", difficulty: 1}, 
+                    {name: "Bolivia", difficulty: 2}, 
+                    {name: "Argentina", difficulty: 1}
+                ], 
+                latitude: -30, 
+                longitude: -71,
+                flag: "https://flagcdn.com/w320/cl.png"
+            },
+            { 
+                name: "China", 
+                borders: [
+                    {name: "North Korea", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "Mongolia", difficulty: 2}, 
+                    {name: "Kazakhstan", difficulty: 2}, 
+                    {name: "Kyrgyzstan", difficulty: 3}, 
+                    {name: "Tajikistan", difficulty: 3}, 
+                    {name: "Afghanistan", difficulty: 3}, 
+                    {name: "Pakistan", difficulty: 2}, 
+                    {name: "India", difficulty: 1}, 
+                    {name: "Nepal", difficulty: 2}, 
+                    {name: "Bhutan", difficulty: 3}, 
+                    {name: "Myanmar", difficulty: 2}, 
+                    {name: "Laos", difficulty: 2}, 
+                    {name: "Vietnam", difficulty: 1}
+                ], 
+                latitude: 35, 
+                longitude: 105,
+                flag: "https://flagcdn.com/w320/cn.png"
+            },
+            { 
+                name: "Colombia", 
+                borders: [
+                    {name: "Panama", difficulty: 2}, 
+                    {name: "Venezuela", difficulty: 1}, 
+                    {name: "Brazil", difficulty: 2}, 
+                    {name: "Peru", difficulty: 2}, 
+                    {name: "Ecuador", difficulty: 1}
+                ], 
+                latitude: 4, 
+                longitude: -72,
+                flag: "https://flagcdn.com/w320/co.png"
+            },
+            { 
+                name: "Congo", 
+                borders: [
+                    {name: "Gabon", difficulty: 2}, 
+                    {name: "Cameroon", difficulty: 2}, 
+                    {name: "Central African Republic", difficulty: 2}, 
+                    {name: "DR Congo", difficulty: 1}, 
+                    {name: "Angola", difficulty: 2}
+                ], 
+                latitude: -1, 
+                longitude: 15,
+                flag: "https://flagcdn.com/w320/cg.png"
+            },
+            { 
+                name: "Costa Rica", 
+                borders: [
+                    {name: "Nicaragua", difficulty: 1}, 
+                    {name: "Panama", difficulty: 1}
+                ], 
+                latitude: 10, 
+                longitude: -84,
+                flag: "https://flagcdn.com/w320/cr.png"
+            },
+            { 
+                name: "Croatia", 
+                borders: [
+                    {name: "Slovenia", difficulty: 1}, 
+                    {name: "Hungary", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Bosnia and Herzegovina", difficulty: 1}, 
+                    {name: "Montenegro", difficulty: 1}
+                ], 
+                latitude: 45.1667, 
+                longitude: 15.5,
+                flag: "https://flagcdn.com/w320/hr.png"
+            },
+            { 
+                name: "Cuba", 
+                borders: [], 
+                latitude: 21.5, 
+                longitude: -80,
+                flag: "https://flagcdn.com/w320/cu.png"
+            },
+            { 
+                name: "Cyprus", 
+                borders: [], 
+                latitude: 35, 
+                longitude: 33,
+                flag: "https://flagcdn.com/w320/cy.png"
+            },
+            { 
+                name: "Czech Republic", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Slovakia", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}
+                ], 
+                latitude: 49.75, 
+                longitude: 15.5,
+                flag: "https://flagcdn.com/w320/cz.png"
+            },
+            { 
+                name: "Denmark", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Canada", difficulty: 3}
+                ], 
+                latitude: 56, 
+                longitude: 10,
+                flag: "https://flagcdn.com/w320/dk.png"
+            },
+            { 
+                name: "Djibouti", 
+                borders: [
+                    {name: "Eritrea", difficulty: 2}, 
+                    {name: "Ethiopia", difficulty: 1}, 
+                    {name: "Somalia", difficulty: 2}
+                ], 
+                latitude: 11.5, 
+                longitude: 43,
+                flag: "https://flagcdn.com/w320/dj.png"
+            },
+            { 
+                name: "Dominican Republic", 
+                borders: [
+                    {name: "Haiti", difficulty: 1}
+                ], 
+                latitude: 19, 
+                longitude: -70.6667,
+                flag: "https://flagcdn.com/w320/do.png"
+            },
+            { 
+                name: "DR Congo", 
+                borders: [
+                    {name: "Congo", difficulty: 1}, 
+                    {name: "Central African Republic", difficulty: 2}, 
+                    {name: "South Sudan", difficulty: 2}, 
+                    {name: "Uganda", difficulty: 1}, 
+                    {name: "Rwanda", difficulty: 1}, 
+                    {name: "Burundi", difficulty: 1}, 
+                    {name: "Tanzania", difficulty: 2}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Angola", difficulty: 1}
+                ], 
+                latitude: 0, 
+                longitude: 25,
+                flag: "https://flagcdn.com/w320/cd.png"
+            },
+            { 
+                name: "Ecuador", 
+                borders: [
+                    {name: "Colombia", difficulty: 1}, 
+                    {name: "Peru", difficulty: 1}
+                ], 
+                latitude: -2, 
+                longitude: -77.5,
+                flag: "https://flagcdn.com/w320/ec.png"
+            },
+            { 
+                name: "Egypt", 
+                borders: [
+                    {name: "Libya", difficulty: 1}, 
+                    {name: "Sudan", difficulty: 2}, 
+                    {name: "Israel", difficulty: 1}, 
+                    {name: "Gaza Strip", difficulty: 3}
+                ], 
+                latitude: 27, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/eg.png"
+            },
+            { 
+                name: "El Salvador", 
+                borders: [
+                    {name: "Guatemala", difficulty: 1}, 
+                    {name: "Honduras", difficulty: 1}
+                ], 
+                latitude: 13.8333, 
+                longitude: -88.9167,
+                flag: "https://flagcdn.com/w320/sv.png"
+            },
+            { 
+                name: "Equatorial Guinea", 
+                borders: [
+                    {name: "Cameroon", difficulty: 2}, 
+                    {name: "Gabon", difficulty: 2}
+                ], 
+                latitude: 2, 
+                longitude: 10,
+                flag: "https://flagcdn.com/w320/gq.png"
+            },
+            { 
+                name: "Eritrea", 
+                borders: [
+                    {name: "Sudan", difficulty: 2}, 
+                    {name: "Ethiopia", difficulty: 1}, 
+                    {name: "Djibouti", difficulty: 2}
+                ], 
+                latitude: 15, 
+                longitude: 39,
+                flag: "https://flagcdn.com/w320/er.png"
+            },
+            { 
+                name: "Estonia", 
+                borders: [
+                    {name: "Latvia", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}
+                ], 
+                latitude: 59, 
+                longitude: 26,
+                flag: "https://flagcdn.com/w320/ee.png"
+            },
+            { 
+                name: "Eswatini", 
+                borders: [
+                    {name: "South Africa", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 1}
+                ], 
+                latitude: -26.5, 
+                longitude: 31.5,
+                flag: "https://flagcdn.com/w320/sz.png"
+            },
+            { 
+                name: "Ethiopia", 
+                borders: [
+                    {name: "Eritrea", difficulty: 1}, 
+                    {name: "Djibouti", difficulty: 2}, 
+                    {name: "Somalia", difficulty: 1}, 
+                    {name: "Kenya", difficulty: 1}, 
+                    {name: "South Sudan", difficulty: 2}, 
+                    {name: "Sudan", difficulty: 2}
+                ], 
+                latitude: 8, 
+                longitude: 38,
+                flag: "https://flagcdn.com/w320/et.png"
+            },
+            { 
+                name: "Finland", 
+                borders: [
+                    {name: "Sweden", difficulty: 1}, 
+                    {name: "Norway", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}
+                ], 
+                latitude: 64, 
+                longitude: 26,
+                flag: "https://flagcdn.com/w320/fi.png"
+            },
+            { 
+                name: "France", 
+                borders: [
+                    {name: "Belgium", difficulty: 1}, 
+                    {name: "Luxembourg", difficulty: 2}, 
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Switzerland", difficulty: 1}, 
+                    {name: "Italy", difficulty: 1}, 
+                    {name: "Monaco", difficulty: 3}, 
+                    {name: "Spain", difficulty: 1}, 
+                    {name: "Andorra", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 3}, 
+                    {name: "Suriname", difficulty: 3}
+                ], 
+                latitude: 46, 
+                longitude: 2,
+                flag: "https://flagcdn.com/w320/fr.png"
+            },
+            { 
+                name: "Gabon", 
+                borders: [
+                    {name: "Equatorial Guinea", difficulty: 3}, 
+                    {name: "Cameroon", difficulty: 2}, 
+                    {name: "Congo", difficulty: 2}
+                ], 
+                latitude: -1, 
+                longitude: 11.75,
+                flag: "https://flagcdn.com/w320/ga.png"
+            },
+            { 
+                name: "Gambia", 
+                borders: [
+                    {name: "Senegal", difficulty: 1}
+                ], 
+                latitude: 13.4667, 
+                longitude: -16.5667,
+                flag: "https://flagcdn.com/w320/gm.png"
+            },
+            { 
+                name: "Georgia", 
+                borders: [
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "Azerbaijan", difficulty: 2}, 
+                    {name: "Armenia", difficulty: 2}, 
+                    {name: "Turkey", difficulty: 2}
+                ], 
+                latitude: 42, 
+                longitude: 43.5,
+                flag: "https://flagcdn.com/w320/ge.png"
+            },
+            { 
+                name: "Germany", 
+                borders: [
+                    {name: "Denmark", difficulty: 1}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Czech Republic", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}, 
+                    {name: "Switzerland", difficulty: 1}, 
+                    {name: "France", difficulty: 1}, 
+                    {name: "Luxembourg", difficulty: 2}, 
+                    {name: "Belgium", difficulty: 1}, 
+                    {name: "Netherlands", difficulty: 1}
+                ], 
+                latitude: 51, 
+                longitude: 9,
+                flag: "https://flagcdn.com/w320/de.png"
+            },
+            { 
+                name: "Ghana", 
+                borders: [
+                    {name: "Ivory Coast", difficulty: 1}, 
+                    {name: "Burkina Faso", difficulty: 1}, 
+                    {name: "Togo", difficulty: 1}
+                ], 
+                latitude: 8, 
+                longitude: -2,
+                flag: "https://flagcdn.com/w320/gh.png"
+            },
+            { 
+                name: "Greece", 
+                borders: [
+                    {name: "Albania", difficulty: 1}, 
+                    {name: "North Macedonia", difficulty: 2}, 
+                    {name: "Bulgaria", difficulty: 1}, 
+                    {name: "Turkey", difficulty: 1}
+                ], 
+                latitude: 39, 
+                longitude: 22,
+                flag: "https://flagcdn.com/w320/gr.png"
+            },
+            { 
+                name: "Guatemala", 
+                borders: [
+                    {name: "Mexico", difficulty: 1}, 
+                    {name: "Belize", difficulty: 2}, 
+                    {name: "Honduras", difficulty: 1}, 
+                    {name: "El Salvador", difficulty: 1}
+                ], 
+                latitude: 15.5, 
+                longitude: -90.25,
+                flag: "https://flagcdn.com/w320/gt.png"
+            },
+            { 
+                name: "Guinea", 
+                borders: [
+                    {name: "Guinea-Bissau", difficulty: 2}, 
+                    {name: "Senegal", difficulty: 2}, 
+                    {name: "Mali", difficulty: 2}, 
+                    {name: "Ivory Coast", difficulty: 1}, 
+                    {name: "Liberia", difficulty: 1}, 
+                    {name: "Sierra Leone", difficulty: 1}
+                ], 
+                latitude: 11, 
+                longitude: -10,
+                flag: "https://flagcdn.com/w320/gn.png"
+            },
+            { 
+                name: "Guinea-Bissau", 
+                borders: [
+                    {name: "Senegal", difficulty: 1}, 
+                    {name: "Guinea", difficulty: 1}
+                ], 
+                latitude: 12, 
+                longitude: -15,
+                flag: "https://flagcdn.com/w320/gw.png"
+            },
+            { 
+                name: "Guyana", 
+                borders: [
+                    {name: "Venezuela", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 2}, 
+                    {name: "Suriname", difficulty: 2}
+                ], 
+                latitude: 5, 
+                longitude: -59,
+                flag: "https://flagcdn.com/w320/gy.png"
+            },
+            { 
+                name: "Haiti", 
+                borders: [
+                    {name: "Dominican Republic", difficulty: 1}
+                ], 
+                latitude: 19, 
+                longitude: -72.4167,
+                flag: "https://flagcdn.com/w320/ht.png"
+            },
+            { 
+                name: "Honduras", 
+                borders: [
+                    {name: "Guatemala", difficulty: 1}, 
+                    {name: "El Salvador", difficulty: 1}, 
+                    {name: "Nicaragua", difficulty: 1}
+                ], 
+                latitude: 15, 
+                longitude: -86.5,
+                flag: "https://flagcdn.com/w320/hn.png"
+            },
+            { 
+                name: "Hungary", 
+                borders: [
+                    {name: "Slovakia", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 2}, 
+                    {name: "Romania", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Croatia", difficulty: 1}, 
+                    {name: "Slovenia", difficulty: 2}, 
+                    {name: "Austria", difficulty: 1}
+                ], 
+                latitude: 47, 
+                longitude: 20,
+                flag: "https://flagcdn.com/w320/hu.png"
+            },
+            { 
+                name: "Iceland", 
+                borders: [], 
+                latitude: 65, 
+                longitude: -18,
+                flag: "https://flagcdn.com/w320/is.png"
+            },
+            { 
+                name: "India", 
+                borders: [
+                    {name: "Pakistan", difficulty: 1}, 
+                    {name: "China", difficulty: 1}, 
+                    {name: "Nepal", difficulty: 1}, 
+                    {name: "Bhutan", difficulty: 2}, 
+                    {name: "Myanmar", difficulty: 2}, 
+                    {name: "Bangladesh", difficulty: 1}
+                ], 
+                latitude: 20, 
+                longitude: 77,
+                flag: "https://flagcdn.com/w320/in.png"
+            },
+            { 
+                name: "Indonesia", 
+                borders: [
+                    {name: "Papua New Guinea", difficulty: 2}, 
+                    {name: "Malaysia", difficulty: 1}, 
+                    {name: "Timor-Leste", difficulty: 3}
+                ], 
+                latitude: -5, 
+                longitude: 120,
+                flag: "https://flagcdn.com/w320/id.png"
+            },
+            { 
+                name: "Iran", 
+                borders: [
+                    {name: "Armenia", difficulty: 2}, 
+                    {name: "Azerbaijan", difficulty: 2}, 
+                    {name: "Turkmenistan", difficulty: 2}, 
+                    {name: "Afghanistan", difficulty: 1}, 
+                    {name: "Pakistan", difficulty: 1}, 
+                    {name: "Turkey", difficulty: 1}, 
+                    {name: "Iraq", difficulty: 1}
+                ], 
+                latitude: 32, 
+                longitude: 53,
+                flag: "https://flagcdn.com/w320/ir.png"
+            },
+            { 
+                name: "Iraq", 
+                borders: [
+                    {name: "Turkey", difficulty: 1}, 
+                    {name: "Iran", difficulty: 1}, 
+                    {name: "Kuwait", difficulty: 1}, 
+                    {name: "Saudi Arabia", difficulty: 1}, 
+                    {name: "Jordan", difficulty: 2}, 
+                    {name: "Syria", difficulty: 1}
+                ], 
+                latitude: 33, 
+                longitude: 44,
+                flag: "https://flagcdn.com/w320/iq.png"
+            },
+            { 
+                name: "Ireland", 
+                borders: [
+                    {name: "United Kingdom", difficulty: 1}
+                ], 
+                latitude: 53, 
+                longitude: -8,
+                flag: "https://flagcdn.com/w320/ie.png"
+            },
+            { 
+                name: "Israel", 
+                borders: [
+                    {name: "Lebanon", difficulty: 1}, 
+                    {name: "Syria", difficulty: 2}, 
+                    {name: "Jordan", difficulty: 1}, 
+                    {name: "Egypt", difficulty: 1}
+                ], 
+                latitude: 31.5, 
+                longitude: 34.75,
+                flag: "https://flagcdn.com/w320/il.png"
+            },
+            { 
+                name: "Italy", 
+                borders: [
+                    {name: "France", difficulty: 1}, 
+                    {name: "Switzerland", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}, 
+                    {name: "Slovenia", difficulty: 2}, 
+                    {name: "San Marino", difficulty: 3}, 
+                    {name: "Vatican City", difficulty: 3}
+                ], 
+                latitude: 42.8333, 
+                longitude: 12.8333,
+                flag: "https://flagcdn.com/w320/it.png"
+            },
+            { 
+                name: "Ivory Coast", 
+                borders: [
+                    {name: "Liberia", difficulty: 1}, 
+                    {name: "Guinea", difficulty: 1}, 
+                    {name: "Mali", difficulty: 2}, 
+                    {name: "Burkina Faso", difficulty: 1}, 
+                    {name: "Ghana", difficulty: 1}
+                ], 
+                latitude: 8, 
+                longitude: -5,
+                flag: "https://flagcdn.com/w320/ci.png"
+            },
+            { 
+                name: "Jamaica", 
+                borders: [], 
+                latitude: 18.25, 
+                longitude: -77.5,
+                flag: "https://flagcdn.com/w320/jm.png"
+            },
+            { 
+                name: "Japan", 
+                borders: [], 
+                latitude: 36, 
+                longitude: 138,
+                flag: "https://flagcdn.com/w320/jp.png"
+            },
+            { 
+                name: "Jordan", 
+                borders: [
+                    {name: "Syria", difficulty: 1}, 
+                    {name: "Iraq", difficulty: 2}, 
+                    {name: "Saudi Arabia", difficulty: 1}, 
+                    {name: "Israel", difficulty: 1}
+                ], 
+                latitude: 31, 
+                longitude: 36,
+                flag: "https://flagcdn.com/w320/jo.png"
+            },
+            { 
+                name: "Kazakhstan", 
+                borders: [
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "China", difficulty: 2}, 
+                    {name: "Kyrgyzstan", difficulty: 2}, 
+                    {name: "Uzbekistan", difficulty: 2}, 
+                    {name: "Turkmenistan", difficulty: 2}
+                ], 
+                latitude: 48, 
+                longitude: 68,
+                flag: "https://flagcdn.com/w320/kz.png"
+            },
+            { 
+                name: "Kenya", 
+                borders: [
+                    {name: "Ethiopia", difficulty: 1}, 
+                    {name: "Somalia", difficulty: 1}, 
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "Uganda", difficulty: 1}, 
+                    {name: "South Sudan", difficulty: 2}
+                ], 
+                latitude: 1, 
+                longitude: 38,
+                flag: "https://flagcdn.com/w320/ke.png"
+            },
+            { 
+                name: "Kosovo", 
+                borders: [
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "North Macedonia", difficulty: 2}, 
+                    {name: "Albania", difficulty: 1}, 
+                    {name: "Montenegro", difficulty: 2}
+                ], 
+                latitude: 42.6667, 
+                longitude: 21.1667,
+                flag: "https://flagcdn.com/w320/xk.png"
+            },
+            { 
+                name: "Kuwait", 
+                borders: [
+                    {name: "Iraq", difficulty: 1}, 
+                    {name: "Saudi Arabia", difficulty: 1}
+                ], 
+                latitude: 29.5, 
+                longitude: 45.75,
+                flag: "https://flagcdn.com/w320/kw.png"
+            },
+            { 
+                name: "Kyrgyzstan", 
+                borders: [
+                    {name: "Kazakhstan", difficulty: 2}, 
+                    {name: "China", difficulty: 3}, 
+                    {name: "Tajikistan", difficulty: 2}, 
+                    {name: "Uzbekistan", difficulty: 2}
+                ], 
+                latitude: 41, 
+                longitude: 75,
+                flag: "https://flagcdn.com/w320/kg.png"
+            },
+            { 
+                name: "Laos", 
+                borders: [
+                    {name: "Myanmar", difficulty: 2}, 
+                    {name: "China", difficulty: 2}, 
+                    {name: "Vietnam", difficulty: 1}, 
+                    {name: "Cambodia", difficulty: 2}, 
+                    {name: "Thailand", difficulty: 1}
+                ], 
+                latitude: 18, 
+                longitude: 105,
+                flag: "https://flagcdn.com/w320/la.png"
+            },
+            { 
+                name: "Latvia", 
+                borders: [
+                    {name: "Estonia", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "Belarus", difficulty: 1}, 
+                    {name: "Lithuania", difficulty: 1}
+                ], 
+                latitude: 57, 
+                longitude: 25,
+                flag: "https://flagcdn.com/w320/lv.png"
+            },
+            { 
+                name: "Lebanon", 
+                borders: [
+                    {name: "Syria", difficulty: 1}, 
+                    {name: "Israel", difficulty: 1}
+                ], 
+                latitude: 33.8333, 
+                longitude: 35.8333,
+                flag: "https://flagcdn.com/w320/lb.png"
+            },
+            { 
+                name: "Lesotho", 
+                borders: [
+                    {name: "South Africa", difficulty: 1}
+                ], 
+                latitude: -29.5, 
+                longitude: 28.5,
+                flag: "https://flagcdn.com/w320/ls.png"
+            },
+            { 
+                name: "Liberia", 
+                borders: [
+                    {name: "Sierra Leone", difficulty: 1}, 
+                    {name: "Guinea", difficulty: 1}, 
+                    {name: "Ivory Coast", difficulty: 1}
+                ], 
+                latitude: 6.5, 
+                longitude: -9.5,
+                flag: "https://flagcdn.com/w320/lr.png"
+            },
+            { 
+                name: "Libya", 
+                borders: [
+                    {name: "Tunisia", difficulty: 1}, 
+                    {name: "Algeria", difficulty: 1}, 
+                    {name: "Niger", difficulty: 2}, 
+                    {name: "Chad", difficulty: 2}, 
+                    {name: "Sudan", difficulty: 2}, 
+                    {name: "Egypt", difficulty: 1}
+                ], 
+                latitude: 25, 
+                longitude: 17,
+                flag: "https://flagcdn.com/w320/ly.png"
+            },
+            { 
+                name: "Liechtenstein", 
+                borders: [
+                    {name: "Switzerland", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}
+                ], 
+                latitude: 47.1667, 
+                longitude: 9.5333,
+                flag: "https://flagcdn.com/w320/li.png"
+            },
+            { 
+                name: "Lithuania", 
+                borders: [
+                    {name: "Latvia", difficulty: 1}, 
+                    {name: "Belarus", difficulty: 1}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Russia", difficulty: 2}
+                ], 
+                latitude: 56, 
+                longitude: 24,
+                flag: "https://flagcdn.com/w320/lt.png"
+            },
+            { 
+                name: "Luxembourg", 
+                borders: [
+                    {name: "Belgium", difficulty: 1}, 
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "France", difficulty: 1}
+                ], 
+                latitude: 49.75, 
+                longitude: 6.1667,
+                flag: "https://flagcdn.com/w320/lu.png"
+            },
+            { 
+                name: "Madagascar", 
+                borders: [], 
+                latitude: -20, 
+                longitude: 47,
+                flag: "https://flagcdn.com/w320/mg.png"
+            },
+            { 
+                name: "Malawi", 
+                borders: [
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 1}, 
+                    {name: "Zambia", difficulty: 1}
+                ], 
+                latitude: -13.5, 
+                longitude: 34,
+                flag: "https://flagcdn.com/w320/mw.png"
+            },
+            { 
+                name: "Malaysia", 
+                borders: [
+                    {name: "Thailand", difficulty: 1}, 
+                    {name: "Indonesia", difficulty: 1}, 
+                    {name: "Brunei", difficulty: 2}
+                ], 
+                latitude: 2.5, 
+                longitude: 112.5,
+                flag: "https://flagcdn.com/w320/my.png"
+            },
+            { 
+                name: "Mali", 
+                borders: [
+                    {name: "Algeria", difficulty: 2}, 
+                    {name: "Niger", difficulty: 1}, 
+                    {name: "Burkina Faso", difficulty: 1}, 
+                    {name: "Ivory Coast", difficulty: 2}, 
+                    {name: "Guinea", difficulty: 2}, 
+                    {name: "Senegal", difficulty: 1}, 
+                    {name: "Mauritania", difficulty: 1}
+                ], 
+                latitude: 17, 
+                longitude: -4,
+                flag: "https://flagcdn.com/w320/ml.png"
+            },
+            { 
+                name: "Mauritania", 
+                borders: [
+                    {name: "Western Sahara", difficulty: 2}, 
+                    {name: "Algeria", difficulty: 2}, 
+                    {name: "Mali", difficulty: 1}, 
+                    {name: "Senegal", difficulty: 1}
+                ], 
+                latitude: 20, 
+                longitude: -12,
+                flag: "https://flagcdn.com/w320/mr.png"
+            },
+            { 
+                name: "Mexico", 
+                borders: [
+                    {name: "United States", difficulty: 1}, 
+                    {name: "Guatemala", difficulty: 1}, 
+                    {name: "Belize", difficulty: 2}
+                ], 
+                latitude: 23, 
+                longitude: -102,
+                flag: "https://flagcdn.com/w320/mx.png"
+            },
+            { 
+                name: "Moldova", 
+                borders: [
+                    {name: "Romania", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 1}
+                ], 
+                latitude: 47, 
+                longitude: 29,
+                flag: "https://flagcdn.com/w320/md.png"
+            },
+            { 
+                name: "Monaco", 
+                borders: [
+                    {name: "France", difficulty: 1}
+                ], 
+                latitude: 43.7333, 
+                longitude: 7.4,
+                flag: "https://flagcdn.com/w320/mc.png"
+            },
+            { 
+                name: "Mongolia", 
+                borders: [
+                    {name: "Russia", difficulty: 1}, 
+                    {name: "China", difficulty: 1}
+                ], 
+                latitude: 46, 
+                longitude: 105,
+                flag: "https://flagcdn.com/w320/mn.png"
+            },
+            { 
+                name: "Montenegro", 
+                borders: [
+                    {name: "Croatia", difficulty: 1}, 
+                    {name: "Bosnia and Herzegovina", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Kosovo", difficulty: 2}, 
+                    {name: "Albania", difficulty: 1}
+                ], 
+                latitude: 42.5, 
+                longitude: 19.3,
+                flag: "https://flagcdn.com/w320/me.png"
+            },
+            { 
+                name: "Morocco", 
+                borders: [
+                    {name: "Algeria", difficulty: 1}, 
+                    {name: "Western Sahara", difficulty: 2}, 
+                    {name: "Spain", difficulty: 3}
+                ], 
+                latitude: 32, 
+                longitude: -5,
+                flag: "https://flagcdn.com/w320/ma.png"
+            },
+            { 
+                name: "Mozambique", 
+                borders: [
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "Malawi", difficulty: 1}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Zimbabwe", difficulty: 1}, 
+                    {name: "South Africa", difficulty: 1}, 
+                    {name: "Eswatini", difficulty: 2}
+                ], 
+                latitude: -18.25, 
+                longitude: 35,
+                flag: "https://flagcdn.com/w320/mz.png"
+            },
+            { 
+                name: "Myanmar", 
+                borders: [
+                    {name: "Bangladesh", difficulty: 1}, 
+                    {name: "India", difficulty: 2}, 
+                    {name: "China", difficulty: 2}, 
+                    {name: "Laos", difficulty: 2}, 
+                    {name: "Thailand", difficulty: 1}
+                ], 
+                latitude: 22, 
+                longitude: 98,
+                flag: "https://flagcdn.com/w320/mm.png"
+            },
+            { 
+                name: "Namibia", 
+                borders: [
+                    {name: "Angola", difficulty: 1}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Botswana", difficulty: 1}, 
+                    {name: "South Africa", difficulty: 1}
+                ], 
+                latitude: -22, 
+                longitude: 17,
+                flag: "https://flagcdn.com/w320/na.png"
+            },
+            { 
+                name: "Nepal", 
+                borders: [
+                    {name: "China", difficulty: 2}, 
+                    {name: "India", difficulty: 1}
+                ], 
+                latitude: 28, 
+                longitude: 84,
+                flag: "https://flagcdn.com/w320/np.png"
+            },
+            { 
+                name: "Netherlands", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Belgium", difficulty: 1}
+                ], 
+                latitude: 52.5, 
+                longitude: 5.75,
+                flag: "https://flagcdn.com/w320/nl.png"
+            },
+            { 
+                name: "New Zealand", 
+                borders: [], 
+                latitude: -41, 
+                longitude: 174,
+                flag: "https://flagcdn.com/w320/nz.png"
+            },
+            { 
+                name: "Nicaragua", 
+                borders: [
+                    {name: "Honduras", difficulty: 1}, 
+                    {name: "Costa Rica", difficulty: 1}
+                ], 
+                latitude: 13, 
+                longitude: -85,
+                flag: "https://flagcdn.com/w320/ni.png"
+            },
+            { 
+                name: "Niger", 
+                borders: [
+                    {name: "Algeria", difficulty: 2}, 
+                    {name: "Libya", difficulty: 2}, 
+                    {name: "Chad", difficulty: 1}, 
+                    {name: "Nigeria", difficulty: 1}, 
+                    {name: "Benin", difficulty: 2}, 
+                    {name: "Burkina Faso", difficulty: 1}, 
+                    {name: "Mali", difficulty: 1}
+                ], 
+                latitude: 16, 
+                longitude: 8,
+                flag: "https://flagcdn.com/w320/ne.png"
+            },
+            { 
+                name: "Nigeria", 
+                borders: [
+                    {name: "Benin", difficulty: 1}, 
+                    {name: "Niger", difficulty: 1}, 
+                    {name: "Chad", difficulty: 2}, 
+                    {name: "Cameroon", difficulty: 1}
+                ], 
+                latitude: 10, 
+                longitude: 8,
+                flag: "https://flagcdn.com/w320/ng.png"
+            },
+            { 
+                name: "North Korea", 
+                borders: [
+                    {name: "China", difficulty: 1}, 
+                    {name: "Russia", difficulty: 2}, 
+                    {name: "South Korea", difficulty: 1}
+                ], 
+                latitude: 40, 
+                longitude: 127,
+                flag: "https://flagcdn.com/w320/kp.png"
+            },
+            { 
+                name: "North Macedonia", 
+                borders: [
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Bulgaria", difficulty: 1}, 
+                    {name: "Greece", difficulty: 1}, 
+                    {name: "Albania", difficulty: 1}
+                ], 
+                latitude: 41.8333, 
+                longitude: 22,
+                flag: "https://flagcdn.com/w320/mk.png"
+            },
+            { 
+                name: "Norway", 
+                borders: [
+                    {name: "Sweden", difficulty: 1}, 
+                    {name: "Finland", difficulty: 1}, 
+                    {name: "Russia", difficulty: 2}
+                ], 
+                latitude: 62, 
+                longitude: 10,
+                flag: "https://flagcdn.com/w320/no.png"
+            },
+            { 
+                name: "Oman", 
+                borders: [
+                    {name: "UAE", difficulty: 1}, 
+                    {name: "Saudi Arabia", difficulty: 1}, 
+                    {name: "Yemen", difficulty: 1}
+                ], 
+                latitude: 21, 
+                longitude: 57,
+                flag: "https://flagcdn.com/w320/om.png"
+            },
+            { 
+                name: "Pakistan", 
+                borders: [
+                    {name: "Iran", difficulty: 1}, 
+                    {name: "Afghanistan", difficulty: 1}, 
+                    {name: "China", difficulty: 2}, 
+                    {name: "India", difficulty: 1}
+                ], 
+                latitude: 30, 
+                longitude: 70,
+                flag: "https://flagcdn.com/w320/pk.png"
+            },
+            { 
+                name: "Panama", 
+                borders: [
+                    {name: "Costa Rica", difficulty: 1}, 
+                    {name: "Colombia", difficulty: 2}
+                ], 
+                latitude: 9, 
+                longitude: -80,
+                flag: "https://flagcdn.com/w320/pa.png"
+            },
+            { 
+                name: "Papua New Guinea", 
+                borders: [
+                    {name: "Indonesia", difficulty: 1}
+                ], 
+                latitude: -6, 
+                longitude: 147,
+                flag: "https://flagcdn.com/w320/pg.png"
+            },
+            { 
+                name: "Paraguay", 
+                borders: [
+                    {name: "Bolivia", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 1}, 
+                    {name: "Argentina", difficulty: 1}
+                ], 
+                latitude: -23, 
+                longitude: -58,
+                flag: "https://flagcdn.com/w320/py.png"
+            },
+            { 
+                name: "Peru", 
+                borders: [
+                    {name: "Ecuador", difficulty: 1}, 
+                    {name: "Colombia", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 2}, 
+                    {name: "Bolivia", difficulty: 1}, 
+                    {name: "Chile", difficulty: 1}
+                ], 
+                latitude: -10, 
+                longitude: -76,
+                flag: "https://flagcdn.com/w320/pe.png"
+            },
+            { 
+                name: "Philippines", 
+                borders: [], 
+                latitude: 13, 
+                longitude: 122,
+                flag: "https://flagcdn.com/w320/ph.png"
+            },
+            { 
+                name: "Poland", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "Czech Republic", difficulty: 1}, 
+                    {name: "Slovakia", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 1}, 
+                    {name: "Belarus", difficulty: 1}, 
+                    {name: "Lithuania", difficulty: 1}, 
+                    {name: "Russia", difficulty: 2}
+                ], 
+                latitude: 52, 
+                longitude: 20,
+                flag: "https://flagcdn.com/w320/pl.png"
+            },
+            { 
+                name: "Portugal", 
+                borders: [
+                    {name: "Spain", difficulty: 1}
+                ], 
+                latitude: 39.5, 
+                longitude: -8,
+                flag: "https://flagcdn.com/w320/pt.png"
+            },
+            { 
+                name: "Qatar", 
+                borders: [
+                    {name: "Saudi Arabia", difficulty: 1}
+                ], 
+                latitude: 25.5, 
+                longitude: 51.25,
+                flag: "https://flagcdn.com/w320/qa.png"
+            },
+            { 
+                name: "Romania", 
+                borders: [
+                    {name: "Hungary", difficulty: 1}, 
+                    {name: "Serbia", difficulty: 1}, 
+                    {name: "Bulgaria", difficulty: 1}, 
+                    {name: "Moldova", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 1}
+                ], 
+                latitude: 46, 
+                longitude: 25,
+                flag: "https://flagcdn.com/w320/ro.png"
+            },
+            { 
+                name: "Russia", 
+                borders: [
+                    {name: "Norway", difficulty: 2}, 
+                    {name: "Finland", difficulty: 1}, 
+                    {name: "Estonia", difficulty: 1}, 
+                    {name: "Latvia", difficulty: 1}, 
+                    {name: "Lithuania", difficulty: 2}, 
+                    {name: "Poland", difficulty: 2}, 
+                    {name: "Belarus", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 1}, 
+                    {name: "Georgia", difficulty: 1}, 
+                    {name: "Azerbaijan", difficulty: 2}, 
+                    {name: "Kazakhstan", difficulty: 1}, 
+                    {name: "China", difficulty: 1}, 
+                    {name: "Mongolia", difficulty: 1}, 
+                    {name: "North Korea", difficulty: 2}, 
+                    {name: "Japan", difficulty: 3}, 
+                    {name: "United States", difficulty: 3}
+                ], 
+                latitude: 60, 
+                longitude: 100,
+                flag: "https://flagcdn.com/w320/ru.png"
+            },
+            { 
+                name: "Rwanda", 
+                borders: [
+                    {name: "Uganda", difficulty: 1}, 
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "Burundi", difficulty: 1}, 
+                    {name: "DR Congo", difficulty: 1}
+                ], 
+                latitude: -2, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/rw.png"
+            },
+            { 
+                name: "Saudi Arabia", 
+                borders: [
+                    {name: "Jordan", difficulty: 1}, 
+                    {name: "Iraq", difficulty: 1}, 
+                    {name: "Kuwait", difficulty: 1}, 
+                    {name: "Qatar", difficulty: 1}, 
+                    {name: "UAE", difficulty: 1}, 
+                    {name: "Oman", difficulty: 1}, 
+                    {name: "Yemen", difficulty: 1}
+                ], 
+                latitude: 25, 
+                longitude: 45,
+                flag: "https://flagcdn.com/w320/sa.png"
+            },
+            { 
+                name: "Senegal", 
+                borders: [
+                    {name: "Mauritania", difficulty: 1}, 
+                    {name: "Mali", difficulty: 1}, 
+                    {name: "Guinea", difficulty: 2}, 
+                    {name: "Guinea-Bissau", difficulty: 1}, 
+                    {name: "Gambia", difficulty: 2}
+                ], 
+                latitude: 14, 
+                longitude: -14,
+                flag: "https://flagcdn.com/w320/sn.png"
+            },
+            { 
+                name: "Serbia", 
+                borders: [
+                    {name: "Hungary", difficulty: 1}, 
+                    {name: "Romania", difficulty: 1}, 
+                    {name: "Bulgaria", difficulty: 1}, 
+                    {name: "North Macedonia", difficulty: 1}, 
+                    {name: "Kosovo", difficulty: 1}, 
+                    {name: "Montenegro", difficulty: 1}, 
+                    {name: "Bosnia and Herzegovina", difficulty: 1}, 
+                    {name: "Croatia", difficulty: 1}
+                ], 
+                latitude: 44, 
+                longitude: 21,
+                flag: "https://flagcdn.com/w320/rs.png"
+            },
+            { 
+                name: "Sierra Leone", 
+                borders: [
+                    {name: "Guinea", difficulty: 1}, 
+                    {name: "Liberia", difficulty: 1}
+                ], 
+                latitude: 8.5, 
+                longitude: -11.5,
+                flag: "https://flagcdn.com/w320/sl.png"
+            },
+            { 
+                name: "Singapore", 
+                borders: [], 
+                latitude: 1.3667, 
+                longitude: 103.8,
+                flag: "https://flagcdn.com/w320/sg.png"
+            },
+            { 
+                name: "Slovakia", 
+                borders: [
+                    {name: "Czech Republic", difficulty: 1}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Ukraine", difficulty: 2}, 
+                    {name: "Hungary", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}
+                ], 
+                latitude: 48.6667, 
+                longitude: 19.5,
+                flag: "https://flagcdn.com/w320/sk.png"
+            },
+            { 
+                name: "Slovenia", 
+                borders: [
+                    {name: "Austria", difficulty: 1}, 
+                    {name: "Hungary", difficulty: 2}, 
+                    {name: "Croatia", difficulty: 1}, 
+                    {name: "Italy", difficulty: 1}
+                ], 
+                latitude: 46, 
+                longitude: 15,
+                flag: "https://flagcdn.com/w320/si.png"
+            },
+            { 
+                name: "Somalia", 
+                borders: [
+                    {name: "Djibouti", difficulty: 2}, 
+                    {name: "Ethiopia", difficulty: 1}, 
+                    {name: "Kenya", difficulty: 1}
+                ], 
+                latitude: 10, 
+                longitude: 49,
+                flag: "https://flagcdn.com/w320/so.png"
+            },
+            { 
+                name: "South Africa", 
+                borders: [
+                    {name: "Namibia", difficulty: 1}, 
+                    {name: "Botswana", difficulty: 1}, 
+                    {name: "Zimbabwe", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 1}, 
+                    {name: "Eswatini", difficulty: 2}, 
+                    {name: "Lesotho", difficulty: 2}
+                ], 
+                latitude: -29, 
+                longitude: 24,
+                flag: "https://flagcdn.com/w320/za.png"
+            },
+            { 
+                name: "South Korea", 
+                borders: [
+                    {name: "North Korea", difficulty: 1}
+                ], 
+                latitude: 37, 
+                longitude: 127.5,
+                flag: "https://flagcdn.com/w320/kr.png"
+            },
+            { 
+                name: "South Sudan", 
+                borders: [
+                    {name: "Sudan", difficulty: 1}, 
+                    {name: "Ethiopia", difficulty: 2}, 
+                    {name: "Kenya", difficulty: 2}, 
+                    {name: "Uganda", difficulty: 2}, 
+                    {name: "DR Congo", difficulty: 2}, 
+                    {name: "Central African Republic", difficulty: 2}
+                ], 
+                latitude: 7, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/ss.png"
+            },
+            { 
+                name: "Spain", 
+                borders: [
+                    {name: "France", difficulty: 1}, 
+                    {name: "Andorra", difficulty: 2}, 
+                    {name: "Portugal", difficulty: 1}, 
+                    {name: "Morocco", difficulty: 3}
+                ], 
+                latitude: 40, 
+                longitude: -4,
+                flag: "https://flagcdn.com/w320/es.png"
+            },
+            { 
+                name: "Sri Lanka", 
+                borders: [], 
+                latitude: 7, 
+                longitude: 81,
+                flag: "https://flagcdn.com/w320/lk.png"
+            },
+            { 
+                name: "Sudan", 
+                borders: [
+                    {name: "Egypt", difficulty: 1}, 
+                    {name: "Libya", difficulty: 2}, 
+                    {name: "Chad", difficulty: 2}, 
+                    {name: "Central African Republic", difficulty: 2}, 
+                    {name: "South Sudan", difficulty: 1}, 
+                    {name: "Ethiopia", difficulty: 2}, 
+                    {name: "Eritrea", difficulty: 2}
+                ], 
+                latitude: 15, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/sd.png"
+            },
+            { 
+                name: "Suriname", 
+                borders: [
+                    {name: "French Guiana", difficulty: 3}, 
+                    {name: "Brazil", difficulty: 2}, 
+                    {name: "Guyana", difficulty: 2}
+                ], 
+                latitude: 4, 
+                longitude: -56,
+                flag: "https://flagcdn.com/w320/sr.png"
+            },
+            { 
+                name: "Sweden", 
+                borders: [
+                    {name: "Norway", difficulty: 1}, 
+                    {name: "Finland", difficulty: 1}
+                ], 
+                latitude: 62, 
+                longitude: 15,
+                flag: "https://flagcdn.com/w320/se.png"
+            },
+            { 
+                name: "Switzerland", 
+                borders: [
+                    {name: "Germany", difficulty: 1}, 
+                    {name: "France", difficulty: 1}, 
+                    {name: "Italy", difficulty: 1}, 
+                    {name: "Austria", difficulty: 1}, 
+                    {name: "Liechtenstein", difficulty: 2}
+                ], 
+                latitude: 47, 
+                longitude: 8,
+                flag: "https://flagcdn.com/w320/ch.png"
+            },
+            { 
+                name: "Syria", 
+                borders: [
+                    {name: "Turkey", difficulty: 1}, 
+                    {name: "Iraq", difficulty: 1}, 
+                    {name: "Jordan", difficulty: 1}, 
+                    {name: "Israel", difficulty: 2}, 
+                    {name: "Lebanon", difficulty: 1}
+                ], 
+                latitude: 35, 
+                longitude: 38,
+                flag: "https://flagcdn.com/w320/sy.png"
+            },
+            { 
+                name: "Taiwan", 
+                borders: [], 
+                latitude: 23.5, 
+                longitude: 121,
+                flag: "https://flagcdn.com/w320/tw.png"
+            },
+            { 
+                name: "Tajikistan", 
+                borders: [
+                    {name: "Uzbekistan", difficulty: 2}, 
+                    {name: "Kyrgyzstan", difficulty: 2}, 
+                    {name: "China", difficulty: 3}, 
+                    {name: "Afghanistan", difficulty: 2}
+                ], 
+                latitude: 39, 
+                longitude: 71,
+                flag: "https://flagcdn.com/w320/tj.png"
+            },
+            { 
+                name: "Tanzania", 
+                borders: [
+                    {name: "Kenya", difficulty: 1}, 
+                    {name: "Uganda", difficulty: 1}, 
+                    {name: "Rwanda", difficulty: 1}, 
+                    {name: "Burundi", difficulty: 1}, 
+                    {name: "DR Congo", difficulty: 2}, 
+                    {name: "Zambia", difficulty: 2}, 
+                    {name: "Malawi", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 1}
+                ], 
+                latitude: -6, 
+                longitude: 35,
+                flag: "https://flagcdn.com/w320/tz.png"
+            },
+            { 
+                name: "Thailand", 
+                borders: [
+                    {name: "Myanmar", difficulty: 1}, 
+                    {name: "Laos", difficulty: 1}, 
+                    {name: "Cambodia", difficulty: 1}, 
+                    {name: "Malaysia", difficulty: 1}
+                ], 
+                latitude: 15, 
+                longitude: 100,
+                flag: "https://flagcdn.com/w320/th.png"
+            },
+            { 
+                name: "Timor-Leste", 
+                borders: [
+                    {name: "Indonesia", difficulty: 1}
+                ], 
+                latitude: -8.55, 
+                longitude: 125.5167,
+                flag: "https://flagcdn.com/w320/tl.png"
+            },
+            { 
+                name: "Togo", 
+                borders: [
+                    {name: "Ghana", difficulty: 1}, 
+                    {name: "Burkina Faso", difficulty: 2}, 
+                    {name: "Benin", difficulty: 1}
+                ], 
+                latitude: 8, 
+                longitude: 1.1667,
+                flag: "https://flagcdn.com/w320/tg.png"
+            },
+            { 
+                name: "Trinidad and Tobago", 
+                borders: [], 
+                latitude: 11, 
+                longitude: -61,
+                flag: "https://flagcdn.com/w320/tt.png"
+            },
+            { 
+                name: "Tunisia", 
+                borders: [
+                    {name: "Algeria", difficulty: 1}, 
+                    {name: "Libya", difficulty: 1}
+                ], 
+                latitude: 34, 
+                longitude: 9,
+                flag: "https://flagcdn.com/w320/tn.png"
+            },
+            { 
+                name: "Turkey", 
+                borders: [
+                    {name: "Greece", difficulty: 1}, 
+                    {name: "Bulgaria", difficulty: 1}, 
+                    {name: "Georgia", difficulty: 2}, 
+                    {name: "Armenia", difficulty: 3}, 
+                    {name: "Azerbaijan", difficulty: 3}, 
+                    {name: "Iran", difficulty: 1}, 
+                    {name: "Iraq", difficulty: 1}, 
+                    {name: "Syria", difficulty: 1}
+                ], 
+                latitude: 39, 
+                longitude: 35,
+                flag: "https://flagcdn.com/w320/tr.png"
+            },
+            { 
+                name: "Turkmenistan", 
+                borders: [
+                    {name: "Kazakhstan", difficulty: 2}, 
+                    {name: "Uzbekistan", difficulty: 2}, 
+                    {name: "Afghanistan", difficulty: 2}, 
+                    {name: "Iran", difficulty: 2}
+                ], 
+                latitude: 40, 
+                longitude: 60,
+                flag: "https://flagcdn.com/w320/tm.png"
+            },
+            { 
+                name: "Uganda", 
+                borders: [
+                    {name: "South Sudan", difficulty: 2}, 
+                    {name: "Kenya", difficulty: 1}, 
+                    {name: "Tanzania", difficulty: 1}, 
+                    {name: "Rwanda", difficulty: 1}, 
+                    {name: "DR Congo", difficulty: 1}
+                ], 
+                latitude: 1, 
+                longitude: 32,
+                flag: "https://flagcdn.com/w320/ug.png"
+            },
+            { 
+                name: "Ukraine", 
+                borders: [
+                    {name: "Belarus", difficulty: 1}, 
+                    {name: "Poland", difficulty: 1}, 
+                    {name: "Slovakia", difficulty: 2}, 
+                    {name: "Hungary", difficulty: 2}, 
+                    {name: "Romania", difficulty: 1}, 
+                    {name: "Moldova", difficulty: 1}, 
+                    {name: "Russia", difficulty: 1}
+                ], 
+                latitude: 49, 
+                longitude: 32,
+                flag: "https://flagcdn.com/w320/ua.png"
+            },
+            { 
+                name: "United Arab Emirates", 
+                borders: [
+                    {name: "Oman", difficulty: 1}, 
+                    {name: "Saudi Arabia", difficulty: 1}
+                ], 
+                latitude: 24, 
+                longitude: 54,
+                flag: "https://flagcdn.com/w320/ae.png"
+            },
+            { 
+                name: "United Kingdom", 
+                borders: [
+                    {name: "Ireland", difficulty: 1}
+                ], 
+                latitude: 54, 
+                longitude: -2,
+                flag: "https://flagcdn.com/w320/gb.png"
+            },
+            { 
+                name: "United States", 
+                borders: [
+                    {name: "Canada", difficulty: 1}, 
+                    {name: "Mexico", difficulty: 1}, 
+                    {name: "Russia", difficulty: 3}
+                ], 
+                latitude: 38, 
+                longitude: -97,
+                flag: "https://flagcdn.com/w320/us.png"
+            },
+            { 
+                name: "Uruguay", 
+                borders: [
+                    {name: "Brazil", difficulty: 1}, 
+                    {name: "Argentina", difficulty: 1}
+                ], 
+                latitude: -33, 
+                longitude: -56,
+                flag: "https://flagcdn.com/w320/uy.png"
+            },
+            { 
+                name: "Uzbekistan", 
+                borders: [
+                    {name: "Kazakhstan", difficulty: 2}, 
+                    {name: "Kyrgyzstan", difficulty: 2}, 
+                    {name: "Tajikistan", difficulty: 2}, 
+                    {name: "Afghanistan", difficulty: 2}, 
+                    {name: "Turkmenistan", difficulty: 2}
+                ], 
+                latitude: 41, 
+                longitude: 64,
+                flag: "https://flagcdn.com/w320/uz.png"
+            },
+            { 
+                name: "Venezuela", 
+                borders: [
+                    {name: "Guyana", difficulty: 2}, 
+                    {name: "Brazil", difficulty: 2}, 
+                    {name: "Colombia", difficulty: 1}
+                ], 
+                latitude: 8, 
+                longitude: -66,
+                flag: "https://flagcdn.com/w320/ve.png"
+            },
+            { 
+                name: "Vietnam", 
+                borders: [
+                    {name: "China", difficulty: 1}, 
+                    {name: "Laos", difficulty: 1}, 
+                    {name: "Cambodia", difficulty: 1}
+                ], 
+                latitude: 16, 
+                longitude: 106,
+                flag: "https://flagcdn.com/w320/vn.png"
+            },
+            { 
+                name: "Western Sahara", 
+                borders: [
+                    {name: "Morocco", difficulty: 2}, 
+                    {name: "Mauritania", difficulty: 2}, 
+                    {name: "Algeria", difficulty: 3}
+                ], 
+                latitude: 24.5, 
+                longitude: -13,
+                flag: "https://flagcdn.com/w320/eh.png"
+            },
+            { 
+                name: "Yemen", 
+                borders: [
+                    {name: "Saudi Arabia", difficulty: 1}, 
+                    {name: "Oman", difficulty: 1}
+                ], 
+                latitude: 15, 
+                longitude: 48,
+                flag: "https://flagcdn.com/w320/ye.png"
+            },
+            { 
+                name: "Zambia", 
+                borders: [
+                    {name: "DR Congo", difficulty: 2}, 
+                    {name: "Tanzania", difficulty: 2}, 
+                    {name: "Malawi", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 2}, 
+                    {name: "Zimbabwe", difficulty: 1}, 
+                    {name: "Botswana", difficulty: 2}, 
+                    {name: "Namibia", difficulty: 2}, 
+                    {name: "Angola", difficulty: 2}
+                ], 
+                latitude: -15, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/zm.png"
+            },
+            { 
+                name: "Zimbabwe", 
+                borders: [
+                    {name: "Zambia", difficulty: 1}, 
+                    {name: "Mozambique", difficulty: 1}, 
+                    {name: "South Africa", difficulty: 1}, 
+                    {name: "Botswana", difficulty: 1}
+                ], 
+                latitude: -20, 
+                longitude: 30,
+                flag: "https://flagcdn.com/w320/zw.png"
             }
+        ];
+
+        // Enhanced fake borders with more variety
+        const fakeBorders = [
+            // Countries separated by water
+            {country1: "Spain", country2: "Portugal", reason: "Separated by sea"},
+            {country1: "Italy", country2: "Croatia", reason: "Separated by Adriatic Sea"},
+            {country1: "Greece", country2: "Turkey", reason: "Separated by Aegean Sea"},
+            {country1: "United Kingdom", country2: "France", reason: "Separated by English Channel"},
+            {country1: "Japan", country2: "South Korea", reason: "Separated by Sea of Japan"},
+            {country1: "India", country2: "Sri Lanka", reason: "Separated by Palk Strait"},
+            {country1: "Philippines", country2: "Taiwan", reason: "Separated by Luzon Strait"},
+            {country1: "Cuba", country2: "United States", reason: "Separated by Florida Strait"},
+            {country1: "Madagascar", country2: "Mozambique", reason: "Separated by Mozambique Channel"},
+            {country1: "Australia", country2: "Indonesia", reason: "Separated by Timor Sea"},
+            {country1: "Canada", country2: "Greenland", reason: "Separated by Davis Strait"},
+            {country1: "Norway", country2: "Iceland", reason: "Separated by Norwegian Sea"},
+            {country1: "Egypt", country2: "Saudi Arabia", reason: "Separated by Red Sea"},
+            {country1: "Morocco", country2: "Spain", reason: "Separated by Strait of Gibraltar"},
+            {country1: "Russia", country2: "Alaska", reason: "Separated by Bering Strait"},
+            {country1: "China", country2: "Taiwan", reason: "Separated by Taiwan Strait"},
+            {country1: "Italy", country2: "Malta", reason: "Separated by Mediterranean Sea"},
+            {country1: "Denmark", country2: "Sweden", reason: "Separated by Øresund"},
+            {country1: "Venezuela", country2: "Trinidad and Tobago", reason: "Separated by Caribbean Sea"},
+            {country1: "Tunisia", country2: "Italy", reason: "Separated by Mediterranean Sea"},
+            {country1: "Oman", country2: "Iran", reason: "Separated by Gulf of Oman"},
+            {country1: "United Arab Emirates", country2: "Iran", reason: "Separated by Persian Gulf"},
+            {country1: "Qatar", country2: "Bahrain", reason: "Separated by Persian Gulf"},
+            
+            // Countries with one country in between
+            {country1: "Mongolia", country2: "Kazakhstan", reason: "Russia is in between"},
+            {country1: "Afghanistan", country2: "Russia", reason: "Multiple countries in between"},
+            {country1: "Nepal", country2: "Bangladesh", reason: "India is in between"},
+            {country1: "Bhutan", country2: "Myanmar", reason: "India is in between"},
+            {country1: "Laos", country2: "Malaysia", reason: "Thailand is in between"},
+            {country1: "Cambodia", country2: "Myanmar", reason: "Thailand is in between"},
+            {country1: "Vietnam", country2: "Malaysia", reason: "Thailand is in between"},
+            {country1: "Uzbekistan", country2: "China", reason: "Kyrgyzstan/Tajikistan in between"},
+            {country1: "Turkmenistan", country2: "Pakistan", reason: "Afghanistan is in between"},
+            {country1: "Azerbaijan", country2: "Turkey", reason: "Armenia is in between"},
+            {country1: "Georgia", country2: "Iran", reason: "Armenia/Azerbaijan in between"},
+            {country1: "Armenia", country2: "Russia", reason: "Georgia is in between"},
+            {country1: "Belarus", country2: "Lithuania", reason: "Latvia is in between"},
+            {country1: "Ukraine", country2: "Slovakia", reason: "Poland is in between"},
+            {country1: "Romania", country2: "Czech Republic", reason: "Hungary is in between"},
+            {country1: "Bulgaria", country2: "Croatia", reason: "Serbia is in between"},
+            {country1: "Greece", country2: "Montenegro", reason: "Albania/North Macedonia in between"},
+            {country1: "Albania", country2: "Bulgaria", reason: "North Macedonia is in between"},
+            {country1: "Moldova", country2: "Hungary", reason: "Romania is in between"},
+            {country1: "Austria", country2: "Poland", reason: "Czech Republic is in between"},
+            {country1: "Switzerland", country2: "Germany", reason: "Austria is in between"},
+            {country1: "France", country2: "Czech Republic", reason: "Germany is in between"},
+            {country1: "Spain", country2: "Italy", reason: "France is in between"},
+            {country1: "Portugal", country2: "Andorra", reason: "Spain is in between"},
+            {country1: "Ireland", country2: "Iceland", reason: "Separated by sea"},
+            {country1: "United Kingdom", country2: "Norway", reason: "Separated by North Sea"},
+            {country1: "Egypt", country2: "Jordan", reason: "Israel is in between"},
+            {country1: "Syria", country2: "Saudi Arabia", reason: "Jordan is in between"},
+            {country1: "Iraq", country2: "Israel", reason: "Jordan is in between"},
+            {country1: "Iran", country2: "Jordan", reason: "Iraq is in between"},
+            {country1: "Turkey", country2: "Saudi Arabia", reason: "Syria/Jordan in between"},
+            {country1: "Lebanon", country2: "Egypt", reason: "Israel is in between"},
+            {country1: "Algeria", country2: "Mali", reason: "Niger is in between"},
+            {country1: "Libya", country2: "Chad", reason: "Niger is in between"},
+            {country1: "Egypt", country2: "Central African Republic", reason: "Sudan is in between"},
+            {country1: "Sudan", country2: "DR Congo", reason: "Central African Republic is in between"},
+            {country1: "Ethiopia", country2: "Uganda", reason: "South Sudan is in between"},
+            {country1: "Kenya", country2: "DR Congo", reason: "Uganda is in between"},
+            {country1: "Tanzania", country2: "Rwanda", reason: "Burundi is in between"},
+            {country1: "Zambia", country2: "Tanzania", reason: "Malawi is in between"},
+            {country1: "Zimbabwe", country2: "Mozambique", reason: "Zambia is in between"},
+            {country1: "Botswana", country2: "Angola", reason: "Namibia is in between"},
+            {country1: "South Africa", country2: "Zambia", reason: "Zimbabwe is in between"},
+            {country1: "Namibia", country2: "DR Congo", reason: "Angola is in between"},
+            {country1: "Mexico", country2: "Honduras", reason: "Guatemala is in between"},
+            {country1: "United States", country2: "Guatemala", reason: "Mexico is in between"},
+            {country1: "Canada", country2: "Cuba", reason: "Separated by sea"},
+            {country1: "Brazil", country2: "Ecuador", reason: "Peru is in between"},
+            {country1: "Argentina", country2: "Peru", reason: "Bolivia is in between"},
+            {country1: "Chile", country2: "Brazil", reason: "Bolivia is in between"},
+            {country1: "Colombia", country2: "Argentina", reason: "Multiple countries in between"},
+            {country1: "Venezuela", country2: "Chile", reason: "Multiple countries in between"},
+            {country1: "Uruguay", country2: "Bolivia", reason: "Brazil/Paraguay in between"},
+            {country1: "Paraguay", country2: "Ecuador", reason: "Peru is in between"}
         ];
 
         const TOTAL_QUESTIONS = 5;
@@ -611,11 +2671,11 @@
             generateQuestions() {
                 console.log('🎲 Generating questions...');
                 const difficulties = [
-                    { name: 'Easy', minBorders: 3 },
-                    { name: 'Medium', minBorders: 2 },
-                    { name: 'Hard', minBorders: 1 },
-                    { name: 'Expert', minBorders: 1 },
-                    { name: 'Master', minBorders: 1 }
+                    { name: 'Easy', targetDifficulty: 1, fakeBorders: 0 },
+                    { name: 'Medium', targetDifficulty: 2, fakeBorders: 1 },
+                    { name: 'Hard', targetDifficulty: 2.5, fakeBorders: 2 },
+                    { name: 'Expert', targetDifficulty: 3, fakeBorders: 2 },
+                    { name: 'Master', targetDifficulty: 3, fakeBorders: 3 }
                 ];
 
                 this.gameQuestions = [];
@@ -623,334 +2683,328 @@
                 for (let i = 0; i < TOTAL_QUESTIONS; i++) {
                     const difficulty = difficulties[i];
                     
-                    // Filter countries with enough borders
-                    const validCountries = countries.filter(c => c.borders.length >= difficulty.minBorders);
+                    // Find countries with borders matching target difficulty
+                    const validCountries = countries.filter(c => 
+                        c.borders.some(b => b.difficulty >= difficulty.targetDifficulty) &&
+                        c.borders.length >= 3
+                    );
                     
                     if (validCountries.length === 0) {
                         console.warn('No valid countries for difficulty:', difficulty.name);
                         continue;
                     }
                     
-                    // Pick a random country
                     const country = validCountries[Math.floor(Math.random() * validCountries.length)];
+                    const suitableBorders = country.borders.filter(b => b.difficulty >= difficulty.targetDifficulty);
+                    const correctBorder = suitableBorders[Math.floor(Math.random() * suitableBorders.length)];
                     
-                    // Pick a random border from that country
-                    const correctAnswer = country.borders[Math.floor(Math.random() * country.borders.length)];
-                    
-                    // Generate decoys (non-bordering countries)
-                    const decoys = this.generateDecoys(country, correctAnswer);
-                    const options = this.shuffleArray([correctAnswer, ...decoys]);
+                    const decoys = this.generateSmartDecoys(country, correctBorder.name, difficulty.fakeBorders);
+                    const options = this.shuffleArray([correctBorder.name, ...decoys]);
                     
                     this.gameQuestions.push({
                         country: country.name,
                         borderCount: country.borders.length,
-                        correctAnswer: correctAnswer,
+                        correctAnswer: correctBorder.name,
                         options: options,
                         difficulty: difficulty.name,
+                        borderDifficulty: correctBorder.difficulty,
                         flag: country.flag
                     });
 
-                    console.log(`❓ Q${i+1}: ${country.name} -> ${correctAnswer} (${difficulty.name})`);
+                    console.log(`❓ Q${i+1}: ${country.name} -> ${correctBorder.name} (${difficulty.name})`);
                 }
 
                 console.log('✅ Questions generated:', this.gameQuestions.length);
             }
 
-            generateDecoys(country, correctAnswer) {
+            generateSmartDecoys(country, correctAnswer, fakeBorderCount) {
                 const decoys = new Set();
                 const allCountryNames = countries.map(c => c.name);
                 
-                // Add countries that don't border the current country
+                // Add real non-bordering countries from same region
+                const regionCountries = countries
+                    .filter(c => {
+                        const distance = Math.sqrt(
+                            Math.pow(c.latitude - country.latitude, 2) + 
+                            Math.pow(c.longitude - country.longitude, 2)
+                        );
+                        return distance < 25 && 
+                               c.name !== country.name && 
+                               c.name !== correctAnswer &&
+                               !country.borders.some(b => b.name === c.name);
+                    })
+                    .map(c => c.name);
+                
+                regionCountries.slice(0, 2).forEach(name => decoys.add(name));
+                
+                // Add fake borders
+                const relevantFakeBorders = fakeBorders.filter(fb => 
+                    fb.country1 === country.name || fb.country2 === country.name
+                );
+                
+                for (let i = 0; i < Math.min(fakeBorderCount, relevantFakeBorders.length); i++) {
+                    const fakeBorder = relevantFakeBorders[i];
+                    const fakeNeighbor = fakeBorder.country1 === country.name ? 
+                        fakeBorder.country2 : fakeBorder.country1;
+                    decoys.add(fakeNeighbor);
+                }
+                
+                // Fill remaining slots
                 while (decoys.size < 3) {
                     const randomCountry = allCountryNames[Math.floor(Math.random() * allCountryNames.length)];
                     if (randomCountry !== country.name && 
                         randomCountry !== correctAnswer && 
-                        !country.borders.includes(randomCountry)) {
+                        !country.borders.some(b => b.name === randomCountry)) {
                         decoys.add(randomCountry);
                     }
-                    
-                    // Prevent infinite loop
-                    if (decoys.size >= allCountryNames.length - 2) break;
                 }
                 
-                return [...decoys];
+                return Array.from(decoys).slice(0, 3);
             }
 
             shuffleArray(array) {
-                const arr = [...array];
-                for (let i = arr.length - 1; i > 0; i--) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
                 }
-                return arr;
+                return newArray;
             }
 
             selectAnswer(answer) {
                 if (this.answered) return;
                 
-                console.log('🎯 Answer selected:', answer);
                 this.selectedAnswer = answer;
                 this.answered = true;
                 
-                const question = this.gameQuestions[this.currentRound];
-                const isCorrect = answer === question.correctAnswer;
+                const currentQuestion = this.gameQuestions[this.currentRound];
+                const isCorrect = answer === currentQuestion.correctAnswer;
                 
                 if (isCorrect) {
                     this.score++;
-                    console.log('✅ Correct! Score:', this.score);
+                    console.log('✅ Correct answer!');
                 } else {
-                    console.log('❌ Wrong! Correct answer:', question.correctAnswer);
+                    console.log('❌ Incorrect answer');
                 }
                 
+                this.saveGameState();
                 this.render();
             }
 
             nextQuestion() {
-                console.log('➡️ Moving to next question');
-                this.currentRound++;
-                this.answered = false;
-                this.selectedAnswer = null;
-                
-                if (this.currentRound >= TOTAL_QUESTIONS) {
-                    console.log('🏁 Game completed! Score:', this.score);
-                    if (this.score === TOTAL_QUESTIONS) {
-                        this.wins++;
-                        localStorage.setItem(WINS_KEY, this.wins.toString());
-                        console.log('🏆 Perfect score! Wins:', this.wins);
-                    }
-                    this.saveGameState(true);
-                    this.currentScreen = 'gameover';
+                if (this.currentRound < TOTAL_QUESTIONS - 1) {
+                    this.currentRound++;
+                    this.selectedAnswer = null;
+                    this.answered = false;
+                    this.render();
                 } else {
-                    this.saveGameState(false);
+                    this.endGame();
+                }
+            }
+
+            endGame() {
+                console.log('🏁 Game ended');
+                this.currentScreen = 'gameover';
+                this.saveGameState(true);
+                
+                if (this.score === TOTAL_QUESTIONS) {
+                    this.wins++;
+                    localStorage.setItem(WINS_KEY, this.wins.toString());
+                    console.log('🏆 Perfect score! Wins:', this.wins);
                 }
                 
                 this.render();
             }
 
+            restartGame() {
+                console.log('🔄 Restarting game');
+                localStorage.removeItem(STORAGE_KEY);
+                this.currentScreen = 'game';
+                this.currentRound = 0;
+                this.score = 0;
+                this.selectedAnswer = null;
+                this.answered = false;
+                this.generateQuestions();
+                this.render();
+            }
+
             render() {
-                // Update stats
-                document.getElementById('questionNum').textContent = 
-                    this.currentScreen === 'game' ? `${this.currentRound + 1}/${TOTAL_QUESTIONS}` : '-';
                 document.getElementById('score').textContent = this.score;
+                document.getElementById('questionNum').textContent = `${this.currentRound + 1}/${TOTAL_QUESTIONS}`;
                 document.getElementById('winCount').textContent = this.wins;
 
-                const content = document.getElementById('gameContent');
+                const gameContent = document.getElementById('gameContent');
                 
                 switch (this.currentScreen) {
                     case 'home':
-                        content.innerHTML = this.renderHome();
+                        gameContent.innerHTML = this.renderHomeScreen();
                         break;
                     case 'game':
-                        content.innerHTML = this.renderGame();
+                        if (this.gameQuestions.length > 0) {
+                            gameContent.innerHTML = this.renderQuestionScreen();
+                        } else {
+                            gameContent.innerHTML = this.renderHomeScreen();
+                        }
                         break;
                     case 'gameover':
-                        content.innerHTML = this.renderGameOver();
+                        gameContent.innerHTML = this.renderGameOverScreen();
                         break;
                 }
             }
 
-            renderHome() {
-                const hasPlayedToday = localStorage.getItem(STORAGE_KEY) !== null;
-                console.log('🏠 Home screen - Played today:', hasPlayedToday);
-                
+            renderHomeScreen() {
                 return `
                     <div class="question-card">
-                        <div style="font-size: 4em; margin-bottom: 20px;">🌍</div>
-                        <h2 style="font-size: 2em; margin-bottom: 15px; color: var(--primary-color);">Welcome to Bordle!</h2>
-                        <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">
-                            Test your geography knowledge by guessing neighboring countries
+                        <h2 style="color: var(--primary-color); margin-bottom: 20px;">🌍 Welcome to Bordle!</h2>
+                        <p style="font-size: 1.2em; margin-bottom: 30px; color: #666;">
+                            Test your geography knowledge by identifying which countries share borders!
                         </p>
-                        
-                        <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; text-align: left;">
-                            <h3 style="color: var(--primary-color); margin-bottom: 15px;">📋 How to Play</h3>
-                            <ul style="line-height: 2; color: #555;">
-                                <li>5 questions, progressively harder</li>
-                                <li>4 options per question</li>
-                                <li>Get 5/5 correct to win! 🏆</li>
-                                <li>One game per day</li>
-                                <li>Watch out for tricky borders!</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="win-count">Total Wins: ${this.wins}</div>
-                        
-                        <button class="btn" onclick="game.startGame()" ${hasPlayedToday ? 'disabled' : ''}>
-                            ${hasPlayedToday ? '✓ Already Played Today' : '▶ Start Game'}
+                        <button class="btn" onclick="game.startGame()">
+                            <i class="fas fa-play"></i> Start New Game
                         </button>
-                        
-                        ${hasPlayedToday ? `
-                            <div class="countdown-timer">
-                                Next game in ${this.getTimeUntilTomorrow()}
-                                <br><small style="font-size: 0.8em; opacity: 0.8;">(Or use console: resetBordle())</small>
-                            </div>
-                        ` : ''}
+                        <div class="win-count">
+                            Total Wins: ${this.wins}
+                        </div>
                     </div>
                 `;
             }
 
-            renderGame() {
+            renderQuestionScreen() {
                 const question = this.gameQuestions[this.currentRound];
-                const difficultyClass = `difficulty-${question.difficulty}`;
                 
+                let optionsHtml = '';
+                question.options.forEach((option, index) => {
+                    let buttonClass = 'option-btn';
+                    let disabled = false;
+                    
+                    if (this.answered) {
+                        disabled = true;
+                        if (option === question.correctAnswer) {
+                            buttonClass += ' correct';
+                        } else if (option === this.selectedAnswer && option !== question.correctAnswer) {
+                            buttonClass += ' incorrect';
+                        }
+                    }
+                    
+                    optionsHtml += `
+                        <button class="${buttonClass}" 
+                                onclick="game.selectAnswer('${option}')" 
+                                ${disabled ? 'disabled' : ''}>
+                            ${option}
+                        </button>
+                    `;
+                });
+
+                let feedbackHtml = '';
+                if (this.answered) {
+                    const isCorrect = this.selectedAnswer === question.correctAnswer;
+                    feedbackHtml = `
+                        <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                            ${isCorrect ? 
+                                '✅ Correct! Well done!' : 
+                                `❌ Incorrect! The correct answer is ${question.correctAnswer}`
+                            }
+                        </div>
+                        <button class="btn" onclick="game.nextQuestion()">
+                            ${this.currentRound < TOTAL_QUESTIONS - 1 ? 'Next Question' : 'See Results'}
+                        </button>
+                    `;
+                }
+
                 return `
                     <div class="question-card">
-                        <span class="difficulty-badge ${difficultyClass}">${question.difficulty}</span>
-                        
-                        ${this.answered ? this.renderFeedback() : ''}
+                        <div class="difficulty-badge difficulty-${question.difficulty}">
+                            ${question.difficulty}
+                        </div>
                         
                         <img src="${question.flag}" alt="${question.country} flag" class="country-flag">
-                        <div class="country-name">${question.country}</div>
-                        <div class="border-info">${question.borderCount} border${question.borderCount !== 1 ? 's' : ''}</div>
-                        <div class="question-text">Which country borders ${question.country}?</div>
                         
-                        <div class="options-grid">
-                            ${question.options.map(option => this.renderOption(option)).join('')}
+                        <div class="country-name">${question.country}</div>
+                        
+                        <div class="border-info">
+                            Has ${question.borderCount} bordering countries
                         </div>
                         
-                        ${this.answered ? `
-                            <button class="btn" onclick="game.nextQuestion()">
-                                ${this.currentRound + 1 < TOTAL_QUESTIONS ? 'Next Question →' : 'See Results'}
-                            </button>
-                        ` : ''}
+                        <div class="question-text">
+                            Which country borders ${question.country}?
+                        </div>
+                        
+                        ${feedbackHtml}
+                        
+                        <div class="options-grid">
+                            ${optionsHtml}
+                        </div>
                     </div>
                 `;
             }
 
-            renderOption(option) {
-                const question = this.gameQuestions[this.currentRound];
-                let className = 'option-btn';
-                let disabled = '';
-                
-                if (this.answered) {
-                    disabled = 'disabled';
-                    if (option === question.correctAnswer) {
-                        className += ' correct';
-                    } else if (option === this.selectedAnswer) {
-                        className += ' incorrect';
-                    }
-                }
-                
-                return `
-                    <button class="${className}" 
-                            onclick="game.selectAnswer('${option}')"
-                            ${disabled}>
-                        ${option}
-                    </button>
-                `;
-            }
+            renderGameOverScreen() {
+                const perfectScore = this.score === TOTAL_QUESTIONS;
+                const resultGrid = this.gameQuestions.map((q, index) => {
+                    const isCorrect = this.score > index;
+                    return `
+                        <div class="result-square" style="background: ${isCorrect ? 'var(--success-color)' : 'var(--error-color)'}">
+                            ${isCorrect ? '✓' : '✗'}
+                        </div>
+                    `;
+                }).join('');
 
-            renderFeedback() {
-                const question = this.gameQuestions[this.currentRound];
-                const isCorrect = this.selectedAnswer === question.correctAnswer;
-                
-                return `
-                    <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
-                        ${isCorrect ? 
-                            '✓ Correct!' : 
-                            `✗ Wrong! The correct answer is ${question.correctAnswer}`}
-                    </div>
-                `;
-            }
-
-            renderGameOver() {
-                const isPerfect = this.score === TOTAL_QUESTIONS;
-                
-                const resultSquares = [];
-                for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-                    resultSquares.push(i < this.score ? '🟩' : '🟥');
-                }
-                
                 return `
                     <div class="game-over-card">
-                        <div style="font-size: 3em; margin-bottom: 20px;">${isPerfect ? '🎉 🏆 🎉' : '📊'}</div>
-                        <h2 style="font-size: 2em; margin-bottom: 10px;">Game Complete!</h2>
-                        <div class="final-score">${this.score}/5</div>
+                        <h2>${perfectScore ? '🎉 Congratulations! 🎉' : 'Game Complete!'}</h2>
                         
-                        <div style="font-size: 1.3em; margin: 20px 0;">
-                            ${isPerfect ? 
-                                '🏆 Perfect! You won today\'s Bordle!' : 
-                                'Good try! Come back tomorrow!'}
+                        <div class="final-score">
+                            ${this.score}/${TOTAL_QUESTIONS}
                         </div>
                         
                         <div class="result-grid">
-                            ${resultSquares.map(square => `<div class="result-square">${square}</div>`).join('')}
+                            ${resultGrid}
                         </div>
                         
-                        <div class="win-count">Total Wins: ${this.wins}</div>
+                        <p style="font-size: 1.2em; margin: 20px 0;">
+                            ${perfectScore ? 
+                                'Perfect score! You\'re a border expert! 🌟' :
+                                'Nice try! Keep practicing to improve your score!'
+                            }
+                        </p>
                         
-                        <button class="btn" onclick="game.shareResults()">
-                            📤 Share Results
+                        ${perfectScore ? `
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                                <strong>🏆 Win #${this.wins}</strong>
+                            </div>
+                        ` : ''}
+                        
+                        <button class="btn" onclick="game.restartGame()">
+                            <i class="fas fa-redo"></i> Play Again Tomorrow
                         </button>
                         
                         <div class="countdown-timer">
-                            Next Bordle in ${this.getTimeUntilTomorrow()}
+                            <i class="fas fa-clock"></i> Next game available in 24 hours
                         </div>
                     </div>
                 `;
             }
-
-            getTimeUntilTomorrow() {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-                
-                const now = new Date();
-                const timeLeft = tomorrow - now;
-                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                
-                return `${hours}h ${minutes}m`;
-            }
-
-            shareResults() {
-                const isPerfect = this.score === TOTAL_QUESTIONS;
-                const resultSquares = [];
-                
-                for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-                    resultSquares.push(i < this.score ? '🟩' : '🟥');
-                }
-                
-                const text = `Bordle ${new Date().toLocaleDateString()}\n${this.score}/${TOTAL_QUESTIONS} ${isPerfect ? '🏆' : ''}\n\n${resultSquares.join('')}`;
-                
-                if (navigator.share) {
-                    navigator.share({ text: text });
-                } else {
-                    navigator.clipboard.writeText(text);
-                    alert('Results copied to clipboard!');
-                }
-            }
         }
 
+        // Global game instance
+        const game = new BordleGame();
+
+        // Page navigation
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById(pageId + '-page').classList.add('active');
+            
+            if (pageId === 'game') {
+                game.render();
+            }
         }
 
-        // Reset function for console
-        function resetBordle() {
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem(WINS_KEY);
-            game.currentScreen = 'home';
-            game.currentRound = 0;
-            game.score = 0;
-            game.selectedAnswer = null;
-            game.gameQuestions = [];
-            game.answered = false;
-            game.wins = 0;
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', function() {
             game.render();
-            console.log('🎮 Bordle completely reset! Ready to play again.');
-        }
-
-        // Make reset function available globally
-        window.resetBordle = resetBordle;
-
-        // Initialize game
-        window.showPage = showPage;
-        window.game = new BordleGame();
-
-        console.log('🎮 Bordle loaded! Use resetBordle() in console to reset the game.');
+        });
     </script>
 </body>
 </html>
