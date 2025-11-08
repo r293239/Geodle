@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bordle - Border Neighbor Challenge</title>
+    <title>Bordle - Daily Border Challenge</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -13,12 +13,12 @@
         }
 
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f2c94c;
+            --primary-color: #e74c3c;
+            --secondary-color: #c0392b;
+            --accent-color: #f1c40f;
             --success-color: #27ae60;
             --error-color: #e74c3c;
-            --dark-bg: #1a1a2e;
+            --dark-bg: #2c3e50;
             --light-text: #f5f5f5;
             --glass-bg: rgba(255,255,255,0.1);
             --glass-border: rgba(255,255,255,0.2);
@@ -26,22 +26,91 @@
 
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #34495e 100%);
             min-height: 100vh;
             color: var(--light-text);
             overflow-x: hidden;
         }
 
-        .natural-bg {
+        .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -2;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            overflow: hidden;
+        }
+
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(231, 76, 60, 0.1);
+            animation: float 15s infinite linear;
+        }
+
+        .bg-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .bg-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            left: 80%;
+            animation-delay: -2s;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .bg-element:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 90%;
+            animation-delay: -4s;
+            background: rgba(155, 89, 182, 0.1);
+        }
+
+        .bg-element:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 80%;
+            left: 20%;
+            animation-delay: -6s;
+            background: rgba(241, 196, 15, 0.1);
+        }
+
+        .bg-element:nth-child(5) {
+            width: 70px;
+            height: 70px;
+            top: 20%;
+            left: 70%;
+            animation-delay: -8s;
+            background: rgba(230, 126, 34, 0.1);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+                opacity: 0.7;
+            }
+            66% {
+                transform: translateY(20px) rotate(240deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+                opacity: 1;
+            }
         }
 
         .nav-bar {
@@ -52,6 +121,8 @@
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 100;
         }
 
         .logo {
@@ -87,6 +158,7 @@
         .dropdown {
             position: relative;
             display: inline-block;
+            z-index: 1000;
         }
 
         .dropdown-content {
@@ -98,7 +170,7 @@
             border-radius: 15px;
             min-width: 200px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 1000;
+            z-index: 1001;
             top: 100%;
             right: 0;
             margin-top: 10px;
@@ -136,6 +208,8 @@
         .page {
             display: none;
             min-height: calc(100vh - 80px);
+            position: relative;
+            z-index: 10;
         }
 
         .page.active {
@@ -193,6 +267,52 @@
             padding: 30px;
             max-width: 800px;
             margin: 0 auto;
+        }
+
+        .welcome-card {
+            background: rgba(255,255,255,0.95);
+            color: var(--dark-bg);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .instructions {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .instructions li {
+            padding: 10px 0;
+            font-size: 1.1em;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+
+        .instructions li i {
+            margin-right: 10px;
+            color: var(--accent-color);
+            width: 20px;
         }
 
         .question-card {
@@ -445,7 +565,13 @@
     </style>
 </head>
 <body>
-    <div class="natural-bg"></div>
+    <div class="animated-bg">
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+    </div>
 
     <nav class="nav-bar">
         <div class="logo">🌍 Bordle</div>
@@ -479,7 +605,7 @@
 
     <div id="game-page" class="page active">
         <div class="game-header">
-            <h1>Bordle - Border Neighbor Challenge</h1>
+            <h1>Bordle - Daily Border Challenge</h1>
             <div class="game-stats">
                 <div class="stat-item">
                     <div class="stat-label">Question</div>
@@ -530,7 +656,7 @@
     </div>
 
     <script>
-        // Enhanced countries data with difficulty ratings for borders
+        // COMPREHENSIVE COUNTRIES DATA (1000+ lines restored)
         const countries = [
             { 
                 name: "Afghanistan", 
@@ -2507,7 +2633,7 @@
             }
         ];
 
-        // Enhanced fake borders with more variety
+        // COMPREHENSIVE FAKE BORDERS DATA
         const fakeBorders = [
             // Countries separated by water
             {country1: "Spain", country2: "Portugal", reason: "Separated by sea"},
@@ -2625,6 +2751,12 @@
                                 this.gameQuestions = state.gameQuestions;
                                 this.currentRound = TOTAL_QUESTIONS;
                                 console.log('🏁 Loading completed game state');
+                            } else {
+                                this.currentScreen = 'game';
+                                this.currentRound = state.currentRound;
+                                this.score = state.score;
+                                this.gameQuestions = state.gameQuestions;
+                                console.log('🔄 Loading in-progress game');
                             }
                         } else {
                             console.log('🆕 New day - game state cleared');
@@ -2854,13 +2986,25 @@
 
             renderHomeScreen() {
                 return `
-                    <div class="question-card">
+                    <div class="welcome-card">
                         <h2 style="color: var(--primary-color); margin-bottom: 20px;">🌍 Welcome to Bordle!</h2>
                         <p style="font-size: 1.2em; margin-bottom: 30px; color: #666;">
                             Test your geography knowledge by identifying which countries share borders!
                         </p>
+                        
+                        <div class="instructions">
+                            <h3><i class="fas fa-info-circle"></i> How to Play</h3>
+                            <ul>
+                                <li><i class="fas fa-question"></i> You'll be shown a country and must identify which of the options borders it</li>
+                                <li><i class="fas fa-chart-line"></i> 5 questions with increasing difficulty</li>
+                                <li><i class="fas fa-flag"></i> Watch out for tricky borders and fake options!</li>
+                                <li><i class="fas fa-trophy"></i> Get all 5 correct for a perfect score</li>
+                                <li><i class="fas fa-calendar-day"></i> One game per day - come back tomorrow!</li>
+                            </ul>
+                        </div>
+                        
                         <button class="btn" onclick="game.startGame()">
-                            <i class="fas fa-play"></i> Start New Game
+                            <i class="fas fa-play"></i> Start Daily Challenge
                         </button>
                         <div class="win-count">
                             Total Wins: ${this.wins}
@@ -2974,12 +3118,8 @@
                             </div>
                         ` : ''}
                         
-                        <button class="btn" onclick="game.restartGame()">
-                            <i class="fas fa-redo"></i> Play Again Tomorrow
-                        </button>
-                        
                         <div class="countdown-timer">
-                            <i class="fas fa-clock"></i> Next game available in 24 hours
+                            <i class="fas fa-clock"></i> Come back tomorrow for a new challenge!
                         </div>
                     </div>
                 `;
