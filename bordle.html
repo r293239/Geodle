@@ -657,7 +657,7 @@
     </div>
 
     <script>
-        // COMPREHENSIVE COUNTRIES DATA (Restored full dataset)
+        // COMPREHENSIVE COUNTRIES DATA
         const countries = [
             { 
                 name: "Afghanistan", 
@@ -2634,7 +2634,7 @@
             }
         ];
 
-        // COMPREHENSIVE FAKE BORDERS DATA (Restored full dataset)
+        // COMPREHENSIVE FAKE BORDERS DATA
         const fakeBorders = [
             // Countries separated by water
             {country1: "Spain", country2: "Portugal", reason: "Separated by sea"},
@@ -2831,8 +2831,13 @@
                     const suitableBorders = country.borders.filter(b => b.difficulty >= difficulty.targetDifficulty);
                     const correctBorder = suitableBorders[Math.floor(Math.random() * suitableBorders.length)];
                     
+                    // Generate decoys ensuring none are actual borders
                     const decoys = this.generateSmartDecoys(country, correctBorder.name, difficulty.fakeBorders);
-                    const options = this.shuffleArray([correctBorder.name, ...decoys]);
+                    
+                    // Validate that no decoys are actual borders
+                    const validatedDecoys = this.validateDecoys(country, decoys);
+                    
+                    const options = this.shuffleArray([correctBorder.name, ...validatedDecoys]);
                     
                     this.gameQuestions.push({
                         country: country.name,
@@ -2850,9 +2855,16 @@
                 console.log('✅ Questions generated:', this.gameQuestions.length);
             }
 
+            validateDecoys(country, decoys) {
+                // Ensure none of the decoys are actual borders of the country
+                const actualBorders = country.borders.map(b => b.name);
+                return decoys.filter(decoys => !actualBorders.includes(decoys));
+            }
+
             generateSmartDecoys(country, correctAnswer, fakeBorderCount) {
                 const decoys = new Set();
                 const allCountryNames = countries.map(c => c.name);
+                const actualBorders = country.borders.map(b => b.name);
                 
                 // Add real non-bordering countries from same region
                 const regionCountries = countries
@@ -2864,7 +2876,7 @@
                         return distance < 25 && 
                                c.name !== country.name && 
                                c.name !== correctAnswer &&
-                               !country.borders.some(b => b.name === c.name);
+                               !actualBorders.includes(c.name); // Ensure it's not an actual border
                     })
                     .map(c => c.name);
                 
@@ -2872,7 +2884,8 @@
                 
                 // Add fake borders
                 const relevantFakeBorders = fakeBorders.filter(fb => 
-                    fb.country1 === country.name || fb.country2 === country.name
+                    (fb.country1 === country.name || fb.country2 === country.name) &&
+                    !actualBorders.includes(fb.country1 === country.name ? fb.country2 : fb.country1) // Ensure it's not an actual border
                 );
                 
                 for (let i = 0; i < Math.min(fakeBorderCount, relevantFakeBorders.length); i++) {
@@ -2882,12 +2895,12 @@
                     decoys.add(fakeNeighbor);
                 }
                 
-                // Fill remaining slots
+                // Fill remaining slots with random countries that are not actual borders
                 while (decoys.size < 3) {
                     const randomCountry = allCountryNames[Math.floor(Math.random() * allCountryNames.length)];
                     if (randomCountry !== country.name && 
                         randomCountry !== correctAnswer && 
-                        !country.borders.some(b => b.name === randomCountry)) {
+                        !actualBorders.includes(randomCountry)) {
                         decoys.add(randomCountry);
                     }
                 }
