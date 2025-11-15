@@ -2837,7 +2837,10 @@
                     // Validate that no decoys are actual borders
                     const validatedDecoys = this.validateDecoys(country, decoys);
                     
-                    const options = this.shuffleArray([correctBorder.name, ...validatedDecoys]);
+                    // Final validation - ensure only one correct answer
+                    const finalDecoys = this.ensureSingleCorrectAnswer(country, validatedDecoys);
+                    
+                    const options = this.shuffleArray([correctBorder.name, ...finalDecoys]);
                     
                     this.gameQuestions.push({
                         country: country.name,
@@ -2853,6 +2856,14 @@
                 }
 
                 console.log('✅ Questions generated:', this.gameQuestions.length);
+            }
+
+            ensureSingleCorrectAnswer(country, decoys) {
+                // Get all actual borders of the country
+                const actualBorders = country.borders.map(b => b.name);
+                
+                // Filter out any decoys that are actual borders
+                return decoys.filter(decoys => !actualBorders.includes(decoys));
             }
 
             validateDecoys(country, decoys) {
