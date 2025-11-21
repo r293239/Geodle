@@ -19,7 +19,7 @@
 <!-- Open Graph Meta Tags -->
 <meta property="og:title" content="Geodle - Daily Geography Challenge Game">
 <meta property="og:description" content="Test your geography knowledge with daily country guessing challenges. How many clues do you need to guess the mystery country?">
-<meta property="og:image" content="https://r293239.github.io/Geodle/icon.png">
+<meta property="og:image" content="https://r293239.github.io/Geodle/assets/geodle-preview.png">
 <meta property="og:url" content="https://r293239.github.io/Geodle/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Geodle">
@@ -28,7 +28,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Geodle - Daily Geography Challenge Game">
 <meta name="twitter:description" content="🌍 Guess countries from clues in this addictive geography puzzle game!">
-<meta name="twitter:image" content="https://r293239.github.io/Geodle/icon.png">
+<meta name="twitter:image" content="https://r293239.github.io/Geodle/assets/geodle-preview.png">
 
 <!-- Structured Data for Rich Results -->
 <script type="application/ld+json">
@@ -62,20 +62,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geodle - Daily Geography Clue Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-    
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(function(error) {
-                        console.log('ServiceWorker registration failed: ', error);
-                    });
-            });
-        }
     </script>   
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json">
