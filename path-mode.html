@@ -12,159 +12,112 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
-<!-- Primary Meta Tags -->
-    <title>Routele - Daily Geography Path Game | Connect Countries by Borders</title>
-    <meta name="title" content="Routele - Daily Geography Path Game | Connect Countries by Borders">
-    <meta name="description" content="Play Routele, the daily geography puzzle game! Connect countries through land and sea borders to create the shortest path. Test your world geography knowledge with daily challenges.">
-    <meta name="keywords" content="routele, geography game, daily geography puzzle, country borders game, world map game, geography challenge, educational game, country path game, border puzzle, geography quiz, wordle geography, geodle, countryle, flagle, daily puzzle game, geography learning, world countries game, interactive map game, pathfinding game, neighboring countries, geography education, world map puzzle, geography brain game, country connections, border challenge, daily geography, geography wordle, map quiz, country quiz game, world geography test, geography trivia, educational puzzle, geography for kids, geography strategy game, world borders game, country neighbors game, wordle, unblocked, geodle, countryle unlimited">
-    <meta name="author" content="Routele">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="1 days">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://r293239.github.io/Geodle/path-mode.html">
-    <meta property="og:title" content="Routele - Daily Geography Path Game | Connect Countries by Borders">
-    <meta property="og:description" content="Play Routele, the daily geography puzzle game! Connect countries through land and sea borders to create the shortest path. Test your world geography knowledge with daily challenges.">
-    <meta property="og:image" content="https://r293239.github.io/Geodle/path-mode-preview.png">
-    <meta property="og:site_name" content="Routele">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://r293239.github.io/Geodle/path-mode.html">
-    <meta property="twitter:title" content="Routele - Daily Geography Path Game | Connect Countries by Borders">
-    <meta property="twitter:description" content="Play Routele, the daily geography puzzle game! Connect countries through land and sea borders to create the shortest path. Test your world geography knowledge with daily challenges.">
-    <meta property="twitter:image" content="https://r293239.github.io/Geodle/path-mode-preview.png">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://r293239.github.io/Geodle/path-mode.html">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/icon.png">
-    <link rel="apple-touch-icon" href="/assets/icon.png">
-    
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#0f0c29">
-    <meta name="msapplication-TileColor" content="#0f0c29">
-    
-    <!-- Structured Data / Schema.org -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Routele",
-      "description": "Daily geography puzzle game where you connect countries through land and sea borders to create the shortest path",
-      "url": "https://r293239.github.io/Geodle/path-mode.html",
-      "applicationCategory": "GameApplication",
-      "genre": ["Educational", "Puzzle", "Geography"],
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1250"
-      }
-    }
-    </script>
-      /* Loading Screen Styles - FIXED */
-#loadingScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-}
 
-#loadingScreen.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none; /* This prevents clicking through the hidden loading screen */
-}
+        /* Loading Screen Styles */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
 
-.loading-content {
-    text-align: center;
-    color: white;
-    max-width: 500px;
-    padding: 20px;
-    position: relative;
-    z-index: 10000;
-}
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-.loading-title {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 900;
-    letter-spacing: 3px;
-    animation: gradientText 4s ease infinite;
-}
+        .loading-content {
+            text-align: center;
+            color: white;
+            max-width: 500px;
+            padding: 20px;
+        }
 
-.loading-subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 40px;
-    color: #ffd700;
-}
+        .loading-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 3px;
+            animation: gradientText 4s ease infinite;
+        }
 
-.loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #4ecdc4;
-    animation: spin 1s ease-in-out infinite;
-    margin: 0 auto 30px;
-}
+        .loading-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #ffd700;
+        }
 
-.loading-progress {
-    width: 300px;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 20px auto;
-}
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ecdc4;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 30px;
+        }
 
-.loading-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #4ecdc4, #45b7d1);
-    width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 4px;
-}
+        .loading-progress {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
 
-.loading-tip {
-    margin-top: 30px;
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.7);
-    max-width: 400px;
-}
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+        .loading-tip {
+            margin-top: 30px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 400px;
+        }
 
-@keyframes gradientText {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, 
+                #0f0c29 0%, 
+                #302b63 25%, 
+                #24243e 50%, 
+                #1a1a2e 75%, 
+                #16213e 100%);
+            background-size: 400% 400%;
+            animation: cosmicShift 20s ease infinite;
+            min-height: 100vh;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+        }
 
         /* Enhanced cosmic background animation */
         @keyframes cosmicShift {
