@@ -1,11 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SEO Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Routele</title>
+    <meta name="description" content="Play Routele - a daily geography puzzle game where you connect countries through land borders. Test your knowledge of world geography with this fun, educational game.">
+    <meta name="keywords" content="geography game, country borders, world map, daily puzzle, educational game, country connections, routele, geodle, flagle, civile">
+    <meta name="author" content="Routele Team">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Routele - Daily Geography Challenge Game">
+    <meta property="og:description" content="Connect countries through land borders in this daily geography puzzle game. Test your world knowledge today!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://r293239.github.io/Geodle/path-mode">
+    <meta property="og:image" content="https://r293239.github.io/Geodle/path-mode-preview.png">
+    <meta property="og:site_name" content="Routele">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Routele - Daily Geography Challenge Game">
+    <meta name="twitter:description" content="Connect countries through land borders in this daily geography puzzle game. Test your world knowledge today!">
+    <meta name="twitter:image" content="https://r293239.github.io/Geodle/path-mode-preview.png">
+    
+    <!-- Structured Data / Schema.org Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Routele",
+      "description": "A daily geography puzzle game where players connect countries through land borders",
+      "url": "https://r293239.github.io/Geodle/path-mode",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "permissions": "browser-storage",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Routele Team"
+      },
+      "screenshot": "https://r293239.github.io/Geodle/path-mode-preview.jpg",
+      "genre": "Educational Game",
+      "audience": "All Ages"
+    }
+    </script>
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" href="https://r293239.github.io/Geodle/icon.png">
+    <link rel="apple-touch-icon" href="https://r293239.github.io/Geodle/icon.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://r293239.github.io/Geodle/path-mode">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" as="script">
+    <link rel="preload" href="country-data.js" as="script">
+    
+    <!-- DNS Prefetch for External Domains -->
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://tile.openstreetmap.org">
+    
+    <!-- CSS and JavaScript -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -29,9 +93,12 @@
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        #loadingScreen.hidden {
+        	
+        /* ... ALL THE REST OF YOUR EXISTING CSS STYLES REMAIN EXACTLY THE SAME ... */
             opacity: 0;
+
             visibility: hidden;
+        /* Media queries at the end */
         }
 
         .loading-content {
@@ -1176,6 +1243,8 @@
             transform: translateX(5px);
         }
 
+        
+        /* Media queries at the end */
         @media (max-width: 1024px) {
             .game-layout {
                 grid-template-columns: 1fr;
