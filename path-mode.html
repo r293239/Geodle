@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Routele</title>
     <meta name="description" content="Play Routele - a daily geography puzzle game where you connect countries through land borders. Test your knowledge of world geography with this fun, educational game.">
-    <meta name="keywords" content="geography game, country borders, world map, daily puzzle, educational game, country connections, routele, geodle, flagle, civile">
+    <meta name="keywords" content="geography game, country borders, world map, daily puzzle, educational game, country connections, routele, geodle, flagle, civile, bordle">
     <meta name="author" content="Routele Team">
     <meta name="robots" content="index, follow">
     
@@ -91,14 +91,6 @@
             align-items: center;
             z-index: 9999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        	
-        /* ... ALL THE REST OF YOUR EXISTING CSS STYLES REMAIN EXACTLY THE SAME ... */
-            opacity: 0;
-
-            visibility: hidden;
-        /* Media queries at the end */
         }
 
         .loading-content {
@@ -356,6 +348,41 @@
         .streak-count {
             font-size: 1.2rem;
             color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Wins Counter */
+        .wins-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(78, 205, 196, 0.5);
+            border-radius: 20px;
+            padding: 12px 20px;
+            color: #fff;
+            backdrop-filter: blur(20px);
+            z-index: 1001;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .wins-icon {
+            font-size: 1.5rem;
+            animation: trophyPulse 2s ease infinite;
+        }
+
+        @keyframes trophyPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .wins-count {
+            font-size: 1.2rem;
+            color: #4ecdc4;
             font-weight: bold;
         }
 
@@ -1302,6 +1329,13 @@
                 font-size: 14px;
             }
             
+            .wins-container {
+                top: 80px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
             .loading-title {
                 font-size: 2.5rem;
             }
@@ -1331,6 +1365,13 @@
         <span class="streak-icon">🔥</span>
         <span>Daily Streak:</span>
         <span class="streak-count" id="streakCount">0</span>
+    </div>
+
+    <!-- Wins Counter -->
+    <div class="wins-container">
+        <span class="wins-icon">🏆</span>
+        <span>Total Wins:</span>
+        <span class="wins-count" id="winsCount">0</span>
     </div>
 
     <!-- Menu Button -->
@@ -1635,6 +1676,7 @@
           <button onclick="goToClassicMode()" class="game-button">🎯 Geodle</button>
           <button onclick="goToFlagMode()" class="game-button">🚩 Flagle</button>
           <button onclick="goToCivileMode()" class="game-button">🏛️ Civile</button>
+          <button onclick="goToBordleMode()" class="game-button">🛡️ Bordle</button>
         </div>
 
         <div class="game-layout">
@@ -1758,10 +1800,14 @@
         let dailyStreak = 0;
         let lastPlayedDate = null;
 
-        // Initialize daily streak from localStorage
+        // Wins counter functionality
+        let totalWins = 0;
+
+        // Initialize daily streak and wins from localStorage
         function initDailyStreak() {
             const savedStreak = localStorage.getItem('routeleDailyStreak');
             const savedDate = localStorage.getItem('routeleLastPlayedDate');
+            const savedWins = localStorage.getItem('routeleTotalWins');
             
             if (savedStreak && savedDate) {
                 dailyStreak = parseInt(savedStreak);
@@ -1786,7 +1832,13 @@
                 }
             }
             
+            // Initialize wins
+            if (savedWins) {
+                totalWins = parseInt(savedWins);
+            }
+            
             updateStreakDisplay();
+            updateWinsDisplay();
         }
 
         // Update streak when game is completed
@@ -1824,6 +1876,16 @@
             }
         }
 
+        // Update wins counter
+        function updateWins() {
+            totalWins++;
+            localStorage.setItem('routeleTotalWins', totalWins.toString());
+            updateWinsDisplay();
+            
+            // Show wins notification
+            showNotification(`🏆 Total wins: ${totalWins}!`);
+        }
+
         // Update streak display
         function updateStreakDisplay() {
             const streakElement = document.getElementById('streakCount');
@@ -1835,6 +1897,22 @@
                     streakElement.style.animation = 'pulse 1s ease';
                     setTimeout(() => {
                         streakElement.style.animation = '';
+                    }, 1000);
+                }
+            }
+        }
+
+        // Update wins display
+        function updateWinsDisplay() {
+            const winsElement = document.getElementById('winsCount');
+            if (winsElement) {
+                winsElement.textContent = totalWins;
+                
+                // Add animation for new wins
+                if (totalWins > 0) {
+                    winsElement.style.animation = 'pulse 1s ease';
+                    setTimeout(() => {
+                        winsElement.style.animation = '';
                     }, 1000);
                 }
             }
@@ -2212,6 +2290,11 @@
         function goToCivileMode() {
             playClickSound();
             window.location.href = "https://r293239.github.io/Geodle/civile";
+        }
+
+        function goToBordleMode() {
+            playClickSound();
+            window.location.href = "https://r293239.github.io/Geodle/bordle";
         }
 
         // Create a mapping function to get country data by name
@@ -2630,8 +2713,9 @@
                 playWinSound();
                 createWinningEffect();
                 
-                // Update daily streak for successful completion
+                // Update daily streak and wins for successful completion
                 updateStreak();
+                updateWins();
             } else {
                 titleElement.textContent = 'Journey Incomplete!';
                 titleElement.className = 'lose';
