@@ -316,11 +316,8 @@
             font-weight: 600;
         }
 
-        /* Daily Streak Counter */
+        /* Daily Streak Counter - REMOVED FIXED POSITION */
         .streak-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid rgba(255, 215, 0, 0.5);
             border-radius: 20px;
@@ -331,8 +328,11 @@
             box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             font-weight: 600;
+            margin: 10px auto;
+            max-width: 300px;
         }
 
         .streak-icon {
@@ -351,11 +351,8 @@
             font-weight: bold;
         }
 
-        /* Wins Counter */
+        /* Wins Counter - REMOVED FIXED POSITION */
         .wins-container {
-            position: fixed;
-            top: 90px;
-            right: 20px;
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid rgba(78, 205, 196, 0.5);
             border-radius: 20px;
@@ -366,8 +363,11 @@
             box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             font-weight: 600;
+            margin: 10px auto;
+            max-width: 300px;
         }
 
         .wins-icon {
@@ -866,6 +866,7 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(138, 43, 226, 0.3);
             grid-column: 1 / -1;
+            margin-bottom: 20px;
         }
 
         .path-title {
@@ -977,6 +978,15 @@
             font-weight: bold;
             margin: 15px 0;
             color: #fff;
+        }
+
+        /* Stats Container */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
 
         /* Winning effect particles */
@@ -1322,18 +1332,15 @@
                 font-size: 12px;
             }
             
-            .streak-container {
-                top: 10px;
-                right: 10px;
+            .streak-container, .wins-container {
                 padding: 10px 15px;
                 font-size: 14px;
+                margin: 8px auto;
             }
             
-            .wins-container {
-                top: 80px;
-                right: 10px;
-                padding: 10px 15px;
-                font-size: 14px;
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
             }
             
             .loading-title {
@@ -1358,20 +1365,6 @@
             </div>
             <div class="loading-tip" id="loadingTip">Loading game assets...</div>
         </div>
-    </div>
-
-    <!-- Daily Streak Counter -->
-    <div class="streak-container">
-        <span class="streak-icon">🔥</span>
-        <span>Daily Streak:</span>
-        <span class="streak-count" id="streakCount">0</span>
-    </div>
-
-    <!-- Wins Counter -->
-    <div class="wins-container">
-        <span class="wins-icon">🏆</span>
-        <span>Total Wins:</span>
-        <span class="wins-count" id="winsCount">0</span>
     </div>
 
     <!-- Menu Button -->
@@ -1738,6 +1731,21 @@
             <div class="path-title">Your Journey Trail</div>
             <div class="path-visual" id="pathVisual">
                 <div class="path-country" id="startInPath">Start here...</div>
+            </div>
+        </div>
+
+        <!-- Stats Container - PLACED BELOW THE PATH CONTAINER -->
+        <div class="stats-container">
+            <div class="streak-container">
+                <span class="streak-icon">🔥</span>
+                <span>Daily Streak:</span>
+                <span class="streak-count" id="streakCount">0</span>
+            </div>
+
+            <div class="wins-container">
+                <span class="wins-icon">🏆</span>
+                <span>Total Wins:</span>
+                <span class="wins-count" id="winsCount">0</span>
             </div>
         </div>
 
