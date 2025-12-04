@@ -380,12 +380,6 @@
             50% { transform: scale(1.1); }
         }
 
-        .wins-count {
-            font-size: 1.2rem;
-            color: #4ecdc4;
-            font-weight: bold;
-        }
-
         /* Menu Button */
         .menu-button {
             position: fixed;
@@ -1769,7 +1763,255 @@
     <script src="country-data.js"></script>
 
     <script>
-        // Loading screen functionality
+        // ============================
+        // SETTINGS MANAGER
+        // ============================
+        class SettingsManager {
+            constructor() {
+                this.settings = {
+                    // Audio Settings
+                    musicEnabled: false,
+                    sfxEnabled: true,
+                    masterVolume: 0.7,
+                    
+                    // Language & Region
+                    language: 'en',
+                    countryDisplay: 'name',
+                    
+                    // Game Settings
+                    difficulty: 'normal',
+                    hintsEnabled: true,
+                    autoSaveEnabled: true,
+                    
+                    // Visual Settings
+                    animationsEnabled: true,
+                    particlesEnabled: true
+                };
+                
+                this.loadSettings();
+            }
+            
+            // Save all settings to localStorage
+            saveSettings() {
+                localStorage.setItem('routeleSettings', JSON.stringify(this.settings));
+            }
+            
+            // Load settings from localStorage
+            loadSettings() {
+                const saved = localStorage.getItem('routeleSettings');
+                if (saved) {
+                    try {
+                        this.settings = { ...this.settings, ...JSON.parse(saved) };
+                    } catch (e) {
+                        console.error('Error loading settings:', e);
+                    }
+                }
+            }
+            
+            // Update a specific setting
+            updateSetting(key, value) {
+                this.settings[key] = value;
+                this.saveSettings();
+                this.applySetting(key, value);
+            }
+            
+            // Apply setting to the game
+            applySetting(key, value) {
+                switch(key) {
+                    case 'musicEnabled':
+                        if (value && backgroundMusic) {
+                            backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+                        } else if (!value && backgroundMusic) {
+                            backgroundMusic.pause();
+                        }
+                        break;
+                        
+                    case 'sfxEnabled':
+                        // Already handled in playClickSound and playWinSound functions
+                        break;
+                        
+                    case 'masterVolume':
+                        if (backgroundMusic) backgroundMusic.volume = value;
+                        if (winSound) winSound.volume = value;
+                        if (clickSound) clickSound.volume = value;
+                        break;
+                        
+                    case 'difficulty':
+                        updateDifficulty(value);
+                        break;
+                        
+                    case 'animationsEnabled':
+                        // Apply animation settings to all animated elements
+                        document.body.style.animationPlayState = value ? 'running' : 'paused';
+                        // You can add more animation controls here
+                        break;
+                        
+                    case 'particlesEnabled':
+                        // Handled in createWinningEffect function
+                        break;
+                        
+                    case 'countryDisplay':
+                        updateCountryDisplay();
+                        break;
+                        
+                    case 'hintsEnabled':
+                        // Handled in the game logic
+                        break;
+                        
+                    case 'autoSaveEnabled':
+                        // Handled in game state saving
+                        break;
+                }
+            }
+            
+            // Apply all settings
+            applyAllSettings() {
+                Object.keys(this.settings).forEach(key => {
+                    this.applySetting(key, this.settings[key]);
+                });
+            }
+            
+            // Get a setting value
+            getSetting(key) {
+                return this.settings[key];
+            }
+        }
+
+        // Initialize settings manager
+        const settingsManager = new SettingsManager();
+
+        // ============================
+        // GAME STATE MANAGEMENT
+        // ============================
+        class GameState {
+            constructor() {
+                this.state = {
+                    currentPath: [],
+                    attempts: 0,
+                    maxAttempts: 10,
+                    gameCompleted: false,
+                    optimalPath: [],
+                    startCountry: '',
+                    endCountry: '',
+                    lastPlayedDate: null,
+                    dailyStreak: 0,
+                    totalWins: 0
+                };
+                
+                this.loadGameState();
+            }
+            
+            saveGameState() {
+                if (settingsManager.getSetting('autoSaveEnabled')) {
+                    localStorage.setItem('routeleGameState', JSON.stringify(this.state));
+                }
+            }
+            
+            loadGameState() {
+                const saved = localStorage.getItem('routeleGameState');
+                if (saved) {
+                    try {
+                        this.state = JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Error loading game state:', e);
+                    }
+                }
+            }
+            
+            resetGameState() {
+                this.state = {
+                    currentPath: [],
+                    attempts: 0,
+                    maxAttempts: 10,
+                    gameCompleted: false,
+                    optimalPath: [],
+                    startCountry: '',
+                    endCountry: '',
+                    lastPlayedDate: this.state.lastPlayedDate,
+                    dailyStreak: this.state.dailyStreak,
+                    totalWins: this.state.totalWins
+                };
+                this.saveGameState();
+            }
+            
+            updateGameState(key, value) {
+                this.state[key] = value;
+                this.saveGameState();
+            }
+            
+            getGameState(key) {
+                return this.state[key];
+            }
+        }
+
+        // Initialize game state
+        const gameState = new GameState();
+
+        // ============================
+        // GAME VARIABLES
+        // ============================
+        let countryNames = [];
+        let map = null;
+        let pathMarkers = [];
+        let pathCache = new Map();
+        let backgroundMusic, winSound, clickSound;
+
+        // ============================
+        // INITIALIZATION
+        // ============================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLoadingProgress(10, "Initializing game...");
+            showRandomTip();
+            
+            const startTime = Date.now();
+            const minLoadingTime = 500;
+            
+            setTimeout(() => {
+                updateLoadingProgress(30, "Loading audio...");
+                initAudio();
+            }, 100);
+            
+            setTimeout(() => {
+                updateLoadingProgress(50, "Loading settings...");
+                initSettingsMenu();
+            }, 200);
+            
+            setTimeout(() => {
+                updateLoadingProgress(70, "Loading game state...");
+                initDailyStreak();
+            }, 300);
+            
+            setTimeout(() => {
+                updateLoadingProgress(90, "Setting up game world...");
+                
+                if (typeof countries !== 'undefined') {
+                    countryNames = countries.map(country => country.name);
+                    initializeGame();
+                    
+                    const elapsed = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
+                    
+                    setTimeout(() => {
+                        updateLoadingProgress(100, "Ready to play!");
+                        setTimeout(hideLoadingScreen, 300);
+                    }, remainingTime);
+                } else {
+                    console.error('Countries data not loaded.');
+                    updateLoadingProgress(100, "Error loading game data");
+                    
+                    const elapsed = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
+                    
+                    setTimeout(() => {
+                        hideLoadingScreen();
+                    }, remainingTime);
+                }
+            }, 400);
+        });
+
+        // ============================
+        // LOADING SCREEN FUNCTIONS
+        // ============================
         const loadingScreen = document.getElementById('loadingScreen');
         const loadingProgress = document.getElementById('loadingProgress');
         const loadingTip = document.getElementById('loadingTip');
@@ -1804,104 +2046,108 @@
             loadingTip.textContent = randomTip;
         }
 
-        // Daily streak functionality
-        let dailyStreak = 0;
-        let lastPlayedDate = null;
+        // ============================
+        // AUDIO FUNCTIONS
+        // ============================
+        function initAudio() {
+            backgroundMusic = document.getElementById('backgroundMusic');
+            winSound = document.getElementById('winSound');
+            clickSound = document.getElementById('clickSound');
 
-        // Wins counter functionality
-        let totalWins = 0;
+            // Apply saved volume settings
+            backgroundMusic.volume = settingsManager.getSetting('masterVolume');
+            winSound.volume = settingsManager.getSetting('masterVolume');
+            clickSound.volume = settingsManager.getSetting('masterVolume');
+        }
 
-        // Initialize daily streak and wins from localStorage
+        function playClickSound() {
+            if (!settingsManager.getSetting('sfxEnabled')) return;
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => console.log('Click sound play failed:', e));
+        }
+
+        function playWinSound() {
+            if (!settingsManager.getSetting('sfxEnabled')) return;
+            winSound.currentTime = 0;
+            winSound.play().catch(e => console.log('Win sound play failed:', e));
+        }
+
+        // ============================
+        // DAILY STREAK FUNCTIONS
+        // ============================
         function initDailyStreak() {
             const savedStreak = localStorage.getItem('routeleDailyStreak');
             const savedDate = localStorage.getItem('routeleLastPlayedDate');
             const savedWins = localStorage.getItem('routeleTotalWins');
             
             if (savedStreak && savedDate) {
-                dailyStreak = parseInt(savedStreak);
-                lastPlayedDate = new Date(savedDate);
+                gameState.updateGameState('dailyStreak', parseInt(savedStreak));
+                gameState.updateGameState('lastPlayedDate', new Date(savedDate));
                 
-                // Check if the streak should continue
                 const today = new Date();
                 const yesterday = new Date(today);
                 yesterday.setDate(yesterday.getDate() - 1);
                 
-                // If last played was yesterday, increment streak
-                if (lastPlayedDate.toDateString() === yesterday.toDateString()) {
+                const lastPlayed = new Date(gameState.getGameState('lastPlayedDate'));
+                
+                if (lastPlayed.toDateString() === yesterday.toDateString()) {
                     // Continue streak
-                } 
-                // If last played was today, keep current streak
-                else if (lastPlayedDate.toDateString() === today.toDateString()) {
+                } else if (lastPlayed.toDateString() === today.toDateString()) {
                     // Keep current streak
-                }
-                // If last played was more than 1 day ago, reset streak
-                else if (lastPlayedDate < yesterday) {
-                    dailyStreak = 0;
+                } else if (lastPlayed < yesterday) {
+                    gameState.updateGameState('dailyStreak', 0);
                 }
             }
             
-            // Initialize wins
             if (savedWins) {
-                totalWins = parseInt(savedWins);
+                gameState.updateGameState('totalWins', parseInt(savedWins));
             }
             
             updateStreakDisplay();
             updateWinsDisplay();
         }
 
-        // Update streak when game is completed
         function updateStreak() {
             const today = new Date();
             const todayString = today.toDateString();
+            const lastPlayed = gameState.getGameState('lastPlayedDate');
             
-            // Check if already played today
-            if (lastPlayedDate && lastPlayedDate.toDateString() === todayString) {
-                return; // Already updated streak today
+            if (lastPlayed && new Date(lastPlayed).toDateString() === todayString) {
+                return;
             }
             
-            // Check if streak should continue (played yesterday)
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
             
-            if (!lastPlayedDate || lastPlayedDate.toDateString() !== yesterday.toDateString()) {
-                // If not played yesterday, reset streak
-                dailyStreak = 0;
+            if (!lastPlayed || new Date(lastPlayed).toDateString() !== yesterday.toDateString()) {
+                gameState.updateGameState('dailyStreak', 0);
             }
             
-            // Increment streak
-            dailyStreak++;
-            lastPlayedDate = today;
+            gameState.updateGameState('dailyStreak', gameState.getGameState('dailyStreak') + 1);
+            gameState.updateGameState('lastPlayedDate', today);
             
-            // Save to localStorage
-            localStorage.setItem('routeleDailyStreak', dailyStreak.toString());
-            localStorage.setItem('routeleLastPlayedDate', lastPlayedDate.toISOString());
+            localStorage.setItem('routeleDailyStreak', gameState.getGameState('dailyStreak').toString());
+            localStorage.setItem('routeleLastPlayedDate', today.toISOString());
             
             updateStreakDisplay();
             
-            // Show streak notification if streak increased
-            if (dailyStreak > 1) {
-                showNotification(`🔥 Daily streak: ${dailyStreak} days!`);
+            if (gameState.getGameState('dailyStreak') > 1) {
+                showNotification(`🔥 Daily streak: ${gameState.getGameState('dailyStreak')} days!`);
             }
         }
 
-        // Update wins counter
         function updateWins() {
-            totalWins++;
-            localStorage.setItem('routeleTotalWins', totalWins.toString());
+            gameState.updateGameState('totalWins', gameState.getGameState('totalWins') + 1);
+            localStorage.setItem('routeleTotalWins', gameState.getGameState('totalWins').toString());
             updateWinsDisplay();
-            
-            // Show wins notification
-            showNotification(`🏆 Total wins: ${totalWins}!`);
+            showNotification(`🏆 Total wins: ${gameState.getGameState('totalWins')}!`);
         }
 
-        // Update streak display
         function updateStreakDisplay() {
             const streakElement = document.getElementById('streakCount');
             if (streakElement) {
-                streakElement.textContent = dailyStreak;
-                
-                // Add animation for new streaks
-                if (dailyStreak > 0) {
+                streakElement.textContent = gameState.getGameState('dailyStreak');
+                if (gameState.getGameState('dailyStreak') > 0) {
                     streakElement.style.animation = 'pulse 1s ease';
                     setTimeout(() => {
                         streakElement.style.animation = '';
@@ -1910,14 +2156,11 @@
             }
         }
 
-        // Update wins display
         function updateWinsDisplay() {
             const winsElement = document.getElementById('winsCount');
             if (winsElement) {
-                winsElement.textContent = totalWins;
-                
-                // Add animation for new wins
-                if (totalWins > 0) {
+                winsElement.textContent = gameState.getGameState('totalWins');
+                if (gameState.getGameState('totalWins') > 0) {
                     winsElement.style.animation = 'pulse 1s ease';
                     setTimeout(() => {
                         winsElement.style.animation = '';
@@ -1926,149 +2169,9 @@
             }
         }
 
-        // Audio variables
-        let musicEnabled = false;
-        let sfxEnabled = true;
-        let masterVolume = 0.7;
-        let backgroundMusic, winSound, clickSound;
-
-        // Game state
-        let startCountry = '';
-        let endCountry = '';
-        let currentPath = [];
-        let gameCompleted = false;
-        let attempts = 10;
-        let maxAttempts = 10;
-        let optimalPath = [];
-        let map = null;
-        let pathMarkers = [];
-        let countryNames = [];
-
-        // Game settings
-        let difficulty = 'normal';
-        let hintsEnabled = true;
-        let autoSaveEnabled = true;
-        let animationsEnabled = true;
-        let particlesEnabled = true;
-        let countryDisplay = 'name';
-
-        // Cache for optimal paths to avoid recalculating
-        let pathCache = new Map();
-
-        // Initialize audio
-        function initAudio() {
-            backgroundMusic = document.getElementById('backgroundMusic');
-            winSound = document.getElementById('winSound');
-            clickSound = document.getElementById('clickSound');
-
-            // Update volume for all audio elements
-            updateAudioVolume();
-        }
-
-        function updateAudioVolume() {
-            const volume = masterVolume;
-            if (backgroundMusic) backgroundMusic.volume = volume;
-            if (winSound) winSound.volume = volume;
-            if (clickSound) clickSound.volume = volume;
-        }
-
-        // Particle effect for winning
-        function createWinningEffect() {
-            if (!particlesEnabled) return;
-            
-            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
-            
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = Math.random() * window.innerWidth + 'px';
-                    particle.style.top = '-10px';
-                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    particle.style.width = (Math.random() * 8 + 4) + 'px';
-                    particle.style.height = particle.style.width;
-                    
-                    document.body.appendChild(particle);
-                    
-                    const animation = particle.animate([
-                        { 
-                            transform: 'translateY(0px) rotate(0deg)',
-                            opacity: 1
-                        },
-                        { 
-                            transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`,
-                            opacity: 0
-                        }
-                    ], {
-                        duration: Math.random() * 3000 + 2000,
-                        easing: 'ease-out'
-                    });
-                    
-                    animation.onfinish = () => {
-                        particle.remove();
-                    };
-                }, i * 100);
-            }
-        }
-
-        // Initialize the game when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Show initial loading state
-            updateLoadingProgress(10, "Initializing game...");
-            showRandomTip();
-            
-            // Start timer for minimum loading time
-            const startTime = Date.now();
-            const minLoadingTime = 500; // 0.5 seconds minimum
-            
-            // Initialize components with progress updates
-            setTimeout(() => {
-                updateLoadingProgress(30, "Loading audio...");
-                initAudio();
-            }, 100);
-            
-            setTimeout(() => {
-                updateLoadingProgress(50, "Loading settings...");
-                initSettingsMenu();
-            }, 200);
-            
-            setTimeout(() => {
-                updateLoadingProgress(70, "Loading daily streak...");
-                initDailyStreak();
-            }, 300);
-            
-            setTimeout(() => {
-                updateLoadingProgress(90, "Setting up game world...");
-                
-                // Extract country names from the imported data
-                if (typeof countries !== 'undefined') {
-                    countryNames = countries.map(country => country.name);
-                    initializeGame();
-                    
-                    // Ensure minimum loading time
-                    const elapsed = Date.now() - startTime;
-                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
-                    
-                    setTimeout(() => {
-                        updateLoadingProgress(100, "Ready to play!");
-                        setTimeout(hideLoadingScreen, 300);
-                    }, remainingTime);
-                } else {
-                    console.error('Countries data not loaded. Make sure country-data.js is included.');
-                    updateLoadingProgress(100, "Error loading game data");
-                    
-                    // Still respect minimum loading time
-                    const elapsed = Date.now() - startTime;
-                    const remainingTime = Math.max(0, minLoadingTime - elapsed);
-                    
-                    setTimeout(() => {
-                        hideLoadingScreen();
-                    }, remainingTime);
-                }
-            }, 400);
-        });
-
-        // Settings menu functionality
+        // ============================
+        // SETTINGS MENU FUNCTIONS
+        // ============================
         function initSettingsMenu() {
             const menuButton = document.getElementById('menuButton');
             const menuOverlay = document.getElementById('menuOverlay');
@@ -2084,14 +2187,19 @@
             const animationsToggle = document.getElementById('animationsToggle');
             const particlesToggle = document.getElementById('particlesToggle');
 
-            // Set initial states
-            musicToggle.classList.toggle('active', musicEnabled);
-            sfxToggle.classList.toggle('active', sfxEnabled);
-            hintsToggle.classList.toggle('active', hintsEnabled);
-            autoSaveToggle.classList.toggle('active', autoSaveEnabled);
-            animationsToggle.classList.toggle('active', animationsEnabled);
-            particlesToggle.classList.toggle('active', particlesEnabled);
-            volumeSlider.value = masterVolume * 100;
+            // Set initial states from settings manager
+            musicToggle.classList.toggle('active', settingsManager.getSetting('musicEnabled'));
+            sfxToggle.classList.toggle('active', settingsManager.getSetting('sfxEnabled'));
+            hintsToggle.classList.toggle('active', settingsManager.getSetting('hintsEnabled'));
+            autoSaveToggle.classList.toggle('active', settingsManager.getSetting('autoSaveEnabled'));
+            animationsToggle.classList.toggle('active', settingsManager.getSetting('animationsEnabled'));
+            particlesToggle.classList.toggle('active', settingsManager.getSetting('particlesEnabled'));
+            
+            // Set dropdown values
+            volumeSlider.value = settingsManager.getSetting('masterVolume') * 100;
+            languageSelect.value = settingsManager.getSetting('language');
+            countryDisplaySelect.value = settingsManager.getSetting('countryDisplay');
+            difficultySelect.value = settingsManager.getSetting('difficulty');
 
             // Menu open/close
             menuButton.addEventListener('click', function() {
@@ -2113,80 +2221,79 @@
             // Audio toggles
             musicToggle.addEventListener('click', function() {
                 playClickSound();
-                musicEnabled = !musicEnabled;
-                this.classList.toggle('active', musicEnabled);
-                if (musicEnabled) {
-                    backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
-                } else {
-                    backgroundMusic.pause();
-                }
+                const newState = !settingsManager.getSetting('musicEnabled');
+                settingsManager.updateSetting('musicEnabled', newState);
+                this.classList.toggle('active', newState);
             });
 
             sfxToggle.addEventListener('click', function() {
-                sfxEnabled = !sfxEnabled;
-                this.classList.toggle('active', sfxEnabled);
-                if (sfxEnabled) {
+                const newState = !settingsManager.getSetting('sfxEnabled');
+                settingsManager.updateSetting('sfxEnabled', newState);
+                this.classList.toggle('active', newState);
+                if (newState) {
                     playClickSound();
                 }
             });
 
             // Volume control
             volumeSlider.addEventListener('input', function() {
-                masterVolume = this.value / 100;
-                updateAudioVolume();
+                const volume = this.value / 100;
+                settingsManager.updateSetting('masterVolume', volume);
             });
 
             // Language selection
             languageSelect.addEventListener('change', function() {
                 playClickSound();
+                settingsManager.updateSetting('language', this.value);
                 showNotification(`Language changed to ${this.options[this.selectedIndex].text}`);
             });
 
             // Country display selection
             countryDisplaySelect.addEventListener('change', function() {
                 playClickSound();
-                countryDisplay = this.value;
+                settingsManager.updateSetting('countryDisplay', this.value);
                 showNotification(`Country display changed to ${this.options[this.selectedIndex].text}`);
-                updateCountryDisplay();
             });
 
             // Difficulty selection
             difficultySelect.addEventListener('change', function() {
                 playClickSound();
-                difficulty = this.value;
-                updateDifficulty(difficulty);
+                settingsManager.updateSetting('difficulty', this.value);
+                updateDifficulty(settingsManager.getSetting('difficulty'));
                 showNotification(`Difficulty set to ${this.options[this.selectedIndex].text}`);
             });
 
             // Game settings toggles
             hintsToggle.addEventListener('click', function() {
                 playClickSound();
-                hintsEnabled = !hintsEnabled;
-                this.classList.toggle('active', hintsEnabled);
-                showNotification(`Hint system ${hintsEnabled ? 'enabled' : 'disabled'}`);
+                const newState = !settingsManager.getSetting('hintsEnabled');
+                settingsManager.updateSetting('hintsEnabled', newState);
+                this.classList.toggle('active', newState);
+                showNotification(`Hint system ${newState ? 'enabled' : 'disabled'}`);
             });
 
             autoSaveToggle.addEventListener('click', function() {
                 playClickSound();
-                autoSaveEnabled = !autoSaveEnabled;
-                this.classList.toggle('active', autoSaveEnabled);
-                showNotification(`Auto-save ${autoSaveEnabled ? 'enabled' : 'disabled'}`);
+                const newState = !settingsManager.getSetting('autoSaveEnabled');
+                settingsManager.updateSetting('autoSaveEnabled', newState);
+                this.classList.toggle('active', newState);
+                showNotification(`Auto-save ${newState ? 'enabled' : 'disabled'}`);
             });
 
             animationsToggle.addEventListener('click', function() {
                 playClickSound();
-                animationsEnabled = !animationsEnabled;
-                this.classList.toggle('active', animationsEnabled);
-                showNotification(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
-                // Apply animation changes
-                document.body.style.animationPlayState = animationsEnabled ? 'running' : 'paused';
+                const newState = !settingsManager.getSetting('animationsEnabled');
+                settingsManager.updateSetting('animationsEnabled', newState);
+                this.classList.toggle('active', newState);
+                showNotification(`Animations ${newState ? 'enabled' : 'disabled'}`);
             });
 
             particlesToggle.addEventListener('click', function() {
                 playClickSound();
-                particlesEnabled = !particlesEnabled;
-                this.classList.toggle('active', particlesEnabled);
-                showNotification(`Particle effects ${particlesEnabled ? 'enabled' : 'disabled'}`);
+                const newState = !settingsManager.getSetting('particlesEnabled');
+                settingsManager.updateSetting('particlesEnabled', newState);
+                this.classList.toggle('active', newState);
+                showNotification(`Particle effects ${newState ? 'enabled' : 'disabled'}`);
             });
 
             // Add toggle functionality to all toggle switches
@@ -2202,44 +2309,9 @@
             });
         }
 
-        // Audio functions
-        function playClickSound() {
-            if (!sfxEnabled) return;
-            clickSound.currentTime = 0;
-            clickSound.play().catch(e => console.log('Click sound play failed:', e));
-        }
-
-        function playWinSound() {
-            if (!sfxEnabled) return;
-            winSound.currentTime = 0;
-            winSound.play().catch(e => console.log('Win sound play failed:', e));
-        }
-
-        // Update difficulty based on selection
-        function updateDifficulty(difficulty) {
-            const bonusAttempts = {
-                'easy': 8,
-                'normal': 5,
-                'hard': 3,
-                'expert': 1
-            };
-            
-            if (optimalPath) {
-                const optimalLength = optimalPath.length - 1;
-                maxAttempts = Math.max(optimalLength + bonusAttempts[difficulty], 5);
-                attempts = maxAttempts;
-                document.getElementById('attempts').textContent = attempts;
-            }
-        }
-
-        // Update country display based on setting
-        function updateCountryDisplay() {
-            // This would update how countries are displayed in the game
-            // For now, it just shows a notification
-            console.log('Country display mode:', countryDisplay);
-        }
-
-        // Show notification
+        // ============================
+        // HELPER FUNCTIONS
+        // ============================
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -2279,6 +2351,47 @@
             }, 3000);
         }
 
+        function updateDifficulty(difficulty) {
+            const bonusAttempts = {
+                'easy': 8,
+                'normal': 5,
+                'hard': 3,
+                'expert': 1
+            };
+            
+            const optimalPath = gameState.getGameState('optimalPath');
+            if (optimalPath && optimalPath.length > 0) {
+                const optimalLength = optimalPath.length - 1;
+                const maxAttempts = Math.max(optimalLength + bonusAttempts[difficulty], 5);
+                gameState.updateGameState('maxAttempts', maxAttempts);
+                gameState.updateGameState('attempts', maxAttempts);
+                document.getElementById('attempts').textContent = maxAttempts;
+            }
+        }
+
+        function updateCountryDisplay() {
+            const displayMode = settingsManager.getSetting('countryDisplay');
+            // Update country display throughout the game
+            const countries = document.querySelectorAll('.path-country, .country-flag');
+            countries.forEach(country => {
+                const countryName = country.textContent;
+                switch(displayMode) {
+                    case 'flag':
+                        // In a real implementation, you would show flags here
+                        country.textContent = `🇺🇳 ${countryName}`;
+                        break;
+                    case 'both':
+                        country.textContent = `🇺🇳 ${countryName}`;
+                        break;
+                    case 'name':
+                    default:
+                        // Remove flags if present
+                        country.textContent = countryName.replace(/🇺🇳\s*/, '');
+                        break;
+                }
+            });
+        }
+
         // Navigation functions
         function goToCountryMode() {
             playClickSound();
@@ -2305,35 +2418,31 @@
             window.location.href = "https://r293239.github.io/Geodle/bordle";
         }
 
-        // Create a mapping function to get country data by name
+        // ============================
+        // GAME LOGIC FUNCTIONS
+        // ============================
         function getCountryData(countryName) {
             if (typeof countries === 'undefined') return null;
             return countries.find(country => country.name === countryName);
         }
 
-        // Get country coordinates
         function getCountryCoords(countryName) {
             const country = getCountryData(countryName);
             return country ? [country.latitude, country.longitude] : null;
         }
 
-        // Get neighboring countries
         function getNeighbors(countryName) {
             const country = getCountryData(countryName);
             return country && country.borders ? country.borders : [];
         }
 
-        // SIMPLE: Daily challenge pairs - randomly selects countries and ensures minimum 3 steps between them
         function getDailyChallengeFromData() {
             if (!countryNames.length) return ['France', 'Germany'];
             
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-            
-            // Use the day of year as a seed for consistent daily challenges
             const seed = dayOfYear;
             
-            // Get eligible countries (those with borders)
             const eligibleCountries = countryNames.filter(name => {
                 const country = getCountryData(name);
                 return country && country.borders && country.borders.length > 0;
@@ -2343,9 +2452,7 @@
                 return ['France', 'Germany'];
             }
             
-            // Try to find a pair that's at least 3 steps apart
             for (let attempt = 0; attempt < 100; attempt++) {
-                // Select random countries using seeded random
                 const startIndex = (seed + attempt) % eligibleCountries.length;
                 const start = eligibleCountries[startIndex];
                 
@@ -2355,7 +2462,6 @@
                 if (start !== end) {
                     const pathKey = `${start}-${end}`;
                     
-                    // Calculate path if not cached
                     if (!pathCache.has(pathKey)) {
                         const path = findOptimalPath(start, end);
                         pathCache.set(pathKey, path);
@@ -2363,7 +2469,6 @@
                     
                     const path = pathCache.get(pathKey);
                     
-                    // Check if path exists and has minimum 3 steps (4 countries)
                     if (path && path.length >= 4) {
                         console.log(`Found valid pair: ${start} -> ${end} (${path.length - 1} steps)`);
                         return [start, end];
@@ -2371,15 +2476,12 @@
                 }
             }
             
-            // If no pair found with 3+ steps, use a fallback
             return ['France', 'China'];
         }
 
-        // BFS pathfinding algorithm to find optimal route
         function findOptimalPath(start, end) {
             if (start === end) return [start];
             
-            // Check cache first
             const cacheKey = `${start}-${end}`;
             if (pathCache.has(cacheKey)) {
                 return pathCache.get(cacheKey);
@@ -2406,43 +2508,47 @@
                     }
                 }
                 
-                // Limit search to prevent infinite loops for disconnected components
                 if (visited.size > 150) break;
             }
             
             pathCache.set(cacheKey, null);
-            return null; // No path found
+            return null;
         }
 
         function initializeGame() {
             initMap();
             const [start, end] = getDailyChallengeFromData();
-            startCountry = start;
-            endCountry = end;
-            currentPath = [startCountry];
             
-            // Calculate optimal path and set attempts
-            optimalPath = findOptimalPath(startCountry, endCountry);
+            gameState.updateGameState('startCountry', start);
+            gameState.updateGameState('endCountry', end);
+            gameState.updateGameState('currentPath', [start]);
+            
+            const optimalPath = findOptimalPath(start, end);
+            gameState.updateGameState('optimalPath', optimalPath || []);
+            
             if (optimalPath) {
                 const optimalLength = optimalPath.length - 1;
-                maxAttempts = Math.max(optimalLength + 5, 10); // Ensure minimum 10 attempts
-                attempts = maxAttempts;
+                const maxAttempts = Math.max(optimalLength + 5, 10);
+                gameState.updateGameState('maxAttempts', maxAttempts);
+                gameState.updateGameState('attempts', maxAttempts);
                 document.getElementById('optimalLength').textContent = optimalLength;
             } else {
-                // Fallback if no path found
-                maxAttempts = 15;
-                attempts = 15;
+                gameState.updateGameState('maxAttempts', 15);
+                gameState.updateGameState('attempts', 15);
                 document.getElementById('optimalLength').textContent = '?';
             }
             
-            document.getElementById('startCountry').textContent = startCountry;
-            document.getElementById('endCountry').textContent = endCountry;
-            document.getElementById('startInPath').textContent = startCountry;
-            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('startCountry').textContent = start;
+            document.getElementById('endCountry').textContent = end;
+            document.getElementById('startInPath').textContent = start;
+            document.getElementById('attempts').textContent = gameState.getGameState('attempts');
             
             updateMapMarkers();
             updatePathVisual();
             setupEventListeners();
+            
+            // Apply difficulty setting
+            updateDifficulty(settingsManager.getSetting('difficulty'));
         }
 
         function initMap() {
@@ -2481,25 +2587,21 @@
         }
 
         function updateMapMarkers() {
-            // Clear existing markers
             pathMarkers.forEach(marker => map.removeLayer(marker));
             pathMarkers = [];
 
-            // Add start marker (green)
-            const startMarker = addMarkerToMap(startCountry, '#4ecdc4', 15);
+            const startMarker = addMarkerToMap(gameState.getGameState('startCountry'), '#4ecdc4', 15);
             if (startMarker) pathMarkers.push(startMarker);
 
-            // Add end marker (red)
-            const endMarker = addMarkerToMap(endCountry, '#ff6b6b', 15);
+            const endMarker = addMarkerToMap(gameState.getGameState('endCountry'), '#ff6b6b', 15);
             if (endMarker) pathMarkers.push(endMarker);
 
-            // Add path markers (blue)
+            const currentPath = gameState.getGameState('currentPath');
             currentPath.slice(1, -1).forEach(country => {
                 const marker = addMarkerToMap(country, '#45b7d1', 10);
                 if (marker) pathMarkers.push(marker);
             });
 
-            // Draw lines between path countries
             if (currentPath.length > 1) {
                 const pathCoords = currentPath.map(country => getCountryCoords(country)).filter(coords => coords);
                 if (pathCoords.length > 1) {
@@ -2513,10 +2615,28 @@
             const pathVisual = document.getElementById('pathVisual');
             pathVisual.innerHTML = '';
 
+            const currentPath = gameState.getGameState('currentPath');
+            const startCountry = gameState.getGameState('startCountry');
+            const endCountry = gameState.getGameState('endCountry');
+
             currentPath.forEach((country, index) => {
                 const countryDiv = document.createElement('div');
                 countryDiv.className = 'path-country';
-                countryDiv.textContent = country;
+                
+                // Apply display mode
+                const displayMode = settingsManager.getSetting('countryDisplay');
+                switch(displayMode) {
+                    case 'flag':
+                        countryDiv.textContent = `🇺🇳 ${country}`;
+                        break;
+                    case 'both':
+                        countryDiv.textContent = `🇺🇳 ${country}`;
+                        break;
+                    case 'name':
+                    default:
+                        countryDiv.textContent = country;
+                        break;
+                }
 
                 if (country === startCountry) {
                     countryDiv.style.background = 'linear-gradient(135deg, #4ecdc4, #45b7d1)';
@@ -2536,10 +2656,8 @@
                 }
             });
 
-            // Update stats
             document.getElementById('pathLength').textContent = Math.max(0, currentPath.length - 1);
             
-            // Check if we can finish the path
             const finishBtn = document.getElementById('finishPathBtn');
             const lastCountry = currentPath[currentPath.length - 1];
             const canFinish = lastCountry !== endCountry && getNeighbors(lastCountry).includes(endCountry);
@@ -2554,7 +2672,6 @@
             const resetBtn = document.getElementById('resetPathBtn');
             const newGameBtn = document.getElementById('newGameBtn');
 
-            // Country input with suggestions
             countryInput.addEventListener('input', function() {
                 const value = this.value.toLowerCase().trim();
                 suggestions.innerHTML = '';
@@ -2564,6 +2681,7 @@
                     return;
                 }
 
+                const currentPath = gameState.getGameState('currentPath');
                 const matches = countryNames.filter(country => 
                     country.toLowerCase().includes(value) && !currentPath.includes(country)
                 ).slice(0, 8);
@@ -2586,20 +2704,17 @@
                 }
             });
 
-            // Hide suggestions when clicking outside
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.search-container')) {
                     suggestions.style.display = 'none';
                 }
             });
 
-            // Add country to path
             addBtn.addEventListener('click', function() {
                 playClickSound();
                 addCountryToPath();
             });
 
-            // Enter key to add country
             countryInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     playClickSound();
@@ -2607,19 +2722,16 @@
                 }
             });
 
-            // Finish path
             finishBtn.addEventListener('click', function() {
                 playClickSound();
                 finishPath();
             });
 
-            // Reset path
             resetBtn.addEventListener('click', function() {
                 playClickSound();
                 resetPath();
             });
 
-            // New game
             newGameBtn.addEventListener('click', function() {
                 playClickSound();
                 newGame();
@@ -2635,25 +2747,23 @@
                 return;
             }
 
-            // Check if country exists
             if (!countryNames.includes(countryName)) {
                 alert('Country not found! Please check the spelling.');
                 return;
             }
 
-            // Check if country is already in path
+            const currentPath = gameState.getGameState('currentPath');
             if (currentPath.includes(countryName)) {
                 alert('This country is already in your path!');
                 return;
             }
 
-            // Check if country is the end country
+            const endCountry = gameState.getGameState('endCountry');
             if (countryName === endCountry) {
                 alert('Use "Complete Journey" button to finish your path to the destination!');
                 return;
             }
 
-            // Check if the country borders the last country in the path
             const lastCountry = currentPath[currentPath.length - 1];
             const neighbors = getNeighbors(lastCountry);
             
@@ -2662,9 +2772,11 @@
                 return;
             }
 
-            // Add country to path
             currentPath.push(countryName);
-            attempts--;
+            gameState.updateGameState('currentPath', currentPath);
+            
+            const attempts = gameState.getGameState('attempts') - 1;
+            gameState.updateGameState('attempts', attempts);
             document.getElementById('attempts').textContent = attempts;
             
             countryInput.value = '';
@@ -2673,18 +2785,20 @@
             updatePathVisual();
             updateMapMarkers();
 
-            // Check if we've run out of attempts
             if (attempts <= 0) {
                 endGame(false);
             }
         }
 
         function finishPath() {
+            const currentPath = gameState.getGameState('currentPath');
             const lastCountry = currentPath[currentPath.length - 1];
+            const endCountry = gameState.getGameState('endCountry');
             const neighbors = getNeighbors(lastCountry);
             
             if (neighbors.includes(endCountry)) {
                 currentPath.push(endCountry);
+                gameState.updateGameState('currentPath', currentPath);
                 updatePathVisual();
                 updateMapMarkers();
                 endGame(true);
@@ -2694,17 +2808,20 @@
         }
 
         function resetPath() {
-            currentPath = [startCountry];
-            attempts = maxAttempts;
-            document.getElementById('attempts').textContent = attempts;
+            const startCountry = gameState.getGameState('startCountry');
+            gameState.updateGameState('currentPath', [startCountry]);
+            gameState.updateGameState('attempts', gameState.getGameState('maxAttempts'));
+            
+            document.getElementById('attempts').textContent = gameState.getGameState('attempts');
             document.getElementById('countryInput').value = '';
             document.getElementById('suggestions').style.display = 'none';
+            
             updatePathVisual();
             updateMapMarkers();
         }
 
         function endGame(won) {
-            gameCompleted = true;
+            gameState.updateGameState('gameCompleted', true);
             const gameOverDiv = document.getElementById('gameOver');
             const titleElement = document.getElementById('gameOverTitle');
             const scoreElement = document.getElementById('scoreDisplay');
@@ -2712,16 +2829,18 @@
             if (won) {
                 titleElement.textContent = 'Path Complete!';
                 titleElement.className = 'win';
+                const currentPath = gameState.getGameState('currentPath');
+                const optimalPath = gameState.getGameState('optimalPath');
                 const pathLength = currentPath.length - 1;
                 const optimalLength = optimalPath ? optimalPath.length - 1 : '?';
                 const efficiency = optimalPath ? Math.round((optimalLength / pathLength) * 100) : 0;
-                scoreElement.innerHTML = `You connected <strong>${startCountry}</strong> to <strong>${endCountry}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Journey Efficiency: <strong>${efficiency}%</strong>`;
+                scoreElement.innerHTML = `You connected <strong>${gameState.getGameState('startCountry')}</strong> to <strong>${gameState.getGameState('endCountry')}</strong><br>in <strong>${pathLength}</strong> step${pathLength === 1 ? '' : 's'}!<br>Journey Efficiency: <strong>${efficiency}%</strong>`;
                 
-                // Play win sound and create particle effect
                 playWinSound();
-                createWinningEffect();
+                if (settingsManager.getSetting('particlesEnabled')) {
+                    createWinningEffect();
+                }
                 
-                // Update daily streak and wins for successful completion
                 updateStreak();
                 updateWins();
             } else {
@@ -2733,40 +2852,38 @@
             showOptimalPath();
             gameOverDiv.style.display = 'block';
             
-            // Disable input elements
             document.getElementById('countryInput').disabled = true;
             document.getElementById('addCountryBtn').disabled = true;
             document.getElementById('finishPathBtn').disabled = true;
         }
 
         function newGame() {
-            // Reset everything
-            gameCompleted = false;
-            currentPath = [];
+            gameState.updateGameState('gameCompleted', false);
+            gameState.updateGameState('currentPath', []);
             
-            // Get new challenge
             const [start, end] = getDailyChallengeFromData();
-            startCountry = start;
-            endCountry = end;
-            currentPath = [startCountry];
+            gameState.updateGameState('startCountry', start);
+            gameState.updateGameState('endCountry', end);
+            gameState.updateGameState('currentPath', [start]);
             
-            // Calculate new optimal path and attempts
-            optimalPath = findOptimalPath(startCountry, endCountry);
+            const optimalPath = findOptimalPath(start, end);
+            gameState.updateGameState('optimalPath', optimalPath || []);
+            
             if (optimalPath) {
                 const optimalLength = optimalPath.length - 1;
-                maxAttempts = Math.max(optimalLength + 5, 10);
-                attempts = maxAttempts;
+                const maxAttempts = Math.max(optimalLength + 5, 10);
+                gameState.updateGameState('maxAttempts', maxAttempts);
+                gameState.updateGameState('attempts', maxAttempts);
                 document.getElementById('optimalLength').textContent = optimalLength;
             } else {
-                maxAttempts = 15;
-                attempts = 15;
+                gameState.updateGameState('maxAttempts', 15);
+                gameState.updateGameState('attempts', 15);
                 document.getElementById('optimalLength').textContent = '?';
             }
             
-            // Update UI
-            document.getElementById('startCountry').textContent = startCountry;
-            document.getElementById('endCountry').textContent = endCountry;
-            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('startCountry').textContent = start;
+            document.getElementById('endCountry').textContent = end;
+            document.getElementById('attempts').textContent = gameState.getGameState('attempts');
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('countryInput').disabled = false;
             document.getElementById('addCountryBtn').disabled = false;
@@ -2777,9 +2894,9 @@
             updateMapMarkers();
         }
 
-        // Calculate and display optimal path after game ends
         function showOptimalPath() {
             const optimalDiv = document.getElementById('optimalPathInfo');
+            const optimalPath = gameState.getGameState('optimalPath');
             
             if (optimalPath && optimalPath.length > 0) {
                 const optimalLength = optimalPath.length - 1;
@@ -2787,7 +2904,7 @@
                     <h4>Optimal Journey (${optimalLength} step${optimalLength === 1 ? '' : 's'}):</h4>
                     <p><strong>${optimalPath.join(' → ')}</strong></p>
                     <p style="margin-top: 10px; font-size: 0.9em; color: #4ecdc4;">
-                        You had ${maxAttempts} attempts (optimal + 5 bonus moves)
+                        You had ${gameState.getGameState('maxAttempts')} attempts (optimal + 5 bonus moves)
                     </p>
                 `;
             } else {
@@ -2795,14 +2912,50 @@
             }
         }
 
-        // Legal functionality
+        function createWinningEffect() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = '-10px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.width = (Math.random() * 8 + 4) + 'px';
+                    particle.style.height = particle.style.width;
+                    
+                    document.body.appendChild(particle);
+                    
+                    const animation = particle.animate([
+                        { 
+                            transform: 'translateY(0px) rotate(0deg)',
+                            opacity: 1
+                        },
+                        { 
+                            transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`,
+                            opacity: 0
+                        }
+                    ], {
+                        duration: Math.random() * 3000 + 2000,
+                        easing: 'ease-out'
+                    });
+                    
+                    animation.onfinish = () => {
+                        particle.remove();
+                    };
+                }, i * 100);
+            }
+        }
+
+        // ============================
+        // LEGAL FUNCTIONALITY
+        // ============================
         document.addEventListener('DOMContentLoaded', function() {
-            // Terms & Cookies Consent Banner functionality
             const banner = document.getElementById('consent-banner');
             const termsModal = document.getElementById('terms-modal');
             const privacyModal = document.getElementById('privacy-modal');
 
-            // Show banner if not accepted
             if(localStorage.getItem('routeleConsentAccepted') !== 'true'){
                 setTimeout(() => { 
                     banner.classList.add('show'); 
@@ -2811,14 +2964,12 @@
                 banner.style.display = 'none'; 
             }
 
-            // Accept button
             document.getElementById('accept-btn').addEventListener('click', () => {
                 localStorage.setItem('routeleConsentAccepted', 'true');
                 banner.classList.remove('show');
                 setTimeout(() => { banner.style.display = 'none'; }, 500);
             });
 
-            // Open modals from banner
             document.getElementById('open-terms').addEventListener('click', () => {
                 termsModal.style.display = 'block';
             });
@@ -2826,19 +2977,15 @@
                 privacyModal.style.display = 'block';
             });
 
-            // Open modals from menu
             document.getElementById('menu-terms').addEventListener('click', () => {
                 termsModal.style.display = 'block';
-                // Close settings menu
                 document.getElementById('menuOverlay').classList.remove('active');
             });
             document.getElementById('menu-privacy').addEventListener('click', () => {
                 privacyModal.style.display = 'block';
-                // Close settings menu
                 document.getElementById('menuOverlay').classList.remove('active');
             });
 
-            // Close modals
             document.getElementById('close-terms').addEventListener('click', () => {
                 termsModal.style.display = 'none';
             });
@@ -2846,7 +2993,6 @@
                 privacyModal.style.display = 'none';
             });
 
-            // Close modals when clicking outside content
             window.addEventListener('click', (e) => {
                 if(e.target === termsModal) termsModal.style.display = 'none';
                 if(e.target === privacyModal) privacyModal.style.display = 'none';
