@@ -1618,6 +1618,15 @@
             .tutorial-btn {
                 width: 100%;
             }
+            
+            /* Loading screen mobile */
+            .loading-logo {
+                font-size: 3rem;
+            }
+            
+            .loading-text {
+                font-size: 1rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1691,6 +1700,11 @@
                 text-align: center;
                 gap: 10px;
                 padding: 15px;
+            }
+            
+            /* Loading screen small */
+            .loading-logo {
+                font-size: 2.5rem;
             }
         }
         
@@ -1808,7 +1822,7 @@
 <!-- Loading Screen -->
 <div id="loading-screen">
     <div class="loading-content">
-        <div class="loading-logo">🌍 Geodle</div>
+        <div class="loading-logo">Geodle</div>
         <div class="loading-text">Loading geography data...</div>
         <div class="loading-spinner"></div>
         <div class="loading-dots">
@@ -1972,6 +1986,7 @@
 <div id="menu-dropdown">
     <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
     <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
+    <button class="menu-item" id="menu-tutorial">🎓 Show Tutorial Again</button>
     
     <!-- Language Selector -->
     <div class="language-dropdown" id="language-dropdown">
@@ -2443,7 +2458,7 @@ const translations = {
         correct: "🎉 Correto! A resposta é",
         incorrect: "❌ {guess} não está correto. Aqui está a próxima pista...",
         gameOver: "😔 Fim de Jogo! A resposta era",
-        resetGameConfirm: "🔄 Jogo reiniciado! Novo país selecionado.",
+        resetGameConfirm: "🔄 Jogo reiniciado! Novo país seleccionado.",
         resetWinsConfirm: "Tem certeza de que deseja reiniciar seu contador de vitórias? Isso não pode ser desfeito.",
         resetWinsSuccess: "🏆 Contador de vitórias reiniciado para 0!",
         congratulations: "🎉 Parabéns!<br>Você adivinhou \"{answer}\" após {clues} pista{plural}!",
@@ -2746,13 +2761,11 @@ function changeLanguage(langCode) {
 
 // Tutorial Functions
 function showTutorial() {
-    const tutorialCompleted = localStorage.getItem('geodle_tutorial_completed');
-    if (tutorialCompleted !== 'true') {
-        // Show tutorial after a short delay
-        setTimeout(() => {
-            document.getElementById('tutorial-overlay').classList.add('show');
-        }, 800);
-    }
+    document.getElementById('tutorial-overlay').style.display = 'flex';
+    setTimeout(() => {
+        document.getElementById('tutorial-overlay').classList.add('show');
+        changeSlide(1); // Reset to first slide
+    }, 50);
 }
 
 function changeSlide(slideNumber) {
@@ -3106,8 +3119,13 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
     updateLanguage();
     
-    // Tutorial initialization
-    showTutorial();
+    // Show tutorial on first visit
+    const tutorialCompleted = localStorage.getItem('geodle_tutorial_completed');
+    if (tutorialCompleted !== 'true') {
+        setTimeout(() => {
+            showTutorial();
+        }, 800);
+    }
     
     // Tutorial event listeners
     document.getElementById('next-slide').addEventListener('click', function() {
@@ -3154,6 +3172,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('menu-button').addEventListener('click', function(e) {
         e.stopPropagation();
         toggleMenu();
+    });
+    
+    // Show tutorial again button
+    document.getElementById('menu-tutorial').addEventListener('click', function() {
+        closeMenu();
+        // Clear the tutorial completed flag to show it again
+        localStorage.removeItem('geodle_tutorial_completed');
+        showTutorial();
     });
     
     // Close menu when clicking outside
