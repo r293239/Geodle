@@ -49,21 +49,21 @@
   "author": {
     "@type": "Organization",
     "name": "Geodle"
-  },
+  }
 }
-     <!-- Favicon and App Icons -->
+</script>
+
+<!-- Favicon and App Icons -->
 <link rel="icon" href="assets/icon.png" type="image/png">
 <link rel="shortcut icon" href="assets/icon.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="apple-touch-icon-precomposed" href="assets/icon.png">
     
-</script>
     <meta name="google-site-verification" content="4v_aC03LTCSXTOwGjrpNzbHNAjnB5hESrAOo4pMtIQo" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geodle - Daily Geography Clue Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-    </script>   
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#3367D6"/>
@@ -801,6 +801,66 @@
             margin: 0;
         }
 
+        /* Country Suggestions Dropdown */
+        .country-suggestions {
+            position: absolute;
+            width: calc(100% - 2px);
+            background: white;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+            display: none;
+            margin-top: -1px;
+        }
+
+        .country-suggestions.show {
+            display: block;
+        }
+
+        .country-suggestion {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            color: #333;
+            font-size: 14px;
+        }
+
+        .country-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .country-suggestion:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .country-suggestion.highlighted {
+            background: rgba(102, 126, 234, 0.15);
+            font-weight: 500;
+        }
+
+        .country-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .country-suggestions::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+
+        .country-suggestions::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+
+        .country-suggestions::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
         /* Invisible Easter Egg Button */
         #invisible-btn {
             position: fixed;
@@ -943,6 +1003,7 @@
         }
         
         #guessForm {
+            position: relative;
             display: flex;
             gap: 2px;
             margin-bottom: 20px;
@@ -962,6 +1023,8 @@
             font-weight: 400;
             color: #333;
             font-family: inherit;
+            position: relative;
+            z-index: 101;
         }
         
         #guessInput:focus {
@@ -1627,6 +1690,18 @@
             .loading-text {
                 font-size: 1rem;
             }
+            
+            /* Country suggestions mobile */
+            .country-suggestions {
+                position: relative;
+                width: 100%;
+                margin-top: 5px;
+                border-radius: 14px;
+            }
+            
+            #guessInput:focus + .country-suggestions {
+                border-radius: 14px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -2056,6 +2131,7 @@
 <div id="clueBox" data-translate="loadingClue">Loading clue...</div>
 <form id="guessForm">
     <input type="text" id="guessInput" data-translate-placeholder="guessPlaceholder" placeholder="Type your guess here" autocomplete="off" />
+    <div id="countrySuggestions" class="country-suggestions"></div>
     <button id="guessButton" type="submit" data-translate="guess">Guess</button>
 </form>
 <div id="feedback"></div>
@@ -2237,6 +2313,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="data.js"></script>
 <script>
+// List of all countries for autocomplete
+const allCountries = [
+    "AFGHANISTAN", "ALBANIA", "ALGERIA", "ANDORRA", "ANGOLA", "ANTIGUA AND BARBUDA", 
+    "ARGENTINA", "ARMENIA", "AUSTRALIA", "AUSTRIA", "AZERBAIJAN", "BAHAMAS", 
+    "BAHRAIN", "BANGLADESH", "BARBADOS", "BELARUS", "BELGIUM", "BELIZE", "BENIN", 
+    "BHUTAN", "BOLIVIA", "BOSNIA AND HERZEGOVINA", "BOTSWANA", "BRAZIL", "BRUNEI", 
+    "BULGARIA", "BURKINA FASO", "BURUNDI", "CABO VERDE", "CAMBODIA", "CAMEROON", 
+    "CANADA", "CENTRAL AFRICAN REPUBLIC", "CHAD", "CHILE", "CHINA", "COLOMBIA", 
+    "COMOROS", "CONGO", "COSTA RICA", "CROATIA", "CUBA", "CYPRUS", "CZECH REPUBLIC", 
+    "DENMARK", "DJIBOUTI", "DOMINICA", "DOMINICAN REPUBLIC", "ECUADOR", "EGYPT", 
+    "EL SALVADOR", "EQUATORIAL GUINEA", "ERITREA", "ESTONIA", "ESWATINI", "ETHIOPIA", 
+    "FIJI", "FINLAND", "FRANCE", "GABON", "GAMBIA", "GEORGIA", "GERMANY", "GHANA", 
+    "GREECE", "GRENADA", "GUATEMALA", "GUINEA", "GUINEA-BISSAU", "GUYANA", "HAITI", 
+    "HONDURAS", "HUNGARY", "ICELAND", "INDIA", "INDONESIA", "IRAN", "IRAQ", 
+    "IRELAND", "ISRAEL", "ITALY", "JAMAICA", "JAPAN", "JORDAN", "KAZAKHSTAN", 
+    "KENYA", "KIRIBATI", "KOREA, NORTH", "KOREA, SOUTH", "KOSOVO", "KUWAIT", 
+    "KYRGYZSTAN", "LAOS", "LATVIA", "LEBANON", "LESOTHO", "LIBERIA", "LIBYA", 
+    "LIECHTENSTEIN", "LITHUANIA", "LUXEMBOURG", "MADAGASCAR", "MALAWI", "MALAYSIA", 
+    "MALDIVES", "MALI", "MALTA", "MARSHALL ISLANDS", "MAURITANIA", "MAURITIUS", 
+    "MEXICO", "MICRONESIA", "MOLDOVA", "MONACO", "MONGOLIA", "MONTENEGRO", 
+    "MOROCCO", "MOZAMBIQUE", "MYANMAR", "NAMIBIA", "NAURU", "NEPAL", 
+    "NETHERLANDS", "NEW ZEALAND", "NICARAGUA", "NIGER", "NIGERIA", "NORTH MACEDONIA", 
+    "NORWAY", "OMAN", "PAKISTAN", "PALAU", "PALESTINE", "PANAMA", "PAPUA NEW GUINEA", 
+    "PARAGUAY", "PERU", "PHILIPPINES", "POLAND", "PORTUGAL", "QATAR", "ROMANIA", 
+    "RUSSIA", "RWANDA", "SAINT KITTS AND NEVIS", "SAINT LUCIA", 
+    "SAINT VINCENT AND THE GRENADINES", "SAMOA", "SAN MARINO", "SAO TOME AND PRINCIPE", 
+    "SAUDI ARABIA", "SENEGAL", "SERBIA", "SEYCHELLES", "SIERRA LEONE", "SINGAPORE", 
+    "SLOVAKIA", "SLOVENIA", "SOLOMON ISLANDS", "SOMALIA", "SOUTH AFRICA", 
+    "SOUTH SUDAN", "SPAIN", "SRI LANKA", "SUDAN", "SURINAME", "SWEDEN", "SWITZERLAND", 
+    "SYRIA", "TAIWAN", "TAJIKISTAN", "TANZANIA", "THAILAND", "TIMOR-LESTE", "TOGO", 
+    "TONGA", "TRINIDAD AND TOBAGO", "TUNISIA", "TURKEY", "TURKMENISTAN", "TUVALU", 
+    "UGANDA", "UKRAINE", "UNITED ARAB EMIRATES", "UNITED KINGDOM", "UNITED STATES", 
+    "URUGUAY", "UZBEKISTAN", "VANUATU", "VATICAN CITY", "VENEZUELA", "VIETNAM", 
+    "YEMEN", "ZAMBIA", "ZIMBABWE"
+];
+
 // Language translations
 const translations = {
     en: {
@@ -2634,6 +2746,9 @@ let musicEnabled = true;
 let currentSlide = 1;
 const totalSlides = 4;
 
+// Country suggestions variables
+let highlightedSuggestionIndex = -1;
+
 // Translation function
 function translate(key, replacements = {}) {
     let text = translations[currentLanguage][key] || translations['en'][key] || key;
@@ -2759,6 +2874,81 @@ function changeLanguage(langCode) {
     }
 }
 
+// Country Suggestions Functions
+function showCountrySuggestions(input) {
+    const suggestionsContainer = document.getElementById('countrySuggestions');
+    const inputValue = input.value.toUpperCase().trim();
+    
+    if (!inputValue) {
+        suggestionsContainer.classList.remove('show');
+        return;
+    }
+    
+    // Filter countries based on input
+    const filteredCountries = allCountries.filter(country => 
+        country.includes(inputValue)
+    ).slice(0, 8); // Limit to 8 suggestions
+    
+    if (filteredCountries.length === 0) {
+        suggestionsContainer.classList.remove('show');
+        return;
+    }
+    
+    // Clear previous suggestions
+    suggestionsContainer.innerHTML = '';
+    
+    // Add new suggestions
+    filteredCountries.forEach((country, index) => {
+        const suggestion = document.createElement('div');
+        suggestion.className = 'country-suggestion';
+        suggestion.textContent = country;
+        suggestion.dataset.country = country;
+        
+        if (index === 0) {
+            suggestion.classList.add('highlighted');
+            highlightedSuggestionIndex = 0;
+        }
+        
+        suggestion.addEventListener('click', () => {
+            selectCountrySuggestion(country);
+        });
+        
+        suggestionsContainer.appendChild(suggestion);
+    });
+    
+    suggestionsContainer.classList.add('show');
+}
+
+function selectCountrySuggestion(country) {
+    document.getElementById('guessInput').value = country;
+    document.getElementById('countrySuggestions').classList.remove('show');
+    highlightedSuggestionIndex = -1;
+}
+
+function navigateSuggestions(direction) {
+    const suggestions = document.querySelectorAll('.country-suggestion');
+    if (suggestions.length === 0) return;
+    
+    // Remove highlight from current suggestion
+    if (highlightedSuggestionIndex >= 0) {
+        suggestions[highlightedSuggestionIndex].classList.remove('highlighted');
+    }
+    
+    // Calculate new index
+    if (direction === 'up') {
+        highlightedSuggestionIndex = highlightedSuggestionIndex <= 0 ? suggestions.length - 1 : highlightedSuggestionIndex - 1;
+    } else { // down
+        highlightedSuggestionIndex = highlightedSuggestionIndex >= suggestions.length - 1 ? 0 : highlightedSuggestionIndex + 1;
+    }
+    
+    // Add highlight to new suggestion
+    suggestions[highlightedSuggestionIndex].classList.add('highlighted');
+    suggestions[highlightedSuggestionIndex].scrollIntoView({ block: 'nearest' });
+    
+    // Update input with highlighted suggestion
+    document.getElementById('guessInput').value = suggestions[highlightedSuggestionIndex].dataset.country;
+}
+
 // Tutorial Functions
 function showTutorial() {
     document.getElementById('tutorial-overlay').style.display = 'flex';
@@ -2851,10 +3041,11 @@ function validateData() {
     return true;
 }
 
-// Initialize the game
-function initGame() {
-    // Show loading screen
-    showLoadingScreen();
+// Initialize the game WITHOUT loading screen
+function initGame(showLoading = false) {
+    if (showLoading) {
+        showLoadingScreen();
+    }
     
     // Simulate loading time for better UX
     setTimeout(() => {
@@ -2863,7 +3054,7 @@ function initGame() {
             document.getElementById('loadingError').style.display = 'block';
             document.getElementById('guessInput').disabled = true;
             document.getElementById('guessButton').disabled = true;
-            hideLoadingScreen();
+            if (showLoading) hideLoadingScreen();
             return;
         }
         
@@ -2896,23 +3087,23 @@ function initGame() {
         document.getElementById('historyList').innerHTML = '';
         document.getElementById('pastHintsList').innerHTML = '';
         document.getElementById('endScreen').style.display = 'none';
+        document.getElementById('countrySuggestions').classList.remove('show');
         
         // Focus on input
         document.getElementById('guessInput').focus();
         
         updateWinDisplay();
         
-        // Hide loading screen
-        hideLoadingScreen();
-    }, Math.random() * 800 + 400); // Random loading time between 400-1200ms for realism
+        if (showLoading) {
+            hideLoadingScreen();
+        }
+    }, showLoading ? Math.random() * 800 + 400 : 100); // Only random delay when showing loading screen
 }
 
 function resetGame() {
-    showLoadingScreen();
-    setTimeout(() => {
-        initGame();
-        showFeedback(translate('resetGameConfirm'), '#0078d7');
-    }, 600);
+    // Don't show loading screen, just reset immediately
+    initGame(false);
+    showFeedback(translate('resetGameConfirm'), '#0078d7');
 }
 
 function updateClueDisplay() {
@@ -3003,8 +3194,9 @@ function handleGuess(e) {
     // Update history display
     updateHistoryDisplay();
     
-    // Clear input
+    // Clear input and hide suggestions
     document.getElementById('guessInput').value = '';
+    document.getElementById('countrySuggestions').classList.remove('show');
 }
 
 function showFeedback(message, color) {
@@ -3187,6 +3379,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const menu = document.getElementById('menu-button');
         const dropdown = document.getElementById('menu-dropdown');
         const langDropdown = document.getElementById('language-dropdown');
+        const suggestions = document.getElementById('countrySuggestions');
+        const guessInput = document.getElementById('guessInput');
         
         if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
             closeMenu();
@@ -3194,6 +3388,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!langDropdown.contains(e.target)) {
             closeLanguageDropdown();
+        }
+        
+        // Close suggestions when clicking outside
+        if (!suggestions.contains(e.target) && !guessInput.contains(e.target)) {
+            suggestions.classList.remove('show');
         }
     });
     
@@ -3231,6 +3430,38 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
     });
     
+    // Country suggestions
+    const guessInput = document.getElementById('guessInput');
+    
+    guessInput.addEventListener('input', function() {
+        showCountrySuggestions(this);
+    });
+    
+    guessInput.addEventListener('keydown', function(e) {
+        const suggestions = document.querySelectorAll('.country-suggestion');
+        
+        if (suggestions.length > 0) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                navigateSuggestions('down');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                navigateSuggestions('up');
+            } else if (e.key === 'Enter' && highlightedSuggestionIndex >= 0) {
+                e.preventDefault();
+                selectCountrySuggestion(suggestions[highlightedSuggestionIndex].dataset.country);
+            } else if (e.key === 'Escape') {
+                document.getElementById('countrySuggestions').classList.remove('show');
+            }
+        }
+    });
+    
+    guessInput.addEventListener('focus', function() {
+        if (this.value) {
+            showCountrySuggestions(this);
+        }
+    });
+    
     // Update mode descriptions on hover
     const pathBtn = document.getElementById('pathModeBtn');
     const countryBtn = document.getElementById('countryModeBtn');
@@ -3264,7 +3495,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('geodle_tutorial_completed') === 'true') {
         // Add a small delay to ensure data.js is fully loaded
         setTimeout(() => {
-            initGame();
+            initGame(true);
         }, 100);
     }
     
@@ -3281,10 +3512,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById('shareBtn').addEventListener('click', shareScore);
     document.getElementById('newGameBtn').addEventListener('click', function() {
-        showLoadingScreen();
-        setTimeout(() => {
-            initGame();
-        }, 600);
+        // Don't show loading screen for new game
+        initGame(false);
     });
     
     // Show initial loading screen
