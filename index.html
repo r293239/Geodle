@@ -801,10 +801,12 @@
             margin: 0;
         }
 
-        /* Country Suggestions Dropdown */
+        /* Country Suggestions Dropdown - FIXED */
         .country-suggestions {
             position: absolute;
-            width: calc(100% - 2px);
+            top: 100%;
+            left: 0;
+            right: 0;
             background: white;
             border: 1px solid rgba(102, 126, 234, 0.3);
             border-top: none;
@@ -812,9 +814,8 @@
             max-height: 200px;
             overflow-y: auto;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            z-index: 100;
+            z-index: 1000;
             display: none;
-            margin-top: -1px;
         }
 
         .country-suggestions.show {
@@ -1024,7 +1025,7 @@
             color: #333;
             font-family: inherit;
             position: relative;
-            z-index: 101;
+            z-index: 1001;
         }
         
         #guessInput:focus {
@@ -1619,20 +1620,22 @@
             }
             
             #guessForm {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 10px;
             }
             
             #guessInput, #guessButton {
-                border-radius: 14px;
+                border-radius: 16px 0 0 16px;
             }
             
             #guessInput {
                 padding: 16px 18px;
+                border-radius: 16px 0 0 16px !important;
             }
             
             #guessButton {
                 padding: 16px 20px;
+                border-radius: 0 16px 16px 0 !important;
             }
             
             #pastHints, #history {
@@ -1693,14 +1696,11 @@
             
             /* Country suggestions mobile */
             .country-suggestions {
-                position: relative;
+                position: absolute;
+                top: 100%;
                 width: 100%;
-                margin-top: 5px;
-                border-radius: 14px;
-            }
-            
-            #guessInput:focus + .country-suggestions {
-                border-radius: 14px;
+                z-index: 1000;
+                border-radius: 0 0 14px 14px;
             }
         }
         
@@ -1780,6 +1780,14 @@
             /* Loading screen small */
             .loading-logo {
                 font-size: 2.5rem;
+            }
+            
+            /* Country suggestions small screens */
+            .country-suggestions {
+                position: absolute;
+                top: 100%;
+                width: 100%;
+                z-index: 1000;
             }
         }
         
@@ -2131,8 +2139,8 @@
 <div id="clueBox" data-translate="loadingClue">Loading clue...</div>
 <form id="guessForm">
     <input type="text" id="guessInput" data-translate-placeholder="guessPlaceholder" placeholder="Type your guess here" autocomplete="off" />
-    <div id="countrySuggestions" class="country-suggestions"></div>
     <button id="guessButton" type="submit" data-translate="guess">Guess</button>
+    <div id="countrySuggestions" class="country-suggestions"></div>
 </form>
 <div id="feedback"></div>
 <div id="streak">🏆 <span data-translate="totalWins">Total Wins</span>: 0</div>
@@ -2447,7 +2455,7 @@ const translations = {
         pastHints: "Indices Précédents",
         guessHistory: "Historique des Réponses",
         shareScore: "Partager mon Score",
-        newGame: "Nouveau Jeu",
+        newGame: "Nouveau Juego",
         dailyLimit: "Vous avez déjà joué aujourd'hui ! Revenez demain 👀",
         dataLoadingError: "Erreur de Chargement des Données",
         dataLoadingErrorDesc: "Impossible de charger le fichier de données géographiques (data.js). Assurez-vous que le fichier existe et est correctement formaté.",
@@ -2460,7 +2468,7 @@ const translations = {
         resetWinsConfirm: "Êtes-vous sûr de vouloir réinitialiser votre compteur de victoires ? Cela ne peut pas être annulé.",
         resetWinsSuccess: "🏆 Compteur de victoires réinitialisé à 0 !",
         congratulations: "🎉 Félicitations !<br>Vous avez deviné \"{answer}\" après {clues} indice{plural} !",
-        betterLuck: "😔 Bonne chance la prochaine fois !<br>La réponse était \"{answer}\"",
+        betterLuck: "😔 Bonne luck la prochaine fois !<br>La réponse était \"{answer}\"",
         scoreCopied: "Score copié dans le presse-papiers !",
         scoreWon: "🌍 Geodle - J'ai deviné \"{answer}\" en {clues}/10 indices ! Victoires Totales : {wins}",
         scoreLost: "🌍 Geodle - Je n'ai pas pu deviner \"{answer}\" en 10 indices. Pouvez-vous ?"
@@ -3381,6 +3389,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const langDropdown = document.getElementById('language-dropdown');
         const suggestions = document.getElementById('countrySuggestions');
         const guessInput = document.getElementById('guessInput');
+        const guessForm = document.getElementById('guessForm');
         
         if (!menu.contains(e.target) && !dropdown.contains(e.target)) {
             closeMenu();
@@ -3391,7 +3400,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Close suggestions when clicking outside
-        if (!suggestions.contains(e.target) && !guessInput.contains(e.target)) {
+        if (!guessForm.contains(e.target)) {
             suggestions.classList.remove('show');
         }
     });
