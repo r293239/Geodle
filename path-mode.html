@@ -271,6 +271,276 @@
             }
         }
 
+        /* Tutorial Overlay Styles */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(15px);
+            z-index: 10002;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tutorial-card {
+            background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(16, 16, 30, 0.95));
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.5s ease-out;
+            position: relative;
+        }
+
+        .tutorial-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tutorial-title {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        .tutorial-step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4ecdc4;
+            transition: transform 0.3s ease;
+        }
+
+        .tutorial-step:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-left: 47px;
+        }
+
+        .tutorial-highlight {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(69, 183, 209, 0.2));
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #4ecdc4;
+        }
+
+        .tutorial-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tutorial-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #4ecdc4;
+            transform: scale(1.2);
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .tutorial-btn {
+            padding: 14px 32px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            letter-spacing: 0.5px;
+        }
+
+        .tutorial-btn.skip {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tutorial-btn.skip:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tutorial-btn.next {
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            color: white;
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+        }
+
+        .tutorial-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(78, 205, 196, 0.6);
+        }
+
+        .tutorial-btn.finish {
+            background: linear-gradient(135deg, #96ceb4, #4ecdc4);
+            color: white;
+            box-shadow: 0 8px 25px rgba(150, 206, 180, 0.4);
+        }
+
+        .tutorial-btn.finish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(150, 206, 180, 0.6);
+        }
+
+        .tutorial-tip {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .tip-icon {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .demo-element {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(138, 43, 226, 0.2);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            margin: 5px 0;
+        }
+
+        .close-tutorial {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10003;
+        }
+
+        .close-tutorial:hover {
+            background: rgba(255, 107, 107, 0.3);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .tutorial-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+        }
+
+        .visual-item {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+            color: white;
+            border-radius: 15px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .visual-arrow {
+            font-size: 2rem;
+            color: #ffd700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -445,11 +715,6 @@
             animation: slideUp 0.3s ease;
             max-height: 90vh;
             overflow-y: auto;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .menu-title {
@@ -705,11 +970,6 @@
             color: #ffd700;
             text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
             animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
         }
 
         .right-section {
@@ -1274,7 +1534,6 @@
             transform: translateX(5px);
         }
 
-        
         /* Media queries at the end */
         @media (max-width: 1024px) {
             .game-layout {
@@ -1344,6 +1603,38 @@
             .loading-progress {
                 width: 250px;
             }
+            
+            /* Tutorial responsive */
+            .tutorial-card {
+                padding: 25px;
+                width: 95%;
+            }
+            
+            .tutorial-title {
+                font-size: 2rem;
+            }
+            
+            .tutorial-step {
+                padding: 20px;
+            }
+            
+            .tutorial-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .tutorial-btn {
+                padding: 12px 24px;
+                width: 100%;
+            }
+            
+            .tutorial-visual {
+                flex-direction: column;
+            }
+            
+            .visual-arrow {
+                transform: rotate(90deg);
+            }
         }
     </style>
 </head>
@@ -1358,6 +1649,85 @@
                 <div class="loading-progress-bar" id="loadingProgress"></div>
             </div>
             <div class="loading-tip" id="loadingTip">Loading game assets...</div>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-card">
+            <button class="close-tutorial" id="closeTutorialBtn">&times;</button>
+            
+            <div class="tutorial-header">
+                <h1 class="tutorial-title">Welcome to Routele</h1>
+                <p class="tutorial-subtitle">Your Journey to Geographical Mastery Begins Here</p>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">1</div>
+                <div class="step-title">Objective & Gameplay</div>
+                <div class="step-description">
+                    Connect <span class="tutorial-highlight">two countries</span> by building the shortest path through neighboring countries. Each move must be to a country that shares a <span class="tutorial-highlight">land border</span> with your current position.
+                </div>
+            </div>
+
+            <div class="tutorial-visual">
+                <div class="visual-item">France</div>
+                <div class="visual-arrow">→</div>
+                <div class="visual-item">Germany</div>
+                <div class="visual-arrow">→</div>
+                <div class="visual-item">Poland</div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">2</div>
+                <div class="step-title">Daily Challenge</div>
+                <div class="step-description">
+                    Each day features a <span class="tutorial-highlight">unique starting and ending country</span>. Your goal is to find the most efficient route. The <span class="demo-element">⚡ Optimal Path</span> shows the shortest possible connection.
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">3</div>
+                <div class="step-title">Key Features</div>
+                <div class="step-description">
+                    • <span class="tutorial-highlight">Interactive Map:</span> Visualize your path in real-time<br>
+                    • <span class="tutorial-highlight">Smart Search:</span> Type country names with auto-complete<br>
+                    • <span class="tutorial-highlight">Daily Streak:</span> Build your winning streak<br>
+                    • <span class="tutorial-highlight">Multiple Attempts:</span> Try different strategies
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <div class="step-number">4</div>
+                <div class="step-title">Strategy Tips</div>
+                <div class="step-description">
+                    • Start by identifying countries with <span class="tutorial-highlight">many borders</span> for flexibility<br>
+                    • Use the map to <span class="tutorial-highlight">visualize connections</span><br>
+                    • Plan 2-3 moves ahead before committing<br>
+                    • Consider <span class="tutorial-highlight">central countries</span> as strategic hubs
+                </div>
+            </div>
+
+            <div class="tutorial-tip">
+                <span class="tip-icon">💡</span>
+                <strong>Pro Tip:</strong> Countries like France, Germany, and China have extensive border networks, making them excellent stepping stones!
+            </div>
+
+            <div class="tutorial-footer">
+                <div class="tutorial-progress">
+                    <span>Quick Start Guide</span>
+                    <div class="progress-dots">
+                        <div class="progress-dot active"></div>
+                        <div class="progress-dot"></div>
+                        <div class="progress-dot"></div>
+                        <div class="progress-dot"></div>
+                    </div>
+                </div>
+                <div class="tutorial-buttons">
+                    <button class="tutorial-btn skip" id="skipTutorialBtn">Skip Tutorial</button>
+                    <button class="tutorial-btn next" id="nextTutorialBtn">Let's Begin</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1764,6 +2134,166 @@
 
     <script>
         // ============================
+        // TUTORIAL MANAGER
+        // ============================
+        class TutorialManager {
+            constructor() {
+                this.currentStep = 0;
+                this.totalSteps = 4;
+                this.tutorialSeen = localStorage.getItem('routeleTutorialSeen') === 'true';
+            }
+            
+            init() {
+                const tutorialOverlay = document.getElementById('tutorialOverlay');
+                const closeTutorialBtn = document.getElementById('closeTutorialBtn');
+                const skipTutorialBtn = document.getElementById('skipTutorialBtn');
+                const nextTutorialBtn = document.getElementById('nextTutorialBtn');
+                
+                // Show tutorial only if user hasn't seen it before
+                if (!this.tutorialSeen) {
+                    setTimeout(() => {
+                        tutorialOverlay.style.display = 'flex';
+                        this.updateProgress();
+                    }, 500);
+                }
+                
+                // Close tutorial
+                closeTutorialBtn.addEventListener('click', () => {
+                    this.completeTutorial();
+                });
+                
+                // Skip tutorial
+                skipTutorialBtn.addEventListener('click', () => {
+                    this.completeTutorial();
+                });
+                
+                // Next step
+                nextTutorialBtn.addEventListener('click', () => {
+                    this.currentStep++;
+                    if (this.currentStep >= this.totalSteps) {
+                        this.completeTutorial();
+                    } else {
+                        this.updateStep();
+                        this.updateProgress();
+                    }
+                });
+            }
+            
+            updateStep() {
+                // Update tutorial content based on current step
+                const stepElements = document.querySelectorAll('.tutorial-step');
+                const visualElement = document.querySelector('.tutorial-visual');
+                const tipElement = document.querySelector('.tutorial-tip');
+                
+                // Hide all steps
+                stepElements.forEach(step => step.style.display = 'none');
+                
+                // Show current step
+                if (stepElements[this.currentStep]) {
+                    stepElements[this.currentStep].style.display = 'block';
+                }
+                
+                // Update visual and tip based on step
+                switch(this.currentStep) {
+                    case 0:
+                        visualElement.innerHTML = `
+                            <div class="visual-item">France</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item">Germany</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item">Poland</div>
+                        `;
+                        tipElement.innerHTML = `
+                            <span class="tip-icon">💡</span>
+                            <strong>Pro Tip:</strong> Countries like France, Germany, and China have extensive border networks!
+                        `;
+                        break;
+                        
+                    case 1:
+                        visualElement.innerHTML = `
+                            <div class="visual-item" style="background: linear-gradient(135deg, #4ecdc4, #45b7d1);">Start</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item">?</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">End</div>
+                        `;
+                        tipElement.innerHTML = `
+                            <span class="tip-icon">🎯</span>
+                            <strong>Daily Challenge:</strong> Each day brings a new geographical puzzle to solve!
+                        `;
+                        break;
+                        
+                    case 2:
+                        visualElement.innerHTML = `
+                            <div class="demo-element">🗺️ Interactive Map</div>
+                            <div class="demo-element">🔍 Smart Search</div>
+                            <div class="demo-element">🔥 Daily Streak</div>
+                        `;
+                        tipElement.innerHTML = `
+                            <span class="tip-icon">⚙️</span>
+                            <strong>Customization:</strong> Adjust game settings in the ⚙️ menu for your preferred experience!
+                        `;
+                        break;
+                        
+                    case 3:
+                        visualElement.innerHTML = `
+                            <div class="visual-item">Plan</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item">Execute</div>
+                            <div class="visual-arrow">→</div>
+                            <div class="visual-item">Optimize</div>
+                        `;
+                        tipElement.innerHTML = `
+                            <span class="tip-icon">🏆</span>
+                            <strong>Efficiency:</strong> The shortest path wins! Try to beat the optimal route.
+                        `;
+                        break;
+                }
+                
+                // Update next button text on last step
+                const nextBtn = document.getElementById('nextTutorialBtn');
+                if (this.currentStep === this.totalSteps - 1) {
+                    nextBtn.textContent = 'Start Playing';
+                    nextBtn.className = 'tutorial-btn finish';
+                } else {
+                    nextBtn.textContent = 'Next';
+                    nextBtn.className = 'tutorial-btn next';
+                }
+            }
+            
+            updateProgress() {
+                const dots = document.querySelectorAll('.progress-dot');
+                dots.forEach((dot, index) => {
+                    if (index === this.currentStep) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+                
+                // Show current step
+                this.updateStep();
+            }
+            
+            completeTutorial() {
+                const tutorialOverlay = document.getElementById('tutorialOverlay');
+                tutorialOverlay.style.display = 'none';
+                
+                // Mark tutorial as seen
+                this.tutorialSeen = true;
+                localStorage.setItem('routeleTutorialSeen', 'true');
+                
+                // Play click sound
+                playClickSound();
+                
+                // Show welcome notification
+                setTimeout(() => {
+                    showNotification('🎉 Welcome to Routele! Start your geographical journey!');
+                }, 300);
+            }
+        }
+
+        // ============================
         // SETTINGS MANAGER
         // ============================
         class SettingsManager {
@@ -1986,6 +2516,11 @@
                 
                 if (typeof countries !== 'undefined') {
                     countryNames = countries.map(country => country.name);
+                    
+                    // Initialize tutorial
+                    const tutorialManager = new TutorialManager();
+                    tutorialManager.init();
+                    
                     initializeGame();
                     
                     const elapsed = Date.now() - startTime;
