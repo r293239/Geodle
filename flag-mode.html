@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- SEO Meta Tags -->
-    <title>Flagle</title>
+    <title>Flagle 🌍 | Guess Countries by Flag</title>
     <meta name="description" content="Test your geography knowledge with Flagle! Guess countries from progressively revealed flag clues. Multiple difficulty levels and game modes available.">
     <meta name="keywords" content="Flagle, geography game, flag quiz, country guessing, flagle unlimited, flagdle, educational games, flags">
     <meta name="author" content="Flagle Game">
@@ -24,6 +24,8 @@
     <link rel="shortcut icon" href="/assets/flag.png" type="image/png">
     <link rel="apple-touch-icon" href="/assets/flag.png">
     <link rel="apple-touch-icon-precomposed" href="/assets/flag.png">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -31,115 +33,433 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            color: #333;
-            padding: 20px 0;
-            overflow-y: auto;
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-bg: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* Loading Screen Styles */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .gradient-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .circle-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary-gradient);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary-gradient);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .circle-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-gradient);
+            top: 50%;
+            left: 80%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(-30px, 80px) scale(0.9); }
+            75% { transform: translate(-50px, -30px) scale(1.05); }
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: particle-float 20s infinite linear;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Loading Screen */
         .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: var(--dark-bg);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
         }
 
         .loading-screen.hidden {
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
+        .loader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+        }
+
+        .spinner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid #4facfe;
             border-radius: 50%;
-            border-top-color: #4ecdc4;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .spinner:nth-child(2) {
+            border-top: 3px solid #f5576c;
+            animation-delay: -0.5s;
+        }
+
+        .spinner:nth-child(3) {
+            border-top: 3px solid #43e97b;
+            animation-delay: -1s;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .loading-text {
-            color: white;
-            font-size: 1.2rem;
-            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #4facfe, #f5576c, #43e97b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: text-glow 2s ease-in-out infinite alternate;
         }
 
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
+        @keyframes text-glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
         }
 
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        /* Tutorial Modal Styles */
+        /* Tutorial Modal */
         .tutorial-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            animation: fadeIn 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .tutorial-modal.hidden {
-            display: none;
+        .tutorial-modal.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .tutorial-content {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 2px solid #4ecdc4;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
             position: relative;
-            animation: slideUp 0.4s ease;
+            transform: translateY(50px) scale(0.9);
+            opacity: 0;
+            animation: modal-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
         }
 
-        @keyframes slideUp {
+        @keyframes modal-enter {
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .tutorial-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tutorial-header h2 {
+            font-size: 2.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .tutorial-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .tutorial-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tutorial-step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tutorial-step:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tutorial-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-content h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .tutorial-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 25px;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tutorial-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .tutorial-checkbox input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4facfe;
+        }
+
+        .tutorial-btn {
+            padding: 14px 35px;
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+            letter-spacing: 0.5px;
+        }
+
+        .tutorial-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(67, 233, 123, 0.4);
+        }
+
+        .tutorial-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tutorial-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .tutorial-help-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        .tutorial-help-btn.hidden {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Game Container */
+        .game-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 550px;
+            width: 90%;
+            margin: 30px auto;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            animation: container-enter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes container-enter {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -150,310 +470,230 @@
             }
         }
 
-        .tutorial-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 15px;
-        }
-
-        .tutorial-header h2 {
-            background: linear-gradient(45deg, #667eea, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .tutorial-step {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s ease;
-        }
-
-        .tutorial-step:hover {
-            transform: translateX(5px);
-            background: #edf2f7;
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-
-        .step-content h4 {
-            color: #2d3748;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-
-        .step-content p {
-            color: #4a5568;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .tutorial-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px solid #e9ecef;
-        }
-
-        .tutorial-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #4a5568;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .tutorial-checkbox input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .tutorial-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .tutorial-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .tutorial-btn:active {
-            transform: translateY(0);
-        }
-
-        .tutorial-close {
+        .game-container::before {
+            content: '';
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #a0aec0;
-            cursor: pointer;
-            transition: color 0.2s ease;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
         }
 
-        .tutorial-close:hover {
-            color: #e53e3e;
-        }
-
-        .tutorial-help-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tutorial-help-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Game Mode Dropdown Styles */
+        /* Game Mode Dropdown */
         .game-mode-dropdown {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             z-index: 1000;
         }
 
         .dropdown-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
         }
 
         .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .dropdown-content {
-            display: none;
             position: absolute;
             top: 100%;
             right: 0;
-            background: white;
-            min-width: 200px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
-            margin-top: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .dropdown-content.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
         }
 
         .dropdown-item {
             display: block;
-            padding: 12px 15px;
+            padding: 15px 20px;
+            color: var(--text-primary);
             text-decoration: none;
-            color: #333;
             text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
 
         .dropdown-item:hover {
-            background: #f5f5f5;
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 25px;
         }
 
         .dropdown-item.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: var(--primary-gradient);
+            padding-left: 25px;
         }
 
-        .dropdown-item i {
-            margin-right: 8px;
-            width: 20px;
-            text-align: center;
+        .dropdown-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+            z-index: -1;
         }
 
-        .game-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 1;
-            margin: 20px auto;
+        .dropdown-item:hover::before {
+            width: 100%;
         }
 
+        /* Game Header */
         h1 {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #4facfe, #f5576c, #43e97b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 20px;
-            font-size: 2.8rem;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: -1px;
+            text-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+            animation: title-glow 3s ease-in-out infinite alternate;
         }
 
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #2c3e50;
+        @keyframes title-glow {
+            from { filter: drop-shadow(0 5px 15px rgba(79, 172, 254, 0.5)); }
+            to { filter: drop-shadow(0 10px 30px rgba(245, 87, 108, 0.5)); }
         }
 
+        /* Stats */
         .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 15px;
-            color: white;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-number {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: block;
+            margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.9;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
+        /* Game Info */
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-info span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .game-info span span {
+            color: #4facfe;
+            font-weight: 700;
+        }
+
+        /* Flag Container */
         .flag-container {
-            width: 300px;
-            height: 200px;
-            margin: 20px auto;
-            border: 3px solid #4a5568;
-            border-radius: 10px;
+            width: 100%;
+            height: 250px;
+            margin: 25px 0;
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
-            background: #f7fafc;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-md);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .flag-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .flag-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: all 0.5s ease;
         }
 
+        /* Flag Clue Effects */
         .flag-extreme-blur {
-            image-rendering: pixelated;
             filter: blur(15px) contrast(0.1) brightness(0.5) saturate(0.3);
             transform: scale(0.3) rotate(45deg);
+            animation: rotate 20s linear infinite;
         }
 
         .flag-heavy-pixelated {
-            image-rendering: pixelated;
             filter: blur(12px) contrast(0.2) brightness(0.7) saturate(0.4);
             transform: scale(0.4) rotate(180deg);
         }
@@ -461,6 +701,7 @@
         .flag-inverted-blur {
             filter: invert(1) blur(10px) contrast(0.3) brightness(0.8);
             transform: scale(0.5) rotate(90deg);
+            animation: rotate 15s linear infinite reverse;
         }
 
         .flag-grayscale-heavy {
@@ -477,323 +718,432 @@
             filter: blur(2px) brightness(0.95);
         }
 
+        @keyframes rotate {
+            from { transform: scale(0.3) rotate(0deg); }
+            to { transform: scale(0.3) rotate(360deg); }
+        }
+
+        /* Clue Info */
         .clue-info {
-            margin: 15px 0;
-            padding: 15px;
-            background: linear-gradient(135deg, #edf2f7, #e2e8f0);
-            border-radius: 10px;
-            font-weight: bold;
-            min-height: 60px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #4facfe;
+            font-weight: 600;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 4px solid #667eea;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .clue-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Input Section */
         .input-section {
-            margin: 20px 0;
+            margin: 25px 0;
+            position: relative;
         }
 
         .input-container {
             position: relative;
-            display: inline-block;
-            width: 70%;
+            width: 100%;
         }
 
         .guess-input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
             font-size: 1.1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
         .guess-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            border-color: #4facfe;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .guess-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .submit-btn {
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 14px 25px;
+            background: var(--success-gradient);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-left: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 10px 30px rgba(67, 233, 123, 0.4);
         }
 
         .submit-btn:disabled {
-            background: #a0aec0;
+            background: rgba(255, 255, 255, 0.1);
             cursor: not-allowed;
-            transform: none;
+            transform: translateY(-50%);
+            box-shadow: none;
         }
 
+        /* Suggestions */
         .suggestions {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            max-height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
+            margin-top: 5px;
         }
 
         .suggestion {
-            padding: 10px;
+            padding: 12px 20px;
             cursor: pointer;
-            border-bottom: 1px solid #edf2f7;
-            text-align: left;
-            transition: background 0.2s ease;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
 
         .suggestion:hover {
-            background: #edf2f7;
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 25px;
         }
 
+        .suggestion:last-child {
+            border-bottom: none;
+        }
+
+        /* Guesses */
         .guesses-container {
-            margin: 20px 0;
-            text-align: left;
-            max-height: 200px;
+            margin: 25px 0;
+            max-height: 250px;
             overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .guesses-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .guesses-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .guesses-container::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
         }
 
         .guess-item {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: slideIn 0.3s ease;
+            animation: guessSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes guessSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .guess-correct {
-            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-            color: #22543d;
-            border-left: 4px solid #48bb78;
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.2), rgba(56, 249, 215, 0.1));
+            border-left: 4px solid #43e97b;
+            animation: correctPulse 1.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .guess-wrong {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            color: #742a2a;
-            border-left: 4px solid #f56565;
+            background: linear-gradient(135deg, rgba(250, 112, 154, 0.2), rgba(254, 225, 64, 0.1));
+            border-left: 4px solid #fa709a;
         }
 
+        /* Game Over */
         .game-over {
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            animation: pulse 0.5s ease;
+            margin: 25px 0;
+            padding: 30px;
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            animation: gameOverReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes gameOverReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .win {
-            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-            color: #22543d;
-            border: 2px solid #48bb78;
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.2), rgba(56, 249, 215, 0.1));
+            border: 2px solid #43e97b;
+            animation: winCelebrate 2s ease;
+        }
+
+        @keyframes winCelebrate {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.05); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
 
         .lose {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            color: #742a2a;
-            border: 2px solid #f56565;
+            background: linear-gradient(135deg, rgba(250, 112, 154, 0.2), rgba(254, 225, 64, 0.1));
+            border: 2px solid #fa709a;
         }
 
+        /* Controls */
         .controls {
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .control-btn {
-            margin: 5px;
-            padding: 12px 20px;
+            padding: 15px 25px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 600;
             font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .control-btn:hover::before {
+            transform: translateX(100%);
         }
 
         .new-game-btn {
-            background: linear-gradient(135deg, #48bb78, #38a169);
+            background: var(--primary-gradient);
             color: white;
         }
 
         .music-btn {
-            background: linear-gradient(135deg, #ed8936, #dd6b20);
-            color: white;
-        }
-
-        .nav-btn {
-            background: linear-gradient(135deg, #4299e1, #3182ce);
-            color: white;
-        }
-
-        .back-btn {
-            background: linear-gradient(135deg, #9f7aea, #805ad5);
+            background: var(--secondary-gradient);
             color: white;
         }
 
         .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-lg);
         }
 
-        .control-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
+        .control-btn:active {
+            transform: translateY(0) scale(1);
         }
 
-        .navigation-section {
-            margin: 20px 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f7fafc, #edf2f7);
-            border-radius: 15px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .navigation-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 15px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px 0;
-            }
-            
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .game-container {
-                margin: 10px;
-                padding: 20px;
+                padding: 25px;
+                margin: 20px auto;
             }
-            
-            .game-mode-dropdown {
-                top: 10px;
-                right: 10px;
-            }
-            
-            .dropdown-btn {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-            }
-            
-            .dropdown-content {
-                min-width: 180px;
-            }
-            
-            .input-container {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            
-            .submit-btn {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .flag-container {
-                width: 250px;
-                height: 167px;
+
+            h1 {
+                font-size: 2.5rem;
             }
 
             .stats {
-                flex-direction: column;
+                grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
             }
-            
-            h1 {
-                font-size: 2.2rem;
+
+            .stat {
+                padding: 15px;
             }
 
-            .nav-buttons {
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .flag-container {
+                height: 200px;
+            }
+
+            .tutorial-content {
+                padding: 25px;
+            }
+
+            .tutorial-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
                 flex-direction: column;
             }
 
             .control-btn {
                 width: 100%;
-                margin: 2px 0;
+                justify-content: center;
+            }
+
+            .dropdown-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
             }
 
             .tutorial-help-btn {
-                bottom: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
             }
 
-            .tutorial-content {
-                padding: 20px;
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
             }
 
-            .tutorial-header h2 {
-                font-size: 1.5rem;
+            .flag-container {
+                height: 180px;
             }
 
-            .tutorial-step {
-                padding: 12px;
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
             }
 
-            .tutorial-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+            .submit-btn {
+                position: relative;
+                width: 100%;
+                margin-top: 10px;
+                right: 0;
+                top: 0;
+                transform: none;
+            }
+
+            .guess-input {
+                padding-right: 15px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-circle circle-1"></div>
+        <div class="gradient-circle circle-2"></div>
+        <div class="gradient-circle circle-3"></div>
+    </div>
+
     <!-- Loading Screen -->
     <div class="loading-screen" id="loading-screen">
-        <div class="loading-spinner"></div>
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <div class="spinner"></div>
+            <div class="spinner"></div>
+        </div>
         <div class="loading-text">Loading Flagle...</div>
     </div>
-    
+
     <!-- Tutorial Modal -->
-    <div class="tutorial-modal hidden" id="tutorial-modal">
+    <div class="tutorial-modal" id="tutorial-modal">
         <div class="tutorial-content">
             <button class="tutorial-close" id="tutorial-close">×</button>
             <div class="tutorial-header">
@@ -863,30 +1213,29 @@
 
     <!-- Help Button -->
     <button class="tutorial-help-btn hidden" id="tutorial-help-btn">?</button>
-    
-    <div class="stars" id="stars"></div>
-    
+
     <!-- Game Mode Dropdown -->
     <div class="game-mode-dropdown">
         <button class="dropdown-btn">
-            <span>🌍 Game Modes</span>
-            <span>▼</span>
+            <i class="fas fa-globe-americas"></i>
+            <span>Game Modes</span>
+            <i class="fas fa-chevron-down"></i>
         </button>
         <div class="dropdown-content">
             <a href="index.html" class="dropdown-item">
-                </i> Geodle
+                <i class="fas fa-map-marked-alt"></i> Geodle
             </a>
             <a href="country-mode.html" class="dropdown-item active">
-                </i> Countryle
+                <i class="fas fa-flag"></i> Countryle
             </a>
             <a href="path-mode.html" class="dropdown-item">
-                </i> Routele
+                <i class="fas fa-route"></i> Routele
             </a>
             <a href="civile.html" class="dropdown-item">
-                </i> Civile
+                <i class="fas fa-landmark"></i> Civile
             </a>
             <a href="bordle.html" class="dropdown-item">
-                </i> Bordle
+                <i class="fas fa-border-style"></i> Bordle
             </a>
         </div>
     </div>
@@ -925,9 +1274,9 @@
         <div class="input-section">
             <div class="input-container">
                 <input type="text" id="guess-input" class="guess-input" placeholder="Enter country name..." autocomplete="off">
+                <button id="submit-guess" class="submit-btn">Guess</button>
                 <div id="suggestions" class="suggestions"></div>
             </div>
-            <button id="submit-guess" class="submit-btn">Guess</button>
         </div>
 
         <div class="guesses-container">
@@ -937,241 +1286,242 @@
         <div id="game-over" class="game-over" style="display: none;"></div>
 
         <div class="controls">
-            <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
-            <button id="music-btn" class="control-btn music-btn">🎵 Music</button>
+            <button id="new-game-btn" class="control-btn new-game-btn">
+                <i class="fas fa-redo"></i> New Game
+            </button>
+            <button id="music-btn" class="control-btn music-btn">
+                <i class="fas fa-volume-up"></i> Music
+            </button>
         </div>
     </div>
 
     <script>
-        // Comprehensive countries data with all UN members + semi-autonomous regions
-        const countriesData = [
-            // UN Member States (193 countries)
-            { name: "Afghanistan", alternatives: [], flag: "https://flagcdn.com/w320/af.png", continent: "Asia", capital: "Kabul", population: "Medium" },
-            { name: "Albania", alternatives: ["Shqipëria"], flag: "https://flagcdn.com/w320/al.png", continent: "Europe", capital: "Tirana", population: "Small" },
-            { name: "Algeria", alternatives: [], flag: "https://flagcdn.com/w320/dz.png", continent: "Africa", capital: "Algiers", population: "Medium" },
-            { name: "Andorra", alternatives: [], flag: "https://flagcdn.com/w320/ad.png", continent: "Europe", capital: "Andorra la Vella", population: "Small" },
-            { name: "Angola", alternatives: [], flag: "https://flagcdn.com/w320/ao.png", continent: "Africa", capital: "Luanda", population: "Medium" },
-            { name: "Antigua and Barbuda", alternatives: ["Antigua & Barbuda"], flag: "https://flagcdn.com/w320/ag.png", continent: "North America", capital: "Saint John's", population: "Small" },
-            { name: "Argentina", alternatives: [], flag: "https://flagcdn.com/w320/ar.png", continent: "South America", capital: "Buenos Aires", population: "Medium" },
-            { name: "Armenia", alternatives: [], flag: "https://flagcdn.com/w320/am.png", continent: "Asia", capital: "Yerevan", population: "Small" },
-            { name: "Australia", alternatives: [], flag: "https://flagcdn.com/w320/au.png", continent: "Oceania", capital: "Canberra", population: "Medium" },
-            { name: "Austria", alternatives: ["Österreich"], flag: "https://flagcdn.com/w320/at.png", continent: "Europe", capital: "Vienna", population: "Small" },
-            { name: "Azerbaijan", alternatives: [], flag: "https://flagcdn.com/w320/az.png", continent: "Asia", capital: "Baku", population: "Small" },
-            { name: "Bahamas", alternatives: ["The Bahamas"], flag: "https://flagcdn.com/w320/bs.png", continent: "North America", capital: "Nassau", population: "Small" },
-            { name: "Bahrain", alternatives: [], flag: "https://flagcdn.com/w320/bh.png", continent: "Asia", capital: "Manama", population: "Small" },
-            { name: "Bangladesh", alternatives: [], flag: "https://flagcdn.com/w320/bd.png", continent: "Asia", capital: "Dhaka", population: "Large" },
-            { name: "Barbados", alternatives: [], flag: "https://flagcdn.com/w320/bb.png", continent: "North America", capital: "Bridgetown", population: "Small" },
-            { name: "Belarus", alternatives: [], flag: "https://flagcdn.com/w320/by.png", continent: "Europe", capital: "Minsk", population: "Small" },
-            { name: "Belgium", alternatives: ["België", "Belgique"], flag: "https://flagcdn.com/w320/be.png", continent: "Europe", capital: "Brussels", population: "Small" },
-            { name: "Belize", alternatives: [], flag: "https://flagcdn.com/w320/bz.png", continent: "North America", capital: "Belmopan", population: "Small" },
-            { name: "Benin", alternatives: [], flag: "https://flagcdn.com/w320/bj.png", continent: "Africa", capital: "Porto-Novo", population: "Small" },
-            { name: "Bhutan", alternatives: [], flag: "https://flagcdn.com/w320/bt.png", continent: "Asia", capital: "Thimphu", population: "Small" },
-            { name: "Bolivia", alternatives: [], flag: "https://flagcdn.com/w320/bo.png", continent: "South America", capital: "La Paz", population: "Small" },
-            { name: "Bosnia and Herzegovina", alternatives: ["Bosnia", "Herzegovina"], flag: "https://flagcdn.com/w320/ba.png", continent: "Europe", capital: "Sarajevo", population: "Small" },
-            { name: "Botswana", alternatives: [], flag: "https://flagcdn.com/w320/bw.png", continent: "Africa", capital: "Gaborone", population: "Small" },
-            { name: "Brazil", alternatives: ["Brasil"], flag: "https://flagcdn.com/w320/br.png", continent: "South America", capital: "Brasília", population: "Large" },
-            { name: "Brunei", alternatives: [], flag: "https://flagcdn.com/w320/bn.png", continent: "Asia", capital: "Bandar Seri Begawan", population: "Small" },
-            { name: "Bulgaria", alternatives: [], flag: "https://flagcdn.com/w320/bg.png", continent: "Europe", capital: "Sofia", population: "Small" },
-            { name: "Burkina Faso", alternatives: [], flag: "https://flagcdn.com/w320/bf.png", continent: "Africa", capital: "Ouagadougou", population: "Small" },
-            { name: "Burundi", alternatives: [], flag: "https://flagcdn.com/w320/bi.png", continent: "Africa", capital: "Gitega", population: "Small" },
-            { name: "Cabo Verde", alternatives: ["Cape Verde"], flag: "https://flagcdn.com/w320/cv.png", continent: "Africa", capital: "Praia", population: "Small" },
-            { name: "Cambodia", alternatives: [], flag: "https://flagcdn.com/w320/kh.png", continent: "Asia", capital: "Phnom Penh", population: "Small" },
-            { name: "Cameroon", alternatives: [], flag: "https://flagcdn.com/w320/cm.png", continent: "Africa", capital: "Yaoundé", population: "Medium" },
-            { name: "Canada", alternatives: [], flag: "https://flagcdn.com/w320/ca.png", continent: "North America", capital: "Ottawa", population: "Medium" },
-            { name: "Central African Republic", alternatives: ["CAR"], flag: "https://flagcdn.com/w320/cf.png", continent: "Africa", capital: "Bangui", population: "Small" },
-            { name: "Chad", alternatives: [], flag: "https://flagcdn.com/w320/td.png", continent: "Africa", capital: "N'Djamena", population: "Small" },
-            { name: "Chile", alternatives: [], flag: "https://flagcdn.com/w320/cl.png", continent: "South America", capital: "Santiago", population: "Small" },
-            { name: "China", alternatives: ["People's Republic of China", "PRC"], flag: "https://flagcdn.com/w320/cn.png", continent: "Asia", capital: "Beijing", population: "Very Large" },
-            { name: "Colombia", alternatives: [], flag: "https://flagcdn.com/w320/co.png", continent: "South America", capital: "Bogotá", population: "Medium" },
-            { name: "Comoros", alternatives: [], flag: "https://flagcdn.com/w320/km.png", continent: "Africa", capital: "Moroni", population: "Small" },
-            { name: "Congo", alternatives: ["Republic of the Congo"], flag: "https://flagcdn.com/w320/cg.png", continent: "Africa", capital: "Brazzaville", population: "Small" },
-            { name: "Costa Rica", alternatives: [], flag: "https://flagcdn.com/w320/cr.png", continent: "North America", capital: "San José", population: "Small" },
-            { name: "Croatia", alternatives: ["Hrvatska"], flag: "https://flagcdn.com/w320/hr.png", continent: "Europe", capital: "Zagreb", population: "Small" },
-            { name: "Cuba", alternatives: [], flag: "https://flagcdn.com/w320/cu.png", continent: "North America", capital: "Havana", population: "Small" },
-            { name: "Cyprus", alternatives: [], flag: "https://flagcdn.com/w320/cy.png", continent: "Europe", capital: "Nicosia", population: "Small" },
-            { name: "Czech Republic", alternatives: ["Czechia"], flag: "https://flagcdn.com/w320/cz.png", continent: "Europe", capital: "Prague", population: "Small" },
-            { name: "Democratic Republic of the Congo", alternatives: ["DRC", "DR Congo"], flag: "https://flagcdn.com/w320/cd.png", continent: "Africa", capital: "Kinshasa", population: "Large" },
-            { name: "Denmark", alternatives: ["Danmark"], flag: "https://flagcdn.com/w320/dk.png", continent: "Europe", capital: "Copenhagen", population: "Small" },
-            { name: "Djibouti", alternatives: [], flag: "https://flagcdn.com/w320/dj.png", continent: "Africa", capital: "Djibouti", population: "Small" },
-            { name: "Dominica", alternatives: [], flag: "https://flagcdn.com/w320/dm.png", continent: "North America", capital: "Roseau", population: "Small" },
-            { name: "Dominican Republic", alternatives: [], flag: "https://flagcdn.com/w320/do.png", continent: "North America", capital: "Santo Domingo", population: "Small" },
-            { name: "Ecuador", alternatives: [], flag: "https://flagcdn.com/w320/ec.png", continent: "South America", capital: "Quito", population: "Small" },
-            { name: "Egypt", alternatives: [], flag: "https://flagcdn.com/w320/eg.png", continent: "Africa", capital: "Cairo", population: "Large" },
-            { name: "El Salvador", alternatives: [], flag: "https://flagcdn.com/w320/sv.png", continent: "North America", capital: "San Salvador", population: "Small" },
-            { name: "Equatorial Guinea", alternatives: [], flag: "https://flagcdn.com/w320/gq.png", continent: "Africa", capital: "Malabo", population: "Small" },
-            { name: "Eritrea", alternatives: [], flag: "https://flagcdn.com/w320/er.png", continent: "Africa", capital: "Asmara", population: "Small" },
-            { name: "Estonia", alternatives: ["Eesti"], flag: "https://flagcdn.com/w320/ee.png", continent: "Europe", capital: "Tallinn", population: "Small" },
-            { name: "Eswatini", alternatives: ["Swaziland"], flag: "https://flagcdn.com/w320/sz.png", continent: "Africa", capital: "Mbabane", population: "Small" },
-            { name: "Ethiopia", alternatives: [], flag: "https://flagcdn.com/w320/et.png", continent: "Africa", capital: "Addis Ababa", population: "Large" },
-            { name: "Fiji", alternatives: [], flag: "https://flagcdn.com/w320/fj.png", continent: "Oceania", capital: "Suva", population: "Small" },
-            { name: "Finland", alternatives: ["Suomi"], flag: "https://flagcdn.com/w320/fi.png", continent: "Europe", capital: "Helsinki", population: "Small" },
-            { name: "France", alternatives: [], flag: "https://flagcdn.com/w320/fr.png", continent: "Europe", capital: "Paris", population: "Medium" },
-            { name: "Gabon", alternatives: [], flag: "https://flagcdn.com/w320/ga.png", continent: "Africa", capital: "Libreville", population: "Small" },
-            { name: "Gambia", alternatives: ["The Gambia"], flag: "https://flagcdn.com/w320/gm.png", continent: "Africa", capital: "Banjul", population: "Small" },
-            { name: "Georgia", alternatives: [], flag: "https://flagcdn.com/w320/ge.png", continent: "Asia", capital: "Tbilisi", population: "Small" },
-            { name: "Germany", alternatives: ["Deutschland"], flag: "https://flagcdn.com/w320/de.png", continent: "Europe", capital: "Berlin", population: "Large" },
-            { name: "Ghana", alternatives: [], flag: "https://flagcdn.com/w320/gh.png", continent: "Africa", capital: "Accra", population: "Medium" },
-            { name: "Greece", alternatives: ["Hellas"], flag: "https://flagcdn.com/w320/gr.png", continent: "Europe", capital: "Athens", population: "Small" },
-            { name: "Grenada", alternatives: [], flag: "https://flagcdn.com/w320/gd.png", continent: "North America", capital: "St. George's", population: "Small" },
-            { name: "Guatemala", alternatives: [], flag: "https://flagcdn.com/w320/gt.png", continent: "North America", capital: "Guatemala City", population: "Small" },
-            { name: "Guinea", alternatives: [], flag: "https://flagcdn.com/w320/gn.png", continent: "Africa", capital: "Conakry", population: "Small" },
-            { name: "Guinea-Bissau", alternatives: [], flag: "https://flagcdn.com/w320/gw.png", continent: "Africa", capital: "Bissau", population: "Small" },
-            { name: "Guyana", alternatives: [], flag: "https://flagcdn.com/w320/gy.png", continent: "South America", capital: "Georgetown", population: "Small" },
-            { name: "Haiti", alternatives: [], flag: "https://flagcdn.com/w320/ht.png", continent: "North America", capital: "Port-au-Prince", population: "Small" },
-            { name: "Honduras", alternatives: [], flag: "https://flagcdn.com/w320/hn.png", continent: "North America", capital: "Tegucigalpa", population: "Small" },
-            { name: "Hungary", alternatives: ["Magyarország"], flag: "https://flagcdn.com/w320/hu.png", continent: "Europe", capital: "Budapest", population: "Small" },
-            { name: "Iceland", alternatives: ["Ísland"], flag: "https://flagcdn.com/w320/is.png", continent: "Europe", capital: "Reykjavik", population: "Small" },
-            { name: "India", alternatives: ["Bharat"], flag: "https://flagcdn.com/w320/in.png", continent: "Asia", capital: "New Delhi", population: "Very Large" },
-            { name: "Indonesia", alternatives: [], flag: "https://flagcdn.com/w320/id.png", continent: "Asia", capital: "Jakarta", population: "Very Large" },
-            { name: "Iran", alternatives: ["Persia"], flag: "https://flagcdn.com/w320/ir.png", continent: "Asia", capital: "Tehran", population: "Large" },
-            { name: "Iraq", alternatives: [], flag: "https://flagcdn.com/w320/iq.png", continent: "Asia", capital: "Baghdad", population: "Medium" },
-            { name: "Ireland", alternatives: ["Éire"], flag: "https://flagcdn.com/w320/ie.png", continent: "Europe", capital: "Dublin", population: "Small" },
-            { name: "Israel", alternatives: [], flag: "https://flagcdn.com/w320/il.png", continent: "Asia", capital: "Jerusalem", population: "Small" },
-            { name: "Italy", alternatives: ["Italia"], flag: "https://flagcdn.com/w320/it.png", continent: "Europe", capital: "Rome", population: "Medium" },
-            { name: "Ivory Coast", alternatives: ["Côte d'Ivoire"], flag: "https://flagcdn.com/w320/ci.png", continent: "Africa", capital: "Yamoussoukro", population: "Medium" },
-            { name: "Jamaica", alternatives: [], flag: "https://flagcdn.com/w320/jm.png", continent: "North America", capital: "Kingston", population: "Small" },
-            { name: "Japan", alternatives: ["Nippon"], flag: "https://flagcdn.com/w320/jp.png", continent: "Asia", capital: "Tokyo", population: "Large" },
-            { name: "Jordan", alternatives: [], flag: "https://flagcdn.com/w320/jo.png", continent: "Asia", capital: "Amman", population: "Small" },
-            { name: "Kazakhstan", alternatives: [], flag: "https://flagcdn.com/w320/kz.png", continent: "Asia", capital: "Nur-Sultan", population: "Small" },
-            { name: "Kenya", alternatives: [], flag: "https://flagcdn.com/w320/ke.png", continent: "Africa", capital: "Nairobi", population: "Medium" },
-            { name: "Kiribati", alternatives: [], flag: "https://flagcdn.com/w320/ki.png", continent: "Oceania", capital: "Tarawa", population: "Small" },
-            { name: "Kuwait", alternatives: [], flag: "https://flagcdn.com/w320/kw.png", continent: "Asia", capital: "Kuwait City", population: "Small" },
-            { name: "Kyrgyzstan", alternatives: [], flag: "https://flagcdn.com/w320/kg.png", continent: "Asia", capital: "Bishkek", population: "Small" },
-            { name: "Laos", alternatives: [], flag: "https://flagcdn.com/w320/la.png", continent: "Asia", capital: "Vientiane", population: "Small" },
-            { name: "Latvia", alternatives: [], flag: "https://flagcdn.com/w320/lv.png", continent: "Europe", capital: "Riga", population: "Small" },
-            { name: "Lebanon", alternatives: [], flag: "https://flagcdn.com/w320/lb.png", continent: "Asia", capital: "Beirut", population: "Small" },
-            { name: "Lesotho", alternatives: [], flag: "https://flagcdn.com/w320/ls.png", continent: "Africa", capital: "Maseru", population: "Small" },
-            { name: "Liberia", alternatives: [], flag: "https://flagcdn.com/w320/lr.png", continent: "Africa", capital: "Monrovia", population: "Small" },
-            { name: "Libya", alternatives: [], flag: "https://flagcdn.com/w320/ly.png", continent: "Africa", capital: "Tripoli", population: "Small" },
-            { name: "Liechtenstein", alternatives: [], flag: "https://flagcdn.com/w320/li.png", continent: "Europe", capital: "Vaduz", population: "Small" },
-            { name: "Lithuania", alternatives: [], flag: "https://flagcdn.com/w320/lt.png", continent: "Europe", capital: "Vilnius", population: "Small" },
-            { name: "Luxembourg", alternatives: [], flag: "https://flagcdn.com/w320/lu.png", continent: "Europe", capital: "Luxembourg", population: "Small" },
-            { name: "Madagascar", alternatives: [], flag: "https://flagcdn.com/w320/mg.png", continent: "Africa", capital: "Antananarivo", population: "Medium" },
-            { name: "Malawi", alternatives: [], flag: "https://flagcdn.com/w320/mw.png", continent: "Africa", capital: "Lilongwe", population: "Small" },
-            { name: "Malaysia", alternatives: [], flag: "https://flagcdn.com/w320/my.png", continent: "Asia", capital: "Kuala Lumpur", population: "Medium" },
-            { name: "Maldives", alternatives: [], flag: "https://flagcdn.com/w320/mv.png", continent: "Asia", capital: "Malé", population: "Small" },
-            { name: "Mali", alternatives: [], flag: "https://flagcdn.com/w320/ml.png", continent: "Africa", capital: "Bamako", population: "Small" },
-            { name: "Malta", alternatives: [], flag: "https://flagcdn.com/w320/mt.png", continent: "Europe", capital: "Valletta", population: "Small" },
-            { name: "Marshall Islands", alternatives: [], flag: "https://flagcdn.com/w320/mh.png", continent: "Oceania", capital: "Majuro", population: "Small" },
-            { name: "Mauritania", alternatives: [], flag: "https://flagcdn.com/w320/mr.png", continent: "Africa", capital: "Nouakchott", population: "Small" },
-            { name: "Mauritius", alternatives: [], flag: "https://flagcdn.com/w320/mu.png", continent: "Africa", capital: "Port Louis", population: "Small" },
-            { name: "Mexico", alternatives: ["México"], flag: "https://flagcdn.com/w320/mx.png", continent: "North America", capital: "Mexico City", population: "Large" },
-            { name: "Micronesia", alternatives: [], flag: "https://flagcdn.com/w320/fm.png", continent: "Oceania", capital: "Palikir", population: "Small" },
-            { name: "Moldova", alternatives: [], flag: "https://flagcdn.com/w320/md.png", continent: "Europe", capital: "Chișinău", population: "Small" },
-            { name: "Monaco", alternatives: [], flag: "https://flagcdn.com/w320/mc.png", continent: "Europe", capital: "Monaco", population: "Small" },
-            { name: "Mongolia", alternatives: [], flag: "https://flagcdn.com/w320/mn.png", continent: "Asia", capital: "Ulaanbaatar", population: "Small" },
-            { name: "Montenegro", alternatives: [], flag: "https://flagcdn.com/w320/me.png", continent: "Europe", capital: "Podgorica", population: "Small" },
-            { name: "Morocco", alternatives: [], flag: "https://flagcdn.com/w320/ma.png", continent: "Africa", capital: "Rabat", population: "Medium" },
-            { name: "Mozambique", alternatives: [], flag: "https://flagcdn.com/w320/mz.png", continent: "Africa", capital: "Maputo", population: "Medium" },
-            { name: "Myanmar", alternatives: ["Burma"], flag: "https://flagcdn.com/w320/mm.png", continent: "Asia", capital: "Naypyidaw", population: "Medium" },
-            { name: "Namibia", alternatives: [], flag: "https://flagcdn.com/w320/na.png", continent: "Africa", capital: "Windhoek", population: "Small" },
-            { name: "Nauru", alternatives: [], flag: "https://flagcdn.com/w320/nr.png", continent: "Oceania", capital: "Yaren", population: "Small" },
-            { name: "Nepal", alternatives: [], flag: "https://flagcdn.com/w320/np.png", continent: "Asia", capital: "Kathmandu", population: "Medium" },
-            { name: "Netherlands", alternatives: ["Holland"], flag: "https://flagcdn.com/w320/nl.png", continent: "Europe", capital: "Amsterdam", population: "Small" },
-            { name: "New Zealand", alternatives: [], flag: "https://flagcdn.com/w320/nz.png", continent: "Oceania", capital: "Wellington", population: "Small" },
-            { name: "Nicaragua", alternatives: [], flag: "https://flagcdn.com/w320/ni.png", continent: "North America", capital: "Managua", population: "Small" },
-            { name: "Niger", alternatives: [], flag: "https://flagcdn.com/w320/ne.png", continent: "Africa", capital: "Niamey", population: "Small" },
-            { name: "Nigeria", alternatives: [], flag: "https://flagcdn.com/w320/ng.png", continent: "Africa", capital: "Abuja", population: "Large" },
-            { name: "North Korea", alternatives: ["DPRK"], flag: "https://flagcdn.com/w320/kp.png", continent: "Asia", capital: "Pyongyang", population: "Medium" },
-            { name: "North Macedonia", alternatives: ["Macedonia"], flag: "https://flagcdn.com/w320/mk.png", continent: "Europe", capital: "Skopje", population: "Small" },
-            { name: "Norway", alternatives: ["Norge"], flag: "https://flagcdn.com/w320/no.png", continent: "Europe", capital: "Oslo", population: "Small" },
-            { name: "Oman", alternatives: [], flag: "https://flagcdn.com/w320/om.png", continent: "Asia", capital: "Muscat", population: "Small" },
-            { name: "Pakistan", alternatives: [], flag: "https://flagcdn.com/w320/pk.png", continent: "Asia", capital: "Islamabad", population: "Large" },
-            { name: "Palau", alternatives: [], flag: "https://flagcdn.com/w320/pw.png", continent: "Oceania", capital: "Ngerulmud", population: "Small" },
-            { name: "Panama", alternatives: [], flag: "https://flagcdn.com/w320/pa.png", continent: "North America", capital: "Panama City", population: "Small" },
-            { name: "Papua New Guinea", alternatives: ["PNG"], flag: "https://flagcdn.com/w320/pg.png", continent: "Oceania", capital: "Port Moresby", population: "Small" },
-            { name: "Paraguay", alternatives: [], flag: "https://flagcdn.com/w320/py.png", continent: "South America", capital: "Asunción", population: "Small" },
-            { name: "Peru", alternatives: [], flag: "https://flagcdn.com/w320/pe.png", continent: "South America", capital: "Lima", population: "Medium" },
-            { name: "Philippines", alternatives: [], flag: "https://flagcdn.com/w320/ph.png", continent: "Asia", capital: "Manila", population: "Large" },
-            { name: "Poland", alternatives: ["Polska"], flag: "https://flagcdn.com/w320/pl.png", continent: "Europe", capital: "Warsaw", population: "Medium" },
-            { name: "Portugal", alternatives: [], flag: "https://flagcdn.com/w320/pt.png", continent: "Europe", capital: "Lisbon", population: "Small" },
-            { name: "Qatar", alternatives: [], flag: "https://flagcdn.com/w320/qa.png", continent: "Asia", capital: "Doha", population: "Small" },
-            { name: "Romania", alternatives: [], flag: "https://flagcdn.com/w320/ro.png", continent: "Europe", capital: "Bucharest", population: "Small" },
-            { name: "Russia", alternatives: ["Russian Federation"], flag: "https://flagcdn.com/w320/ru.png", continent: "Europe/Asia", capital: "Moscow", population: "Large" },
-            { name: "Rwanda", alternatives: [], flag: "https://flagcdn.com/w320/rw.png", continent: "Africa", capital: "Kigali", population: "Small" },
-            { name: "Saint Kitts and Nevis", alternatives: ["St. Kitts & Nevis"], flag: "https://flagcdn.com/w320/kn.png", continent: "North America", capital: "Basseterre", population: "Small" },
-            { name: "Saint Lucia", alternatives: ["St. Lucia"], flag: "https://flagcdn.com/w320/lc.png", continent: "North America", capital: "Castries", population: "Small" },
-            { name: "Saint Vincent and the Grenadines", alternatives: ["St. Vincent"], flag: "https://flagcdn.com/w320/vc.png", continent: "North America", capital: "Kingstown", population: "Small" },
-            { name: "Samoa", alternatives: [], flag: "https://flagcdn.com/w320/ws.png", continent: "Oceania", capital: "Apia", population: "Small" },
-            { name: "San Marino", alternatives: [], flag: "https://flagcdn.com/w320/sm.png", continent: "Europe", capital: "San Marino", population: "Small" },
-            { name: "Sao Tome and Principe", alternatives: ["São Tomé"], flag: "https://flagcdn.com/w320/st.png", continent: "Africa", capital: "São Tomé", population: "Small" },
-            { name: "Saudi Arabia", alternatives: [], flag: "https://flagcdn.com/w320/sa.png", continent: "Asia", capital: "Riyadh", population: "Medium" },
-            { name: "Senegal", alternatives: [], flag: "https://flagcdn.com/w320/sn.png", continent: "Africa", capital: "Dakar", population: "Small" },
-            { name: "Serbia", alternatives: [], flag: "https://flagcdn.com/w320/rs.png", continent: "Europe", capital: "Belgrade", population: "Small" },
-            { name: "Seychelles", alternatives: [], flag: "https://flagcdn.com/w320/sc.png", continent: "Africa", capital: "Victoria", population: "Small" },
-            { name: "Sierra Leone", alternatives: [], flag: "https://flagcdn.com/w320/sl.png", continent: "Africa", capital: "Freetown", population: "Small" },
-            { name: "Singapore", alternatives: [], flag: "https://flagcdn.com/w320/sg.png", continent: "Asia", capital: "Singapore", population: "Small" },
-            { name: "Slovakia", alternatives: [], flag: "https://flagcdn.com/w320/sk.png", continent: "Europe", capital: "Bratislava", population: "Small" },
-            { name: "Slovenia", alternatives: [], flag: "https://flagcdn.com/w320/si.png", continent: "Europe", capital: "Ljubljana", population: "Small" },
-            { name: "Solomon Islands", alternatives: [], flag: "https://flagcdn.com/w320/sb.png", continent: "Oceania", capital: "Honiara", population: "Small" },
-            { name: "Somalia", alternatives: [], flag: "https://flagcdn.com/w320/so.png", continent: "Africa", capital: "Mogadishu", population: "Small" },
-            { name: "South Africa", alternatives: [], flag: "https://flagcdn.com/w320/za.png", continent: "Africa", capital: "Cape Town", population: "Medium" },
-            { name: "South Korea", alternatives: ["Korea", "Republic of Korea"], flag: "https://flagcdn.com/w320/kr.png", continent: "Asia", capital: "Seoul", population: "Medium" },
-            { name: "South Sudan", alternatives: [], flag: "https://flagcdn.com/w320/ss.png", continent: "Africa", capital: "Juba", population: "Small" },
-            { name: "Spain", alternatives: ["España"], flag: "https://flagcdn.com/w320/es.png", continent: "Europe", capital: "Madrid", population: "Medium" },
-            { name: "Sri Lanka", alternatives: [], flag: "https://flagcdn.com/w320/lk.png", continent: "Asia", capital: "Sri Jayawardenepura Kotte", population: "Small" },
-            { name: "Sudan", alternatives: [], flag: "https://flagcdn.com/w320/sd.png", continent: "Africa", capital: "Khartoum", population: "Medium" },
-            { name: "Suriname", alternatives: [], flag: "https://flagcdn.com/w320/sr.png", continent: "South America", capital: "Paramaribo", population: "Small" },
-            { name: "Sweden", alternatives: ["Sverige"], flag: "https://flagcdn.com/w320/se.png", continent: "Europe", capital: "Stockholm", population: "Small" },
-            { name: "Switzerland", alternatives: ["Schweiz", "Suisse"], flag: "https://flagcdn.com/w320/ch.png", continent: "Europe", capital: "Bern", population: "Small" },
-            { name: "Syria", alternatives: [], flag: "https://flagcdn.com/w320/sy.png", continent: "Asia", capital: "Damascus", population: "Small" },
-            { name: "Tajikistan", alternatives: [], flag: "https://flagcdn.com/w320/tj.png", continent: "Asia", capital: "Dushanbe", population: "Small" },
-            { name: "Tanzania", alternatives: [], flag: "https://flagcdn.com/w320/tz.png", continent: "Africa", capital: "Dodoma", population: "Medium" },
-            { name: "Thailand", alternatives: ["Siam"], flag: "https://flagcdn.com/w320/th.png", continent: "Asia", capital: "Bangkok", population: "Medium" },
-            { name: "Timor-Leste", alternatives: ["East Timor"], flag: "https://flagcdn.com/w320/tl.png", continent: "Asia", capital: "Dili", population: "Small" },
-            { name: "Togo", alternatives: [], flag: "https://flagcdn.com/w320/tg.png", continent: "Africa", capital: "Lomé", population: "Small" },
-            { name: "Tonga", alternatives: [], flag: "https://flagcdn.com/w320/to.png", continent: "Oceania", capital: "Nuku'alofa", population: "Small" },
-            { name: "Trinidad and Tobago", alternatives: ["Trinidad & Tobago"], flag: "https://flagcdn.com/w320/tt.png", continent: "North America", capital: "Port of Spain", population: "Small" },
-            { name: "Tunisia", alternatives: [], flag: "https://flagcdn.com/w320/tn.png", continent: "Africa", capital: "Tunis", population: "Small" },
-            { name: "Turkey", alternatives: ["Türkiye"], flag: "https://flagcdn.com/w320/tr.png", continent: "Europe/Asia", capital: "Ankara", population: "Large" },
-            { name: "Turkmenistan", alternatives: [], flag: "https://flagcdn.com/w320/tm.png", continent: "Asia", capital: "Ashgabat", population: "Small" },
-            { name: "Tuvalu", alternatives: [], flag: "https://flagcdn.com/w320/tv.png", continent: "Oceania", capital: "Funafuti", population: "Small" },
-            { name: "Uganda", alternatives: [], flag: "https://flagcdn.com/w320/ug.png", continent: "Africa", capital: "Kampala", population: "Medium" },
-            { name: "Ukraine", alternatives: [], flag: "https://flagcdn.com/w320/ua.png", continent: "Europe", capital: "Kyiv", population: "Medium" },
-            { name: "United Arab Emirates", alternatives: ["UAE"], flag: "https://flagcdn.com/w320/ae.png", continent: "Asia", capital: "Abu Dhabi", population: "Small" },
-            { name: "United Kingdom", alternatives: ["UK", "Britain", "Great Britain", "England"], flag: "https://flagcdn.com/w320/gb.png", continent: "Europe", capital: "London", population: "Medium" },
-            { name: "United States", alternatives: ["USA", "US", "United States of America", "America"], flag: "https://flagcdn.com/w320/us.png", continent: "North America", capital: "Washington D.C.", population: "Large" },
-            { name: "Uruguay", alternatives: [], flag: "https://flagcdn.com/w320/uy.png", continent: "South America", capital: "Montevideo", population: "Small" },
-            { name: "Uzbekistan", alternatives: [], flag: "https://flagcdn.com/w320/uz.png", continent: "Asia", capital: "Tashkent", population: "Medium" },
-            { name: "Vanuatu", alternatives: [], flag: "https://flagcdn.com/w320/vu.png", continent: "Oceania", capital: "Port Vila", population: "Small" },
-            { name: "Vatican City", alternatives: ["Vatican", "Holy See"], flag: "https://flagcdn.com/w320/va.png", continent: "Europe", capital: "Vatican City", population: "Small" },
-            { name: "Venezuela", alternatives: [], flag: "https://flagcdn.com/w320/ve.png", continent: "South America", capital: "Caracas", population: "Medium" },
-            { name: "Vietnam", alternatives: [], flag: "https://flagcdn.com/w320/vn.png", continent: "Asia", capital: "Hanoi", population: "Large" },
-            { name: "Yemen", alternatives: [], flag: "https://flagcdn.com/w320/ye.png", continent: "Asia", capital: "Sana'a", population: "Medium" },
-            { name: "Zambia", alternatives: [], flag: "https://flagcdn.com/w320/zm.png", continent: "Africa", capital: "Lusaka", population: "Small" },
-            { name: "Zimbabwe", alternatives: [], flag: "https://flagcdn.com/w320/zw.png", continent: "Africa", capital: "Harare", population: "Small" },
+        // Create particle system
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles';
+            document.body.appendChild(particlesContainer);
 
-            // Semi-autonomous regions and special territories
-            { name: "Taiwan", alternatives: ["Republic of China", "ROC"], flag: "https://flagcdn.com/w320/tw.png", continent: "Asia", capital: "Taipei", population: "Medium" },
-            { name: "Hong Kong", alternatives: ["Hong Kong SAR"], flag: "https://flagcdn.com/w320/hk.png", continent: "Asia", capital: "Hong Kong", population: "Small" },
-            { name: "Macau", alternatives: ["Macao", "Macau SAR"], flag: "https://flagcdn.com/w320/mo.png", continent: "Asia", capital: "Macau", population: "Small" },
-            { name: "Kosovo", alternatives: [], flag: "https://flagcdn.com/w320/xk.png", continent: "Europe", capital: "Pristina", population: "Small" },
-            { name: "Palestine", alternatives: [], flag: "https://flagcdn.com/w320/ps.png", continent: "Asia", capital: "Ramallah", population: "Small" },
-            { name: "Western Sahara", alternatives: [], flag: "https://flagcdn.com/w320/eh.png", continent: "Africa", capital: "El Aaiún", population: "Small" },
-            { name: "Northern Cyprus", alternatives: [], flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg/320px-Flag_of_the_Turkish_Republic_of_Northern_Cyprus.svg.png", continent: "Europe", capital: "Nicosia", population: "Small" },
-            { name: "Greenland", alternatives: [], flag: "https://flagcdn.com/w320/gl.png", continent: "North America", capital: "Nuuk", population: "Small" },
-            { name: "Faroe Islands", alternatives: [], flag: "https://flagcdn.com/w320/fo.png", continent: "Europe", capital: "Tórshavn", population: "Small" },
-            { name: "Puerto Rico", alternatives: [], flag: "https://flagcdn.com/w320/pr.png", continent: "North America", capital: "San Juan", population: "Small" },
-            { name: "Scotland", alternatives: [], flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Flag_of_Scotland.svg/320px-Flag_of_Scotland.svg.png", continent: "Europe", capital: "Edinburgh", population: "Small" },
-            { name: "Wales", alternatives: [], flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Flag_of_Wales.svg/320px-Flag_of_Wales.svg.png", continent: "Europe", capital: "Cardiff", population: "Small" },
-            { name: "Catalonia", alternatives: [], flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Catalonia.svg/320px-Flag_of_Catalonia.svg.png", continent: "Europe", capital: "Barcelona", population: "Small" }
-        ];
-
-        // Create stars animation
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const numStars = 100;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsContainer.appendChild(star);
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size
+                const size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                
+                // Random color
+                const colors = ['#4facfe', '#f5576c', '#43e97b', '#ff9a9e', '#a18cd1'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                particlesContainer.appendChild(particle);
             }
         }
+
+        // Comprehensive countries data
+        const countriesData = [
+            { name: "Afghanistan", alternatives: [], flag: "https://flagcdn.com/w320/af.png", continent: "Asia", capital: "Kabul" },
+            { name: "Albania", alternatives: ["Shqipëria"], flag: "https://flagcdn.com/w320/al.png", continent: "Europe", capital: "Tirana" },
+            { name: "Algeria", alternatives: [], flag: "https://flagcdn.com/w320/dz.png", continent: "Africa", capital: "Algiers" },
+            { name: "Andorra", alternatives: [], flag: "https://flagcdn.com/w320/ad.png", continent: "Europe", capital: "Andorra la Vella" },
+            { name: "Angola", alternatives: [], flag: "https://flagcdn.com/w320/ao.png", continent: "Africa", capital: "Luanda" },
+            { name: "Antigua and Barbuda", alternatives: ["Antigua & Barbuda"], flag: "https://flagcdn.com/w320/ag.png", continent: "North America", capital: "Saint John's" },
+            { name: "Argentina", alternatives: [], flag: "https://flagcdn.com/w320/ar.png", continent: "South America", capital: "Buenos Aires" },
+            { name: "Armenia", alternatives: [], flag: "https://flagcdn.com/w320/am.png", continent: "Asia", capital: "Yerevan" },
+            { name: "Australia", alternatives: [], flag: "https://flagcdn.com/w320/au.png", continent: "Oceania", capital: "Canberra" },
+            { name: "Austria", alternatives: ["Österreich"], flag: "https://flagcdn.com/w320/at.png", continent: "Europe", capital: "Vienna" },
+            { name: "Azerbaijan", alternatives: [], flag: "https://flagcdn.com/w320/az.png", continent: "Asia", capital: "Baku" },
+            { name: "Bahamas", alternatives: ["The Bahamas"], flag: "https://flagcdn.com/w320/bs.png", continent: "North America", capital: "Nassau" },
+            { name: "Bahrain", alternatives: [], flag: "https://flagcdn.com/w320/bh.png", continent: "Asia", capital: "Manama" },
+            { name: "Bangladesh", alternatives: [], flag: "https://flagcdn.com/w320/bd.png", continent: "Asia", capital: "Dhaka" },
+            { name: "Barbados", alternatives: [], flag: "https://flagcdn.com/w320/bb.png", continent: "North America", capital: "Bridgetown" },
+            { name: "Belarus", alternatives: [], flag: "https://flagcdn.com/w320/by.png", continent: "Europe", capital: "Minsk" },
+            { name: "Belgium", alternatives: ["België", "Belgique"], flag: "https://flagcdn.com/w320/be.png", continent: "Europe", capital: "Brussels" },
+            { name: "Belize", alternatives: [], flag: "https://flagcdn.com/w320/bz.png", continent: "North America", capital: "Belmopan" },
+            { name: "Benin", alternatives: [], flag: "https://flagcdn.com/w320/bj.png", continent: "Africa", capital: "Porto-Novo" },
+            { name: "Bhutan", alternatives: [], flag: "https://flagcdn.com/w320/bt.png", continent: "Asia", capital: "Thimphu" },
+            { name: "Bolivia", alternatives: [], flag: "https://flagcdn.com/w320/bo.png", continent: "South America", capital: "La Paz" },
+            { name: "Bosnia and Herzegovina", alternatives: ["Bosnia", "Herzegovina"], flag: "https://flagcdn.com/w320/ba.png", continent: "Europe", capital: "Sarajevo" },
+            { name: "Botswana", alternatives: [], flag: "https://flagcdn.com/w320/bw.png", continent: "Africa", capital: "Gaborone" },
+            { name: "Brazil", alternatives: ["Brasil"], flag: "https://flagcdn.com/w320/br.png", continent: "South America", capital: "Brasília" },
+            { name: "Brunei", alternatives: [], flag: "https://flagcdn.com/w320/bn.png", continent: "Asia", capital: "Bandar Seri Begawan" },
+            { name: "Bulgaria", alternatives: [], flag: "https://flagcdn.com/w320/bg.png", continent: "Europe", capital: "Sofia" },
+            { name: "Burkina Faso", alternatives: [], flag: "https://flagcdn.com/w320/bf.png", continent: "Africa", capital: "Ouagadougou" },
+            { name: "Burundi", alternatives: [], flag: "https://flagcdn.com/w320/bi.png", continent: "Africa", capital: "Gitega" },
+            { name: "Cabo Verde", alternatives: ["Cape Verde"], flag: "https://flagcdn.com/w320/cv.png", continent: "Africa", capital: "Praia" },
+            { name: "Cambodia", alternatives: [], flag: "https://flagcdn.com/w320/kh.png", continent: "Asia", capital: "Phnom Penh" },
+            { name: "Cameroon", alternatives: [], flag: "https://flagcdn.com/w320/cm.png", continent: "Africa", capital: "Yaoundé" },
+            { name: "Canada", alternatives: [], flag: "https://flagcdn.com/w320/ca.png", continent: "North America", capital: "Ottawa" },
+            { name: "Central African Republic", alternatives: ["CAR"], flag: "https://flagcdn.com/w320/cf.png", continent: "Africa", capital: "Bangui" },
+            { name: "Chad", alternatives: [], flag: "https://flagcdn.com/w320/td.png", continent: "Africa", capital: "N'Djamena" },
+            { name: "Chile", alternatives: [], flag: "https://flagcdn.com/w320/cl.png", continent: "South America", capital: "Santiago" },
+            { name: "China", alternatives: ["People's Republic of China", "PRC"], flag: "https://flagcdn.com/w320/cn.png", continent: "Asia", capital: "Beijing" },
+            { name: "Colombia", alternatives: [], flag: "https://flagcdn.com/w320/co.png", continent: "South America", capital: "Bogotá" },
+            { name: "Comoros", alternatives: [], flag: "https://flagcdn.com/w320/km.png", continent: "Africa", capital: "Moroni" },
+            { name: "Congo", alternatives: ["Republic of the Congo"], flag: "https://flagcdn.com/w320/cg.png", continent: "Africa", capital: "Brazzaville" },
+            { name: "Costa Rica", alternatives: [], flag: "https://flagcdn.com/w320/cr.png", continent: "North America", capital: "San José" },
+            { name: "Croatia", alternatives: ["Hrvatska"], flag: "https://flagcdn.com/w320/hr.png", continent: "Europe", capital: "Zagreb" },
+            { name: "Cuba", alternatives: [], flag: "https://flagcdn.com/w320/cu.png", continent: "North America", capital: "Havana" },
+            { name: "Cyprus", alternatives: [], flag: "https://flagcdn.com/w320/cy.png", continent: "Europe", capital: "Nicosia" },
+            { name: "Czech Republic", alternatives: ["Czechia"], flag: "https://flagcdn.com/w320/cz.png", continent: "Europe", capital: "Prague" },
+            { name: "Democratic Republic of the Congo", alternatives: ["DRC", "DR Congo"], flag: "https://flagcdn.com/w320/cd.png", continent: "Africa", capital: "Kinshasa" },
+            { name: "Denmark", alternatives: ["Danmark"], flag: "https://flagcdn.com/w320/dk.png", continent: "Europe", capital: "Copenhagen" },
+            { name: "Djibouti", alternatives: [], flag: "https://flagcdn.com/w320/dj.png", continent: "Africa", capital: "Djibouti" },
+            { name: "Dominica", alternatives: [], flag: "https://flagcdn.com/w320/dm.png", continent: "North America", capital: "Roseau" },
+            { name: "Dominican Republic", alternatives: [], flag: "https://flagcdn.com/w320/do.png", continent: "North America", capital: "Santo Domingo" },
+            { name: "Ecuador", alternatives: [], flag: "https://flagcdn.com/w320/ec.png", continent: "South America", capital: "Quito" },
+            { name: "Egypt", alternatives: [], flag: "https://flagcdn.com/w320/eg.png", continent: "Africa", capital: "Cairo" },
+            { name: "El Salvador", alternatives: [], flag: "https://flagcdn.com/w320/sv.png", continent: "North America", capital: "San Salvador" },
+            { name: "Equatorial Guinea", alternatives: [], flag: "https://flagcdn.com/w320/gq.png", continent: "Africa", capital: "Malabo" },
+            { name: "Eritrea", alternatives: [], flag: "https://flagcdn.com/w320/er.png", continent: "Africa", capital: "Asmara" },
+            { name: "Estonia", alternatives: ["Eesti"], flag: "https://flagcdn.com/w320/ee.png", continent: "Europe", capital: "Tallinn" },
+            { name: "Eswatini", alternatives: ["Swaziland"], flag: "https://flagcdn.com/w320/sz.png", continent: "Africa", capital: "Mbabane" },
+            { name: "Ethiopia", alternatives: [], flag: "https://flagcdn.com/w320/et.png", continent: "Africa", capital: "Addis Ababa" },
+            { name: "Fiji", alternatives: [], flag: "https://flagcdn.com/w320/fj.png", continent: "Oceania", capital: "Suva" },
+            { name: "Finland", alternatives: ["Suomi"], flag: "https://flagcdn.com/w320/fi.png", continent: "Europe", capital: "Helsinki" },
+            { name: "France", alternatives: [], flag: "https://flagcdn.com/w320/fr.png", continent: "Europe", capital: "Paris" },
+            { name: "Gabon", alternatives: [], flag: "https://flagcdn.com/w320/ga.png", continent: "Africa", capital: "Libreville" },
+            { name: "Gambia", alternatives: ["The Gambia"], flag: "https://flagcdn.com/w320/gm.png", continent: "Africa", capital: "Banjul" },
+            { name: "Georgia", alternatives: [], flag: "https://flagcdn.com/w320/ge.png", continent: "Asia", capital: "Tbilisi" },
+            { name: "Germany", alternatives: ["Deutschland"], flag: "https://flagcdn.com/w320/de.png", continent: "Europe", capital: "Berlin" },
+            { name: "Ghana", alternatives: [], flag: "https://flagcdn.com/w320/gh.png", continent: "Africa", capital: "Accra" },
+            { name: "Greece", alternatives: ["Hellas"], flag: "https://flagcdn.com/w320/gr.png", continent: "Europe", capital: "Athens" },
+            { name: "Grenada", alternatives: [], flag: "https://flagcdn.com/w320/gd.png", continent: "North America", capital: "St. George's" },
+            { name: "Guatemala", alternatives: [], flag: "https://flagcdn.com/w320/gt.png", continent: "North America", capital: "Guatemala City" },
+            { name: "Guinea", alternatives: [], flag: "https://flagcdn.com/w320/gn.png", continent: "Africa", capital: "Conakry" },
+            { name: "Guinea-Bissau", alternatives: [], flag: "https://flagcdn.com/w320/gw.png", continent: "Africa", capital: "Bissau" },
+            { name: "Guyana", alternatives: [], flag: "https://flagcdn.com/w320/gy.png", continent: "South America", capital: "Georgetown" },
+            { name: "Haiti", alternatives: [], flag: "https://flagcdn.com/w320/ht.png", continent: "North America", capital: "Port-au-Prince" },
+            { name: "Honduras", alternatives: [], flag: "https://flagcdn.com/w320/hn.png", continent: "North America", capital: "Tegucigalpa" },
+            { name: "Hungary", alternatives: ["Magyarország"], flag: "https://flagcdn.com/w320/hu.png", continent: "Europe", capital: "Budapest" },
+            { name: "Iceland", alternatives: ["Ísland"], flag: "https://flagcdn.com/w320/is.png", continent: "Europe", capital: "Reykjavik" },
+            { name: "India", alternatives: ["Bharat"], flag: "https://flagcdn.com/w320/in.png", continent: "Asia", capital: "New Delhi" },
+            { name: "Indonesia", alternatives: [], flag: "https://flagcdn.com/w320/id.png", continent: "Asia", capital: "Jakarta" },
+            { name: "Iran", alternatives: ["Persia"], flag: "https://flagcdn.com/w320/ir.png", continent: "Asia", capital: "Tehran" },
+            { name: "Iraq", alternatives: [], flag: "https://flagcdn.com/w320/iq.png", continent: "Asia", capital: "Baghdad" },
+            { name: "Ireland", alternatives: ["Éire"], flag: "https://flagcdn.com/w320/ie.png", continent: "Europe", capital: "Dublin" },
+            { name: "Israel", alternatives: [], flag: "https://flagcdn.com/w320/il.png", continent: "Asia", capital: "Jerusalem" },
+            { name: "Italy", alternatives: ["Italia"], flag: "https://flagcdn.com/w320/it.png", continent: "Europe", capital: "Rome" },
+            { name: "Ivory Coast", alternatives: ["Côte d'Ivoire"], flag: "https://flagcdn.com/w320/ci.png", continent: "Africa", capital: "Yamoussoukro" },
+            { name: "Jamaica", alternatives: [], flag: "https://flagcdn.com/w320/jm.png", continent: "North America", capital: "Kingston" },
+            { name: "Japan", alternatives: ["Nippon"], flag: "https://flagcdn.com/w320/jp.png", continent: "Asia", capital: "Tokyo" },
+            { name: "Jordan", alternatives: [], flag: "https://flagcdn.com/w320/jo.png", continent: "Asia", capital: "Amman" },
+            { name: "Kazakhstan", alternatives: [], flag: "https://flagcdn.com/w320/kz.png", continent: "Asia", capital: "Nur-Sultan" },
+            { name: "Kenya", alternatives: [], flag: "https://flagcdn.com/w320/ke.png", continent: "Africa", capital: "Nairobi" },
+            { name: "Kiribati", alternatives: [], flag: "https://flagcdn.com/w320/ki.png", continent: "Oceania", capital: "Tarawa" },
+            { name: "Kuwait", alternatives: [], flag: "https://flagcdn.com/w320/kw.png", continent: "Asia", capital: "Kuwait City" },
+            { name: "Kyrgyzstan", alternatives: [], flag: "https://flagcdn.com/w320/kg.png", continent: "Asia", capital: "Bishkek" },
+            { name: "Laos", alternatives: [], flag: "https://flagcdn.com/w320/la.png", continent: "Asia", capital: "Vientiane" },
+            { name: "Latvia", alternatives: [], flag: "https://flagcdn.com/w320/lv.png", continent: "Europe", capital: "Riga" },
+            { name: "Lebanon", alternatives: [], flag: "https://flagcdn.com/w320/lb.png", continent: "Asia", capital: "Beirut" },
+            { name: "Lesotho", alternatives: [], flag: "https://flagcdn.com/w320/ls.png", continent: "Africa", capital: "Maseru" },
+            { name: "Liberia", alternatives: [], flag: "https://flagcdn.com/w320/lr.png", continent: "Africa", capital: "Monrovia" },
+            { name: "Libya", alternatives: [], flag: "https://flagcdn.com/w320/ly.png", continent: "Africa", capital: "Tripoli" },
+            { name: "Liechtenstein", alternatives: [], flag: "https://flagcdn.com/w320/li.png", continent: "Europe", capital: "Vaduz" },
+            { name: "Lithuania", alternatives: [], flag: "https://flagcdn.com/w320/lt.png", continent: "Europe", capital: "Vilnius" },
+            { name: "Luxembourg", alternatives: [], flag: "https://flagcdn.com/w320/lu.png", continent: "Europe", capital: "Luxembourg" },
+            { name: "Madagascar", alternatives: [], flag: "https://flagcdn.com/w320/mg.png", continent: "Africa", capital: "Antananarivo" },
+            { name: "Malawi", alternatives: [], flag: "https://flagcdn.com/w320/mw.png", continent: "Africa", capital: "Lilongwe" },
+            { name: "Malaysia", alternatives: [], flag: "https://flagcdn.com/w320/my.png", continent: "Asia", capital: "Kuala Lumpur" },
+            { name: "Maldives", alternatives: [], flag: "https://flagcdn.com/w320/mv.png", continent: "Asia", capital: "Malé" },
+            { name: "Mali", alternatives: [], flag: "https://flagcdn.com/w320/ml.png", continent: "Africa", capital: "Bamako" },
+            { name: "Malta", alternatives: [], flag: "https://flagcdn.com/w320/mt.png", continent: "Europe", capital: "Valletta" },
+            { name: "Marshall Islands", alternatives: [], flag: "https://flagcdn.com/w320/mh.png", continent: "Oceania", capital: "Majuro" },
+            { name: "Mauritania", alternatives: [], flag: "https://flagcdn.com/w320/mr.png", continent: "Africa", capital: "Nouakchott" },
+            { name: "Mauritius", alternatives: [], flag: "https://flagcdn.com/w320/mu.png", continent: "Africa", capital: "Port Louis" },
+            { name: "Mexico", alternatives: ["México"], flag: "https://flagcdn.com/w320/mx.png", continent: "North America", capital: "Mexico City" },
+            { name: "Micronesia", alternatives: [], flag: "https://flagcdn.com/w320/fm.png", continent: "Oceania", capital: "Palikir" },
+            { name: "Moldova", alternatives: [], flag: "https://flagcdn.com/w320/md.png", continent: "Europe", capital: "Chișinău" },
+            { name: "Monaco", alternatives: [], flag: "https://flagcdn.com/w320/mc.png", continent: "Europe", capital: "Monaco" },
+            { name: "Mongolia", alternatives: [], flag: "https://flagcdn.com/w320/mn.png", continent: "Asia", capital: "Ulaanbaatar" },
+            { name: "Montenegro", alternatives: [], flag: "https://flagcdn.com/w320/me.png", continent: "Europe", capital: "Podgorica" },
+            { name: "Morocco", alternatives: [], flag: "https://flagcdn.com/w320/ma.png", continent: "Africa", capital: "Rabat" },
+            { name: "Mozambique", alternatives: [], flag: "https://flagcdn.com/w320/mz.png", continent: "Africa", capital: "Maputo" },
+            { name: "Myanmar", alternatives: ["Burma"], flag: "https://flagcdn.com/w320/mm.png", continent: "Asia", capital: "Naypyidaw" },
+            { name: "Namibia", alternatives: [], flag: "https://flagcdn.com/w320/na.png", continent: "Africa", capital: "Windhoek" },
+            { name: "Nauru", alternatives: [], flag: "https://flagcdn.com/w320/nr.png", continent: "Oceania", capital: "Yaren" },
+            { name: "Nepal", alternatives: [], flag: "https://flagcdn.com/w320/np.png", continent: "Asia", capital: "Kathmandu" },
+            { name: "Netherlands", alternatives: ["Holland"], flag: "https://flagcdn.com/w320/nl.png", continent: "Europe", capital: "Amsterdam" },
+            { name: "New Zealand", alternatives: [], flag: "https://flagcdn.com/w320/nz.png", continent: "Oceania", capital: "Wellington" },
+            { name: "Nicaragua", alternatives: [], flag: "https://flagcdn.com/w320/ni.png", continent: "North America", capital: "Managua" },
+            { name: "Niger", alternatives: [], flag: "https://flagcdn.com/w320/ne.png", continent: "Africa", capital: "Niamey" },
+            { name: "Nigeria", alternatives: [], flag: "https://flagcdn.com/w320/ng.png", continent: "Africa", capital: "Abuja" },
+            { name: "North Korea", alternatives: ["DPRK"], flag: "https://flagcdn.com/w320/kp.png", continent: "Asia", capital: "Pyongyang" },
+            { name: "North Macedonia", alternatives: ["Macedonia"], flag: "https://flagcdn.com/w320/mk.png", continent: "Europe", capital: "Skopje" },
+            { name: "Norway", alternatives: ["Norge"], flag: "https://flagcdn.com/w320/no.png", continent: "Europe", capital: "Oslo" },
+            { name: "Oman", alternatives: [], flag: "https://flagcdn.com/w320/om.png", continent: "Asia", capital: "Muscat" },
+            { name: "Pakistan", alternatives: [], flag: "https://flagcdn.com/w320/pk.png", continent: "Asia", capital: "Islamabad" },
+            { name: "Palau", alternatives: [], flag: "https://flagcdn.com/w320/pw.png", continent: "Oceania", capital: "Ngerulmud" },
+            { name: "Panama", alternatives: [], flag: "https://flagcdn.com/w320/pa.png", continent: "North America", capital: "Panama City" },
+            { name: "Papua New Guinea", alternatives: ["PNG"], flag: "https://flagcdn.com/w320/pg.png", continent: "Oceania", capital: "Port Moresby" },
+            { name: "Paraguay", alternatives: [], flag: "https://flagcdn.com/w320/py.png", continent: "South America", capital: "Asunción" },
+            { name: "Peru", alternatives: [], flag: "https://flagcdn.com/w320/pe.png", continent: "South America", capital: "Lima" },
+            { name: "Philippines", alternatives: [], flag: "https://flagcdn.com/w320/ph.png", continent: "Asia", capital: "Manila" },
+            { name: "Poland", alternatives: ["Polska"], flag: "https://flagcdn.com/w320/pl.png", continent: "Europe", capital: "Warsaw" },
+            { name: "Portugal", alternatives: [], flag: "https://flagcdn.com/w320/pt.png", continent: "Europe", capital: "Lisbon" },
+            { name: "Qatar", alternatives: [], flag: "https://flagcdn.com/w320/qa.png", continent: "Asia", capital: "Doha" },
+            { name: "Romania", alternatives: [], flag: "https://flagcdn.com/w320/ro.png", continent: "Europe", capital: "Bucharest" },
+            { name: "Russia", alternatives: ["Russian Federation"], flag: "https://flagcdn.com/w320/ru.png", continent: "Europe/Asia", capital: "Moscow" },
+            { name: "Rwanda", alternatives: [], flag: "https://flagcdn.com/w320/rw.png", continent: "Africa", capital: "Kigali" },
+            { name: "Saint Kitts and Nevis", alternatives: ["St. Kitts & Nevis"], flag: "https://flagcdn.com/w320/kn.png", continent: "North America", capital: "Basseterre" },
+            { name: "Saint Lucia", alternatives: ["St. Lucia"], flag: "https://flagcdn.com/w320/lc.png", continent: "North America", capital: "Castries" },
+            { name: "Saint Vincent and the Grenadines", alternatives: ["St. Vincent"], flag: "https://flagcdn.com/w320/vc.png", continent: "North America", capital: "Kingstown" },
+            { name: "Samoa", alternatives: [], flag: "https://flagcdn.com/w320/ws.png", continent: "Oceania", capital: "Apia" },
+            { name: "San Marino", alternatives: [], flag: "https://flagcdn.com/w320/sm.png", continent: "Europe", capital: "San Marino" },
+            { name: "Sao Tome and Principe", alternatives: ["São Tomé"], flag: "https://flagcdn.com/w320/st.png", continent: "Africa", capital: "São Tomé" },
+            { name: "Saudi Arabia", alternatives: [], flag: "https://flagcdn.com/w320/sa.png", continent: "Asia", capital: "Riyadh" },
+            { name: "Senegal", alternatives: [], flag: "https://flagcdn.com/w320/sn.png", continent: "Africa", capital: "Dakar" },
+            { name: "Serbia", alternatives: [], flag: "https://flagcdn.com/w320/rs.png", continent: "Europe", capital: "Belgrade" },
+            { name: "Seychelles", alternatives: [], flag: "https://flagcdn.com/w320/sc.png", continent: "Africa", capital: "Victoria" },
+            { name: "Sierra Leone", alternatives: [], flag: "https://flagcdn.com/w320/sl.png", continent: "Africa", capital: "Freetown" },
+            { name: "Singapore", alternatives: [], flag: "https://flagcdn.com/w320/sg.png", continent: "Asia", capital: "Singapore" },
+            { name: "Slovakia", alternatives: [], flag: "https://flagcdn.com/w320/sk.png", continent: "Europe", capital: "Bratislava" },
+            { name: "Slovenia", alternatives: [], flag: "https://flagcdn.com/w320/si.png", continent: "Europe", capital: "Ljubljana" },
+            { name: "Solomon Islands", alternatives: [], flag: "https://flagcdn.com/w320/sb.png", continent: "Oceania", capital: "Honiara" },
+            { name: "Somalia", alternatives: [], flag: "https://flagcdn.com/w320/so.png", continent: "Africa", capital: "Mogadishu" },
+            { name: "South Africa", alternatives: [], flag: "https://flagcdn.com/w320/za.png", continent: "Africa", capital: "Cape Town" },
+            { name: "South Korea", alternatives: ["Korea", "Republic of Korea"], flag: "https://flagcdn.com/w320/kr.png", continent: "Asia", capital: "Seoul" },
+            { name: "South Sudan", alternatives: [], flag: "https://flagcdn.com/w320/ss.png", continent: "Africa", capital: "Juba" },
+            { name: "Spain", alternatives: ["España"], flag: "https://flagcdn.com/w320/es.png", continent: "Europe", capital: "Madrid" },
+            { name: "Sri Lanka", alternatives: [], flag: "https://flagcdn.com/w320/lk.png", continent: "Asia", capital: "Sri Jayawardenepura Kotte" },
+            { name: "Sudan", alternatives: [], flag: "https://flagcdn.com/w320/sd.png", continent: "Africa", capital: "Khartoum" },
+            { name: "Suriname", alternatives: [], flag: "https://flagcdn.com/w320/sr.png", continent: "South America", capital: "Paramaribo" },
+            { name: "Sweden", alternatives: ["Sverige"], flag: "https://flagcdn.com/w320/se.png", continent: "Europe", capital: "Stockholm" },
+            { name: "Switzerland", alternatives: ["Schweiz", "Suisse"], flag: "https://flagcdn.com/w320/ch.png", continent: "Europe", capital: "Bern" },
+            { name: "Syria", alternatives: [], flag: "https://flagcdn.com/w320/sy.png", continent: "Asia", capital: "Damascus" },
+            { name: "Tajikistan", alternatives: [], flag: "https://flagcdn.com/w320/tj.png", continent: "Asia", capital: "Dushanbe" },
+            { name: "Tanzania", alternatives: [], flag: "https://flagcdn.com/w320/tz.png", continent: "Africa", capital: "Dodoma" },
+            { name: "Thailand", alternatives: ["Siam"], flag: "https://flagcdn.com/w320/th.png", continent: "Asia", capital: "Bangkok" },
+            { name: "Timor-Leste", alternatives: ["East Timor"], flag: "https://flagcdn.com/w320/tl.png", continent: "Asia", capital: "Dili" },
+            { name: "Togo", alternatives: [], flag: "https://flagcdn.com/w320/tg.png", continent: "Africa", capital: "Lomé" },
+            { name: "Tonga", alternatives: [], flag: "https://flagcdn.com/w320/to.png", continent: "Oceania", capital: "Nuku'alofa" },
+            { name: "Trinidad and Tobago", alternatives: ["Trinidad & Tobago"], flag: "https://flagcdn.com/w320/tt.png", continent: "North America", capital: "Port of Spain" },
+            { name: "Tunisia", alternatives: [], flag: "https://flagcdn.com/w320/tn.png", continent: "Africa", capital: "Tunis" },
+            { name: "Turkey", alternatives: ["Türkiye"], flag: "https://flagcdn.com/w320/tr.png", continent: "Europe/Asia", capital: "Ankara" },
+            { name: "Turkmenistan", alternatives: [], flag: "https://flagcdn.com/w320/tm.png", continent: "Asia", capital: "Ashgabat" },
+            { name: "Tuvalu", alternatives: [], flag: "https://flagcdn.com/w320/tv.png", continent: "Oceania", capital: "Funafuti" },
+            { name: "Uganda", alternatives: [], flag: "https://flagcdn.com/w320/ug.png", continent: "Africa", capital: "Kampala" },
+            { name: "Ukraine", alternatives: [], flag: "https://flagcdn.com/w320/ua.png", continent: "Europe", capital: "Kyiv" },
+            { name: "United Arab Emirates", alternatives: ["UAE"], flag: "https://flagcdn.com/w320/ae.png", continent: "Asia", capital: "Abu Dhabi" },
+            { name: "United Kingdom", alternatives: ["UK", "Britain", "Great Britain", "England"], flag: "https://flagcdn.com/w320/gb.png", continent: "Europe", capital: "London" },
+            { name: "United States", alternatives: ["USA", "US", "United States of America", "America"], flag: "https://flagcdn.com/w320/us.png", continent: "North America", capital: "Washington D.C." },
+            { name: "Uruguay", alternatives: [], flag: "https://flagcdn.com/w320/uy.png", continent: "South America", capital: "Montevideo" },
+            { name: "Uzbekistan", alternatives: [], flag: "https://flagcdn.com/w320/uz.png", continent: "Asia", capital: "Tashkent" },
+            { name: "Vanuatu", alternatives: [], flag: "https://flagcdn.com/w320/vu.png", continent: "Oceania", capital: "Port Vila" },
+            { name: "Vatican City", alternatives: ["Vatican", "Holy See"], flag: "https://flagcdn.com/w320/va.png", continent: "Europe", capital: "Vatican City" },
+            { name: "Venezuela", alternatives: [], flag: "https://flagcdn.com/w320/ve.png", continent: "South America", capital: "Caracas" },
+            { name: "Vietnam", alternatives: [], flag: "https://flagcdn.com/w320/vn.png", continent: "Asia", capital: "Hanoi" },
+            { name: "Yemen", alternatives: [], flag: "https://flagcdn.com/w320/ye.png", continent: "Asia", capital: "Sana'a" },
+            { name: "Zambia", alternatives: [], flag: "https://flagcdn.com/w320/zm.png", continent: "Africa", capital: "Lusaka" },
+            { name: "Zimbabwe", alternatives: [], flag: "https://flagcdn.com/w320/zw.png", continent: "Africa", capital: "Harare" },
+        ];
 
         // Tutorial Management
         class TutorialManager {
@@ -1190,11 +1540,10 @@
             init() {
                 this.setupEventListeners();
                 
-                // Show tutorial if not shown before and not marked as "don't show again"
                 if (!this.tutorialShown && !this.dontShowAgain) {
-                    this.showTutorial();
+                    setTimeout(() => this.showTutorial(), 1000);
                 } else {
-                    this.showHelpButton();
+                    setTimeout(() => this.showHelpButton(), 1500);
                 }
             }
 
@@ -1206,10 +1555,8 @@
                     localStorage.setItem('flagleDontShowAgain', this.dontShowAgain);
                 });
                 
-                // Show tutorial when help button is clicked
                 this.helpBtn.addEventListener('click', () => this.showTutorial());
                 
-                // Close tutorial when clicking outside
                 this.modal.addEventListener('click', (e) => {
                     if (e.target === this.modal) {
                         this.hideTutorial();
@@ -1218,25 +1565,22 @@
             }
 
             showTutorial() {
-                this.modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                this.modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
 
             hideTutorial() {
-                this.modal.classList.add('hidden');
-                document.body.style.overflow = ''; // Restore scrolling
+                this.modal.classList.remove('active');
+                document.body.style.overflow = '';
                 this.tutorialShown = true;
                 localStorage.setItem('flagleTutorialShown', 'true');
-                this.showHelpButton();
+                setTimeout(() => this.showHelpButton(), 300);
             }
 
             startGame() {
                 this.hideTutorial();
-                // Focus on input field
                 const guessInput = document.getElementById('guess-input');
-                if (guessInput) {
-                    guessInput.focus();
-                }
+                if (guessInput) guessInput.focus();
             }
 
             showHelpButton() {
@@ -1244,7 +1588,7 @@
             }
         }
 
-        // Game Mode Dropdown Functionality
+        // Game Mode Dropdown
         function setupGameModeDropdown() {
             const dropdownBtn = document.querySelector('.dropdown-btn');
             const dropdownContent = document.querySelector('.dropdown-content');
@@ -1254,18 +1598,16 @@
                 dropdownContent.classList.toggle('show');
             });
             
-            // Close dropdown when clicking outside
             document.addEventListener('click', function() {
                 dropdownContent.classList.remove('show');
             });
             
-            // Prevent dropdown from closing when clicking inside it
             dropdownContent.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
         }
 
-        // Game Statistics Management (using localStorage)
+        // Game Statistics Management
         class GameStats {
             constructor() {
                 this.loadStats();
@@ -1322,49 +1664,38 @@
             }
         }
 
-        // Music Management
+        // Music Management with enhanced audio
         class MusicManager {
             constructor() {
-                this.isPlaying = false;
-                this.musicEnabled = true;
-                this.initMusic();
-            }
-
-            initMusic() {
-                this.createAudioContext();
+                this.musicEnabled = false;
+                this.audioContext = null;
                 this.updateMusicButton();
             }
 
-            createAudioContext() {
-                try {
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.createMelody();
-                } catch (e) {
-                    console.log('Web Audio API not supported');
-                }
-            }
-
             createMelody() {
+                if (!this.audioContext) {
+                    try {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    } catch (e) {
+                        return;
+                    }
+                }
+
                 const notes = [
-                    { freq: 523.25, duration: 0.5 }, // C5
-                    { freq: 587.33, duration: 0.5 }, // D5
-                    { freq: 659.25, duration: 0.5 }, // E5
-                    { freq: 698.46, duration: 0.5 }, // F5
-                    { freq: 783.99, duration: 1.0 }, // G5
-                    { freq: 659.25, duration: 0.5 }, // E5
-                    { freq: 523.25, duration: 1.0 }  // C5
+                    { freq: 523.25, duration: 0.8 },
+                    { freq: 659.25, duration: 0.8 },
+                    { freq: 783.99, duration: 0.8 },
+                    { freq: 1046.50, duration: 1.6 }
                 ];
 
-                if (this.musicEnabled && this.audioContext) {
-                    this.playMelody(notes, 0);
-                }
+                this.playSequence(notes, 0);
             }
 
-            playMelody(notes, index) {
+            playSequence(notes, index) {
                 if (!this.musicEnabled || !this.audioContext) return;
 
                 if (index >= notes.length) {
-                    setTimeout(() => this.playMelody(notes, 0), 2000);
+                    setTimeout(() => this.playSequence(notes, 0), 3000);
                     return;
                 }
 
@@ -1385,7 +1716,7 @@
                 oscillator.start(this.audioContext.currentTime);
                 oscillator.stop(this.audioContext.currentTime + note.duration);
 
-                setTimeout(() => this.playMelody(notes, index + 1), note.duration * 1000);
+                setTimeout(() => this.playSequence(notes, index + 1), note.duration * 1000);
             }
 
             toggle() {
@@ -1400,13 +1731,16 @@
 
             updateMusicButton() {
                 const btn = document.getElementById('music-btn');
-                btn.textContent = this.musicEnabled ? '🔊 Music On' : '🔇 Music Off';
-                btn.style.background = this.musicEnabled 
-                    ? 'linear-gradient(135deg, #48bb78, #38a169)'
-                    : 'linear-gradient(135deg, #ed8936, #dd6b20)';
+                btn.innerHTML = this.musicEnabled ? 
+                    '<i class="fas fa-volume-up"></i> Music On' : 
+                    '<i class="fas fa-volume-mute"></i> Music Off';
+                btn.style.background = this.musicEnabled ? 
+                    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' :
+                    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
             }
         }
 
+        // Main Game Class
         class FlagdleGame {
             constructor() {
                 this.currentCountry = null;
@@ -1422,22 +1756,19 @@
                 
                 this.initializeElements();
                 this.bindEvents();
-                createStars();
+                createParticles();
                 setupGameModeDropdown();
                 
-                // Simulate loading time
+                // Simulate loading
                 setTimeout(() => {
                     this.hideLoadingScreen();
                     this.startNewGame();
-                }, 1500);
+                }, 2000);
             }
 
             hideLoadingScreen() {
                 const loadingScreen = document.getElementById('loading-screen');
                 loadingScreen.classList.add('hidden');
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
             }
 
             initializeElements() {
@@ -1505,33 +1836,16 @@
                 ];
 
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
-                
-                // Remove all flag classes
                 this.flagImage.className = 'flag-image';
-                
-                // Set flag source
                 this.flagImage.src = this.currentCountry.flag;
                 
-                // Apply appropriate class based on clue (hardest to easiest)
                 switch(this.currentClue) {
-                    case 1:
-                        this.flagImage.classList.add('flag-extreme-blur');
-                        break;
-                    case 2:
-                        this.flagImage.classList.add('flag-heavy-pixelated');
-                        break;
-                    case 3:
-                        this.flagImage.classList.add('flag-inverted-blur');
-                        break;
-                    case 4:
-                        this.flagImage.classList.add('flag-grayscale-heavy');
-                        break;
-                    case 5:
-                        this.flagImage.classList.add('flag-partial-reveal');
-                        break;
-                    case 6:
-                        this.flagImage.classList.add('flag-light-blur');
-                        break;
+                    case 1: this.flagImage.classList.add('flag-extreme-blur'); break;
+                    case 2: this.flagImage.classList.add('flag-heavy-pixelated'); break;
+                    case 3: this.flagImage.classList.add('flag-inverted-blur'); break;
+                    case 4: this.flagImage.classList.add('flag-grayscale-heavy'); break;
+                    case 5: this.flagImage.classList.add('flag-partial-reveal'); break;
+                    case 6: this.flagImage.classList.add('flag-light-blur'); break;
                 }
             }
 
@@ -1566,7 +1880,6 @@
                     
                     this.suggestions.style.display = 'block';
                     
-                    // Add click handlers to suggestions
                     this.suggestions.querySelectorAll('.suggestion').forEach(suggestion => {
                         suggestion.addEventListener('click', () => {
                             this.guessInput.value = suggestion.dataset.country;
@@ -1600,7 +1913,6 @@
                     this.currentAttempt++;
                     this.updateDisplay();
                     
-                    // Auto-advance to next clue after wrong guess (unless already at final clue)
                     if (this.currentClue < this.maxClues) {
                         this.nextClue();
                     }
@@ -1618,10 +1930,8 @@
                 const normalizedGuess = normalizeString(guess);
                 const normalizedCountry = normalizeString(this.currentCountry.name);
                 
-                // Check main name
                 if (normalizedGuess === normalizedCountry) return true;
                 
-                // Check alternatives
                 if (this.currentCountry.alternatives && this.currentCountry.alternatives.length > 0) {
                     return this.currentCountry.alternatives.some(alt => 
                         normalizeString(alt) === normalizedGuess
@@ -1636,7 +1946,7 @@
                 guessItem.className = `guess-item ${isCorrect ? 'guess-correct' : 'guess-wrong'}`;
                 guessItem.innerHTML = `
                     <span>${guess}</span>
-                    <span>${isCorrect ? '✅' : '❌'}</span>
+                    <span>${isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}</span>
                 `;
                 this.guessesList.appendChild(guessItem);
             }
@@ -1646,25 +1956,23 @@
                 this.guessInput.disabled = true;
                 this.submitBtn.disabled = true;
                 
-                // Show full clear flag
                 this.currentClue = 6;
                 this.updateClue();
                 this.updateDisplay();
                 
-                // Update statistics
                 if (won) {
                     this.stats.recordWin();
+                    this.createConfetti();
                 } else {
                     this.stats.recordLoss();
                 }
                 this.stats.updateDisplay();
                 
-                // Show game over message
                 this.gameOverDiv.style.display = 'block';
                 if (won) {
                     this.gameOverDiv.className = 'game-over win';
                     this.gameOverDiv.innerHTML = `
-                        🎉 Excellent! 🎉<br>
+                        🎉 <strong>Excellent!</strong> 🎉<br>
                         You guessed <strong>${this.currentCountry.name}</strong> correctly!<br>
                         <small>Attempts: ${this.currentAttempt}/6 | Clues used: ${this.currentClue}/6</small><br>
                         <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small>
@@ -1672,16 +1980,60 @@
                 } else {
                     this.gameOverDiv.className = 'game-over lose';
                     this.gameOverDiv.innerHTML = `
-                        😔 Game Over! 😔<br>
+                        😔 <strong>Game Over!</strong> 😔<br>
                         The correct answer was <strong>${this.currentCountry.name}</strong><br>
                         <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small><br>
                         <small>Better luck next time!</small>
                     `;
                 }
             }
+
+            createConfetti() {
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'particle';
+                    confetti.style.position = 'fixed';
+                    confetti.style.top = '50%';
+                    confetti.style.left = '50%';
+                    confetti.style.zIndex = '10000';
+                    
+                    const colors = ['#4facfe', '#f5576c', '#43e97b', '#ff9a9e', '#a18cd1'];
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.borderRadius = '50%';
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 2 + Math.random() * 2;
+                    confetti.style.transform = `translate(-50%, -50%)`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    let x = 50;
+                    let y = 50;
+                    let frame = 0;
+                    
+                    const animateConfetti = () => {
+                        frame++;
+                        x += Math.cos(angle) * velocity;
+                        y += Math.sin(angle) * velocity + frame * 0.05;
+                        confetti.style.left = `${x}%`;
+                        confetti.style.top = `${y}%`;
+                        confetti.style.opacity = 1 - frame / 100;
+                        
+                        if (frame < 100) {
+                            requestAnimationFrame(animateConfetti);
+                        } else {
+                            confetti.remove();
+                        }
+                    };
+                    
+                    animateConfetti();
+                }
+            }
         }
 
-        // Initialize game when page loads
+        // Initialize game
         document.addEventListener('DOMContentLoaded', () => {
             new FlagdleGame();
         });
