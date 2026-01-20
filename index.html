@@ -801,8 +801,8 @@
             margin: 0;
         }
 
-        /* Country Suggestions Dropdown - FIXED */
-        .country-suggestions {
+        /* Enhanced Country Suggestions Dropdown - IMPROVED */
+        #countrySuggestions {
             position: absolute;
             top: 100%;
             left: 0;
@@ -811,55 +811,134 @@
             border: 1px solid rgba(102, 126, 234, 0.3);
             border-top: none;
             border-radius: 0 0 16px 16px;
-            max-height: 200px;
+            max-height: 280px;
             overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            z-index: 1000;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.15),
+                0 2px 20px rgba(102, 126, 234, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            z-index: 1001;
             display: none;
+            animation: dropdownAppear 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .country-suggestions.show {
+        @keyframes dropdownAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #countrySuggestions.show {
             display: block;
         }
 
         .country-suggestion {
-            padding: 12px 16px;
+            padding: 14px 20px;
             cursor: pointer;
             transition: all 0.2s ease;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             color: #333;
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
         .country-suggestion:last-child {
             border-bottom: none;
         }
 
+        .country-suggestion::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(102, 126, 234, 0.05), 
+                transparent);
+            transition: left 0.5s ease;
+        }
+
+        .country-suggestion:hover::before {
+            left: 100%;
+        }
+
         .country-suggestion:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(102, 126, 234, 0.08);
+            padding-left: 24px;
+            transform: translateX(2px);
         }
 
         .country-suggestion.highlighted {
-            background: rgba(102, 126, 234, 0.15);
-            font-weight: 500;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.12), 
+                rgba(102, 126, 234, 0.08));
+            color: #667eea;
+            font-weight: 600;
+            border-left: 3px solid #667eea;
         }
 
-        .country-suggestions::-webkit-scrollbar {
+        /* Flag emoji styling */
+        .country-flag {
+            font-size: 1.2em;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .country-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Match highlight */
+        .match-highlight {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        /* No results message */
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Scrollbar styling */
+        #countrySuggestions::-webkit-scrollbar {
             width: 6px;
         }
 
-        .country-suggestions::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.05);
-            border-radius: 3px;
+        #countrySuggestions::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 10px;
+            margin: 8px 0;
         }
 
-        .country-suggestions::-webkit-scrollbar-thumb {
+        #countrySuggestions::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 3px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
 
-        .country-suggestions::-webkit-scrollbar-thumb:hover {
+        #countrySuggestions::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #764ba2, #667eea);
+            width: 10px;
         }
 
         /* Invisible Easter Egg Button */
@@ -1638,11 +1717,12 @@
                 border-radius: 0 16px 16px 0 !important;
             }
             
-            /* Country suggestions mobile - FIXED */
-            .country-suggestions {
+            /* Country suggestions mobile */
+            #countrySuggestions {
                 width: calc(100% - 100px);
                 left: 0;
-                border-radius: 0 0 16px 16px;
+                border-radius: 0 0 12px 12px;
+                max-height: 220px;
             }
             
             #pastHints, #history {
@@ -1731,8 +1811,19 @@
             }
             
             /* Country suggestions small screens */
-            .country-suggestions {
+            #countrySuggestions {
                 width: calc(100% - 90px);
+                max-height: 200px;
+            }
+            
+            .country-suggestion {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            
+            .country-flag {
+                font-size: 1.1em;
+                min-width: 22px;
             }
             
             #pastHints, #history {
@@ -2751,6 +2842,7 @@ const totalSlides = 4;
 
 // Country suggestions variables
 let highlightedSuggestionIndex = -1;
+let suggestionTimeout;
 
 // Translation function
 function translate(key, replacements = {}) {
@@ -2781,12 +2873,6 @@ function updateLanguage() {
         guessInput.placeholder = translate('guessPlaceholder');
     }
     
-    // Update current language display
-    document.getElementById('current-language').textContent = 
-        translations[currentLanguage].title ? 
-        translations[currentLanguage].title.replace(' 🌍', '').replace('Geodle', 'English').replace('지오들', '한국어').replace('ジオドル', '日本語').replace('地理猜猜', '中文').replace('Геодл', 'Русский').replace('Geodle', 'Português').replace('Geodle', 'Italiano').replace('Geodle', 'Deutsch').replace('Geodle', 'Français').replace('Geodle', 'Español') :
-        'English';
-        
     // Update language display properly
     const langMap = {
         'en': 'English',
@@ -2877,7 +2963,7 @@ function changeLanguage(langCode) {
     }
 }
 
-// Country Suggestions Functions
+// Enhanced Country Suggestions Functions
 function showCountrySuggestions(input) {
     const suggestionsContainer = document.getElementById('countrySuggestions');
     const inputValue = input.value.toUpperCase().trim();
@@ -2887,25 +2973,51 @@ function showCountrySuggestions(input) {
         return;
     }
     
-    // Filter countries based on input
+    // Filter countries based on input with better matching
     const filteredCountries = allCountries.filter(country => 
-        country.includes(inputValue)
-    ).slice(0, 8); // Limit to 8 suggestions
+        country.includes(inputValue) || 
+        country.toLowerCase().includes(inputValue.toLowerCase())
+    ).slice(0, 10); // Limit to 10 suggestions for better performance
+    
+    suggestionsContainer.innerHTML = '';
     
     if (filteredCountries.length === 0) {
-        suggestionsContainer.classList.remove('show');
+        // Show no results message
+        const noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.textContent = 'No matching countries found';
+        suggestionsContainer.appendChild(noResults);
+        suggestionsContainer.classList.add('show');
         return;
     }
     
-    // Clear previous suggestions
-    suggestionsContainer.innerHTML = '';
-    
-    // Add new suggestions
+    // Add country suggestions with enhanced display
     filteredCountries.forEach((country, index) => {
         const suggestion = document.createElement('div');
         suggestion.className = 'country-suggestion';
-        suggestion.textContent = country;
         suggestion.dataset.country = country;
+        
+        // Add country flag emoji (simplified - you can add actual flag mapping)
+        const flagEmoji = getCountryFlag(country);
+        
+        // Highlight matching part of the text
+        const countryLower = country.toLowerCase();
+        const inputLower = input.value.toLowerCase();
+        const matchIndex = countryLower.indexOf(inputLower);
+        
+        let displayName = country;
+        if (matchIndex !== -1) {
+            const beforeMatch = country.substring(0, matchIndex);
+            const match = country.substring(matchIndex, matchIndex + input.value.length);
+            const afterMatch = country.substring(matchIndex + input.value.length);
+            
+            displayName = `${beforeMatch}<span class="match-highlight">${match}</span>${afterMatch}`;
+        }
+        
+        suggestion.innerHTML = `
+            <span class="country-flag">${flagEmoji}</span>
+            <span class="country-name">${displayName}</span>
+        `;
         
         if (index === 0) {
             suggestion.classList.add('highlighted');
@@ -2922,10 +3034,46 @@ function showCountrySuggestions(input) {
     suggestionsContainer.classList.add('show');
 }
 
+function getCountryFlag(countryName) {
+    // Simple flag mapping - you can expand this with actual country flag emojis
+    const flagMap = {
+        'USA': '🇺🇸', 'UNITED STATES': '🇺🇸',
+        'UK': '🇬🇧', 'UNITED KINGDOM': '🇬🇧',
+        'CANADA': '🇨🇦',
+        'AUSTRALIA': '🇦🇺',
+        'GERMANY': '🇩🇪',
+        'FRANCE': '🇫🇷',
+        'ITALY': '🇮🇹',
+        'SPAIN': '🇪🇸',
+        'JAPAN': '🇯🇵',
+        'CHINA': '🇨🇳',
+        'INDIA': '🇮🇳',
+        'BRAZIL': '🇧🇷',
+        'RUSSIA': '🇷🇺',
+        'MEXICO': '🇲🇽',
+        'SOUTH KOREA': '🇰🇷',
+        'INDONESIA': '🇮🇩',
+        // Add more mappings as needed
+    };
+    
+    return flagMap[countryName.toUpperCase()] || '🌍'; // Default globe emoji
+}
+
 function selectCountrySuggestion(country) {
-    document.getElementById('guessInput').value = country;
+    const guessInput = document.getElementById('guessInput');
+    guessInput.value = country;
+    guessInput.focus();
+    
+    // Close dropdown
     document.getElementById('countrySuggestions').classList.remove('show');
     highlightedSuggestionIndex = -1;
+    
+    // Optional: Trigger guess automatically
+    setTimeout(() => {
+        if (document.getElementById('guessButton') && !document.getElementById('guessButton').disabled) {
+            document.getElementById('guessButton').click();
+        }
+    }, 100);
 }
 
 function navigateSuggestions(direction) {
@@ -2933,23 +3081,31 @@ function navigateSuggestions(direction) {
     if (suggestions.length === 0) return;
     
     // Remove highlight from current suggestion
-    if (highlightedSuggestionIndex >= 0) {
+    if (highlightedSuggestionIndex >= 0 && highlightedSuggestionIndex < suggestions.length) {
         suggestions[highlightedSuggestionIndex].classList.remove('highlighted');
     }
     
     // Calculate new index
     if (direction === 'up') {
-        highlightedSuggestionIndex = highlightedSuggestionIndex <= 0 ? suggestions.length - 1 : highlightedSuggestionIndex - 1;
+        highlightedSuggestionIndex = highlightedSuggestionIndex <= 0 ? 
+            suggestions.length - 1 : 
+            highlightedSuggestionIndex - 1;
     } else { // down
-        highlightedSuggestionIndex = highlightedSuggestionIndex >= suggestions.length - 1 ? 0 : highlightedSuggestionIndex + 1;
+        highlightedSuggestionIndex = highlightedSuggestionIndex >= suggestions.length - 1 ? 
+            0 : 
+            highlightedSuggestionIndex + 1;
     }
     
     // Add highlight to new suggestion
     suggestions[highlightedSuggestionIndex].classList.add('highlighted');
-    suggestions[highlightedSuggestionIndex].scrollIntoView({ block: 'nearest' });
+    suggestions[highlightedSuggestionIndex].scrollIntoView({ 
+        block: 'nearest',
+        behavior: 'smooth' 
+    });
     
     // Update input with highlighted suggestion
-    document.getElementById('guessInput').value = suggestions[highlightedSuggestionIndex].dataset.country;
+    document.getElementById('guessInput').value = 
+        suggestions[highlightedSuggestionIndex].dataset.country;
 }
 
 // Tutorial Functions
@@ -3397,6 +3553,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close suggestions when clicking outside
         if (!guessForm.contains(e.target)) {
             suggestions.classList.remove('show');
+            highlightedSuggestionIndex = -1;
         }
     });
     
@@ -3434,17 +3591,21 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Everyone to DM me at 89132851 with a screenshot gets a place in this message forever! -creator Reuben');
     });
     
-    // Country suggestions
+    // Enhanced Country suggestions
     const guessInput = document.getElementById('guessInput');
     
     guessInput.addEventListener('input', function() {
-        showCountrySuggestions(this);
+        // Debounce the suggestions to improve performance
+        clearTimeout(suggestionTimeout);
+        suggestionTimeout = setTimeout(() => {
+            showCountrySuggestions(this);
+        }, 150);
     });
     
     guessInput.addEventListener('keydown', function(e) {
         const suggestions = document.querySelectorAll('.country-suggestion');
         
-        if (suggestions.length > 0) {
+        if (suggestions.length > 0 && suggestions[0].className !== 'no-results') {
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 navigateSuggestions('down');
@@ -3456,6 +3617,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectCountrySuggestion(suggestions[highlightedSuggestionIndex].dataset.country);
             } else if (e.key === 'Escape') {
                 document.getElementById('countrySuggestions').classList.remove('show');
+                highlightedSuggestionIndex = -1;
             }
         }
     });
