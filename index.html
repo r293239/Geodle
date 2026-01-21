@@ -801,7 +801,7 @@
             margin: 0;
         }
 
-        /* Enhanced Country Suggestions Dropdown - IMPROVED */
+        /* Enhanced Country Suggestions Dropdown - FIXED POSITION, NO FLAGS */
         #countrySuggestions {
             position: absolute;
             top: 100%;
@@ -845,9 +845,6 @@
             color: #333;
             font-size: 15px;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
             position: relative;
             overflow: hidden;
         }
@@ -887,20 +884,6 @@
             color: #667eea;
             font-weight: 600;
             border-left: 3px solid #667eea;
-        }
-
-        /* Flag emoji styling */
-        .country-flag {
-            font-size: 1.2em;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .country-name {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         /* Match highlight */
@@ -1819,11 +1802,6 @@
             .country-suggestion {
                 padding: 10px 14px;
                 font-size: 13px;
-            }
-            
-            .country-flag {
-                font-size: 1.1em;
-                min-width: 22px;
             }
             
             #pastHints, #history {
@@ -2997,9 +2975,6 @@ function showCountrySuggestions(input) {
         suggestion.className = 'country-suggestion';
         suggestion.dataset.country = country;
         
-        // Add country flag emoji (simplified - you can add actual flag mapping)
-        const flagEmoji = getCountryFlag(country);
-        
         // Highlight matching part of the text
         const countryLower = country.toLowerCase();
         const inputLower = input.value.toLowerCase();
@@ -3014,10 +2989,7 @@ function showCountrySuggestions(input) {
             displayName = `${beforeMatch}<span class="match-highlight">${match}</span>${afterMatch}`;
         }
         
-        suggestion.innerHTML = `
-            <span class="country-flag">${flagEmoji}</span>
-            <span class="country-name">${displayName}</span>
-        `;
+        suggestion.innerHTML = `${displayName}`;
         
         if (index === 0) {
             suggestion.classList.add('highlighted');
@@ -3032,31 +3004,6 @@ function showCountrySuggestions(input) {
     });
     
     suggestionsContainer.classList.add('show');
-}
-
-function getCountryFlag(countryName) {
-    // Simple flag mapping - you can expand this with actual country flag emojis
-    const flagMap = {
-        'USA': '🇺🇸', 'UNITED STATES': '🇺🇸',
-        'UK': '🇬🇧', 'UNITED KINGDOM': '🇬🇧',
-        'CANADA': '🇨🇦',
-        'AUSTRALIA': '🇦🇺',
-        'GERMANY': '🇩🇪',
-        'FRANCE': '🇫🇷',
-        'ITALY': '🇮🇹',
-        'SPAIN': '🇪🇸',
-        'JAPAN': '🇯🇵',
-        'CHINA': '🇨🇳',
-        'INDIA': '🇮🇳',
-        'BRAZIL': '🇧🇷',
-        'RUSSIA': '🇷🇺',
-        'MEXICO': '🇲🇽',
-        'SOUTH KOREA': '🇰🇷',
-        'INDONESIA': '🇮🇩',
-        // Add more mappings as needed
-    };
-    
-    return flagMap[countryName.toUpperCase()] || '🌍'; // Default globe emoji
 }
 
 function selectCountrySuggestion(country) {
