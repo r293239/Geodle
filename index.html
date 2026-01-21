@@ -801,23 +801,24 @@
             margin: 0;
         }
 
-        /* Enhanced Country Suggestions Dropdown - FIXED POSITION, NO FLAGS */
+        /* Enhanced Country Suggestions Dropdown - FIXED POSITION, HIGHEST Z-INDEX */
         #countrySuggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: calc(100% - 120px);
+            position: fixed; /* Changed from absolute to fixed */
+            top: calc(100% - 200px); /* Adjust based on your layout */
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px); /* Full width minus padding */
+            max-width: 480px; /* Match your max-width constraint */
             background: white;
             border: 1px solid rgba(102, 126, 234, 0.3);
-            border-top: none;
-            border-radius: 0 0 16px 16px;
+            border-radius: 16px;
             max-height: 280px;
             overflow-y: auto;
             box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.15),
-                0 2px 20px rgba(102, 126, 234, 0.1),
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 8px 32px rgba(102, 126, 234, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            z-index: 1001;
+            z-index: 99999; /* Highest z-index */
             display: none;
             animation: dropdownAppear 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -825,11 +826,11 @@
         @keyframes dropdownAppear {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateX(-50%) translateY(-10px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(-50%) translateY(0);
             }
         }
 
@@ -1702,10 +1703,10 @@
             
             /* Country suggestions mobile */
             #countrySuggestions {
-                width: calc(100% - 100px);
-                left: 0;
-                border-radius: 0 0 12px 12px;
-                max-height: 220px;
+                width: calc(100% - 30px);
+                max-width: calc(100% - 30px);
+                top: calc(100% - 180px);
+                max-height: 200px;
             }
             
             #pastHints, #history {
@@ -1795,8 +1796,10 @@
             
             /* Country suggestions small screens */
             #countrySuggestions {
-                width: calc(100% - 90px);
-                max-height: 200px;
+                width: calc(100% - 24px);
+                max-width: calc(100% - 24px);
+                top: calc(100% - 160px);
+                max-height: 180px;
             }
             
             .country-suggestion {
@@ -2560,7 +2563,7 @@ const translations = {
         newGame: "Neues Spiel",
         dailyLimit: "Sie haben heute schon gespielt! Kommen Sie morgen wieder 👀",
         dataLoadingError: "Datenladefehler",
-        dataLoadingErrorDesc: "Die geografische Datendatei (data.js) konnte nicht geladen werden. Stellen Sie sicher, dass die Datei existiert et korrekt formatiert ist.",
+        dataLoadingErrorDesc: "Die geografische Datendatei (data.js) konnte nicht geladen werden. Stellen Sie sicher, que die Datei existiert et korrekt formatiert ist.",
         helpImprove: "Helfen Sie uns zu Verbessern",
         music: "Musik",
         correct: "🎉 Richtig! Die Antwort ist",
