@@ -801,24 +801,22 @@
             margin: 0;
         }
 
-        /* Enhanced Country Suggestions Dropdown - FIXED POSITION, HIGHEST Z-INDEX */
+        /* Enhanced Country Suggestions Dropdown - FIXED POSITIONING, NO BLUR OVERLAY */
         #countrySuggestions {
-            position: fixed; /* Changed from absolute to fixed */
-            top: calc(100% - 200px); /* Adjust based on your layout */
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px); /* Full width minus padding */
-            max-width: 480px; /* Match your max-width constraint */
+            position: absolute;
+            top: 100%; /* Position directly below the input field */
+            left: 0;
+            width: calc(100% - 120px); /* Match input width minus button width */
             background: white;
             border: 1px solid rgba(102, 126, 234, 0.3);
-            border-radius: 16px;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
             max-height: 280px;
             overflow-y: auto;
             box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.3),
-                0 8px 32px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            z-index: 99999; /* Highest z-index */
+                0 10px 40px rgba(0, 0, 0, 0.15),
+                0 2px 20px rgba(102, 126, 234, 0.1);
+            z-index: 1001; /* Above input, below modal overlays */
             display: none;
             animation: dropdownAppear 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -826,11 +824,11 @@
         @keyframes dropdownAppear {
             from {
                 opacity: 0;
-                transform: translateX(-50%) translateY(-10px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
-                transform: translateX(-50%) translateY(0);
+                transform: translateY(0);
             }
         }
 
@@ -1088,7 +1086,7 @@
             color: #333;
             font-family: inherit;
             position: relative;
-            z-index: 1001;
+            z-index: 1002; /* Higher than dropdown to prevent overlap */
         }
         
         #guessInput:focus {
@@ -1126,6 +1124,7 @@
             font-family: inherit;
             box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            z-index: 1002; /* Higher than dropdown to prevent overlap */
         }
         
         #guessButton::before {
@@ -1703,10 +1702,10 @@
             
             /* Country suggestions mobile */
             #countrySuggestions {
-                width: calc(100% - 30px);
-                max-width: calc(100% - 30px);
-                top: calc(100% - 180px);
-                max-height: 200px;
+                width: calc(100% - 100px);
+                left: 0;
+                border-radius: 0 0 12px 12px;
+                max-height: 220px;
             }
             
             #pastHints, #history {
@@ -1796,10 +1795,8 @@
             
             /* Country suggestions small screens */
             #countrySuggestions {
-                width: calc(100% - 24px);
-                max-width: calc(100% - 24px);
-                top: calc(100% - 160px);
-                max-height: 180px;
+                width: calc(100% - 90px);
+                max-height: 200px;
             }
             
             .country-suggestion {
