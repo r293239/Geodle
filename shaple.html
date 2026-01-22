@@ -158,9 +158,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(17, 34, 64, 0.5);
+            background: rgba(10, 25, 47, 0.9);
             border-radius: 20px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.3);
             overflow: hidden;
             margin-bottom: 30px;
         }
@@ -168,10 +168,10 @@
         .shape-image {
             max-width: 80%;
             max-height: 80%;
-            filter: blur(var(--blur-level, 20px));
-            transition: filter 0.5s ease;
+            filter: blur(var(--blur-level, 15px));
+            transition: filter 0.5s ease, opacity 0.5s ease;
             object-fit: contain;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .shape-overlay {
@@ -188,8 +188,9 @@
             z-index: 3;
             background: linear-gradient(135deg, 
                 transparent 0%, 
-                rgba(255, 215, 0, 0.02) 50%, 
+                rgba(10, 25, 47, 0.7) 50%, 
                 transparent 100%);
+            transition: opacity 0.5s ease;
         }
 
         .shape-overlay-text {
@@ -966,6 +967,7 @@
             
             .shape-image-container {
                 height: 300px;
+                background: rgba(10, 25, 47, 0.95);
             }
             
             .shape-overlay-text {
@@ -1216,11 +1218,11 @@
 
     <!-- Country Data -->
     <script>
-        // Country data with silhouette image URLs from a reliable source
+        // Country data with working flag image URLs
         const countries = [
             {
                 name: "Italy",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Italy_-_Outline.svg/800px-Italy_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/it.png",
                 continent: "Europe",
                 neighbors: ["France", "Switzerland", "Austria", "Slovenia"],
                 area: 301340,
@@ -1228,7 +1230,7 @@
             },
             {
                 name: "France",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/France_-_Outline.svg/800px-France_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/fr.png",
                 continent: "Europe",
                 neighbors: ["Belgium", "Luxembourg", "Germany", "Switzerland", "Italy", "Spain", "Andorra", "Monaco"],
                 area: 551695,
@@ -1236,147 +1238,67 @@
             },
             {
                 name: "Germany",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Germany_-_Outline.svg/800px-Germany_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/de.png",
                 continent: "Europe",
                 neighbors: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
                 area: 357022,
                 hint: "Central European country"
             },
             {
-                name: "Spain",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Spain_-_Outline.svg/800px-Spain_-_Outline.svg.png",
-                continent: "Europe",
-                neighbors: ["Portugal", "France", "Andorra"],
-                area: 505990,
-                hint: "Iberian Peninsula"
-            },
-            {
-                name: "United Kingdom",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/United_Kingdom_-_Outline.svg/800px-United_Kingdom_-_Outline.svg.png",
-                continent: "Europe",
-                neighbors: ["Ireland"],
-                area: 242495,
-                hint: "Island nation"
-            },
-            {
                 name: "United States",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/USA_-_Outline.svg/800px-USA_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/us.png",
                 continent: "North America",
                 neighbors: ["Canada", "Mexico"],
                 area: 9833517,
                 hint: "Large North American country"
             },
             {
-                name: "Canada",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Canada_-_Outline.svg/800px-Canada_-_Outline.svg.png",
-                continent: "North America",
-                neighbors: ["United States"],
-                area: 9984670,
-                hint: "Second largest country by area"
-            },
-            {
-                name: "Mexico",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Mexico_-_Outline.svg/800px-Mexico_-_Outline.svg.png",
-                continent: "North America",
-                neighbors: ["United States", "Guatemala", "Belize"],
-                area: 1964375,
-                hint: "Southern neighbor of USA"
-            },
-            {
                 name: "Brazil",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_-_Outline.svg/800px-Brazil_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/br.png",
                 continent: "South America",
                 neighbors: ["Argentina", "Bolivia", "Colombia", "Guyana", "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela", "French Guiana"],
                 area: 8515767,
                 hint: "Largest South American country"
             },
             {
-                name: "Argentina",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Argentina_-_Outline.svg/800px-Argentina_-_Outline.svg.png",
-                continent: "South America",
-                neighbors: ["Bolivia", "Brazil", "Chile", "Paraguay", "Uruguay"],
-                area: 2780400,
-                hint: "Long, narrow southern country"
-            },
-            {
                 name: "Australia",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Australia_-_Outline.svg/800px-Australia_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/au.png",
                 continent: "Oceania",
                 neighbors: [],
                 area: 7692024,
                 hint: "Island continent"
             },
             {
-                name: "India",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/India_-_Outline.svg/800px-India_-_Outline.svg.png",
-                continent: "Asia",
-                neighbors: ["Pakistan", "China", "Nepal", "Bhutan", "Bangladesh", "Myanmar"],
-                area: 3287263,
-                hint: "Triangular shape"
-            },
-            {
-                name: "China",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/China_-_Outline.svg/800px-China_-_Outline.svg.png",
-                continent: "Asia",
-                neighbors: ["Afghanistan", "Bhutan", "India", "Kazakhstan", "North Korea", "Kyrgyzstan", "Laos", "Mongolia", "Myanmar", "Nepal", "Pakistan", "Russia", "Tajikistan", "Vietnam"],
-                area: 9596961,
-                hint: "Rooster-shaped country"
-            },
-            {
                 name: "Japan",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Japan_-_Outline.svg/800px-Japan_-_Outline.svg.png",
+                image: "https://flagcdn.com/w320/jp.png",
                 continent: "Asia",
                 neighbors: [],
                 area: 377975,
                 hint: "Archipelago of islands"
             },
             {
-                name: "South Africa",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/South_Africa_-_Outline.svg/800px-South_Africa_-_Outline.svg.png",
-                continent: "Africa",
-                neighbors: ["Namibia", "Botswana", "Zimbabwe", "Mozambique", "Eswatini", "Lesotho"],
-                area: 1221037,
-                hint: "Southern tip of Africa"
+                name: "India",
+                image: "https://flagcdn.com/w320/in.png",
+                continent: "Asia",
+                neighbors: ["Pakistan", "China", "Nepal", "Bhutan", "Bangladesh", "Myanmar"],
+                area: 3287263,
+                hint: "Triangular shape"
             },
             {
-                name: "Egypt",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Egypt_-_Outline.svg/800px-Egypt_-_Outline.svg.png",
-                continent: "Africa",
-                neighbors: ["Libya", "Sudan", "Israel"],
-                area: 1002450,
-                hint: "Northeast African country"
+                name: "Canada",
+                image: "https://flagcdn.com/w320/ca.png",
+                continent: "North America",
+                neighbors: ["United States"],
+                area: 9984670,
+                hint: "Second largest country by area"
             },
             {
-                name: "Russia",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Russia_-_Outline.svg/800px-Russia_-_Outline.svg.png",
-                continent: "Europe/Asia",
-                neighbors: ["Norway", "Finland", "Estonia", "Latvia", "Lithuania", "Poland", "Belarus", "Ukraine", "Georgia", "Azerbaijan", "Kazakhstan", "China", "Mongolia", "North Korea"],
-                area: 17098246,
-                hint: "Largest country in the world"
-            },
-            {
-                name: "Turkey",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Turkey_-_Outline.svg/800px-Turkey_-_Outline.svg.png",
-                continent: "Asia/Europe",
-                neighbors: ["Greece", "Bulgaria", "Georgia", "Armenia", "Azerbaijan", "Iran", "Iraq", "Syria"],
-                area: 783562,
-                hint: "Bridge between Europe and Asia"
-            },
-            {
-                name: "Sweden",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Sweden_-_Outline.svg/800px-Sweden_-_Outline.svg.png",
+                name: "United Kingdom",
+                image: "https://flagcdn.com/w320/gb.png",
                 continent: "Europe",
-                neighbors: ["Norway", "Finland"],
-                area: 450295,
-                hint: "Long Scandinavian country"
-            },
-            {
-                name: "Norway",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Norway_-_Outline.svg/800px-Norway_-_Outline.svg.png",
-                continent: "Europe",
-                neighbors: ["Sweden", "Finland", "Russia"],
-                area: 323802,
-                hint: "Long coastline with fjords"
+                neighbors: ["Ireland"],
+                area: 242495,
+                hint: "Island nation"
             }
         ];
 
@@ -1386,7 +1308,7 @@
         let remainingGuesses = 8;
         let score = 100;
         let gameActive = true;
-        let blurAmount = 20; // Initial blur (0-20, where 20 is very blurred)
+        let blurAmount = 15;
         let startTime = null;
         let streak = 0;
         let hintsUsed = 0;
@@ -1463,7 +1385,7 @@
             remainingGuesses = 8;
             score = 100;
             gameActive = true;
-            blurAmount = 20;
+            blurAmount = 15;
             hintsUsed = 0;
             startTime = Date.now();
 
@@ -1474,25 +1396,31 @@
             
             shapeTextElement.textContent = 'IDENTIFY THE SHAPE';
             shapeHintElement.textContent = 'Type your guess in the input below';
+            document.getElementById('shapeOverlay').style.opacity = '1';
         }
 
         // Load country silhouette image
         function loadCountryImage() {
             loadingSpinner.style.display = 'block';
-            shapeImage.classList.add('loading');
+            shapeImage.style.opacity = '0';
             
             const img = new Image();
             img.onload = function() {
                 shapeImage.src = this.src;
-                shapeImage.classList.remove('loading');
+                shapeImage.style.opacity = '1';
                 loadingSpinner.style.display = 'none';
                 updateShapeBlur();
+                
+                // Hide overlay text when image is loaded
+                setTimeout(() => {
+                    document.getElementById('shapeOverlay').style.opacity = '0.1';
+                }, 1000);
             };
             
             img.onerror = function() {
-                // Fallback to a generic image
-                shapeImage.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/No_outline.svg/800px-No_outline.svg.png';
-                shapeImage.classList.remove('loading');
+                // Fallback to a simple color
+                shapeImage.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23FFD700"/></svg>';
+                shapeImage.style.opacity = '1';
                 loadingSpinner.style.display = 'none';
                 updateShapeBlur();
             };
@@ -1502,19 +1430,18 @@
 
         // Update shape blur
         function updateShapeBlur() {
-            shapeImage.style.setProperty('--blur-level', `${blurAmount}px`);
+            shapeImage.style.filter = `blur(${blurAmount}px)`;
             updateBlurDisplay();
         }
 
         // Update blur display
         function updateBlurDisplay() {
-            const percentage = Math.max(0, Math.min(100, 100 - (blurAmount * 5)));
+            const percentage = Math.max(0, Math.min(100, 100 - (blurAmount * (100/15))));
             blurProgressElement.style.width = percentage + '%';
             
-            // Update blur level text
-            if (blurAmount >= 15) blurLevelElement.textContent = "VERY BLURRED";
-            else if (blurAmount >= 10) blurLevelElement.textContent = "BLURRED";
-            else if (blurAmount >= 5) blurLevelElement.textContent = "SOMEWHAT CLEAR";
+            if (blurAmount >= 12) blurLevelElement.textContent = "VERY BLURRED";
+            else if (blurAmount >= 8) blurLevelElement.textContent = "BLURRED";
+            else if (blurAmount >= 4) blurLevelElement.textContent = "SOMEWHAT CLEAR";
             else if (blurAmount >= 1) blurLevelElement.textContent = "CLEAR";
             else blurLevelElement.textContent = "VERY CLEAR";
         }
@@ -1607,7 +1534,7 @@
                 shapeTextElement.textContent = 'TRY AGAIN!';
                 
                 // Reduce blur amount (sharpen shape)
-                blurAmount = Math.max(0, blurAmount - 3);
+                blurAmount = Math.max(0, blurAmount - 2);
                 updateShapeBlur();
                 
                 // Reduce score
@@ -1692,10 +1619,11 @@
             
             if (availableCountries.length > 0) {
                 currentCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
-                blurAmount = 20;
+                blurAmount = 15;
                 loadCountryImage();
                 shapeTextElement.textContent = 'NEW COUNTRY';
                 shapeHintElement.textContent = 'Type your guess in the input below';
+                document.getElementById('shapeOverlay').style.opacity = '1';
             } else {
                 // All countries guessed
                 gameActive = false;
