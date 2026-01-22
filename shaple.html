@@ -168,7 +168,7 @@
         .shape-image {
             max-width: 80%;
             max-height: 80%;
-            filter: blur(var(--blur-level, 15px));
+            filter: blur(var(--blur-level, 15px)) brightness(0) invert(1);
             transition: filter 0.5s ease, opacity 0.5s ease;
             object-fit: contain;
             opacity: 0.95;
@@ -1218,11 +1218,11 @@
 
     <!-- Country Data -->
     <script>
-        // Country data with working flag image URLs
+        // Country data with silhouette/outline images
         const countries = [
             {
                 name: "Italy",
-                image: "https://flagcdn.com/w320/it.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Italy_-_Outline.svg/500px-Italy_-_Outline.svg.png",
                 continent: "Europe",
                 neighbors: ["France", "Switzerland", "Austria", "Slovenia"],
                 area: 301340,
@@ -1230,7 +1230,7 @@
             },
             {
                 name: "France",
-                image: "https://flagcdn.com/w320/fr.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/France_-_Outline.svg/500px-France_-_Outline.svg.png",
                 continent: "Europe",
                 neighbors: ["Belgium", "Luxembourg", "Germany", "Switzerland", "Italy", "Spain", "Andorra", "Monaco"],
                 area: 551695,
@@ -1238,7 +1238,7 @@
             },
             {
                 name: "Germany",
-                image: "https://flagcdn.com/w320/de.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Germany_-_Outline.svg/500px-Germany_-_Outline.svg.png",
                 continent: "Europe",
                 neighbors: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
                 area: 357022,
@@ -1246,7 +1246,7 @@
             },
             {
                 name: "United States",
-                image: "https://flagcdn.com/w320/us.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/USA_-_Outline.svg/500px-USA_-_Outline.svg.png",
                 continent: "North America",
                 neighbors: ["Canada", "Mexico"],
                 area: 9833517,
@@ -1254,7 +1254,7 @@
             },
             {
                 name: "Brazil",
-                image: "https://flagcdn.com/w320/br.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_-_Outline.svg/500px-Brazil_-_Outline.svg.png",
                 continent: "South America",
                 neighbors: ["Argentina", "Bolivia", "Colombia", "Guyana", "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela", "French Guiana"],
                 area: 8515767,
@@ -1262,7 +1262,7 @@
             },
             {
                 name: "Australia",
-                image: "https://flagcdn.com/w320/au.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Australia_-_Outline.svg/500px-Australia_-_Outline.svg.png",
                 continent: "Oceania",
                 neighbors: [],
                 area: 7692024,
@@ -1270,7 +1270,7 @@
             },
             {
                 name: "Japan",
-                image: "https://flagcdn.com/w320/jp.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Japan_-_Outline.svg/500px-Japan_-_Outline.svg.png",
                 continent: "Asia",
                 neighbors: [],
                 area: 377975,
@@ -1278,7 +1278,7 @@
             },
             {
                 name: "India",
-                image: "https://flagcdn.com/w320/in.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/India_-_Outline.svg/500px-India_-_Outline.svg.png",
                 continent: "Asia",
                 neighbors: ["Pakistan", "China", "Nepal", "Bhutan", "Bangladesh", "Myanmar"],
                 area: 3287263,
@@ -1286,7 +1286,7 @@
             },
             {
                 name: "Canada",
-                image: "https://flagcdn.com/w320/ca.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Canada_-_Outline.svg/500px-Canada_-_Outline.svg.png",
                 continent: "North America",
                 neighbors: ["United States"],
                 area: 9984670,
@@ -1294,7 +1294,7 @@
             },
             {
                 name: "United Kingdom",
-                image: "https://flagcdn.com/w320/gb.png",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/United_Kingdom_-_Outline.svg/500px-United_Kingdom_-_Outline.svg.png",
                 continent: "Europe",
                 neighbors: ["Ireland"],
                 area: 242495,
@@ -1405,6 +1405,7 @@
             shapeImage.style.opacity = '0';
             
             const img = new Image();
+            img.crossOrigin = "anonymous";
             img.onload = function() {
                 shapeImage.src = this.src;
                 shapeImage.style.opacity = '1';
@@ -1418,14 +1419,29 @@
             };
             
             img.onerror = function() {
-                // Fallback to a simple color
-                shapeImage.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23FFD700"/></svg>';
+                // Create a fallback silhouette
+                createFallbackImage();
                 shapeImage.style.opacity = '1';
                 loadingSpinner.style.display = 'none';
                 updateShapeBlur();
             };
             
             img.src = currentCountry.image;
+        }
+
+        // Create fallback image if the outline fails to load
+        function createFallbackImage() {
+            // Create a simple SVG with the country name
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+                <rect width="400" height="300" fill="#0A192F"/>
+                <text x="200" y="150" text-anchor="middle" fill="#FFD700" font-family="Arial" font-size="24">
+                    ${currentCountry.name} Outline
+                </text>
+                <text x="200" y="180" text-anchor="middle" fill="#8892B0" font-family="Arial" font-size="16">
+                    Outline image failed to load
+                </text>
+            </svg>`;
+            shapeImage.src = 'data:image/svg+xml,' + encodeURIComponent(svg);
         }
 
         // Update shape blur
