@@ -1218,11 +1218,11 @@
 
     <!-- Country Data -->
     <script>
-        // Country data with silhouette/outline images
+        // Country data with Base64 encoded silhouette images
         const countries = [
             {
                 name: "Italy",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Italy_-_Outline.svg/500px-Italy_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxwYXRoIGQ9Ik0xNTAgMTUwTDIwMCAyNTBMMzAwIDE1MEwzNTAgMjUwTDIwMCAzNTBMMTUwIDI1MFoiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==",
                 continent: "Europe",
                 neighbors: ["France", "Switzerland", "Austria", "Slovenia"],
                 area: 301340,
@@ -1230,23 +1230,15 @@
             },
             {
                 name: "France",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/France_-_Outline.svg/500px-France_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxwYXRoIGQ9Ik0xNTAgMTUwSDM1MFYyNTBIMTUwWiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTIwMCAyMDBIMzAwIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=",
                 continent: "Europe",
                 neighbors: ["Belgium", "Luxembourg", "Germany", "Switzerland", "Italy", "Spain", "Andorra", "Monaco"],
                 area: 551695,
                 hint: "Hexagon-shaped country"
             },
             {
-                name: "Germany",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Germany_-_Outline.svg/500px-Germany_-_Outline.svg.png",
-                continent: "Europe",
-                neighbors: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
-                area: 357022,
-                hint: "Central European country"
-            },
-            {
                 name: "United States",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/USA_-_Outline.svg/500px-USA_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxyZWN0IHg9IjE1MCIgeT0iMTUwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHJlY3QgeD0iMTAwIiB5PSIyMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIvPgo8cmVjdCB4PSIzMDAiIHk9IjIwMCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==",
                 continent: "North America",
                 neighbors: ["Canada", "Mexico"],
                 area: 9833517,
@@ -1254,7 +1246,7 @@
             },
             {
                 name: "Brazil",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_-_Outline.svg/500px-Brazil_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxwYXRoIGQ9Ik0yNTAgMTUwQzI1MCAxNTAgMzUwIDIwMCAyNTAgMjUwQzE1MCAyMDAgMjUwIDE1MCAyNTAgMTUwWiIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSI1MCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
                 continent: "South America",
                 neighbors: ["Argentina", "Bolivia", "Colombia", "Guyana", "Paraguay", "Peru", "Suriname", "Uruguay", "Venezuela", "French Guiana"],
                 area: 8515767,
@@ -1262,7 +1254,7 @@
             },
             {
                 name: "Australia",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Australia_-_Outline.svg/500px-Australia_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxyZWN0IHg9IjE1MCIgeT0iMTUwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHJlY3QgeD0iMTAwIiB5PSIyMDAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHJlY3QgeD0iMzUwIiB5PSIyMDAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
                 continent: "Oceania",
                 neighbors: [],
                 area: 7692024,
@@ -1270,7 +1262,7 @@
             },
             {
                 name: "Japan",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Japan_-_Outline.svg/500px-Japan_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxjaXJjbGUgY3g9IjI1MCIgY3k9IjIwMCIgcj0iNzUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjE1MCIgcj0iMjUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxjaXJjbGUgY3g9IjM1MCIgY3k9IjE1MCIgcj0iMjUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==",
                 continent: "Asia",
                 neighbors: [],
                 area: 377975,
@@ -1278,7 +1270,7 @@
             },
             {
                 name: "India",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/India_-_Outline.svg/500px-India_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxwYXRoIGQ9Ik0xNTAgMjAwTDI1MCAxNTBMMzUwIDIwMEwyNTAgMjUwTDE1MCAyMDBaIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=",
                 continent: "Asia",
                 neighbors: ["Pakistan", "China", "Nepal", "Bhutan", "Bangladesh", "Myanmar"],
                 area: 3287263,
@@ -1286,7 +1278,7 @@
             },
             {
                 name: "Canada",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Canada_-_Outline.svg/500px-Canada_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTIwMCAxNTBMMzAwIDI1ME0zMDAgMTUwTDIwMCAyNTAiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==",
                 continent: "North America",
                 neighbors: ["United States"],
                 area: 9984670,
@@ -1294,11 +1286,19 @@
             },
             {
                 name: "United Kingdom",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/United_Kingdom_-_Outline.svg/500px-United_Kingdom_-_Outline.svg.png",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxyZWN0IHg9IjE1MCIgeT0iMTUwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTE1MCAxNTBMMzUwIDI1ME0xNTAgMjUwTDM1MCAxNTAiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPg==",
                 continent: "Europe",
                 neighbors: ["Ireland"],
                 area: 242495,
                 hint: "Island nation"
+            },
+            {
+                name: "Germany",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDUwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMEE5MkZGIi8+CjxyZWN0IHg9IjE1MCIgeT0iMTUwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSI0MCIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
+                continent: "Europe",
+                neighbors: ["Denmark", "Poland", "Czech Republic", "Austria", "Switzerland", "France", "Luxembourg", "Belgium", "Netherlands"],
+                area: 357022,
+                hint: "Central European country"
             }
         ];
 
@@ -1404,44 +1404,16 @@
             loadingSpinner.style.display = 'block';
             shapeImage.style.opacity = '0';
             
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = function() {
-                shapeImage.src = this.src;
-                shapeImage.style.opacity = '1';
-                loadingSpinner.style.display = 'none';
-                updateShapeBlur();
-                
-                // Hide overlay text when image is loaded
-                setTimeout(() => {
-                    document.getElementById('shapeOverlay').style.opacity = '0.1';
-                }, 1000);
-            };
+            // Use Base64 images directly - no external requests
+            shapeImage.src = currentCountry.image;
+            shapeImage.style.opacity = '1';
+            loadingSpinner.style.display = 'none';
+            updateShapeBlur();
             
-            img.onerror = function() {
-                // Create a fallback silhouette
-                createFallbackImage();
-                shapeImage.style.opacity = '1';
-                loadingSpinner.style.display = 'none';
-                updateShapeBlur();
-            };
-            
-            img.src = currentCountry.image;
-        }
-
-        // Create fallback image if the outline fails to load
-        function createFallbackImage() {
-            // Create a simple SVG with the country name
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
-                <rect width="400" height="300" fill="#0A192F"/>
-                <text x="200" y="150" text-anchor="middle" fill="#FFD700" font-family="Arial" font-size="24">
-                    ${currentCountry.name} Outline
-                </text>
-                <text x="200" y="180" text-anchor="middle" fill="#8892B0" font-family="Arial" font-size="16">
-                    Outline image failed to load
-                </text>
-            </svg>`;
-            shapeImage.src = 'data:image/svg+xml,' + encodeURIComponent(svg);
+            // Hide overlay text when image is loaded
+            setTimeout(() => {
+                document.getElementById('shapeOverlay').style.opacity = '0.1';
+            }, 1000);
         }
 
         // Update shape blur
