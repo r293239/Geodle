@@ -1679,7 +1679,7 @@
                 left: 15px;
                 right: 15px;
                 min-width: auto;
-                width: calc(100% - 30px);
+                width = calc(100% - 30px);
             }
             
             #help-button {
@@ -2552,6 +2552,12 @@ let suggestionTimeout;
 // Position tracking for dropdown
 let guessFormRect = null;
 
+// FIX: Create a questions variable from geographyData
+let questions = [];
+if (typeof geographyData !== 'undefined') {
+    questions = geographyData;
+}
+
 // Translation function
 function translate(key, replacements = {}) {
     let text = translations[currentLanguage][key] || translations['en'][key] || key;
@@ -2929,8 +2935,8 @@ function submitGuess() {
     // Clear suggestions
     document.getElementById('countrySuggestions').classList.remove('show');
     
-    // Check if guess is correct
-    const correctAnswer = currentQuestion.country.toUpperCase();
+    // FIX: Use currentQuestion.answer instead of currentQuestion.country
+    const correctAnswer = currentQuestion.answer.toUpperCase();
     const isCorrect = guess === correctAnswer;
     
     // Add to history
@@ -2943,7 +2949,7 @@ function submitGuess() {
         
         const plural = currentClueIndex + 1 === 1 ? '' : 's';
         document.getElementById('resultMsg').innerHTML = translate('congratulations', {
-            answer: currentQuestion.country,
+            answer: currentQuestion.answer,
             clues: currentClueIndex + 1,
             plural: plural
         });
@@ -2954,9 +2960,9 @@ function submitGuess() {
         document.getElementById('guessButton').disabled = true;
         gameEnded = true;
         
-        // Add marker to map
-        const marker = L.marker([currentQuestion.coordinates[0], currentQuestion.coordinates[1]]).addTo(worldMap);
-        marker.bindPopup(`<b>${currentQuestion.country}</b>`).openPopup();
+        // FIX: Remove map marker since we don't have coordinates in data
+        // Just show the country name in clue box
+        document.getElementById('clueBox').textContent = `Correct! The answer is ${currentQuestion.answer}`;
         
         // Update streak display
         document.getElementById('streak').innerHTML = `🏆 ${translate('totalWins')}: ${totalWins}`;
@@ -2967,7 +2973,7 @@ function submitGuess() {
         if (currentClueIndex >= currentQuestion.clues.length) {
             // Game over - no more clues
             document.getElementById('resultMsg').innerHTML = translate('betterLuck', {
-                answer: currentQuestion.country
+                answer: currentQuestion.answer
             });
             
             // Show end screen
@@ -2976,9 +2982,8 @@ function submitGuess() {
             document.getElementById('guessButton').disabled = true;
             gameEnded = true;
             
-            // Add marker to map
-            const marker = L.marker([currentQuestion.coordinates[0], currentQuestion.coordinates[1]]).addTo(worldMap);
-            marker.bindPopup(`<b>${currentQuestion.country}</b>`).openPopup();
+            // Show final answer in clue box
+            document.getElementById('clueBox').textContent = `Game Over! The answer was ${currentQuestion.answer}`;
         } else {
             // Show next clue
             document.getElementById('currentClue').textContent = currentClueIndex + 1;
@@ -3014,13 +3019,13 @@ function shareScore() {
         const win = currentClueIndex < currentQuestion.clues.length;
         if (win) {
             shareText = translate('scoreWon', {
-                answer: currentQuestion.country,
+                answer: currentQuestion.answer,
                 clues: currentClueIndex + 1,
                 wins: totalWins
             });
         } else {
             shareText = translate('scoreLost', {
-                answer: currentQuestion.country
+                answer: currentQuestion.answer
             });
         }
     } else {
