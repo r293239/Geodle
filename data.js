@@ -2150,7 +2150,7 @@ const geographyData = [
     ]
   }
 ];
-
+const questions = geographyData;
 // Export for use in other files (if using modules)
 // export { geographyData };
 
