@@ -56,7 +56,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#8B4513"/>
+    <meta name="theme-color" content="#2C3E50"/>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -72,7 +72,7 @@
             max-width: 520px;
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            background: linear-gradient(135deg, #34495e 0%, #2C3E50 100%);
             min-height: 100vh;
             color: #333;
             position: relative;
@@ -85,9 +85,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(210, 105, 30, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(244, 164, 96, 0.2) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 80%, rgba(52, 152, 219, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(155, 89, 182, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(46, 204, 113, 0.2) 0%, transparent 50%);
             z-index: -1;
             animation: gradientShift 10s ease-in-out infinite;
         }
@@ -186,7 +186,7 @@
         }
 
         .menu-item:hover {
-            background: rgba(139, 69, 19, 0.1);
+            background: rgba(52, 152, 219, 0.1);
             transform: translateX(5px);
         }
 
@@ -197,7 +197,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            background: linear-gradient(135deg, #34495e 0%, #2C3E50 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -336,9 +336,9 @@
         
         #progressFill {
             height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A, #CDDC39);
+            background: linear-gradient(90deg, #3498db, #2980b9);
             transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 10%;
+            width: 12.5%;
             border-radius: 14px;
         }
         
@@ -365,9 +365,9 @@
         }
         
         #guessInput:focus {
-            border-color: #4CAF50;
+            border-color: #3498db;
             box-shadow: 
-                0 0 30px rgba(76, 175, 80, 0.4),
+                0 0 30px rgba(52, 152, 219, 0.4),
                 inset 0 1px 0 rgba(255,255,255,0.5);
             transform: translateY(-2px);
         }
@@ -375,7 +375,7 @@
         #guessButton {
             padding: 18px 26px;
             font-size: 1.1em;
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
             border: none;
             cursor: pointer;
@@ -388,12 +388,12 @@
         }
         
         #guessButton:hover:not(:disabled) {
-            background: linear-gradient(135deg, #218838, #1e7e34);
+            background: linear-gradient(135deg, #27ae60, #229954);
             transform: translateY(-2px);
         }
         
         #guessButton:disabled {
-            background: linear-gradient(135deg, #6c757d, #5a6268);
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
             cursor: not-allowed;
         }
         
@@ -454,7 +454,7 @@
         }
 
         .mode-btn.active {
-            background: linear-gradient(135deg, #8B4513, #D2691E);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             border-color: rgba(255,255,255,0.3);
             color: white;
         }
@@ -497,11 +497,11 @@
         
         #pastHintsList li {
             padding: 14px 18px;
-            background: linear-gradient(135deg, #f5efe6, #f8f4ec);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             margin-bottom: 10px;
             border-radius: 12px;
             font-size: 0.95em;
-            border-left: 4px solid #D2691E;
+            border-left: 4px solid #3498db;
         }
         
         #historyList li {
@@ -517,15 +517,15 @@
         }
         
         #historyList li.correct {
-            background: linear-gradient(135deg, rgba(200, 230, 201, 0.9), rgba(232, 245, 232, 0.9));
-            color: #2e7d32;
-            border-left: 4px solid #4CAF50;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+            color: white;
+            border-left: 4px solid #27ae60;
         }
         
         #historyList li.incorrect {
-            background: linear-gradient(135deg, rgba(255, 205, 210, 0.9), rgba(255, 235, 238, 0.9));
-            color: #c62828;
-            border-left: 4px solid #f44336;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
+            color: white;
+            border-left: 4px solid #e74c3c;
         }
         
         #streak {
@@ -560,17 +560,17 @@
         }
         
         #resetBtn {
-            background: linear-gradient(135deg, #dc3545, #bd2130);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
         }
         
         #resetWinsBtn {
-            background: linear-gradient(135deg, #6f42c1, #5a2d91);
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
             color: white;
         }
         
         #endScreen {
-            background: linear-gradient(135deg, rgba(194, 240, 194, 0.95), rgba(168, 230, 168, 0.95));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.95), rgba(41, 128, 185, 0.95));
             backdrop-filter: blur(20px);
             padding: 30px;
             border-radius: 20px;
@@ -581,22 +581,23 @@
             box-shadow: 
                 0 20px 60px rgba(0,0,0,0.2),
                 inset 0 1px 0 rgba(255,255,255,0.4);
+            color: white;
         }
         
         #shareBtn, #newGameBtn {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
             margin: 10px 8px;
         }
         
         #dailyLimitMsg, #loadingError {
-            background: linear-gradient(135deg, rgba(255, 211, 211, 0.95), rgba(255, 235, 238, 0.95));
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.95), rgba(192, 57, 43, 0.95));
             backdrop-filter: blur(20px);
-            border: 1px solid #d64c4c;
+            border: 1px solid #c0392b;
             padding: 24px;
             border-radius: 18px;
             text-align: center;
-            color: #d64c4c;
+            color: white;
             font-weight: 600;
             margin: 25px 0;
             display: none;
@@ -606,7 +607,7 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
             border: none;
             border-radius: 50px;
@@ -617,13 +618,13 @@
             text-decoration: none;
             z-index: 9999;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
 
         #help-button:hover {
-            background: linear-gradient(135deg, #0056b3, #004085);
+            background: linear-gradient(135deg, #2980b9, #21618c);
             transform: translateY(-4px);
-            color: white;
-            text-decoration: none;
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.5);
         }
         
         /* Animations */
@@ -722,19 +723,39 @@
         }
         
         /* Historical Theme Elements */
-        .historical-icon {
-            font-size: 1.2em;
-            margin-right: 8px;
+        .clue-counter {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-right: 10px;
         }
         
         .clue-type {
             font-size: 0.8em;
-            color: #8B4513;
-            font-weight: 600;
+            color: #7f8c8d;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-top: 5px;
-            opacity: 0.8;
+        }
+        
+        /* Better scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -939,7 +960,7 @@ function resetGame() {
     showLoadingScreen();
     setTimeout(() => {
         initGame();
-        showFeedback('🔄 New historical challenge started!', '#0078d7');
+        showFeedback('🔄 New historical challenge started!', '#3498db');
     }, 600);
 }
 
@@ -956,7 +977,7 @@ function updatePastHints() {
     // Show all hints up to current clue index
     for (let i = 0; i <= currentClueIndex; i++) {
         const li = document.createElement('li');
-        li.textContent = `${i + 1}. ${currentQuestion.clues[i]}`;
+        li.innerHTML = `<span class="clue-counter">${i + 1}</span>${currentQuestion.clues[i]}`;
         pastHintsList.appendChild(li);
     }
 }
@@ -996,7 +1017,7 @@ function handleGuess(e) {
     
     if (gameEnded) return;
     
-    const guess = document.getElementById('guessInput').value.trim().toUpperCase();
+    const guess = document.getElementById('guessInput').value.trim();
     
     if (!guess) return;
     
@@ -1011,7 +1032,7 @@ function handleGuess(e) {
     });
     
     if (isCorrect) {
-        showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, 'green');
+        showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, '#2ecc71');
         totalWins++;
         localStorage.setItem('histle_total_wins', totalWins.toString());
         updateWinDisplay();
@@ -1021,9 +1042,9 @@ function handleGuess(e) {
             currentClueIndex++;
             updateClueDisplay();
             updateProgressBar();
-            showFeedback(`❌ "${guess}" is not correct. Here's the next clue...`, 'red');
+            showFeedback(`❌ "${guess}" is not correct. Here's the next clue...`, '#e74c3c');
         } else {
-            showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, 'orange');
+            showFeedback(`😔 Game Over! The answer was ${currentQuestion.answer}`, '#e67e22');
             endGame(false);
         }
     }
@@ -1039,6 +1060,11 @@ function showFeedback(message, color) {
     const feedback = document.getElementById('feedback');
     feedback.textContent = message;
     feedback.style.color = color;
+    feedback.style.backgroundColor = color === '#2ecc71' ? 'rgba(46, 204, 113, 0.1)' :
+                                   color === '#e74c3c' ? 'rgba(231, 76, 60, 0.1)' :
+                                   color === '#e67e22' ? 'rgba(230, 126, 34, 0.1)' :
+                                   color === '#3498db' ? 'rgba(52, 152, 219, 0.1)' :
+                                   'rgba(255,255,255,0.1)';
 }
 
 function updateHistoryDisplay() {
@@ -1091,7 +1117,7 @@ function shareScore() {
     } else {
         // Fallback - copy to clipboard
         navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-        alert('Score copied to clipboard!');
+        showFeedback('Score copied to clipboard!', '#3498db');
     }
 }
 
@@ -1136,7 +1162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             totalWins = 0;
             localStorage.setItem('histle_total_wins', totalWins.toString());
             updateWinDisplay();
-            showFeedback('🏆 Win count reset to 0!', '#6f42c1');
+            showFeedback('🏆 Win count reset to 0!', '#9b59b6');
         }
     });
     document.getElementById('shareBtn').addEventListener('click', shareScore);
