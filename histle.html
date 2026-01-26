@@ -56,7 +56,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#795548"/>
+    <meta name="theme-color" content="#8B7355"/>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -72,9 +72,9 @@
             max-width: 520px;
             margin: 0 auto;
             padding: 20px;
-            background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+            background: linear-gradient(135deg, #6B5B4D 0%, #524439 100%);
             min-height: 100vh;
-            color: #333;
+            color: #F5F1E8;
             position: relative;
         }
         
@@ -85,9 +85,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(121, 85, 72, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(93, 64, 55, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(141, 110, 99, 0.3) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 80%, rgba(139, 115, 85, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(107, 91, 77, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(162, 140, 114, 0.3) 0%, transparent 50%);
             z-index: -1;
             animation: gradientShift 15s ease-in-out infinite;
         }
@@ -102,9 +102,9 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(245, 241, 232, 0.15);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(245, 241, 232, 0.2);
             border-radius: 10px;
             padding: 12px;
             cursor: pointer;
@@ -118,7 +118,7 @@
         }
 
         #menu-button:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(245, 241, 232, 0.25);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
@@ -136,7 +136,7 @@
             display: block;
             height: 2px;
             width: 100%;
-            background: white;
+            background: #F5F1E8;
             border-radius: 1px;
             transition: all 0.25s ease-in-out;
             position: relative;
@@ -147,13 +147,13 @@
             position: fixed;
             top: 80px;
             left: 20px;
-            background: rgba(255,255,255,0.98);
+            background: rgba(82, 68, 57, 0.98);
             backdrop-filter: blur(20px);
             border-radius: 15px;
             padding: 20px;
             min-width: 240px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            border: 1px solid rgba(245, 241, 232, 0.2);
             z-index: 1000;
             opacity: 0;
             transform: translateY(-10px);
@@ -170,7 +170,7 @@
         .menu-item {
             display: block;
             padding: 12px 16px;
-            color: #5D4037;
+            color: #F5F1E8;
             text-decoration: none;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -186,7 +186,7 @@
         }
 
         .menu-item:hover {
-            background: rgba(121, 85, 72, 0.1);
+            background: rgba(139, 115, 85, 0.3);
             transform: translateX(5px);
         }
 
@@ -197,7 +197,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+            background: linear-gradient(135deg, #6B5B4D 0%, #524439 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -213,7 +213,7 @@
 
         .loading-content {
             text-align: center;
-            color: white;
+            color: #F5F1E8;
         }
 
         .loading-logo {
@@ -235,8 +235,8 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
+            border: 4px solid rgba(245, 241, 232, 0.3);
+            border-top: 4px solid #F5F1E8;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
@@ -270,8 +270,8 @@
             margin-bottom: 25px;
             font-size: 2.8rem;
             font-weight: 700;
-            color: white;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.1);
+            color: #F5F1E8;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
             letter-spacing: -0.02em;
             animation: fadeInDown 0.8s ease;
         }
@@ -283,14 +283,14 @@
             margin: 25px 0;
             box-shadow: 
                 0 20px 60px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.2);
+                inset 0 1px 0 rgba(245, 241, 232, 0.15);
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(245, 241, 232, 0.15);
             animation: fadeInUp 0.8s ease 0.2s both;
         }
         
         #clueBox {
-            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(250,250,250,0.98) 100%);
+            background: rgba(82, 68, 57, 0.95);
             backdrop-filter: blur(20px) saturate(180%);
             padding: 28px 24px;
             margin: 25px 0;
@@ -298,11 +298,11 @@
             font-size: 1.25em;
             border-radius: 18px;
             text-align: center;
-            border: 1px solid rgba(121, 85, 72, 0.2);
+            border: 1px solid rgba(139, 115, 85, 0.3);
             box-shadow: 
-                0 15px 50px rgba(0,0,0,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.6);
-            color: #5D4037;
+                0 15px 50px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(245, 241, 232, 0.1);
+            color: #F5F1E8;
             animation: fadeInUp 0.8s ease 0.3s both;
             min-height: 80px;
             display: flex;
@@ -315,7 +315,7 @@
             text-align: center;
             margin: 20px 0;
             font-size: 1.1em;
-            color: rgba(255,255,255,0.95);
+            color: rgba(245, 241, 232, 0.95);
             font-weight: 500;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
             animation: fadeInUp 0.8s ease 0.4s both;
@@ -324,26 +324,26 @@
         #progressBar {
             width: 100%;
             height: 28px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(245, 241, 232, 0.15);
             backdrop-filter: blur(10px);
             border-radius: 14px;
             overflow: hidden;
             margin: 15px 0;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(245, 241, 232, 0.2);
             box-shadow: 
-                inset 0 2px 4px rgba(0,0,0,0.1),
+                inset 0 2px 4px rgba(0,0,0,0.2),
                 0 4px 20px rgba(0,0,0,0.15);
         }
         
         #progressFill {
             height: 100%;
-            background: linear-gradient(90deg, #8D6E63, #A1887F, #BCAAA4);
+            background: linear-gradient(90deg, #A28C72, #8B7355, #6B5B4D);
             transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
             width: 12.5%;
             border-radius: 14px;
             box-shadow: 
-                inset 0 1px 0 rgba(255,255,255,0.3),
-                0 0 20px rgba(141, 110, 99, 0.4);
+                inset 0 1px 0 rgba(245, 241, 232, 0.3),
+                0 0 20px rgba(162, 140, 114, 0.4);
         }
         
         #guessForm {
@@ -357,35 +357,35 @@
             flex: 1;
             font-size: 1.1em;
             padding: 18px 22px;
-            border: 2px solid rgba(121, 85, 72, 0.3);
+            border: 2px solid rgba(139, 115, 85, 0.4);
             border-radius: 16px 0 0 16px;
             outline: none;
-            background: rgba(255,255,255,0.98);
+            background: rgba(82, 68, 57, 0.95);
             backdrop-filter: blur(20px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 400;
-            color: #5D4037;
+            color: #F5F1E8;
             font-family: inherit;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
         
         #guessInput:focus {
-            border-color: #8D6E63;
+            border-color: #A28C72;
             box-shadow: 
-                0 0 30px rgba(141, 110, 99, 0.4),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+                0 0 30px rgba(162, 140, 114, 0.4),
+                inset 0 1px 0 rgba(245, 241, 232, 0.1);
             transform: translateY(-2px);
         }
         
         #guessInput::placeholder {
-            color: rgba(93, 64, 55, 0.5);
+            color: rgba(245, 241, 232, 0.6);
         }
         
         #guessButton {
             padding: 18px 26px;
             font-size: 1.1em;
-            background: linear-gradient(135deg, #8D6E63, #795548);
-            color: white;
+            background: linear-gradient(135deg, #A28C72, #8B7355);
+            color: #2A2118;
             border: none;
             cursor: pointer;
             border-radius: 0 16px 16px 0;
@@ -394,19 +394,21 @@
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-family: inherit;
-            box-shadow: 0 8px 25px rgba(121, 85, 72, 0.4);
+            box-shadow: 0 8px 25px rgba(139, 115, 85, 0.4);
         }
         
         #guessButton:hover:not(:disabled) {
-            background: linear-gradient(135deg, #795548, #6D4C41);
+            background: linear-gradient(135deg, #8B7355, #7A6348);
             transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(121, 85, 72, 0.5);
+            box-shadow: 0 12px 35px rgba(139, 115, 85, 0.5);
+            color: #2A2118;
         }
         
         #guessButton:disabled {
-            background: linear-gradient(135deg, #A1887F, #8D6E63);
+            background: linear-gradient(135deg, #6B5B4D, #524439);
             cursor: not-allowed;
-            opacity: 0.8;
+            opacity: 0.7;
+            color: rgba(245, 241, 232, 0.7);
         }
         
         #feedback {
@@ -419,38 +421,38 @@
             font-size: 1.1em;
             min-height: 20px;
             backdrop-filter: blur(10px);
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            background: rgba(139, 115, 85, 0.2);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            color: #F5F1E8;
         }
         
         /* Mode Selector */
         .mode-selector {
-            background: rgba(255,255,255,0.12);
+            background: rgba(82, 68, 57, 0.7);
             backdrop-filter: blur(20px) saturate(180%);
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 25px;
             text-align: center;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
+            color: #F5F1E8;
+            border: 1px solid rgba(139, 115, 85, 0.3);
             animation: fadeInUp 0.8s ease 0.1s both;
             box-shadow: 
                 0 15px 50px rgba(0,0,0,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.2);
+                inset 0 1px 0 rgba(245, 241, 232, 0.1);
         }
 
         .mode-selector h3 {
             margin-bottom: 20px;
             font-size: 1.4rem;
             font-weight: 600;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .mode-btn {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.25);
+            background: rgba(139, 115, 85, 0.3);
+            color: #F5F1E8;
+            border: 2px solid rgba(139, 115, 85, 0.4);
             padding: 14px 24px;
             margin: 0 8px 12px 8px;
             border-radius: 14px;
@@ -463,16 +465,16 @@
         }
 
         .mode-btn:hover {
-            background: rgba(255,255,255,0.25);
-            border-color: rgba(255,255,255,0.4);
+            background: rgba(139, 115, 85, 0.5);
+            border-color: rgba(162, 140, 114, 0.6);
             transform: translateY(-3px);
         }
 
         .mode-btn.active {
-            background: linear-gradient(135deg, #8D6E63, #795548);
-            border-color: rgba(255,255,255,0.3);
-            color: white;
-            box-shadow: 0 8px 25px rgba(121, 85, 72, 0.4);
+            background: linear-gradient(135deg, #A28C72, #8B7355);
+            border-color: rgba(162, 140, 114, 0.6);
+            color: #2A2118;
+            box-shadow: 0 8px 25px rgba(139, 115, 85, 0.4);
         }
 
         .mode-description {
@@ -485,21 +487,21 @@
         
         /* Card Styles */
         #pastHints, #history {
-            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(250,250,250,0.98) 100%);
+            background: rgba(82, 68, 57, 0.95);
             backdrop-filter: blur(20px) saturate(180%);
             border-radius: 18px;
             padding: 24px;
             margin: 20px 0;
             box-shadow: 
-                0 15px 50px rgba(0,0,0,0.15),
-                inset 0 1px 0 rgba(255,255,255,0.4);
-            border: 1px solid rgba(121, 85, 72, 0.2);
+                0 15px 50px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(245, 241, 232, 0.1);
+            border: 1px solid rgba(139, 115, 85, 0.3);
             animation: fadeInUp 0.6s ease both;
         }
         
         #pastHints h3, #history h3 {
             margin-bottom: 18px;
-            color: #5D4037;
+            color: #F5F1E8;
             font-weight: 600;
             font-size: 1.3em;
         }
@@ -513,36 +515,36 @@
         
         #pastHintsList li {
             padding: 14px 18px;
-            background: linear-gradient(135deg, #F5F5F5, #EEEEEE);
+            background: rgba(107, 91, 77, 0.7);
             margin-bottom: 10px;
             border-radius: 12px;
             font-size: 0.95em;
-            border-left: 4px solid #8D6E63;
-            color: #5D4037;
+            border-left: 4px solid #A28C72;
+            color: #F5F1E8;
         }
         
         #historyList li {
             padding: 16px 20px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(107, 91, 77, 0.7);
             margin-bottom: 10px;
             border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             font-size: 0.95em;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #5D4037;
+            color: #F5F1E8;
         }
         
         #historyList li.correct {
-            background: linear-gradient(135deg, rgba(141, 110, 99, 0.9), rgba(121, 85, 72, 0.9));
-            color: white;
-            border-left: 4px solid #6D4C41;
+            background: linear-gradient(135deg, rgba(162, 140, 114, 0.9), rgba(139, 115, 85, 0.9));
+            color: #2A2118;
+            border-left: 4px solid #8B7355;
         }
         
         #historyList li.incorrect {
             background: linear-gradient(135deg, rgba(183, 28, 28, 0.9), rgba(198, 40, 40, 0.9));
-            color: white;
+            color: #F5F1E8;
             border-left: 4px solid #C62828;
         }
         
@@ -550,14 +552,14 @@
             text-align: center;
             font-size: 1.25em;
             margin: 20px 0;
-            color: white;
+            color: #F5F1E8;
             font-weight: 600;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
             padding: 20px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(82, 68, 57, 0.7);
             backdrop-filter: blur(20px);
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(139, 115, 85, 0.3);
             animation: fadeInUp 0.8s ease 0.6s both;
         }
         
@@ -580,43 +582,43 @@
         
         #resetBtn {
             background: linear-gradient(135deg, #D84315, #BF360C);
-            color: white;
+            color: #F5F1E8;
         }
         
         #resetWinsBtn {
-            background: linear-gradient(135deg, #6D4C41, #5D4037);
-            color: white;
+            background: linear-gradient(135deg, #6B5B4D, #524439);
+            color: #F5F1E8;
         }
         
         #endScreen {
-            background: linear-gradient(135deg, rgba(141, 110, 99, 0.95), rgba(121, 85, 72, 0.95));
+            background: linear-gradient(135deg, rgba(162, 140, 114, 0.95), rgba(139, 115, 85, 0.95));
             backdrop-filter: blur(20px);
             padding: 30px;
             border-radius: 20px;
             margin-top: 25px;
             text-align: center;
             display: none;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(245, 241, 232, 0.3);
             box-shadow: 
                 0 20px 60px rgba(0,0,0,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.4);
-            color: white;
+                inset 0 1px 0 rgba(245, 241, 232, 0.2);
+            color: #2A2118;
         }
         
         #shareBtn, #newGameBtn {
-            background: linear-gradient(135deg, #8D6E63, #795548);
-            color: white;
+            background: linear-gradient(135deg, #A28C72, #8B7355);
+            color: #2A2118;
             margin: 10px 8px;
         }
         
         #dailyLimitMsg, #loadingError {
             background: linear-gradient(135deg, rgba(183, 28, 28, 0.95), rgba(198, 40, 40, 0.95));
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(245, 241, 232, 0.2);
             padding: 24px;
             border-radius: 18px;
             text-align: center;
-            color: white;
+            color: #F5F1E8;
             font-weight: 600;
             margin: 25px 0;
             display: none;
@@ -626,8 +628,8 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #8D6E63, #795548);
-            color: white;
+            background: linear-gradient(135deg, #A28C72, #8B7355);
+            color: #2A2118;
             border: none;
             border-radius: 50px;
             padding: 16px 28px;
@@ -637,13 +639,14 @@
             text-decoration: none;
             z-index: 9999;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(121, 85, 72, 0.4);
+            box-shadow: 0 10px 30px rgba(139, 115, 85, 0.4);
         }
 
         #help-button:hover {
-            background: linear-gradient(135deg, #795548, #6D4C41);
+            background: linear-gradient(135deg, #8B7355, #7A6348);
             transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(121, 85, 72, 0.5);
+            box-shadow: 0 15px 40px rgba(139, 115, 85, 0.5);
+            color: #2A2118;
         }
         
         /* Animations */
@@ -744,8 +747,8 @@
         /* Historical Theme Elements */
         .clue-counter {
             display: inline-block;
-            background: #8D6E63;
-            color: white;
+            background: #A28C72;
+            color: #2A2118;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.9em;
@@ -761,32 +764,23 @@
         }
         
         ::-webkit-scrollbar-track {
-            background: rgba(121, 85, 72, 0.1);
+            background: rgba(139, 115, 85, 0.1);
             border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #8D6E63, #795548);
+            background: linear-gradient(135deg, #A28C72, #8B7355);
             border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #795548, #6D4C41);
+            background: linear-gradient(135deg, #8B7355, #7A6348);
         }
         
-        /* Decorative elements */
-        .historical-border {
-            position: relative;
-        }
-        
-        .historical-border::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        /* Text selection */
+        ::selection {
+            background: rgba(162, 140, 114, 0.5);
+            color: #2A2118;
         }
     </style>
 </head>
@@ -991,7 +985,7 @@ function resetGame() {
     showLoadingScreen();
     setTimeout(() => {
         initGame();
-        showFeedback('🔄 New historical challenge started!', '#8D6E63');
+        showFeedback('🔄 New historical challenge started!', '#A28C72');
     }, 600);
 }
 
@@ -1053,7 +1047,7 @@ function handleGuess(e) {
     if (!guess) return;
     
     // Check if correct (case-insensitive)
-    const isCorrect = guess.toUpperCase() === currentQuestion.answer.toUpperCase();
+    const isCorrect = checkGuess(guess, currentQuestion.answer);
     
     // Add to history
     guessHistory.push({
@@ -1063,7 +1057,7 @@ function handleGuess(e) {
     });
     
     if (isCorrect) {
-        showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, '#8D6E63');
+        showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, '#A28C72');
         totalWins++;
         localStorage.setItem('histle_total_wins', totalWins.toString());
         updateWinDisplay();
@@ -1087,13 +1081,36 @@ function handleGuess(e) {
     document.getElementById('guessInput').value = '';
 }
 
+function checkGuess(guess, correctAnswer) {
+    const normalizedGuess = guess.toUpperCase().trim();
+    const normalizedAnswer = correctAnswer.toUpperCase().trim();
+    
+    // Check exact match
+    if (normalizedGuess === normalizedAnswer) {
+        return true;
+    }
+    
+    // Check if guess matches any alternative name
+    const countryData = histleData.find(country => 
+        country.answer.toUpperCase() === normalizedAnswer
+    );
+    
+    if (countryData && countryData.alternatives) {
+        return countryData.alternatives.some(alt => 
+            alt.toUpperCase() === normalizedGuess
+        );
+    }
+    
+    return false;
+}
+
 function showFeedback(message, color) {
     const feedback = document.getElementById('feedback');
     feedback.textContent = message;
-    feedback.style.backgroundColor = color === '#8D6E63' ? 'rgba(141, 110, 99, 0.2)' :
+    feedback.style.backgroundColor = color === '#A28C72' ? 'rgba(162, 140, 114, 0.2)' :
                                    color === '#D84315' ? 'rgba(216, 67, 21, 0.2)' :
                                    color === '#BF360C' ? 'rgba(191, 54, 12, 0.2)' :
-                                   'rgba(255,255,255,0.1)';
+                                   'rgba(139, 115, 85, 0.2)';
     feedback.style.borderColor = color;
 }
 
@@ -1147,7 +1164,7 @@ function shareScore() {
     } else {
         // Fallback - copy to clipboard
         navigator.clipboard.writeText(scoreText + '\n' + window.location.href);
-        showFeedback('Score copied to clipboard!', '#8D6E63');
+        showFeedback('Score copied to clipboard!', '#A28C72');
     }
 }
 
@@ -1192,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', function() {
             totalWins = 0;
             localStorage.setItem('histle_total_wins', totalWins.toString());
             updateWinDisplay();
-            showFeedback('🏆 Win count reset to 0!', '#6D4C41');
+            showFeedback('🏆 Win count reset to 0!', '#6B5B4D');
         }
     });
     document.getElementById('shareBtn').addEventListener('click', shareScore);
