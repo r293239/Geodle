@@ -448,36 +448,31 @@
             height: 100%;
             object-fit: contain;
             padding: 20px;
-            filter: url(#shape-filter);
         }
 
-        /* SVG filter for shape manipulation */
-        .filter-complete {
-            display: none;
-        }
-
+        /* Shape blur classes */
         .shape-extreme-blur {
-            filter: blur(25px) contrast(0.1) brightness(0.5);
+            filter: blur(30px) contrast(0.2) brightness(0.8);
         }
 
         .shape-heavy-blur {
-            filter: blur(20px) contrast(0.2) brightness(0.6);
+            filter: blur(25px) contrast(0.3) brightness(0.85);
         }
 
         .shape-medium-blur {
-            filter: blur(15px) contrast(0.3) brightness(0.7);
+            filter: blur(15px) contrast(0.5) brightness(0.9);
         }
 
         .shape-light-blur {
-            filter: blur(10px) contrast(0.5) brightness(0.8);
+            filter: blur(8px) contrast(0.7) brightness(0.95);
         }
 
         .shape-minimal-blur {
-            filter: blur(5px) contrast(0.8) brightness(0.9);
+            filter: blur(3px) contrast(0.9) brightness(1);
         }
 
         .shape-clear {
-            filter: blur(2px);
+            filter: blur(0) contrast(1) brightness(1);
         }
 
         .clue-info {
@@ -893,29 +888,8 @@
             Clue 1: Extreme blur • Nearly impossible to identify!
         </div>
 
-        <!-- SVG Filters for shape manipulation -->
-        <svg class="filter-complete">
-            <defs>
-                <filter id="shape-filter">
-                    <feGaussianBlur id="blur-filter" stdDeviation="25" />
-                    <feComponentTransfer>
-                        <feFuncR type="linear" slope="0.1" intercept="0" />
-                        <feFuncG type="linear" slope="0.1" intercept="0" />
-                        <feFuncB type="linear" slope="0.1" intercept="0" />
-                        <feFuncA type="linear" slope="0.1" intercept="0" />
-                    </feComponentTransfer>
-                </filter>
-            </defs>
-        </svg>
-
         <div class="shape-container">
-            <svg id="shape-svg" class="shape-svg shape-extreme-blur" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
-                <!-- Country shape will be dynamically inserted here -->
-                <rect width="100%" height="100%" fill="#f7fafc" />
-                <text x="50%" y="50%" text-anchor="middle" fill="#4a5568" font-size="24" font-family="Arial">
-                    Loading shape...
-                </text>
-            </svg>
+            <div id="shape-container-inner"></div>
         </div>
 
         <div class="input-section">
@@ -940,13 +914,12 @@
     </div>
 
     <script>
-        // Country shape data - using simple SVG paths for country outlines
-        // In a real implementation, you would have more detailed SVG paths
+        // Country shape data with simplified SVG paths
         const countriesData = [
             {
                 name: "United States",
                 alternatives: ["USA", "US", "America", "United States of America"],
-                svgPath: "M200,100 L800,100 L800,400 L600,400 L600,600 L400,600 L400,400 L200,400 Z",
+                svgPath: "M100,100 L300,50 L500,100 L700,150 L900,200 L900,600 L700,500 L500,400 L300,350 L100,300 Z",
                 viewBox: "0 0 1000 700",
                 continent: "North America",
                 capital: "Washington D.C.",
@@ -955,7 +928,7 @@
             {
                 name: "Brazil",
                 alternatives: ["Brasil"],
-                svgPath: "M300,150 Q500,100 700,150 Q800,300 700,500 Q500,550 300,500 Q200,350 300,150 Z",
+                svgPath: "M300,200 Q500,150 700,200 Q800,350 700,500 Q500,550 300,500 Q200,350 300,200 Z",
                 viewBox: "0 0 1000 700",
                 continent: "South America",
                 capital: "Brasília",
@@ -964,8 +937,8 @@
             {
                 name: "Italy",
                 alternatives: ["Italia"],
-                svgPath: "M400,200 L600,200 L600,600 L550,550 L500,600 L450,550 L400,600 Z",
-                viewBox: "0 0 1000 800",
+                svgPath: "M400,100 L600,100 L550,500 L450,550 L400,500 Z M550,300 L650,350",
+                viewBox: "0 0 1000 600",
                 continent: "Europe",
                 capital: "Rome",
                 difficulty: "Easy"
@@ -973,8 +946,8 @@
             {
                 name: "Australia",
                 alternatives: [],
-                svgPath: "M200,200 Q400,150 600,200 Q700,300 600,400 Q400,450 200,400 Q100,300 200,200 Z M300,300 L350,350",
-                viewBox: "0 0 1000 600",
+                svgPath: "M200,200 Q400,150 600,200 Q700,350 600,500 Q400,550 200,500 Q100,350 200,200 Z M300,300 L350,350 L350,400 L300,400 Z",
+                viewBox: "0 0 1000 700",
                 continent: "Oceania",
                 capital: "Canberra",
                 difficulty: "Easy"
@@ -982,8 +955,8 @@
             {
                 name: "India",
                 alternatives: ["Bharat"],
-                svgPath: "M300,100 Q500,80 700,100 Q800,250 700,400 Q500,420 300,400 Q200,250 300,100 Z",
-                viewBox: "0 0 1000 500",
+                svgPath: "M300,200 Q500,150 700,200 Q750,350 700,500 Q500,550 300,500 Q250,350 300,200 Z",
+                viewBox: "0 0 1000 700",
                 continent: "Asia",
                 capital: "New Delhi",
                 difficulty: "Medium"
@@ -991,8 +964,8 @@
             {
                 name: "South Africa",
                 alternatives: [],
-                svgPath: "M300,200 L700,200 L700,500 L500,500 L500,600 L300,600 Z",
-                viewBox: "0 0 1000 800",
+                svgPath: "M300,150 L700,150 L650,500 L500,550 L350,500 Z",
+                viewBox: "0 0 1000 600",
                 continent: "Africa",
                 capital: "Cape Town",
                 difficulty: "Medium"
@@ -1000,8 +973,8 @@
             {
                 name: "Japan",
                 alternatives: ["Nippon"],
-                svgPath: "M450,250 Q550,200 650,250 Q700,350 650,450 Q550,500 450,450 Q400,350 450,250 Z",
-                viewBox: "0 0 1000 700",
+                svgPath: "M400,250 Q500,200 600,250 Q650,400 600,550 Q500,600 400,550 Q350,400 400,250 Z",
+                viewBox: "0 0 1000 800",
                 continent: "Asia",
                 capital: "Tokyo",
                 difficulty: "Hard"
@@ -1009,8 +982,8 @@
             {
                 name: "United Kingdom",
                 alternatives: ["UK", "Britain", "Great Britain"],
-                svgPath: "M350,200 L650,200 L650,500 L500,500 L500,600 L350,600 Z",
-                viewBox: "0 0 1000 800",
+                svgPath: "M300,150 L700,150 L650,400 L500,450 L350,400 Z",
+                viewBox: "0 0 1000 600",
                 continent: "Europe",
                 capital: "London",
                 difficulty: "Easy"
@@ -1018,44 +991,35 @@
             {
                 name: "Chile",
                 alternatives: [],
-                svgPath: "M400,100 L450,100 L450,600 L400,600 Z",
+                svgPath: "M400,100 L450,100 L450,600 L400,600 Z M450,200 L500,200 L500,500 L450,500 Z",
                 viewBox: "0 0 1000 700",
                 continent: "South America",
                 capital: "Santiago",
                 difficulty: "Hard"
             },
             {
-                name: "Madagascar",
-                alternatives: [],
-                svgPath: "M400,300 Q500,250 600,300 Q650,400 600,500 Q500,550 400,500 Q350,400 400,300 Z",
-                viewBox: "0 0 1000 800",
-                continent: "Africa",
-                capital: "Antananarivo",
-                difficulty: "Medium"
-            },
-            {
                 name: "France",
                 alternatives: [],
-                svgPath: "M300,200 L700,200 L700,500 L300,500 Z",
-                viewBox: "0 0 1000 700",
+                svgPath: "M250,150 L750,150 L750,450 L250,450 Z",
+                viewBox: "0 0 1000 600",
                 continent: "Europe",
                 capital: "Paris",
                 difficulty: "Easy"
             },
             {
-                name: "Egypt",
-                alternatives: [],
-                svgPath: "M350,300 L650,300 L650,500 L350,500 Z M500,350 L500,450",
-                viewBox: "0 0 1000 800",
-                continent: "Africa",
-                capital: "Cairo",
+                name: "Germany",
+                alternatives: ["Deutschland"],
+                svgPath: "M200,150 L800,150 L800,450 L200,450 Z",
+                viewBox: "0 0 1000 600",
+                continent: "Europe",
+                capital: "Berlin",
                 difficulty: "Easy"
             },
             {
                 name: "Canada",
                 alternatives: [],
-                svgPath: "M200,100 L800,100 L800,400 L600,400 L600,600 L400,600 L400,400 L200,400 Z M500,200 L500,300",
-                viewBox: "0 0 1000 700",
+                svgPath: "M150,100 L850,100 L850,400 L650,400 L650,500 L350,500 L350,400 L150,400 Z",
+                viewBox: "0 0 1000 600",
                 continent: "North America",
                 capital: "Ottawa",
                 difficulty: "Medium"
@@ -1063,8 +1027,8 @@
             {
                 name: "China",
                 alternatives: ["People's Republic of China", "PRC"],
-                svgPath: "M250,150 Q500,100 750,150 Q850,300 750,450 Q500,500 250,450 Q150,300 250,150 Z",
-                viewBox: "0 0 1000 600",
+                svgPath: "M200,150 Q500,100 800,150 Q900,350 800,550 Q500,600 200,550 Q100,350 200,150 Z",
+                viewBox: "0 0 1000 700",
                 continent: "Asia",
                 capital: "Beijing",
                 difficulty: "Hard"
@@ -1072,11 +1036,20 @@
             {
                 name: "Russia",
                 alternatives: ["Russian Federation"],
-                svgPath: "M100,100 L900,100 L900,400 L600,400 L600,600 L400,600 L400,400 L100,400 Z",
-                viewBox: "0 0 1000 700",
+                svgPath: "M100,100 L900,100 L900,300 L700,300 L700,500 L300,500 L300,300 L100,300 Z",
+                viewBox: "0 0 1000 600",
                 continent: "Europe/Asia",
                 capital: "Moscow",
-                difficulty: "Easy"
+                difficulty: "Medium"
+            },
+            {
+                name: "Spain",
+                alternatives: ["España"],
+                svgPath: "M300,150 L700,150 L700,450 L300,450 Z M450,200 L550,200 L550,400 L450,400 Z",
+                viewBox: "0 0 1000 600",
+                continent: "Europe",
+                capital: "Madrid",
+                difficulty: "Medium"
             }
         ];
 
@@ -1326,12 +1299,15 @@
 
         // Shape Generator for country outlines
         class ShapeGenerator {
-            static generateCountryShape(country) {
-                const svg = document.getElementById('shape-svg');
-                svg.innerHTML = '';
+            static generateCountryShape(country, clueLevel = 1) {
+                const container = document.getElementById('shape-container-inner');
+                container.innerHTML = ''; // Clear previous content
                 
-                // Set viewBox based on country data
-                svg.setAttribute('viewBox', country.viewBox || "0 0 1000 1000");
+                // Create SVG element
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("viewBox", country.viewBox || "0 0 1000 700");
+                svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+                svg.setAttribute("class", "shape-svg");
                 
                 // Add country shape
                 const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -1341,9 +1317,20 @@
                 shape.setAttribute("stroke-width", "2");
                 
                 svg.appendChild(shape);
+                container.appendChild(svg);
                 
-                // Apply initial blur class
-                svg.className = 'shape-svg shape-extreme-blur';
+                // Apply blur based on clue level
+                const blurClasses = [
+                    'shape-extreme-blur',
+                    'shape-heavy-blur',
+                    'shape-medium-blur',
+                    'shape-light-blur',
+                    'shape-minimal-blur',
+                    'shape-clear'
+                ];
+                
+                // Remove all blur classes and add current one
+                svg.className = 'shape-svg ' + (blurClasses[clueLevel - 1] || 'shape-extreme-blur');
             }
         }
 
@@ -1369,7 +1356,7 @@
                 setTimeout(() => {
                     this.hideLoadingScreen();
                     this.startNewGame();
-                }, 1500);
+                }, 1000);
             }
 
             hideLoadingScreen() {
@@ -1381,7 +1368,7 @@
             }
 
             initializeElements() {
-                this.shapeSvg = document.getElementById('shape-svg');
+                this.shapeContainer = document.getElementById('shape-container-inner');
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
@@ -1423,7 +1410,7 @@
                 
                 this.updateDisplay();
                 this.updateClue();
-                ShapeGenerator.generateCountryShape(this.currentCountry);
+                ShapeGenerator.generateCountryShape(this.currentCountry, this.currentClue);
                 this.guessesList.innerHTML = '';
                 this.gameOverDiv.style.display = 'none';
                 this.guessInput.disabled = false;
@@ -1451,20 +1438,8 @@
 
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
                 
-                // Update SVG blur class
-                const blurClasses = [
-                    'shape-extreme-blur',
-                    'shape-heavy-blur',
-                    'shape-medium-blur',
-                    'shape-light-blur',
-                    'shape-minimal-blur',
-                    'shape-clear'
-                ];
-                
-                // Remove all blur classes
-                this.shapeSvg.className = 'shape-svg';
-                // Add current blur class
-                this.shapeSvg.classList.add(blurClasses[this.currentClue - 1]);
+                // Update shape with new blur level
+                ShapeGenerator.generateCountryShape(this.currentCountry, this.currentClue);
             }
 
             nextClue() {
@@ -1541,6 +1516,7 @@
                 }
                 
                 this.guessInput.value = '';
+                this.guessInput.focus();
             }
 
             checkGuess(guess) {
@@ -1564,9 +1540,11 @@
                 guessItem.className = `guess-item ${isCorrect ? 'guess-correct' : 'guess-wrong'}`;
                 guessItem.innerHTML = `
                     <span>${guess}</span>
-                    <span>${isCorrect ? '✅' : '❌'}</span>
+                    <span>${isCorrect ? '✅ Correct!' : '❌ Wrong'}</span>
                 `;
                 this.guessesList.appendChild(guessItem);
+                // Scroll to bottom of guesses list
+                this.guessesList.scrollTop = this.guessesList.scrollHeight;
             }
 
             giveHint() {
