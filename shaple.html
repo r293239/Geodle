@@ -452,31 +452,38 @@
 
         /* Shape blur classes */
         .shape-extreme-blur {
+            filter: blur(35px) contrast(0.1) brightness(0.4);
+            transform: scale(0.7);
+        }
+
+        .shape-heavy-blur {
             filter: blur(25px) contrast(0.2) brightness(0.5);
             transform: scale(0.8);
         }
 
-        .shape-heavy-blur {
-            filter: blur(20px) contrast(0.3) brightness(0.6);
-            transform: scale(0.85);
-        }
-
         .shape-medium-blur {
-            filter: blur(15px) contrast(0.4) brightness(0.7);
+            filter: blur(15px) contrast(0.4) brightness(0.6);
             transform: scale(0.9);
         }
 
         .shape-light-blur {
-            filter: blur(10px) contrast(0.6) brightness(0.8);
+            filter: blur(8px) contrast(0.6) brightness(0.8);
             transform: scale(0.95);
         }
 
         .shape-minimal-blur {
-            filter: blur(5px) contrast(0.8) brightness(0.9);
+            filter: blur(3px) contrast(0.8) brightness(0.9);
         }
 
         .shape-clear {
-            filter: blur(1px) contrast(1) brightness(1);
+            filter: blur(0) contrast(1) brightness(1);
+        }
+
+        .shape-placeholder {
+            color: #4a5568;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
         }
 
         .clue-info {
@@ -893,7 +900,10 @@
         </div>
 
         <div class="shape-container">
-            <img id="shape-image" class="shape-image shape-extreme-blur" src="" alt="Country shape silhouette">
+            <div id="shape-placeholder" class="shape-placeholder">
+                Loading country shape...
+            </div>
+            <img id="shape-image" class="shape-image shape-extreme-blur" style="display: none;" src="" alt="Country shape silhouette">
         </div>
 
         <div class="input-section">
@@ -918,13 +928,14 @@
     </div>
 
     <script>
-        // Country data with actual image URLs for shape silhouettes
-        // Using Wikimedia Commons and other public domain sources
+        // Country data with reliable image URLs
+        // Using a mix of reliable CDNs and public APIs
         const countriesData = [
             {
                 name: "United States",
                 alternatives: ["USA", "US", "America", "United States of America"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/USA-satellite.svg/500px-USA-satellite.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/US.svg",
+                fallbackImage: "https://flagcdn.com/w640/us.png",
                 continent: "North America",
                 capital: "Washington D.C.",
                 difficulty: "Medium"
@@ -932,7 +943,8 @@
             {
                 name: "Brazil",
                 alternatives: ["Brasil"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_%28orthographic_projection%29.svg/500px-Brazil_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/BR.svg",
+                fallbackImage: "https://flagcdn.com/w640/br.png",
                 continent: "South America",
                 capital: "Brasília",
                 difficulty: "Easy"
@@ -940,7 +952,8 @@
             {
                 name: "Italy",
                 alternatives: ["Italia"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Italy_%28orthographic_projection%29.svg/500px-Italy_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/IT.svg",
+                fallbackImage: "https://flagcdn.com/w640/it.png",
                 continent: "Europe",
                 capital: "Rome",
                 difficulty: "Easy"
@@ -948,7 +961,8 @@
             {
                 name: "Australia",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Australia_%28orthographic_projection%29.svg/500px-Australia_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/AU.svg",
+                fallbackImage: "https://flagcdn.com/w640/au.png",
                 continent: "Oceania",
                 capital: "Canberra",
                 difficulty: "Easy"
@@ -956,7 +970,8 @@
             {
                 name: "India",
                 alternatives: ["Bharat"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/India_%28orthographic_projection%29.svg/500px-India_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/IN.svg",
+                fallbackImage: "https://flagcdn.com/w640/in.png",
                 continent: "Asia",
                 capital: "New Delhi",
                 difficulty: "Medium"
@@ -964,7 +979,8 @@
             {
                 name: "South Africa",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/South_Africa_%28orthographic_projection%29.svg/500px-South_Africa_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/ZA.svg",
+                fallbackImage: "https://flagcdn.com/w640/za.png",
                 continent: "Africa",
                 capital: "Cape Town",
                 difficulty: "Medium"
@@ -972,7 +988,8 @@
             {
                 name: "Japan",
                 alternatives: ["Nippon"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Japan_%28orthographic_projection%29.svg/500px-Japan_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/JP.svg",
+                fallbackImage: "https://flagcdn.com/w640/jp.png",
                 continent: "Asia",
                 capital: "Tokyo",
                 difficulty: "Hard"
@@ -980,7 +997,8 @@
             {
                 name: "United Kingdom",
                 alternatives: ["UK", "Britain", "Great Britain"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/United_Kingdom_%28orthographic_projection%29.svg/500px-United_Kingdom_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/GB.svg",
+                fallbackImage: "https://flagcdn.com/w640/gb.png",
                 continent: "Europe",
                 capital: "London",
                 difficulty: "Easy"
@@ -988,7 +1006,8 @@
             {
                 name: "Chile",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Chile_%28orthographic_projection%29.svg/500px-Chile_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CL.svg",
+                fallbackImage: "https://flagcdn.com/w640/cl.png",
                 continent: "South America",
                 capital: "Santiago",
                 difficulty: "Hard"
@@ -996,7 +1015,8 @@
             {
                 name: "France",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/France_%28orthographic_projection%29.svg/500px-France_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/FR.svg",
+                fallbackImage: "https://flagcdn.com/w640/fr.png",
                 continent: "Europe",
                 capital: "Paris",
                 difficulty: "Easy"
@@ -1004,7 +1024,8 @@
             {
                 name: "Germany",
                 alternatives: ["Deutschland"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Germany_%28orthographic_projection%29.svg/500px-Germany_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/DE.svg",
+                fallbackImage: "https://flagcdn.com/w640/de.png",
                 continent: "Europe",
                 capital: "Berlin",
                 difficulty: "Easy"
@@ -1012,7 +1033,8 @@
             {
                 name: "Canada",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Canada_%28orthographic_projection%29.svg/500px-Canada_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CA.svg",
+                fallbackImage: "https://flagcdn.com/w640/ca.png",
                 continent: "North America",
                 capital: "Ottawa",
                 difficulty: "Medium"
@@ -1020,7 +1042,8 @@
             {
                 name: "China",
                 alternatives: ["People's Republic of China", "PRC"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/China_%28orthographic_projection%29.svg/500px-China_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CN.svg",
+                fallbackImage: "https://flagcdn.com/w640/cn.png",
                 continent: "Asia",
                 capital: "Beijing",
                 difficulty: "Medium"
@@ -1028,7 +1051,8 @@
             {
                 name: "Russia",
                 alternatives: ["Russian Federation"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Russia_%28orthographic_projection%29.svg/500px-Russia_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/RU.svg",
+                fallbackImage: "https://flagcdn.com/w640/ru.png",
                 continent: "Europe/Asia",
                 capital: "Moscow",
                 difficulty: "Medium"
@@ -1036,7 +1060,8 @@
             {
                 name: "Spain",
                 alternatives: ["España"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Spain_%28orthographic_projection%29.svg/500px-Spain_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/ES.svg",
+                fallbackImage: "https://flagcdn.com/w640/es.png",
                 continent: "Europe",
                 capital: "Madrid",
                 difficulty: "Medium"
@@ -1044,7 +1069,8 @@
             {
                 name: "Mexico",
                 alternatives: ["México"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Mexico_%28orthographic_projection%29.svg/500px-Mexico_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/MX.svg",
+                fallbackImage: "https://flagcdn.com/w640/mx.png",
                 continent: "North America",
                 capital: "Mexico City",
                 difficulty: "Medium"
@@ -1052,7 +1078,8 @@
             {
                 name: "Egypt",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Egypt_%28orthographic_projection%29.svg/500px-Egypt_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/EG.svg",
+                fallbackImage: "https://flagcdn.com/w640/eg.png",
                 continent: "Africa",
                 capital: "Cairo",
                 difficulty: "Easy"
@@ -1060,7 +1087,8 @@
             {
                 name: "Argentina",
                 alternatives: [],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Argentina_%28orthographic_projection%29.svg/500px-Argentina_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/AR.svg",
+                fallbackImage: "https://flagcdn.com/w640/ar.png",
                 continent: "South America",
                 capital: "Buenos Aires",
                 difficulty: "Medium"
@@ -1068,7 +1096,8 @@
             {
                 name: "Turkey",
                 alternatives: ["Türkiye"],
-                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Turkey_%28orthographic_projection%29.svg/500px-Turkey_%28orthographic_projection%29.svg.png",
+                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/TR.svg",
+                fallbackImage: "https://flagcdn.com/w640/tr.png",
                 continent: "Europe/Asia",
                 capital: "Ankara",
                 difficulty: "Medium"
@@ -1354,6 +1383,7 @@
 
             initializeElements() {
                 this.shapeImage = document.getElementById('shape-image');
+                this.shapePlaceholder = document.getElementById('shape-placeholder');
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
@@ -1383,6 +1413,62 @@
                 this.newGameBtn.addEventListener('click', () => this.startNewGame());
                 this.musicBtn.addEventListener('click', () => this.music.toggle());
                 this.hintBtn.addEventListener('click', () => this.giveHint());
+                
+                // Handle image loading errors
+                this.shapeImage.addEventListener('error', () => this.handleImageError());
+            }
+
+            async loadShapeImage() {
+                this.shapePlaceholder.style.display = 'block';
+                this.shapeImage.style.display = 'none';
+                
+                // Try the primary shape URL first
+                const primaryUrl = this.currentCountry.shapeUrl;
+                const fallbackUrl = this.currentCountry.fallbackImage;
+                
+                try {
+                    // Preload the image to check if it loads successfully
+                    await this.preloadImage(primaryUrl);
+                    this.shapeImage.src = primaryUrl;
+                    this.shapeImage.style.display = 'block';
+                    this.shapePlaceholder.style.display = 'none';
+                } catch (error) {
+                    // If primary fails, try fallback
+                    try {
+                        await this.preloadImage(fallbackUrl);
+                        this.shapeImage.src = fallbackUrl;
+                        this.shapeImage.style.display = 'block';
+                        this.shapePlaceholder.style.display = 'none';
+                    } catch (fallbackError) {
+                        // If both fail, show placeholder
+                        this.shapePlaceholder.innerHTML = `🎯 Shape of ${this.currentCountry.name}<br><small>(Image failed to load)</small>`;
+                        this.shapePlaceholder.style.display = 'block';
+                        this.shapeImage.style.display = 'none';
+                    }
+                }
+                
+                // Apply blur after image loads
+                this.updateShapeBlur();
+            }
+
+            preloadImage(url) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(url);
+                    img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+                    img.src = url;
+                });
+            }
+
+            handleImageError() {
+                // Try fallback image if main image fails
+                if (this.currentCountry.fallbackImage) {
+                    this.shapeImage.src = this.currentCountry.fallbackImage;
+                } else {
+                    this.shapeImage.style.display = 'none';
+                    this.shapePlaceholder.style.display = 'block';
+                    this.shapePlaceholder.innerHTML = `🎯 Shape of ${this.currentCountry.name}<br><small>(Image failed to load)</small>`;
+                }
             }
 
             startNewGame() {
@@ -1406,15 +1492,6 @@
                 this.stats.updateDisplay();
             }
 
-            loadShapeImage() {
-                // Set the image source
-                this.shapeImage.src = this.currentCountry.shapeUrl;
-                this.shapeImage.alt = `Silhouette of ${this.currentCountry.name}`;
-                
-                // Apply initial blur class
-                this.updateShapeBlur();
-            }
-
             updateDisplay() {
                 this.currentAttemptSpan.textContent = this.currentAttempt;
                 this.currentClueSpan.textContent = this.currentClue;
@@ -1435,6 +1512,8 @@
             }
 
             updateShapeBlur() {
+                if (this.shapeImage.style.display === 'none') return;
+                
                 // Remove all blur classes
                 this.shapeImage.className = 'shape-image';
                 
