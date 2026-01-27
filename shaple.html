@@ -3,27 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO Meta Tags -->
     <title>Shaple - Guess Countries by Shape</title>
-    <meta name="description" content="Test your geography knowledge with Shaple! Guess countries from progressively revealed silhouette clues. Multiple difficulty levels and game modes available.">
-    <meta name="keywords" content="Shaple, geography game, shape quiz, country silhouette, shape guessing, educational games, countries">
-    <meta name="author" content="Shaple Game">
-    <meta property="og:title" content="Shaple - Guess the Country by its Shape">
-    <meta property="og:description" content="Test your geography knowledge with Shaple! Guess countries from progressively revealed silhouette clues.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yourdomain.com/shaple.html">
-    <meta property="og:image" content="https://yourdomain.com/assets/shaple-preview.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shaple - Guess the Country by its Shape">
-    <meta name="twitter:description" content="Test your geography knowledge with Shaple! Guess countries from progressively revealed silhouette clues.">
-    <meta name="twitter:image" content="https://yourdomain.com/assets/shaple-preview.jpg">
-    <link rel="canonical" href="https://yourdomain.com/shaple.html">
-    <!-- End SEO Meta Tags -->
-    <!-- Favicon and App Icons -->
-    <link rel="icon" href="/assets/shape-icon.png" type="image/png">
-    <link rel="shortcut icon" href="/assets/shape-icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/assets/shape-icon.png">
-    <link rel="apple-touch-icon-precomposed" href="/assets/shape-icon.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧩</text></svg>">
     <style>
         * {
             margin: 0;
@@ -39,335 +20,7 @@
             justify-content: center;
             align-items: flex-start;
             color: #333;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
-
-        /* Loading Screen Styles */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #4ecdc4;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: white;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        /* Tutorial Modal Styles */
-        .tutorial-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tutorial-modal.hidden {
-            display: none;
-        }
-
-        .tutorial-content {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 2px solid #4ecdc4;
-            position: relative;
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .tutorial-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 15px;
-        }
-
-        .tutorial-header h2 {
-            background: linear-gradient(45deg, #667eea, #4ecdc4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .tutorial-step {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s ease;
-        }
-
-        .tutorial-step:hover {
-            transform: translateX(5px);
-            background: #edf2f7;
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-
-        .step-content h4 {
-            color: #2d3748;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-
-        .step-content p {
-            color: #4a5568;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .tutorial-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px solid #e9ecef;
-        }
-
-        .tutorial-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #4a5568;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .tutorial-checkbox input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .tutorial-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .tutorial-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .tutorial-btn:active {
-            transform: translateY(0);
-        }
-
-        .tutorial-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #a0aec0;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .tutorial-close:hover {
-            color: #e53e3e;
-        }
-
-        .tutorial-help-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tutorial-help-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Game Mode Dropdown Styles */
-        .game-mode-dropdown {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .dropdown-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .dropdown-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            min-width: 200px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .dropdown-content.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .dropdown-item {
-            display: block;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #333;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s ease;
-        }
-
-        .dropdown-item:hover {
-            background: #f5f5f5;
-        }
-
-        .dropdown-item.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .dropdown-item i {
-            margin-right: 8px;
-            width: 20px;
-            text-align: center;
+            padding: 20px;
         }
 
         .game-container {
@@ -376,32 +29,19 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             padding: 30px;
             max-width: 500px;
-            width: 90%;
+            width: 100%;
             text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 1;
             margin: 20px auto;
         }
 
         h1 {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
             font-size: 2.8rem;
             font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #2c3e50;
         }
 
         .stats {
@@ -429,10 +69,21 @@
             opacity: 0.9;
         }
 
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
         .shape-container {
-            width: 300px;
+            width: 100%;
             height: 200px;
-            margin: 20px auto;
+            margin: 20px 0;
             border: 3px solid #4a5568;
             border-radius: 10px;
             overflow: hidden;
@@ -443,60 +94,11 @@
             justify-content: center;
         }
 
-        .shape-image {
-            width: 100%;
-            height: 100%;
+        .shape-svg {
+            width: 90%;
+            height: 90%;
             object-fit: contain;
-            padding: 20px;
-        }
-
-        /* Shape blur classes */
-        .shape-extreme-blur {
-            filter: blur(35px) contrast(0.1) brightness(0.4);
-            transform: scale(0.7);
-        }
-
-        .shape-heavy-blur {
-            filter: blur(25px) contrast(0.2) brightness(0.5);
-            transform: scale(0.8);
-        }
-
-        .shape-medium-blur {
-            filter: blur(15px) contrast(0.4) brightness(0.6);
-            transform: scale(0.9);
-        }
-
-        .shape-light-blur {
-            filter: blur(8px) contrast(0.6) brightness(0.8);
-            transform: scale(0.95);
-        }
-
-        .shape-minimal-blur {
-            filter: blur(3px) contrast(0.8) brightness(0.9);
-        }
-
-        .shape-clear {
-            filter: blur(0) contrast(1) brightness(1);
-        }
-
-        .shape-placeholder {
-            color: #4a5568;
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .clue-info {
-            margin: 15px 0;
-            padding: 15px;
-            background: linear-gradient(135deg, #edf2f7, #e2e8f0);
-            border-radius: 10px;
-            font-weight: bold;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 4px solid #667eea;
+            padding: 10px;
         }
 
         .input-section {
@@ -580,6 +182,9 @@
             text-align: left;
             max-height: 200px;
             overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
         }
 
         .guess-item {
@@ -645,7 +250,6 @@
         }
 
         .control-btn {
-            margin: 5px;
             padding: 12px 20px;
             border: none;
             border-radius: 10px;
@@ -653,27 +257,10 @@
             font-weight: bold;
             transition: all 0.3s ease;
             font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
         }
 
         .new-game-btn {
             background: linear-gradient(135deg, #48bb78, #38a169);
-            color: white;
-        }
-
-        .music-btn {
-            background: linear-gradient(135deg, #ed8936, #dd6b20);
-            color: white;
-        }
-
-        .nav-btn {
-            background: linear-gradient(135deg, #4299e1, #3182ce);
-            color: white;
-        }
-
-        .back-btn {
-            background: linear-gradient(135deg, #9f7aea, #805ad5);
             color: white;
         }
 
@@ -682,34 +269,18 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .control-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
+        .country-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 10px 0;
+            min-height: 30px;
         }
 
         @media (max-width: 600px) {
-            body {
-                padding: 10px 0;
-            }
-            
             .game-container {
-                margin: 10px;
                 padding: 20px;
-            }
-            
-            .game-mode-dropdown {
-                top: 10px;
-                right: 10px;
-            }
-            
-            .dropdown-btn {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-            }
-            
-            .dropdown-content {
-                min-width: 180px;
+                margin: 10px;
             }
             
             .input-container {
@@ -723,155 +294,16 @@
             }
             
             .shape-container {
-                width: 250px;
-                height: 167px;
-            }
-
-            .stats {
-                flex-direction: column;
-                gap: 10px;
+                height: 150px;
             }
             
             h1 {
                 font-size: 2.2rem;
             }
-
-            .tutorial-help-btn {
-                bottom: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
-            }
-
-            .tutorial-content {
-                padding: 20px;
-            }
-
-            .tutorial-header h2 {
-                font-size: 1.5rem;
-            }
-
-            .tutorial-step {
-                padding: 12px;
-            }
-
-            .tutorial-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loading-screen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading Shaple...</div>
-    </div>
-    
-    <!-- Tutorial Modal -->
-    <div class="tutorial-modal hidden" id="tutorial-modal">
-        <div class="tutorial-content">
-            <button class="tutorial-close" id="tutorial-close">×</button>
-            <div class="tutorial-header">
-                <h2>🧩 How to Play Shaple</h2>
-                <p>Guess the country from its progressively revealed silhouette!</p>
-            </div>
-            
-            <div class="tutorial-steps">
-                <div class="tutorial-step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h4>Guess the Country</h4>
-                        <p>Type your guess in the input field and press Enter or click "Guess".</p>
-                    </div>
-                </div>
-                
-                <div class="tutorial-step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h4>Progressively Revealed Silhouette</h4>
-                        <p>With each wrong guess, the country shape becomes clearer. You have 6 attempts to guess correctly.</p>
-                    </div>
-                </div>
-                
-                <div class="tutorial-step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h4>Focus on Shape Characteristics</h4>
-                        <p>Look for distinctive features: coastlines, islands, borders, and overall shape patterns.</p>
-                    </div>
-                </div>
-                
-                <div class="tutorial-step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h4>Auto-Suggestions</h4>
-                        <p>Start typing a country name to see suggestions. Click a suggestion to select it.</p>
-                    </div>
-                </div>
-                
-                <div class="tutorial-step">
-                    <div class="step-number">5</div>
-                    <div class="step-content">
-                        <h4>Alternative Names</h4>
-                        <p>Many countries have alternative names (e.g., "United Kingdom" or "UK"). Both work!</p>
-                    </div>
-                </div>
-                
-                <div class="tutorial-step">
-                    <div class="step-number">6</div>
-                    <div class="step-content">
-                        <h4>Track Your Progress</h4>
-                        <p>Your stats (wins, games played, win rate) are saved automatically.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tutorial-controls">
-                <label class="tutorial-checkbox">
-                    <input type="checkbox" id="dont-show-again">
-                    Don't show this again
-                </label>
-                <button class="tutorial-btn" id="tutorial-start-btn">Start Playing!</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Help Button -->
-    <button class="tutorial-help-btn hidden" id="tutorial-help-btn">?</button>
-    
-    <div class="stars" id="stars"></div>
-    
-    <!-- Game Mode Dropdown -->
-    <div class="game-mode-dropdown">
-        <button class="dropdown-btn">
-            <span>🌍 Game Modes</span>
-            <span>▼</span>
-        </button>
-        <div class="dropdown-content">
-            <a href="index.html" class="dropdown-item">
-                🌎 Geodle
-            </a>
-            <a href="flag-mode.html" class="dropdown-item">
-                🏴 Flagle
-            </a>
-            <a href="country-mode.html" class="dropdown-item">
-                🗺️ Countryle
-            </a>
-            <a href="path-mode.html" class="dropdown-item">
-                🛣️ Routele
-            </a>
-            <a href="civile.html" class="dropdown-item">
-                🏛️ Civile
-            </a>
-            <a href="bordle.html" class="dropdown-item">
-                🧩 Bordle
-            </a>
-        </div>
-    </div>
-    
     <div class="game-container">
         <h1>🧩 Shaple</h1>
 
@@ -891,19 +323,18 @@
         </div>
 
         <div class="game-info">
-            <span>Attempt: <span id="current-attempt">1</span>/6</span>
-            <span>Clue: <span id="current-clue">1</span>/6</span>
-        </div>
-
-        <div class="clue-info" id="clue-info">
-            Clue 1: Extreme blur • Nearly impossible to identify!
+            <span>Guess: <span id="current-attempt">1</span>/6</span>
+            <span id="country-name" class="country-name"></span>
         </div>
 
         <div class="shape-container">
-            <div id="shape-placeholder" class="shape-placeholder">
-                Loading country shape...
-            </div>
-            <img id="shape-image" class="shape-image shape-extreme-blur" style="display: none;" src="" alt="Country shape silhouette">
+            <svg id="shape-svg" class="shape-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+                <!-- Country shape will be loaded here -->
+                <rect width="100%" height="100%" fill="#f7fafc" />
+                <text x="50%" y="50%" text-anchor="middle" fill="#4a5568" font-size="24" font-family="Arial">
+                    Loading country shape...
+                </text>
+            </svg>
         </div>
 
         <div class="input-section">
@@ -922,20 +353,17 @@
 
         <div class="controls">
             <button id="new-game-btn" class="control-btn new-game-btn">New Game</button>
-            <button id="music-btn" class="control-btn music-btn">🎵 Music</button>
-            <button id="hint-btn" class="control-btn nav-btn">💡 Hint</button>
+            <button id="hint-btn" class="control-btn" style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white;">💡 Hint</button>
         </div>
     </div>
 
     <script>
-        // Country data with reliable image URLs
-        // Using a mix of reliable CDNs and public APIs
+        // Country data with SVG path data for country outlines
         const countriesData = [
             {
                 name: "United States",
                 alternatives: ["USA", "US", "America", "United States of America"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/US.svg",
-                fallbackImage: "https://flagcdn.com/w640/us.png",
+                svgPath: "M100,100 L300,50 L500,100 L700,150 L900,200 L900,550 L700,500 L500,450 L300,400 L100,350 Z M250,200 L250,300 L350,300 L350,200 Z M650,250 L650,350 L750,350 L750,250 Z",
                 continent: "North America",
                 capital: "Washington D.C.",
                 difficulty: "Medium"
@@ -943,8 +371,7 @@
             {
                 name: "Brazil",
                 alternatives: ["Brasil"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/BR.svg",
-                fallbackImage: "https://flagcdn.com/w640/br.png",
+                svgPath: "M300,150 Q500,100 700,150 Q800,250 750,350 Q700,450 500,500 Q300,450 250,350 Q200,250 300,150 Z",
                 continent: "South America",
                 capital: "Brasília",
                 difficulty: "Easy"
@@ -952,8 +379,7 @@
             {
                 name: "Italy",
                 alternatives: ["Italia"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/IT.svg",
-                fallbackImage: "https://flagcdn.com/w640/it.png",
+                svgPath: "M400,100 L600,100 L550,400 L500,450 L450,400 Z",
                 continent: "Europe",
                 capital: "Rome",
                 difficulty: "Easy"
@@ -961,8 +387,7 @@
             {
                 name: "Australia",
                 alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/AU.svg",
-                fallbackImage: "https://flagcdn.com/w640/au.png",
+                svgPath: "M200,150 Q400,100 600,150 Q650,250 600,350 Q400,400 200,350 Q150,250 200,150 Z",
                 continent: "Oceania",
                 capital: "Canberra",
                 difficulty: "Easy"
@@ -970,8 +395,7 @@
             {
                 name: "India",
                 alternatives: ["Bharat"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/IN.svg",
-                fallbackImage: "https://flagcdn.com/w640/in.png",
+                svgPath: "M300,100 Q500,50 700,100 Q750,200 700,300 Q500,350 300,300 Q250,200 300,100 Z",
                 continent: "Asia",
                 capital: "New Delhi",
                 difficulty: "Medium"
@@ -979,8 +403,7 @@
             {
                 name: "South Africa",
                 alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/ZA.svg",
-                fallbackImage: "https://flagcdn.com/w640/za.png",
+                svgPath: "M300,100 L700,100 L650,400 L500,450 L350,400 Z",
                 continent: "Africa",
                 capital: "Cape Town",
                 difficulty: "Medium"
@@ -988,8 +411,7 @@
             {
                 name: "Japan",
                 alternatives: ["Nippon"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/JP.svg",
-                fallbackImage: "https://flagcdn.com/w640/jp.png",
+                svgPath: "M400,150 Q500,100 600,150 Q650,250 600,350 Q500,400 400,350 Q350,250 400,150 Z",
                 continent: "Asia",
                 capital: "Tokyo",
                 difficulty: "Hard"
@@ -997,8 +419,7 @@
             {
                 name: "United Kingdom",
                 alternatives: ["UK", "Britain", "Great Britain"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/GB.svg",
-                fallbackImage: "https://flagcdn.com/w640/gb.png",
+                svgPath: "M350,100 L650,100 L600,350 L500,400 L400,350 Z",
                 continent: "Europe",
                 capital: "London",
                 difficulty: "Easy"
@@ -1006,8 +427,7 @@
             {
                 name: "Chile",
                 alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CL.svg",
-                fallbackImage: "https://flagcdn.com/w640/cl.png",
+                svgPath: "M400,50 L450,50 L450,550 L400,550 Z",
                 continent: "South America",
                 capital: "Santiago",
                 difficulty: "Hard"
@@ -1015,8 +435,7 @@
             {
                 name: "France",
                 alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/FR.svg",
-                fallbackImage: "https://flagcdn.com/w640/fr.png",
+                svgPath: "M250,100 L750,100 L750,400 L250,400 Z",
                 continent: "Europe",
                 capital: "Paris",
                 difficulty: "Easy"
@@ -1024,8 +443,7 @@
             {
                 name: "Germany",
                 alternatives: ["Deutschland"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/DE.svg",
-                fallbackImage: "https://flagcdn.com/w640/de.png",
+                svgPath: "M200,100 L800,100 L800,400 L200,400 Z",
                 continent: "Europe",
                 capital: "Berlin",
                 difficulty: "Easy"
@@ -1033,8 +451,7 @@
             {
                 name: "Canada",
                 alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CA.svg",
-                fallbackImage: "https://flagcdn.com/w640/ca.png",
+                svgPath: "M150,100 L850,100 L850,350 L650,350 L650,450 L350,450 L350,350 L150,350 Z",
                 continent: "North America",
                 capital: "Ottawa",
                 difficulty: "Medium"
@@ -1042,8 +459,7 @@
             {
                 name: "China",
                 alternatives: ["People's Republic of China", "PRC"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CN.svg",
-                fallbackImage: "https://flagcdn.com/w640/cn.png",
+                svgPath: "M200,100 Q500,50 800,100 Q900,200 800,300 Q500,350 200,300 Q100,200 200,100 Z",
                 continent: "Asia",
                 capital: "Beijing",
                 difficulty: "Medium"
@@ -1051,162 +467,13 @@
             {
                 name: "Russia",
                 alternatives: ["Russian Federation"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/RU.svg",
-                fallbackImage: "https://flagcdn.com/w640/ru.png",
+                svgPath: "M100,100 L900,100 L900,300 L700,300 L700,450 L300,450 L300,300 L100,300 Z",
                 continent: "Europe/Asia",
                 capital: "Moscow",
-                difficulty: "Medium"
-            },
-            {
-                name: "Spain",
-                alternatives: ["España"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/ES.svg",
-                fallbackImage: "https://flagcdn.com/w640/es.png",
-                continent: "Europe",
-                capital: "Madrid",
-                difficulty: "Medium"
-            },
-            {
-                name: "Mexico",
-                alternatives: ["México"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/MX.svg",
-                fallbackImage: "https://flagcdn.com/w640/mx.png",
-                continent: "North America",
-                capital: "Mexico City",
-                difficulty: "Medium"
-            },
-            {
-                name: "Egypt",
-                alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/EG.svg",
-                fallbackImage: "https://flagcdn.com/w640/eg.png",
-                continent: "Africa",
-                capital: "Cairo",
-                difficulty: "Easy"
-            },
-            {
-                name: "Argentina",
-                alternatives: [],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/AR.svg",
-                fallbackImage: "https://flagcdn.com/w640/ar.png",
-                continent: "South America",
-                capital: "Buenos Aires",
-                difficulty: "Medium"
-            },
-            {
-                name: "Turkey",
-                alternatives: ["Türkiye"],
-                shapeUrl: "https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/TR.svg",
-                fallbackImage: "https://flagcdn.com/w640/tr.png",
-                continent: "Europe/Asia",
-                capital: "Ankara",
                 difficulty: "Medium"
             }
         ];
 
-        // Create stars animation
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const numStars = 100;
-            
-            for (let i = 0; i < numStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = star.style.height = Math.random() * 3 + 1 + 'px';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // Tutorial Management
-        class TutorialManager {
-            constructor() {
-                this.tutorialShown = localStorage.getItem('shapleTutorialShown') === 'true';
-                this.dontShowAgain = localStorage.getItem('shapleDontShowAgain') === 'true';
-                this.modal = document.getElementById('tutorial-modal');
-                this.helpBtn = document.getElementById('tutorial-help-btn');
-                this.closeBtn = document.getElementById('tutorial-close');
-                this.startBtn = document.getElementById('tutorial-start-btn');
-                this.dontShowCheckbox = document.getElementById('dont-show-again');
-                
-                this.init();
-            }
-
-            init() {
-                this.setupEventListeners();
-                
-                if (!this.tutorialShown && !this.dontShowAgain) {
-                    this.showTutorial();
-                } else {
-                    this.showHelpButton();
-                }
-            }
-
-            setupEventListeners() {
-                this.closeBtn.addEventListener('click', () => this.hideTutorial());
-                this.startBtn.addEventListener('click', () => this.startGame());
-                this.dontShowCheckbox.addEventListener('change', (e) => {
-                    this.dontShowAgain = e.target.checked;
-                    localStorage.setItem('shapleDontShowAgain', this.dontShowAgain);
-                });
-                
-                this.helpBtn.addEventListener('click', () => this.showTutorial());
-                
-                this.modal.addEventListener('click', (e) => {
-                    if (e.target === this.modal) {
-                        this.hideTutorial();
-                    }
-                });
-            }
-
-            showTutorial() {
-                this.modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-
-            hideTutorial() {
-                this.modal.classList.add('hidden');
-                document.body.style.overflow = '';
-                this.tutorialShown = true;
-                localStorage.setItem('shapleTutorialShown', 'true');
-                this.showHelpButton();
-            }
-
-            startGame() {
-                this.hideTutorial();
-                const guessInput = document.getElementById('guess-input');
-                if (guessInput) {
-                    guessInput.focus();
-                }
-            }
-
-            showHelpButton() {
-                this.helpBtn.classList.remove('hidden');
-            }
-        }
-
-        // Game Mode Dropdown Functionality
-        function setupGameModeDropdown() {
-            const dropdownBtn = document.querySelector('.dropdown-btn');
-            const dropdownContent = document.querySelector('.dropdown-content');
-            
-            dropdownBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdownContent.classList.toggle('show');
-            });
-            
-            document.addEventListener('click', function() {
-                dropdownContent.classList.remove('show');
-            });
-            
-            dropdownContent.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        }
-
-        // Game Statistics Management
         class GameStats {
             constructor() {
                 this.loadStats();
@@ -1218,22 +485,16 @@
                     const stats = JSON.parse(savedStats);
                     this.wins = stats.wins || 0;
                     this.gamesPlayed = stats.gamesPlayed || 0;
-                    this.winStreak = stats.winStreak || 0;
-                    this.bestStreak = stats.bestStreak || 0;
                 } else {
                     this.wins = 0;
                     this.gamesPlayed = 0;
-                    this.winStreak = 0;
-                    this.bestStreak = 0;
                 }
             }
 
             saveStats() {
                 const stats = {
                     wins: this.wins,
-                    gamesPlayed: this.gamesPlayed,
-                    winStreak: this.winStreak,
-                    bestStreak: this.bestStreak
+                    gamesPlayed: this.gamesPlayed
                 };
                 localStorage.setItem('shapleStats', JSON.stringify(stats));
             }
@@ -1241,14 +502,11 @@
             recordWin() {
                 this.wins++;
                 this.gamesPlayed++;
-                this.winStreak++;
-                this.bestStreak = Math.max(this.bestStreak, this.winStreak);
                 this.saveStats();
             }
 
             recordLoss() {
                 this.gamesPlayed++;
-                this.winStreak = 0;
                 this.saveStats();
             }
 
@@ -1263,137 +521,31 @@
             }
         }
 
-        // Music Management
-        class MusicManager {
-            constructor() {
-                this.isPlaying = false;
-                this.musicEnabled = true;
-                this.initMusic();
-            }
-
-            initMusic() {
-                this.createAudioContext();
-                this.updateMusicButton();
-            }
-
-            createAudioContext() {
-                try {
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    this.createMelody();
-                } catch (e) {
-                    console.log('Web Audio API not supported');
-                }
-            }
-
-            createMelody() {
-                const notes = [
-                    { freq: 523.25, duration: 0.5 },
-                    { freq: 587.33, duration: 0.5 },
-                    { freq: 659.25, duration: 0.5 },
-                    { freq: 698.46, duration: 0.5 },
-                    { freq: 783.99, duration: 1.0 },
-                    { freq: 659.25, duration: 0.5 },
-                    { freq: 523.25, duration: 1.0 }
-                ];
-
-                if (this.musicEnabled && this.audioContext) {
-                    this.playMelody(notes, 0);
-                }
-            }
-
-            playMelody(notes, index) {
-                if (!this.musicEnabled || !this.audioContext) return;
-
-                if (index >= notes.length) {
-                    setTimeout(() => this.playMelody(notes, 0), 2000);
-                    return;
-                }
-
-                const note = notes[index];
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-
-                oscillator.frequency.setValueAtTime(note.freq, this.audioContext.currentTime);
-                oscillator.type = 'sine';
-
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.1);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + note.duration);
-
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + note.duration);
-
-                setTimeout(() => this.playMelody(notes, index + 1), note.duration * 1000);
-            }
-
-            toggle() {
-                this.musicEnabled = !this.musicEnabled;
-                
-                if (this.musicEnabled) {
-                    this.createMelody();
-                }
-                
-                this.updateMusicButton();
-            }
-
-            updateMusicButton() {
-                const btn = document.getElementById('music-btn');
-                btn.textContent = this.musicEnabled ? '🔊 Music On' : '🔇 Music Off';
-                btn.style.background = this.musicEnabled 
-                    ? 'linear-gradient(135deg, #48bb78, #38a169)'
-                    : 'linear-gradient(135deg, #ed8936, #dd6b20)';
-            }
-        }
-
         class ShapleGame {
             constructor() {
                 this.currentCountry = null;
-                this.currentClue = 1;
                 this.currentAttempt = 1;
                 this.maxAttempts = 6;
-                this.maxClues = 6;
                 this.guesses = [];
                 this.gameOver = false;
                 this.hintUsed = false;
                 this.stats = new GameStats();
-                this.music = new MusicManager();
-                this.tutorial = new TutorialManager();
                 
                 this.initializeElements();
                 this.bindEvents();
-                createStars();
-                setupGameModeDropdown();
-                
-                setTimeout(() => {
-                    this.hideLoadingScreen();
-                    this.startNewGame();
-                }, 1000);
-            }
-
-            hideLoadingScreen() {
-                const loadingScreen = document.getElementById('loading-screen');
-                loadingScreen.classList.add('hidden');
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
+                this.startNewGame();
             }
 
             initializeElements() {
-                this.shapeImage = document.getElementById('shape-image');
-                this.shapePlaceholder = document.getElementById('shape-placeholder');
+                this.shapeSvg = document.getElementById('shape-svg');
+                this.countryName = document.getElementById('country-name');
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
-                this.musicBtn = document.getElementById('music-btn');
                 this.hintBtn = document.getElementById('hint-btn');
                 this.guessesList = document.getElementById('guesses-list');
                 this.gameOverDiv = document.getElementById('game-over');
                 this.currentAttemptSpan = document.getElementById('current-attempt');
-                this.currentClueSpan = document.getElementById('current-clue');
-                this.clueInfo = document.getElementById('clue-info');
                 this.suggestions = document.getElementById('suggestions');
             }
 
@@ -1411,79 +563,21 @@
                 });
                 
                 this.newGameBtn.addEventListener('click', () => this.startNewGame());
-                this.musicBtn.addEventListener('click', () => this.music.toggle());
                 this.hintBtn.addEventListener('click', () => this.giveHint());
-                
-                // Handle image loading errors
-                this.shapeImage.addEventListener('error', () => this.handleImageError());
-            }
-
-            async loadShapeImage() {
-                this.shapePlaceholder.style.display = 'block';
-                this.shapeImage.style.display = 'none';
-                
-                // Try the primary shape URL first
-                const primaryUrl = this.currentCountry.shapeUrl;
-                const fallbackUrl = this.currentCountry.fallbackImage;
-                
-                try {
-                    // Preload the image to check if it loads successfully
-                    await this.preloadImage(primaryUrl);
-                    this.shapeImage.src = primaryUrl;
-                    this.shapeImage.style.display = 'block';
-                    this.shapePlaceholder.style.display = 'none';
-                } catch (error) {
-                    // If primary fails, try fallback
-                    try {
-                        await this.preloadImage(fallbackUrl);
-                        this.shapeImage.src = fallbackUrl;
-                        this.shapeImage.style.display = 'block';
-                        this.shapePlaceholder.style.display = 'none';
-                    } catch (fallbackError) {
-                        // If both fail, show placeholder
-                        this.shapePlaceholder.innerHTML = `🎯 Shape of ${this.currentCountry.name}<br><small>(Image failed to load)</small>`;
-                        this.shapePlaceholder.style.display = 'block';
-                        this.shapeImage.style.display = 'none';
-                    }
-                }
-                
-                // Apply blur after image loads
-                this.updateShapeBlur();
-            }
-
-            preloadImage(url) {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = () => resolve(url);
-                    img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
-                    img.src = url;
-                });
-            }
-
-            handleImageError() {
-                // Try fallback image if main image fails
-                if (this.currentCountry.fallbackImage) {
-                    this.shapeImage.src = this.currentCountry.fallbackImage;
-                } else {
-                    this.shapeImage.style.display = 'none';
-                    this.shapePlaceholder.style.display = 'block';
-                    this.shapePlaceholder.innerHTML = `🎯 Shape of ${this.currentCountry.name}<br><small>(Image failed to load)</small>`;
-                }
             }
 
             startNewGame() {
                 this.currentCountry = countriesData[Math.floor(Math.random() * countriesData.length)];
-                this.currentClue = 1;
                 this.currentAttempt = 1;
                 this.guesses = [];
                 this.gameOver = false;
                 this.hintUsed = false;
                 
                 this.updateDisplay();
-                this.updateClue();
-                this.loadShapeImage();
+                this.renderCountryShape();
                 this.guessesList.innerHTML = '';
                 this.gameOverDiv.style.display = 'none';
+                this.countryName.textContent = '???';
                 this.guessInput.disabled = false;
                 this.submitBtn.disabled = false;
                 this.hintBtn.disabled = false;
@@ -1492,51 +586,24 @@
                 this.stats.updateDisplay();
             }
 
+            renderCountryShape() {
+                this.shapeSvg.innerHTML = '';
+                
+                // Set viewBox
+                this.shapeSvg.setAttribute("viewBox", "0 0 1000 600");
+                
+                // Add country shape (black silhouette)
+                const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                shape.setAttribute("d", this.currentCountry.svgPath);
+                shape.setAttribute("fill", "#2d3748");
+                shape.setAttribute("stroke", "#4a5568");
+                shape.setAttribute("stroke-width", "3");
+                
+                this.shapeSvg.appendChild(shape);
+            }
+
             updateDisplay() {
                 this.currentAttemptSpan.textContent = this.currentAttempt;
-                this.currentClueSpan.textContent = this.currentClue;
-            }
-
-            updateClue() {
-                const clueDescriptions = [
-                    'Clue 1: Extreme blur • Nearly impossible to identify!',
-                    'Clue 2: Heavy blur • Extremely difficult',
-                    'Clue 3: Medium blur • Very challenging',
-                    'Clue 4: Light blur • Getting easier',
-                    'Clue 5: Minimal blur • Should be recognizable',
-                    'Clue 6: Clear shape • Easy to identify'
-                ];
-
-                this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
-                this.updateShapeBlur();
-            }
-
-            updateShapeBlur() {
-                if (this.shapeImage.style.display === 'none') return;
-                
-                // Remove all blur classes
-                this.shapeImage.className = 'shape-image';
-                
-                // Apply appropriate blur class based on current clue
-                const blurClasses = [
-                    'shape-extreme-blur',
-                    'shape-heavy-blur',
-                    'shape-medium-blur',
-                    'shape-light-blur',
-                    'shape-minimal-blur',
-                    'shape-clear'
-                ];
-                
-                const currentBlurClass = blurClasses[this.currentClue - 1] || 'shape-extreme-blur';
-                this.shapeImage.classList.add(currentBlurClass);
-            }
-
-            nextClue() {
-                if (this.currentClue < this.maxClues && !this.gameOver) {
-                    this.currentClue++;
-                    this.updateDisplay();
-                    this.updateClue();
-                }
             }
 
             showSuggestions() {
@@ -1595,10 +662,6 @@
                     this.currentAttempt++;
                     this.updateDisplay();
                     
-                    if (this.currentClue < this.maxClues) {
-                        this.nextClue();
-                    }
-                    
                     if (this.currentAttempt > this.maxAttempts) {
                         this.endGame(false);
                     }
@@ -1629,10 +692,9 @@
                 guessItem.className = `guess-item ${isCorrect ? 'guess-correct' : 'guess-wrong'}`;
                 guessItem.innerHTML = `
                     <span>${guess}</span>
-                    <span>${isCorrect ? '✅ Correct!' : '❌ Wrong'}</span>
+                    <span>${isCorrect ? '✅' : '❌'}</span>
                 `;
                 this.guessesList.appendChild(guessItem);
-                // Scroll to bottom of guesses list
                 this.guessesList.scrollTop = this.guessesList.scrollHeight;
             }
 
@@ -1644,11 +706,6 @@
                 
                 // Show continent as hint
                 alert(`💡 Hint: This country is in ${this.currentCountry.continent}`);
-                
-                // Advance one clue as penalty for using hint
-                if (this.currentClue < this.maxClues) {
-                    this.nextClue();
-                }
             }
 
             endGame(won) {
@@ -1657,10 +714,9 @@
                 this.submitBtn.disabled = true;
                 this.hintBtn.disabled = true;
                 
-                // Show clear shape
-                this.currentClue = 6;
-                this.updateClue();
-                this.updateDisplay();
+                // Show country name
+                this.countryName.textContent = this.currentCountry.name;
+                this.countryName.style.color = won ? '#48bb78' : '#f56565';
                 
                 if (won) {
                     this.stats.recordWin();
@@ -1673,18 +729,15 @@
                 if (won) {
                     this.gameOverDiv.className = 'game-over win';
                     this.gameOverDiv.innerHTML = `
-                        🎉 Excellent! 🎉<br>
-                        You identified <strong>${this.currentCountry.name}</strong> correctly!<br>
-                        <small>Attempts: ${this.currentAttempt}/6 | Clues used: ${this.currentClue}/6</small><br>
-                        <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small>
+                        🎉 Correct! You guessed <strong>${this.currentCountry.name}</strong><br>
+                        <small>Attempts: ${this.currentAttempt}/6</small>
                     `;
                 } else {
                     this.gameOverDiv.className = 'game-over lose';
                     this.gameOverDiv.innerHTML = `
-                        😔 Game Over! 😔<br>
-                        The correct country was <strong>${this.currentCountry.name}</strong><br>
-                        <small>Capital: ${this.currentCountry.capital} | Continent: ${this.currentCountry.continent}</small><br>
-                        <small>Shape difficulty: ${this.currentCountry.difficulty}</small>
+                        😔 Game Over!<br>
+                        The country was <strong>${this.currentCountry.name}</strong><br>
+                        <small>Capital: ${this.currentCountry.capital}</small>
                     `;
                 }
             }
