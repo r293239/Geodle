@@ -443,7 +443,7 @@
             justify-content: center;
         }
 
-        .shape-svg {
+        .shape-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -452,27 +452,31 @@
 
         /* Shape blur classes */
         .shape-extreme-blur {
-            filter: blur(30px) contrast(0.2) brightness(0.8);
+            filter: blur(25px) contrast(0.2) brightness(0.5);
+            transform: scale(0.8);
         }
 
         .shape-heavy-blur {
-            filter: blur(25px) contrast(0.3) brightness(0.85);
+            filter: blur(20px) contrast(0.3) brightness(0.6);
+            transform: scale(0.85);
         }
 
         .shape-medium-blur {
-            filter: blur(15px) contrast(0.5) brightness(0.9);
+            filter: blur(15px) contrast(0.4) brightness(0.7);
+            transform: scale(0.9);
         }
 
         .shape-light-blur {
-            filter: blur(8px) contrast(0.7) brightness(0.95);
+            filter: blur(10px) contrast(0.6) brightness(0.8);
+            transform: scale(0.95);
         }
 
         .shape-minimal-blur {
-            filter: blur(3px) contrast(0.9) brightness(1);
+            filter: blur(5px) contrast(0.8) brightness(0.9);
         }
 
         .shape-clear {
-            filter: blur(0) contrast(1) brightness(1);
+            filter: blur(1px) contrast(1) brightness(1);
         }
 
         .clue-info {
@@ -889,7 +893,7 @@
         </div>
 
         <div class="shape-container">
-            <div id="shape-container-inner"></div>
+            <img id="shape-image" class="shape-image shape-extreme-blur" src="" alt="Country shape silhouette">
         </div>
 
         <div class="input-section">
@@ -914,13 +918,13 @@
     </div>
 
     <script>
-        // Country shape data with simplified SVG paths
+        // Country data with actual image URLs for shape silhouettes
+        // Using Wikimedia Commons and other public domain sources
         const countriesData = [
             {
                 name: "United States",
                 alternatives: ["USA", "US", "America", "United States of America"],
-                svgPath: "M100,100 L300,50 L500,100 L700,150 L900,200 L900,600 L700,500 L500,400 L300,350 L100,300 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/USA-satellite.svg/500px-USA-satellite.svg.png",
                 continent: "North America",
                 capital: "Washington D.C.",
                 difficulty: "Medium"
@@ -928,8 +932,7 @@
             {
                 name: "Brazil",
                 alternatives: ["Brasil"],
-                svgPath: "M300,200 Q500,150 700,200 Q800,350 700,500 Q500,550 300,500 Q200,350 300,200 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_%28orthographic_projection%29.svg/500px-Brazil_%28orthographic_projection%29.svg.png",
                 continent: "South America",
                 capital: "Brasília",
                 difficulty: "Easy"
@@ -937,8 +940,7 @@
             {
                 name: "Italy",
                 alternatives: ["Italia"],
-                svgPath: "M400,100 L600,100 L550,500 L450,550 L400,500 Z M550,300 L650,350",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Italy_%28orthographic_projection%29.svg/500px-Italy_%28orthographic_projection%29.svg.png",
                 continent: "Europe",
                 capital: "Rome",
                 difficulty: "Easy"
@@ -946,8 +948,7 @@
             {
                 name: "Australia",
                 alternatives: [],
-                svgPath: "M200,200 Q400,150 600,200 Q700,350 600,500 Q400,550 200,500 Q100,350 200,200 Z M300,300 L350,350 L350,400 L300,400 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Australia_%28orthographic_projection%29.svg/500px-Australia_%28orthographic_projection%29.svg.png",
                 continent: "Oceania",
                 capital: "Canberra",
                 difficulty: "Easy"
@@ -955,8 +956,7 @@
             {
                 name: "India",
                 alternatives: ["Bharat"],
-                svgPath: "M300,200 Q500,150 700,200 Q750,350 700,500 Q500,550 300,500 Q250,350 300,200 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/India_%28orthographic_projection%29.svg/500px-India_%28orthographic_projection%29.svg.png",
                 continent: "Asia",
                 capital: "New Delhi",
                 difficulty: "Medium"
@@ -964,8 +964,7 @@
             {
                 name: "South Africa",
                 alternatives: [],
-                svgPath: "M300,150 L700,150 L650,500 L500,550 L350,500 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/South_Africa_%28orthographic_projection%29.svg/500px-South_Africa_%28orthographic_projection%29.svg.png",
                 continent: "Africa",
                 capital: "Cape Town",
                 difficulty: "Medium"
@@ -973,8 +972,7 @@
             {
                 name: "Japan",
                 alternatives: ["Nippon"],
-                svgPath: "M400,250 Q500,200 600,250 Q650,400 600,550 Q500,600 400,550 Q350,400 400,250 Z",
-                viewBox: "0 0 1000 800",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Japan_%28orthographic_projection%29.svg/500px-Japan_%28orthographic_projection%29.svg.png",
                 continent: "Asia",
                 capital: "Tokyo",
                 difficulty: "Hard"
@@ -982,8 +980,7 @@
             {
                 name: "United Kingdom",
                 alternatives: ["UK", "Britain", "Great Britain"],
-                svgPath: "M300,150 L700,150 L650,400 L500,450 L350,400 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/United_Kingdom_%28orthographic_projection%29.svg/500px-United_Kingdom_%28orthographic_projection%29.svg.png",
                 continent: "Europe",
                 capital: "London",
                 difficulty: "Easy"
@@ -991,8 +988,7 @@
             {
                 name: "Chile",
                 alternatives: [],
-                svgPath: "M400,100 L450,100 L450,600 L400,600 Z M450,200 L500,200 L500,500 L450,500 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Chile_%28orthographic_projection%29.svg/500px-Chile_%28orthographic_projection%29.svg.png",
                 continent: "South America",
                 capital: "Santiago",
                 difficulty: "Hard"
@@ -1000,8 +996,7 @@
             {
                 name: "France",
                 alternatives: [],
-                svgPath: "M250,150 L750,150 L750,450 L250,450 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/France_%28orthographic_projection%29.svg/500px-France_%28orthographic_projection%29.svg.png",
                 continent: "Europe",
                 capital: "Paris",
                 difficulty: "Easy"
@@ -1009,8 +1004,7 @@
             {
                 name: "Germany",
                 alternatives: ["Deutschland"],
-                svgPath: "M200,150 L800,150 L800,450 L200,450 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Germany_%28orthographic_projection%29.svg/500px-Germany_%28orthographic_projection%29.svg.png",
                 continent: "Europe",
                 capital: "Berlin",
                 difficulty: "Easy"
@@ -1018,8 +1012,7 @@
             {
                 name: "Canada",
                 alternatives: [],
-                svgPath: "M150,100 L850,100 L850,400 L650,400 L650,500 L350,500 L350,400 L150,400 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Canada_%28orthographic_projection%29.svg/500px-Canada_%28orthographic_projection%29.svg.png",
                 continent: "North America",
                 capital: "Ottawa",
                 difficulty: "Medium"
@@ -1027,17 +1020,15 @@
             {
                 name: "China",
                 alternatives: ["People's Republic of China", "PRC"],
-                svgPath: "M200,150 Q500,100 800,150 Q900,350 800,550 Q500,600 200,550 Q100,350 200,150 Z",
-                viewBox: "0 0 1000 700",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/China_%28orthographic_projection%29.svg/500px-China_%28orthographic_projection%29.svg.png",
                 continent: "Asia",
                 capital: "Beijing",
-                difficulty: "Hard"
+                difficulty: "Medium"
             },
             {
                 name: "Russia",
                 alternatives: ["Russian Federation"],
-                svgPath: "M100,100 L900,100 L900,300 L700,300 L700,500 L300,500 L300,300 L100,300 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Russia_%28orthographic_projection%29.svg/500px-Russia_%28orthographic_projection%29.svg.png",
                 continent: "Europe/Asia",
                 capital: "Moscow",
                 difficulty: "Medium"
@@ -1045,10 +1036,41 @@
             {
                 name: "Spain",
                 alternatives: ["España"],
-                svgPath: "M300,150 L700,150 L700,450 L300,450 Z M450,200 L550,200 L550,400 L450,400 Z",
-                viewBox: "0 0 1000 600",
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Spain_%28orthographic_projection%29.svg/500px-Spain_%28orthographic_projection%29.svg.png",
                 continent: "Europe",
                 capital: "Madrid",
+                difficulty: "Medium"
+            },
+            {
+                name: "Mexico",
+                alternatives: ["México"],
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Mexico_%28orthographic_projection%29.svg/500px-Mexico_%28orthographic_projection%29.svg.png",
+                continent: "North America",
+                capital: "Mexico City",
+                difficulty: "Medium"
+            },
+            {
+                name: "Egypt",
+                alternatives: [],
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Egypt_%28orthographic_projection%29.svg/500px-Egypt_%28orthographic_projection%29.svg.png",
+                continent: "Africa",
+                capital: "Cairo",
+                difficulty: "Easy"
+            },
+            {
+                name: "Argentina",
+                alternatives: [],
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Argentina_%28orthographic_projection%29.svg/500px-Argentina_%28orthographic_projection%29.svg.png",
+                continent: "South America",
+                capital: "Buenos Aires",
+                difficulty: "Medium"
+            },
+            {
+                name: "Turkey",
+                alternatives: ["Türkiye"],
+                shapeUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Turkey_%28orthographic_projection%29.svg/500px-Turkey_%28orthographic_projection%29.svg.png",
+                continent: "Europe/Asia",
+                capital: "Ankara",
                 difficulty: "Medium"
             }
         ];
@@ -1297,43 +1319,6 @@
             }
         }
 
-        // Shape Generator for country outlines
-        class ShapeGenerator {
-            static generateCountryShape(country, clueLevel = 1) {
-                const container = document.getElementById('shape-container-inner');
-                container.innerHTML = ''; // Clear previous content
-                
-                // Create SVG element
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute("viewBox", country.viewBox || "0 0 1000 700");
-                svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-                svg.setAttribute("class", "shape-svg");
-                
-                // Add country shape
-                const shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                shape.setAttribute("d", country.svgPath);
-                shape.setAttribute("fill", "#2d3748");
-                shape.setAttribute("stroke", "#4a5568");
-                shape.setAttribute("stroke-width", "2");
-                
-                svg.appendChild(shape);
-                container.appendChild(svg);
-                
-                // Apply blur based on clue level
-                const blurClasses = [
-                    'shape-extreme-blur',
-                    'shape-heavy-blur',
-                    'shape-medium-blur',
-                    'shape-light-blur',
-                    'shape-minimal-blur',
-                    'shape-clear'
-                ];
-                
-                // Remove all blur classes and add current one
-                svg.className = 'shape-svg ' + (blurClasses[clueLevel - 1] || 'shape-extreme-blur');
-            }
-        }
-
         class ShapleGame {
             constructor() {
                 this.currentCountry = null;
@@ -1368,7 +1353,7 @@
             }
 
             initializeElements() {
-                this.shapeContainer = document.getElementById('shape-container-inner');
+                this.shapeImage = document.getElementById('shape-image');
                 this.guessInput = document.getElementById('guess-input');
                 this.submitBtn = document.getElementById('submit-guess');
                 this.newGameBtn = document.getElementById('new-game-btn');
@@ -1410,7 +1395,7 @@
                 
                 this.updateDisplay();
                 this.updateClue();
-                ShapeGenerator.generateCountryShape(this.currentCountry, this.currentClue);
+                this.loadShapeImage();
                 this.guessesList.innerHTML = '';
                 this.gameOverDiv.style.display = 'none';
                 this.guessInput.disabled = false;
@@ -1419,6 +1404,15 @@
                 this.guessInput.value = '';
                 this.guessInput.focus();
                 this.stats.updateDisplay();
+            }
+
+            loadShapeImage() {
+                // Set the image source
+                this.shapeImage.src = this.currentCountry.shapeUrl;
+                this.shapeImage.alt = `Silhouette of ${this.currentCountry.name}`;
+                
+                // Apply initial blur class
+                this.updateShapeBlur();
             }
 
             updateDisplay() {
@@ -1437,9 +1431,25 @@
                 ];
 
                 this.clueInfo.textContent = clueDescriptions[this.currentClue - 1];
+                this.updateShapeBlur();
+            }
+
+            updateShapeBlur() {
+                // Remove all blur classes
+                this.shapeImage.className = 'shape-image';
                 
-                // Update shape with new blur level
-                ShapeGenerator.generateCountryShape(this.currentCountry, this.currentClue);
+                // Apply appropriate blur class based on current clue
+                const blurClasses = [
+                    'shape-extreme-blur',
+                    'shape-heavy-blur',
+                    'shape-medium-blur',
+                    'shape-light-blur',
+                    'shape-minimal-blur',
+                    'shape-clear'
+                ];
+                
+                const currentBlurClass = blurClasses[this.currentClue - 1] || 'shape-extreme-blur';
+                this.shapeImage.classList.add(currentBlurClass);
             }
 
             nextClue() {
