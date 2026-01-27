@@ -11,7 +11,7 @@
 <meta property="og:title" content="Histle - Daily Historical Geography Challenge Game">
 <meta property="og:description" content="Test your historical geography knowledge with daily country guessing challenges using historical clues!">
 <meta property="og:image" content="https://r293239.github.io/Geodle/assets/histle-preview.png">
-<meta property="og:url" content="https://r293239.github.io/Geodle/histle.html">
+<meta property="og:url" content="https://r293239.github.io/Histle/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Histle">
 
@@ -28,7 +28,7 @@
   "@type": "WebApplication",
   "name": "Histle",
   "description": "Daily historical geography challenge game where players guess countries from historical clues",
-  "url": "https://r293239.github.io/Geodle/histle.html",
+  "url": "https://r293239.github.io/Histle/",
   "applicationCategory": "EducationalGame",
   "operatingSystem": "Any",
   "permissions": "browser",
@@ -44,10 +44,10 @@
 }
 </script>
     <!-- Favicon and App Icons -->
-<link rel="icon" href="assets/histle.png" type="image/png">
-<link rel="shortcut icon" href="assets/histle.png" type="image/png">
-<link rel="apple-touch-icon" href="assets/histle.png">
-<link rel="apple-touch-icon-precomposed" href="assets/histle.png">
+<link rel="icon" href="assets/icon.png" type="image/png">
+<link rel="shortcut icon" href="assets/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="apple-touch-icon-precomposed" href="assets/icon.png">
     
     <meta name="google-site-verification" content="4v_aC03LTCSXTOwGjrpNzbHNAjnB5hESrAOo4pMtIQo" />
     <meta charset="UTF-8">
@@ -151,6 +151,19 @@
             position: relative;
         }
 
+        #menu-button.open .menu-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        #menu-button.open .menu-icon span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        #menu-button.open .menu-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
         /* Menu Dropdown */
         #menu-dropdown {
             position: fixed;
@@ -197,6 +210,65 @@
         .menu-item:hover {
             background: rgba(52, 152, 219, 0.1);
             transform: translateX(5px);
+        }
+
+        /* Settings Items */
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            color: #2C3E50;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
 
         /* Loading Screen */
@@ -272,6 +344,310 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Tutorial Overlay */
+        #tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        #tutorial-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #tutorial-modal {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(50px) scale(0.95);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #tutorial-overlay.show #tutorial-modal {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        #tutorial-content {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .tutorial-slide {
+            display: none;
+            text-align: center;
+        }
+
+        .tutorial-slide.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .tutorial-slide h2 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3498db 0%, #2C3E50 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tutorial-slide p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .tutorial-visual {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 2px dashed rgba(52, 152, 219, 0.3);
+            animation: pulseVisual 2s infinite;
+        }
+
+        @keyframes pulseVisual {
+            0%, 100% {
+                border-color: rgba(52, 152, 219, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                border-color: rgba(52, 152, 219, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        .visual-map {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-map::after {
+            content: '🗺️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 2rem;
+            transform: translate(-50%, -50%);
+            animation: pulsePin 2s infinite;
+        }
+
+        @keyframes pulsePin {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        .visual-clue {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: #2C3E50;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: floatUpDown 3s ease-in-out infinite;
+        }
+
+        @keyframes floatUpDown {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .visual-progress {
+            width: 100%;
+            height: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .visual-progress-fill {
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 10px;
+            animation: progressGrow 3s infinite;
+        }
+
+        @keyframes progressGrow {
+            0%, 100% { width: 30%; }
+            50% { width: 60%; }
+        }
+
+        .tutorial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .tutorial-dot {
+            width: 10px;
+            height: 10px;
+            background: #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tutorial-dot.active {
+            background: #3498db;
+            transform: scale(1.2);
+        }
+
+        .tutorial-dot:hover {
+            background: #2980b9;
+        }
+
+        .tutorial-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tutorial-btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .tutorial-btn.skip {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .tutorial-btn.next {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .tutorial-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .tutorial-btn.skip:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .tutorial-btn.next:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+        }
+
+        .tutorial-btn:active {
+            transform: translateY(0);
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 12px;
+            animation: slideInRight 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .feature-item:nth-child(1) { animation-delay: 0.1s; }
+        .feature-item:nth-child(2) { animation-delay: 0.2s; }
+        .feature-item:nth-child(3) { animation-delay: 0.3s; }
+        .feature-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .feature-text h4 {
+            color: #2C3E50;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .feature-text p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
         }
 
         h1 {
@@ -726,6 +1102,32 @@
                 padding: 14px 22px;
                 font-size: 13px;
             }
+            
+            #tutorial-modal {
+                width: 95%;
+                margin: 10px;
+            }
+            
+            #tutorial-content {
+                padding: 20px;
+            }
+            
+            .tutorial-slide h2 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-slide p {
+                font-size: 1rem;
+            }
+            
+            .tutorial-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .tutorial-btn {
+                width: 100%;
+            }
         }
         
         @media (max-width: 480px) {
@@ -746,6 +1148,24 @@
                 margin: 12px auto;
                 width: 90%;
                 max-width: 280px;
+            }
+            
+            #tutorial-content {
+                padding: 15px;
+            }
+            
+            .tutorial-slide h2 {
+                font-size: 1.5rem;
+            }
+            
+            .tutorial-slide p {
+                font-size: 0.95rem;
+            }
+            
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
             }
         }
         
@@ -794,6 +1214,146 @@
     </div>
 </div>
 
+<!-- Tutorial Overlay -->
+<div id="tutorial-overlay">
+    <div id="tutorial-modal">
+        <div id="tutorial-content">
+            <!-- Slide 1: Welcome -->
+            <div class="tutorial-slide active" id="slide1">
+                <h2>Welcome to Histle! 📜</h2>
+                <p>Test your historical geography knowledge by guessing countries from historical clues.</p>
+                <div class="tutorial-visual">
+                    <div class="visual-map"></div>
+                    <div class="visual-clue">You'll get 8 historical clues about a mystery country</div>
+                </div>
+                <div class="tutorial-dots">
+                    <div class="tutorial-dot active" data-slide="1"></div>
+                    <div class="tutorial-dot" data-slide="2"></div>
+                    <div class="tutorial-dot" data-slide="3"></div>
+                    <div class="tutorial-dot" data-slide="4"></div>
+                </div>
+                <div class="tutorial-buttons">
+                    <button class="tutorial-btn skip" id="skip-tutorial">Skip Tutorial</button>
+                    <button class="tutorial-btn next" id="next-slide">Next</button>
+                </div>
+            </div>
+
+            <!-- Slide 2: How to Play -->
+            <div class="tutorial-slide" id="slide2">
+                <h2>How to Play 🎯</h2>
+                <p>You'll receive 8 clues, each more specific than the last. Guess the country at any time!</p>
+                <div class="tutorial-visual">
+                    <div class="visual-progress">
+                        <div class="visual-progress-fill"></div>
+                    </div>
+                    <div class="visual-clue">Progress bar shows how many clues you've used</div>
+                </div>
+                <div class="tutorial-dots">
+                    <div class="tutorial-dot" data-slide="1"></div>
+                    <div class="tutorial-dot active" data-slide="2"></div>
+                    <div class="tutorial-dot" data-slide="3"></div>
+                    <div class="tutorial-dot" data-slide="4"></div>
+                </div>
+                <div class="tutorial-buttons">
+                    <button class="tutorial-btn skip" id="prev-slide">Back</button>
+                    <button class="tutorial-btn next" id="next-slide-2">Next</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Features -->
+            <div class="tutorial-slide" id="slide3">
+                <h2>Key Features ✨</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">🌍</div>
+                        <div class="feature-text">
+                            <h4>Interactive Map</h4>
+                            <p>Explore the world as you play</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-text">
+                            <h4>Track Progress</h4>
+                            <p>Monitor your win streak and total wins</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-text">
+                            <h4>Multiple Modes</h4>
+                            <p>Switch between different geography games</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📜</div>
+                        <div class="feature-text">
+                            <h4>Historical Focus</h4>
+                            <p>Learn about countries through their history</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tutorial-dots">
+                    <div class="tutorial-dot" data-slide="1"></div>
+                    <div class="tutorial-dot" data-slide="2"></div>
+                    <div class="tutorial-dot active" data-slide="3"></div>
+                    <div class="tutorial-dot" data-slide="4"></div>
+                </div>
+                <div class="tutorial-buttons">
+                    <button class="tutorial-btn skip" id="prev-slide-2">Back</button>
+                    <button class="tutorial-btn next" id="next-slide-3">Next</button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Tips & Start -->
+            <div class="tutorial-slide" id="slide4">
+                <h2>Ready to Play! 🚀</h2>
+                <p>Here are some tips to help you succeed:</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">💡</div>
+                        <div class="feature-text">
+                            <h4>Think Historically</h4>
+                            <p>Consider independence dates, former empires, and major events</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-text">
+                            <h4>Use Process of Elimination</h4>
+                            <p>Review past clues to narrow down options</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏆</div>
+                        <div class="feature-text">
+                            <h4>Build Your Streak</h4>
+                            <p>Win consecutive games to increase your streak</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🌐</div>
+                        <div class="feature-text">
+                            <h4>Alternative Names</h4>
+                            <p>The game accepts common alternative country names</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tutorial-dots">
+                    <div class="tutorial-dot" data-slide="1"></div>
+                    <div class="tutorial-dot" data-slide="2"></div>
+                    <div class="tutorial-dot" data-slide="3"></div>
+                    <div class="tutorial-dot active" data-slide="4"></div>
+                </div>
+                <div class="tutorial-buttons">
+                    <button class="tutorial-btn skip" id="prev-slide-3">Back</button>
+                    <button class="tutorial-btn next" id="start-playing">Start Playing!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Three-line Menu Button -->
 <div id="menu-button">
     <div class="menu-icon">
@@ -805,9 +1365,39 @@
 
 <!-- Menu Dropdown -->
 <div id="menu-dropdown">
-    <button class="menu-item" id="menu-terms">📄 Terms & Conditions</button>
-    <button class="menu-item" id="menu-privacy">🔒 Privacy Policy</button>
     <button class="menu-item" id="menu-tutorial">🎓 Show Tutorial</button>
+    
+    <!-- Settings Items -->
+    <div class="settings-item">
+        <span>🔊 Sound Effects</span>
+        <label class="switch">
+            <input type="checkbox" id="sound-toggle" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+    
+    <div class="settings-item">
+        <span>🎵 Background Music</span>
+        <label class="switch">
+            <input type="checkbox" id="music-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+    
+    <div class="settings-item">
+        <span>🌙 Dark Mode</span>
+        <label class="switch">
+            <input type="checkbox" id="darkmode-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+    
+    <div class="menu-item" id="menu-stats">📊 View Statistics</div>
+    <div class="menu-item" id="menu-share">📤 Share Game</div>
+    <div class="menu-item" id="menu-feedback">💬 Send Feedback</div>
+    <div class="menu-item" id="menu-about">ℹ️ About Histle</div>
+    <div class="menu-item" id="menu-privacy">🔒 Privacy Policy</div>
+    <div class="menu-item" id="menu-terms">📄 Terms & Conditions</div>
 </div>
 
 <h1>📜 Histle</h1>
@@ -888,6 +1478,14 @@ let guessHistory = [];
 let gameEnded = false;
 let totalWins = 0;
 let worldMap = null;
+let tutorialCompleted = false;
+let soundEnabled = true;
+let musicEnabled = false;
+let darkMode = false;
+
+// Tutorial variables
+let currentSlide = 1;
+const totalSlides = 4;
 
 // Show loading screen initially
 function showLoadingScreen() {
@@ -1045,6 +1643,11 @@ function handleGuess(e) {
     
     if (!guess) return;
     
+    // Play sound effect
+    if (soundEnabled) {
+        playSoundEffect('click');
+    }
+    
     // Check if correct - accepts multiple names
     const normalizedGuess = guess.toUpperCase();
     const correctAnswers = [currentQuestion.answer.toUpperCase()];
@@ -1066,12 +1669,14 @@ function handleGuess(e) {
     });
     
     if (isCorrect) {
+        if (soundEnabled) playSoundEffect('success');
         showFeedback(`🎉 Correct! The answer is ${currentQuestion.answer}`, '#2ecc71');
         totalWins++;
         localStorage.setItem('histle_total_wins', totalWins.toString());
         updateWinDisplay();
         endGame(true);
     } else {
+        if (soundEnabled) playSoundEffect('error');
         if (currentClueIndex < 7) {
             currentClueIndex++;
             updateClueDisplay();
@@ -1159,19 +1764,191 @@ function shareScore() {
 // Menu functionality
 function toggleMenu() {
     const dropdown = document.getElementById('menu-dropdown');
+    const menuButton = document.getElementById('menu-button');
+    
     dropdown.classList.toggle('show');
+    menuButton.classList.toggle('open');
 }
 
 function closeMenu() {
     const dropdown = document.getElementById('menu-dropdown');
+    const menuButton = document.getElementById('menu-button');
+    
     dropdown.classList.remove('show');
+    menuButton.classList.remove('open');
+}
+
+// Sound effects
+function playSoundEffect(type) {
+    if (!soundEnabled) return;
+    
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        switch(type) {
+            case 'success':
+                oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+                break;
+                
+            case 'error':
+                oscillator.frequency.setValueAtTime(392, audioContext.currentTime); // G4
+                oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime + 0.1); // F4
+                oscillator.frequency.setValueAtTime(311.13, audioContext.currentTime + 0.2); // D#4
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+                break;
+                
+            case 'click':
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+                break;
+        }
+    } catch (e) {
+        console.log('Audio context not supported:', e);
+    }
+}
+
+// Settings management
+function loadSettings() {
+    // Load win count
+    const savedWins = localStorage.getItem('histle_total_wins');
+    totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+    
+    // Load settings
+    const savedSound = localStorage.getItem('histle_sound_enabled');
+    soundEnabled = savedSound !== null ? savedSound === 'true' : true;
+    document.getElementById('sound-toggle').checked = soundEnabled;
+    
+    const savedMusic = localStorage.getItem('histle_music_enabled');
+    musicEnabled = savedMusic !== null ? savedMusic === 'true' : false;
+    document.getElementById('music-toggle').checked = musicEnabled;
+    
+    const savedDarkMode = localStorage.getItem('histle_dark_mode');
+    darkMode = savedDarkMode !== null ? savedDarkMode === 'true' : false;
+    document.getElementById('darkmode-toggle').checked = darkMode;
+    
+    // Load tutorial status
+    const savedTutorial = localStorage.getItem('histle_tutorial_completed');
+    tutorialCompleted = savedTutorial === 'true';
+    
+    // Apply dark mode if enabled
+    if (darkMode) {
+        applyDarkMode();
+    }
+}
+
+function saveSettings() {
+    localStorage.setItem('histle_total_wins', totalWins.toString());
+    localStorage.setItem('histle_sound_enabled', soundEnabled.toString());
+    localStorage.setItem('histle_music_enabled', musicEnabled.toString());
+    localStorage.setItem('histle_dark_mode', darkMode.toString());
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    saveSettings();
+    showFeedback(soundEnabled ? '🔊 Sound enabled' : '🔇 Sound disabled', '#3498db');
+}
+
+function toggleMusic() {
+    musicEnabled = !musicEnabled;
+    saveSettings();
+    showFeedback(musicEnabled ? '🎵 Music enabled' : '🔇 Music disabled', '#3498db');
+}
+
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    saveSettings();
+    if (darkMode) {
+        applyDarkMode();
+    } else {
+        removeDarkMode();
+    }
+    showFeedback(darkMode ? '🌙 Dark mode enabled' : '☀️ Light mode enabled', '#3498db');
+}
+
+function applyDarkMode() {
+    document.body.style.background = 'linear-gradient(135deg, #2C3E50 0%, #34495E 100%)';
+    document.body.style.color = '#ecf0f1';
+}
+
+function removeDarkMode() {
+    document.body.style.background = 'linear-gradient(135deg, #F5F1E8 0%, #E8E4DA 100%)';
+    document.body.style.color = '#333';
+}
+
+// Tutorial functions
+function showTutorial() {
+    document.getElementById('tutorial-overlay').style.display = 'flex';
+    setTimeout(() => {
+        document.getElementById('tutorial-overlay').classList.add('show');
+        changeSlide(1); // Reset to first slide
+    }, 50);
+}
+
+function hideTutorial() {
+    document.getElementById('tutorial-overlay').classList.remove('show');
+    setTimeout(() => {
+        document.getElementById('tutorial-overlay').style.display = 'none';
+    }, 500);
+}
+
+function changeSlide(slideNumber) {
+    if (slideNumber < 1 || slideNumber > totalSlides) return;
+    
+    currentSlide = slideNumber;
+    
+    // Hide all slides
+    document.querySelectorAll('.tutorial-slide').forEach(slide => {
+        slide.classList.remove('active');
+    });
+    
+    // Show current slide
+    const currentSlideElement = document.getElementById(`slide${slideNumber}`);
+    if (currentSlideElement) {
+        currentSlideElement.classList.add('active');
+    }
+    
+    // Update dots
+    document.querySelectorAll('.tutorial-dot').forEach(dot => {
+        dot.classList.remove('active');
+        if (parseInt(dot.getAttribute('data-slide')) === slideNumber) {
+            dot.classList.add('active');
+        }
+    });
+}
+
+function completeTutorial() {
+    tutorialCompleted = true;
+    localStorage.setItem('histle_tutorial_completed', 'true');
+    hideTutorial();
+    
+    // Start the game if not already started
+    if (!currentQuestion) {
+        initGame();
+    }
 }
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', function() {
-    // Load win count
-    const savedWins = localStorage.getItem('histle_total_wins');
-    totalWins = savedWins ? parseInt(savedWins, 10) : 0;
+    // Load settings
+    loadSettings();
     
     // Menu event listeners
     document.getElementById('menu-button').addEventListener('click', function(e) {
@@ -1189,7 +1966,107 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Set up event listeners
+    // Menu item click handlers
+    document.getElementById('menu-tutorial').addEventListener('click', function() {
+        closeMenu();
+        showTutorial();
+    });
+    
+    document.getElementById('menu-stats').addEventListener('click', function() {
+        closeMenu();
+        alert(`📊 Your Statistics:\n\nTotal Wins: ${totalWins}\nWin Rate: Calculating...\n\nMore statistics coming soon!`);
+    });
+    
+    document.getElementById('menu-share').addEventListener('click', function() {
+        closeMenu();
+        const shareText = `📜 Histle - Daily Historical Geography Game\n\nTest your knowledge of countries through historical clues!\n\nPlay now: ${window.location.href}`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'Histle - Historical Geography Game',
+                text: shareText,
+                url: window.location.href
+            });
+        } else {
+            navigator.clipboard.writeText(shareText);
+            showFeedback('Game link copied to clipboard!', '#3498db');
+        }
+    });
+    
+    document.getElementById('menu-feedback').addEventListener('click', function() {
+        closeMenu();
+        window.open('https://docs.google.com/forms/d/e/1FAIpQLSf66hYSFxnaQXvXmHlWU2MIGwIn3dkmiQ5iguGazXRKw4cSEg/viewform', '_blank');
+    });
+    
+    document.getElementById('menu-about').addEventListener('click', function() {
+        closeMenu();
+        alert(`📜 About Histle\n\nVersion: 1.0.0\nCreated for geography and history enthusiasts\n\nHistle challenges you to guess countries based on historical clues like independence years, former empires, and major historical events.\n\nPerfect for students, teachers, and anyone interested in world history!`);
+    });
+    
+    document.getElementById('menu-privacy').addEventListener('click', function() {
+        closeMenu();
+        alert(`🔒 Privacy Policy\n\nHistle respects your privacy:\n\n• No personal data is collected\n• All game progress is stored locally on your device\n• No tracking or analytics\n• No third-party data sharing\n\nYour data stays on your device and is never transmitted to any server.`);
+    });
+    
+    document.getElementById('menu-terms').addEventListener('click', function() {
+        closeMenu();
+        alert(`📄 Terms & Conditions\n\nBy using Histle:\n\n• You agree to use the game for educational purposes\n• All content is provided for learning and entertainment\n• The game is free to use\n• No warranties provided\n\nHistle is created for educational enjoyment of historical geography.`);
+    });
+    
+    // Settings toggle handlers
+    document.getElementById('sound-toggle').addEventListener('change', toggleSound);
+    document.getElementById('music-toggle').addEventListener('change', toggleMusic);
+    document.getElementById('darkmode-toggle').addEventListener('change', toggleDarkMode);
+    
+    // Tutorial event listeners
+    document.getElementById('skip-tutorial').addEventListener('click', function() {
+        completeTutorial();
+    });
+    
+    document.getElementById('start-playing').addEventListener('click', function() {
+        completeTutorial();
+    });
+    
+    document.getElementById('next-slide').addEventListener('click', function() {
+        changeSlide(2);
+    });
+    
+    document.getElementById('next-slide-2').addEventListener('click', function() {
+        changeSlide(3);
+    });
+    
+    document.getElementById('next-slide-3').addEventListener('click', function() {
+        changeSlide(4);
+    });
+    
+    document.getElementById('prev-slide').addEventListener('click', function() {
+        changeSlide(1);
+    });
+    
+    document.getElementById('prev-slide-2').addEventListener('click', function() {
+        changeSlide(2);
+    });
+    
+    document.getElementById('prev-slide-3').addEventListener('click', function() {
+        changeSlide(3);
+    });
+    
+    // Tutorial dot navigation
+    document.querySelectorAll('.tutorial-dot').forEach(dot => {
+        dot.addEventListener('click', function() {
+            const slideNumber = parseInt(this.getAttribute('data-slide'));
+            changeSlide(slideNumber);
+        });
+    });
+    
+    // Close tutorial when clicking outside modal
+    document.getElementById('tutorial-overlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            completeTutorial();
+        }
+    });
+    
+    // Set up game event listeners
     document.getElementById('guessForm').addEventListener('submit', handleGuess);
     document.getElementById('resetBtn').addEventListener('click', resetGame);
     document.getElementById('resetWinsBtn').addEventListener('click', function() {
@@ -1208,10 +2085,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 600);
     });
     
-    // Show initial loading screen and start game
+    // Show initial loading screen
     showLoadingScreen();
+    
+    // Show tutorial on first visit or start game
     setTimeout(() => {
-        initGame();
+        if (!tutorialCompleted) {
+            showTutorial();
+        } else {
+            initGame();
+        }
     }, 100);
 });
 </script>
