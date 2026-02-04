@@ -1,289 +1,557 @@
-// Histle Data - Historical Geography Clues
+// Histle Data - Historical Geography Clues (Enhanced)
 const histleData = [
     {
         answer: "SINGAPORE",
+        alternatives: ["SINGAPURA"],
         clues: [
-            "This country gained independence in 1965",
-            "It's located in Southeast Asia",
+            "Its national symbol is the Merlion",
+            "It was briefly part of another country from 1963 to 1965",
+            "It transformed from a third to first world country in one generation",
+            "It was occupied by Japan during World War II",
+            "It gained sovereignty in 1965",
             "It was founded as a British trading post in 1819",
             "It was part of the Straits Settlements with Malacca and Penang",
-            "It was occupied by Japan during World War II",
-            "It was briefly part of Malaysia from 1963 to 1965",
-            "It transformed from a third to first world country in one generation",
-            "Its national symbol is the Merlion"
-        ]
-    },
-    {
-        answer: "UNITED STATES",
-        clues: [
-            "This country declared independence on July 4, 1776",
-            "It was originally 13 British colonies along the Atlantic coast",
-            "Its national bird is the bald eagle",
-            "It fought a Civil War from 1861 to 1865 over slavery",
-            "Its government is based on a Constitution written in 1787",
-            "It expanded westward through the Louisiana Purchase in 1803",
-            "It acquired Alaska from Russia in 1867",
-            "It was the first country to land humans on the Moon in 1969"
-        ]
-    },
-    {
-        answer: "INDIA",
-        clues: [
-            "This country gained independence from Britain in 1947",
-            "Its civilization dates back to the Indus Valley Civilization",
-            "It was ruled by the Maurya Empire from 322 to 185 BCE",
-            "The Mughal Empire ruled here from 1526 to 1857",
-            "The British East India Company established control in the 18th century",
-            "Mahatma Gandhi led its non-violent independence movement",
-            "It was partitioned into India and Pakistan upon independence",
-            "It adopted its constitution in 1950"
-        ]
-    },
-    {
-        answer: "AUSTRALIA",
-        clues: [
-            "This country was established as a British penal colony in 1788",
-            "It's the world's largest island and smallest continent",
-            "It became a federation of colonies in 1901",
-            "It was visited by Dutch explorers in the 17th century",
-            "Captain James Cook claimed it for Britain in 1770",
-            "ANZAC forces from here fought at Gallipoli in World War I",
-            "It became fully independent with the Statute of Westminster in 1931",
-            "Its national anthem was changed from 'God Save the Queen' in 1984"
-        ]
-    },
-    {
-        answer: "SOUTH AFRICA",
-        clues: [
-            "This country gained independence from Britain in 1910",
-            "Gold and diamonds were discovered here in the late 19th century",
-            "It fought the Anglo-Boer Wars against Britain",
-            "It implemented apartheid from 1948 to 1994",
-            "Nelson Mandela was imprisoned here for 27 years",
-            "It hosted the first Rugby World Cup in Africa in 1995",
-            "It left the British Commonwealth in 1961, rejoined in 1994",
-            "It's known as the 'Rainbow Nation'"
-        ]
-    },
-    {
-        answer: "JAPAN",
-        clues: [
-            "This country was never formally colonized",
-            "It has the world's oldest continuous hereditary monarchy",
-            "It had a feudal period with shoguns and samurai for nearly 700 years",
-            "It ended over 200 years of isolation in 1853",
-            "Its capital was called Edo until it was renamed in 1868",
-            "It was the only country to be attacked with nuclear weapons in 1945",
-            "It had an economic miracle after World War II",
-            "It adopted a pacifist constitution in 1947"
-        ]
-    },
-    {
-        answer: "MEXICO",
-        clues: [
-            "This country gained independence from Spain in 1821",
-            "It was home to advanced civilizations like the Aztecs and Maya",
-            "It lost half its territory to the USA in the Mexican-American War",
-            "It was ruled by Emperor Maximilian I installed by France in the 1860s",
-            "It had a major revolution from 1910 to 1920",
-            "It nationalized its oil industry in 1938",
-            "It hosted the 1968 Summer Olympics",
-            "Its cuisine is UNESCO-listed intangible cultural heritage"
-        ]
-    },
-    {
-        answer: "EGYPT",
-        clues: [
-            "This country's civilization dates back to around 3100 BCE",
-            "It was ruled by pharaohs for over 3,000 years",
-            "It built the Great Pyramids of Giza around 2580–2560 BCE",
-            "It was conquered by Arabs in the 7th century",
-            "The Suez Canal opened here in 1869",
-            "It was a British protectorate from 1914 to 1922",
-            "It became a republic after the 1952 revolution",
-            "It signed a peace treaty with Israel in 1979"
-        ]
-    },
-    {
-        answer: "BRAZIL",
-        clues: [
-            "This country gained independence from Portugal in 1822",
-            "It was the only monarchy in South America from 1822 to 1889",
-            "Its capital was moved from Rio de Janeiro to Brasília in 1960",
-            "It had a military dictatorship from 1964 to 1985",
-            "The Treaty of Tordesillas in 1494 divided it between Portugal and Spain",
-            "It has won the FIFA World Cup 5 times",
-            "It hosted the 2014 World Cup and 2016 Olympics",
-            "It was the last country in the Americas to abolish slavery in 1888"
-        ]
-    },
-    {
-        answer: "RUSSIA",
-        clues: [
-            "This country was the center of the Soviet Union from 1922 to 1991",
-            "It was ruled by tsars until the 1917 revolution",
-            "It withstood Napoleon's invasion in 1812",
-            "It was a major Allied power in World War II",
-            "It launched the first satellite and first human in space",
-            "The Soviet Union collapsed in 1991",
-            "It transitioned to a market economy in the 1990s",
-            "Its current constitution was adopted in 1993"
-        ]
-    },
-    {
-        answer: "FRANCE",
-        clues: [
-            "This country had a revolution in 1789",
-            "It was ruled by the Bourbon monarchy until 1792",
-            "Napoleon Bonaparte ruled as emperor from 1804 to 1814",
-            "The Eiffel Tower was built for the 1889 World's Fair",
-            "It had a vast colonial empire, second only to Britain",
-            "It was occupied by Germany during World War II",
-            "It was a founding member of the European Union",
-            "It's home to the Louvre, the world's most visited museum"
-        ]
-    },
-    {
-        answer: "CHINA",
-        clues: [
-            "This country has the world's oldest continuous civilization",
-            "It was ruled by emperors for over 2,000 years",
-            "The Great Wall was built over centuries starting in the 7th century BCE",
-            "The Opium Wars forced it to open to foreign trade",
-            "It had a revolution in 1911 ending imperial rule",
-            "The Communist Party took control in 1949",
-            "It began economic reforms in 1978",
-            "It regained Hong Kong in 1997 and Macau in 1999"
-        ]
-    },
-    {
-        answer: "ITALY",
-        clues: [
-            "This country was unified in 1861",
-            "It was the center of the Roman Empire",
-            "It was the birthplace of the Renaissance",
-            "Mussolini ruled as dictator from 1922 to 1943",
-            "It became a republic after a 1946 referendum",
-            "It was a founding member of the European Union",
-            "It has won the FIFA World Cup 4 times",
-            "Vatican City is an independent state within its capital"
-        ]
-    },
-    {
-        answer: "TURKEY",
-        clues: [
-            "This country was the center of the Ottoman Empire",
-            "Constantinople fell to the Ottomans in 1453",
-            "It became a republic in 1923 under Mustafa Kemal Atatürk",
-            "It switched from Arabic to Latin alphabet in 1928",
-            "It banned the fez and promoted Western dress",
-            "It adopted secularism in its constitution",
-            "Istanbul bridges Europe and Asia across the Bosphorus",
-            "It has been an EU candidate country since 1999"
-        ]
-    },
-    {
-        answer: "ISRAEL",
-        clues: [
-            "This country declared independence in 1948",
-            "It's mentioned in the Bible as the Promised Land",
-            "It was ruled by Romans, Byzantines, Arabs, Crusaders, and Ottomans",
-            "It was under British mandate from 1920 to 1948",
-            "The Balfour Declaration in 1917 supported a Jewish homeland",
-            "It fought multiple wars with neighboring Arab states",
-            "It signed peace treaties with Egypt in 1979 and Jordan in 1994",
-            "Jerusalem is its declared capital"
-        ]
-    },
-    {
-        answer: "CANADA",
-        clues: [
-            "This country gained independence from Britain in 1867",
-            "It was originally inhabited by Indigenous peoples",
-            "It was a French colony called New France until 1763",
-            "It was conquered by Britain in the Seven Years' War",
-            "It became a self-governing dominion in 1867",
-            "It fought as an independent nation in World War I",
-            "It patriated its constitution from Britain in 1982",
-            "Its flag with the maple leaf was adopted in 1965"
+            "This Southeast Asian city-state has four official languages"
         ]
     },
     {
         answer: "GERMANY",
+        alternatives: ["DEUTSCHLAND", "FEDERAL REPUBLIC OF GERMANY"],
         clues: [
-            "This country was unified in 1871",
-            "It was divided after World War II from 1945 to 1990",
             "The Berlin Wall fell in 1989",
-            "It reunified in 1990",
+            "Its capital moved from Bonn to Berlin in 1999",
+            "This European nation was unified in 1871",
+            "It adopted the Euro currency in 1999",
+            "It was divided into occupation zones after 1945",
+            "It reunified in 1990 after decades of division",
             "It was a founding member of the European Union",
-            "It adopted the Euro in 1999",
-            "It was divided into occupation zones after WWII",
-            "Its capital moved from Bonn to Berlin in 1999"
-        ]
-    },
-    {
-        answer: "SOUTH KOREA",
-        clues: [
-            "This country was founded in 1948",
-            "It has a history dating back to Gojoseon in 2333 BCE",
-            "It was annexed by Japan from 1910 to 1945",
-            "It was divided after World War II",
-            "The Korean War lasted from 1950 to 1953",
-            "It had rapid economic growth called the Miracle on the Han River",
-            "It hosted the 1988 Summer Olympics",
-            "It's a global leader in technology and pop culture"
-        ]
-    },
-    {
-        answer: "GREECE",
-        clues: [
-            "This country is considered the cradle of Western civilization",
-            "It was the birthplace of democracy in Athens",
-            "Alexander the Great created an empire from here",
-            "It was part of the Roman and Byzantine Empires",
-            "It was under Ottoman rule for nearly 400 years",
-            "It gained independence from the Ottomans in 1830",
-            "It adopted the Euro in 2001",
-            "The Olympic Games originated here in ancient times"
+            "This country was divided after World War II from 1945 to 1990"
         ]
     },
     {
         answer: "ETHIOPIA",
+        alternatives: ["ABYSSINIA"],
         clues: [
-            "This country was never colonized, except for brief Italian occupation",
-            "It has one of the world's oldest monarchies",
             "It adopted Christianity in the 4th century",
-            "It defeated Italy at the Battle of Adwa in 1896",
-            "It was occupied by Italy from 1936 to 1941",
             "Emperor Haile Selassie ruled from 1930 to 1974",
+            "This African nation was never formally colonized",
+            "It defeated Italy at the Battle of Adwa in 1896",
             "It became a socialist state from 1974 to 1991",
+            "It has one of the world's oldest continuous monarchies",
+            "It was occupied by Italy from 1936 to 1941",
             "It adopted its current constitution in 1995"
         ]
     },
     {
-        answer: "NEW ZEALAND",
+        answer: "TURKEY",
+        alternatives: ["TÜRKİYE", "REPUBLIC OF TURKEY"],
         clues: [
-            "This country became a British colony with the Treaty of Waitangi in 1840",
-            "It was the first country to give women the vote in 1893",
-            "It became a dominion in 1907",
-            "ANZAC forces from here fought at Gallipoli in World War I",
-            "It gained full independence with the Statute of Westminster in 1947",
-            "It declared itself nuclear-free in 1987",
-            "It adopted the MMP electoral system in 1996",
-            "It has two national anthems of equal standing"
+            "Istanbul bridges Europe and Asia across the Bosphorus",
+            "It switched from Arabic to Latin alphabet in 1928",
+            "This nation became a republic in 1923 under Mustafa Kemal Atatürk",
+            "It banned the fez and promoted Western dress",
+            "It adopted secularism in its constitution",
+            "Constantinople fell to its predecessors in 1453",
+            "It has been an EU candidate country since 1999",
+            "This country was the center of the Ottoman Empire"
         ]
     },
     {
-        answer: "IRELAND",
+        answer: "VIETNAM",
+        alternatives: ["SOCIALIST REPUBLIC OF VIETNAM", "VIỆT NAM"],
         clues: [
-            "This country gained independence from Britain in 1922",
-            "It experienced the Great Famine from 1845 to 1849",
-            "It had the Easter Rising against British rule in 1916",
-            "It was neutral during World War II",
-            "It joined the European Economic Community in 1973",
-            "It adopted the Euro in 1999",
-            "It had a period of rapid economic growth called the Celtic Tiger",
-            "It was the first country to legalize same-sex marriage by popular vote"
+            "It fought a war against the United States ending in 1975",
+            "This Southeast Asian country was colonized by France",
+            "The Battle of Điện Biên Phủ ended French colonial rule in 1954",
+            "It was divided at the 17th parallel from 1954 to 1975",
+            "It implemented Đổi Mới economic reforms in 1986",
+            "It has a 1,000-year history of Chinese domination",
+            "The ancient kingdom of Champa was located here",
+            "It normalized relations with the US in 1995"
+        ]
+    },
+    {
+        answer: "IRAN",
+        alternatives: ["PERSIA", "ISLAMIC REPUBLIC OF IRAN"],
+        clues: [
+            "This country was known as Persia until 1935",
+            "The 1979 Revolution established an Islamic Republic",
+            "It was ruled by the Pahlavi dynasty from 1925 to 1979",
+            "Cyrus the Great founded the Achaemenid Empire here",
+            "It has the world's second largest natural gas reserves",
+            "The Persian Empire once stretched from Greece to India",
+            "It was occupied by Allied forces during World War II",
+            "The 1953 coup overthrew Prime Minister Mosaddegh"
+        ]
+    },
+    {
+        answer: "ARGENTINA",
+        alternatives: ["ARGENTINE REPUBLIC"],
+        clues: [
+            "It fought a war over the Falkland Islands in 1982",
+            "This South American country was colonized by Spain",
+            "Juan Perón served as president three times",
+            "It had a military dictatorship from 1976 to 1983",
+            "It defaulted on its national debt in 2001",
+            "The Dirty War involved state terrorism from 1976 to 1983",
+            "It's the birthplace of the tango",
+            "It claims sovereignty over the Falkland Islands"
+        ]
+    },
+    {
+        answer: "NIGERIA",
+        alternatives: ["FEDERAL REPUBLIC OF NIGERIA"],
+        clues: [
+            "This African country gained independence from Britain in 1960",
+            "It experienced a civil war from 1967 to 1970",
+            "It is Africa's most populous nation",
+            "Oil was discovered in the Niger Delta in 1956",
+            "It returned to civilian rule in 1999 after military dictatorships",
+            "It was created from the merging of Northern and Southern protectorates",
+            "It's a member of OPEC since 1971",
+            "The ancient Nok civilization existed here"
+        ]
+    },
+    {
+        answer: "PERU",
+        alternatives: ["REPUBLIC OF PERU"],
+        clues: [
+            "This Andean nation was the center of the Inca Empire",
+            "Machu Picchu is its most famous archaeological site",
+            "It was conquered by Francisco Pizarro in the 1530s",
+            "It gained independence from Spain in 1821",
+            "It fought the War of the Pacific from 1879 to 1884",
+            "The Shining Path insurgency occurred from 1980 to 2000",
+            "It's the birthplace of the potato",
+            "The ancient city of Caral is the oldest in the Americas"
+        ]
+    },
+    {
+        answer: "SAUDI ARABIA",
+        alternatives: ["KINGDOM OF SAUDI ARABIA"],
+        clues: [
+            "This Middle Eastern country was founded in 1932",
+            "It contains Islam's two holiest cities, Mecca and Medina",
+            "Oil was discovered here in 1938",
+            "It's an absolute monarchy",
+            "It participated in the 1973 oil embargo",
+            "The Al Saud family has ruled since the 18th century",
+            "Women were granted the right to drive in 2018",
+            "It follows Sharia law"
+        ]
+    },
+    {
+        answer: "POLAND",
+        alternatives: ["REPUBLIC OF POLAND", "POLSKA"],
+        clues: [
+            "This Central European country was partitioned three times in the 18th century",
+            "The Warsaw Uprising occurred in 1944",
+            "Solidarity trade union challenged communist rule in the 1980s",
+            "It joined NATO in 1999 and the EU in 2004",
+            "Its capital was completely rebuilt after World War II",
+            "It was part of the Warsaw Pact from 1955 to 1991",
+            "The Polish-Lithuanian Commonwealth was once Europe's largest state",
+            "Lech Wałęsa was its first democratically elected president"
+        ]
+    },
+    {
+        answer: "MONGOLIA",
+        alternatives: ["OUTER MONGOLIA"],
+        clues: [
+            "Genghis Khan founded an empire from here in the 13th century",
+            "This landlocked country declared independence from China in 1921",
+            "It became the world's second communist country in 1924",
+            "It transitioned to democracy in 1990",
+            "It has the lowest population density of any sovereign state",
+            "The Yuan Dynasty ruled China from here",
+            "It was a Soviet satellite state until 1990",
+            "Ulaanbaatar is its capital and largest city"
+        ]
+    },
+    {
+        answer: "SOUTH KOREA",
+        alternatives: ["REPUBLIC OF KOREA"],
+        clues: [
+            "It hosted the 1988 Summer Olympics in its capital",
+            "This East Asian nation was annexed by Japan from 1910 to 1945",
+            "The Korean War lasted from 1950 to 1953",
+            "It had rapid economic growth called the Miracle on the Han River",
+            "It was divided after World War II",
+            "It's a global leader in technology and pop culture",
+            "It has a history dating back to Gojoseon in 2333 BCE",
+            "This country was founded in 1948"
+        ]
+    },
+    {
+        answer: "SWITZERLAND",
+        alternatives: ["SWISS CONFEDERATION"],
+        clues: [
+            "This European country has maintained neutrality since 1815",
+            "It was not a member of the UN until 2002",
+            "Its cantonal system dates back to 1291",
+            "It's home to the Red Cross and Red Crescent Movement",
+            "It has four national languages",
+            "It joined the Schengen Area in 2008 but not the EU",
+            "The Swiss Guard protects the Vatican",
+            "It was formed from the Old Swiss Confederacy"
+        ]
+    },
+    {
+        answer: "KENYA",
+        alternatives: ["REPUBLIC OF KENYA"],
+        clues: [
+            "This East African country gained independence from Britain in 1963",
+            "The Mau Mau Uprising occurred from 1952 to 1960",
+            "Jomo Kenyatta was its first president",
+            "It has significant wildlife reserves including the Maasai Mara",
+            "Nairobi is its capital and largest city",
+            "It was a British protectorate and colony",
+            "It's the economic hub of East Africa",
+            "Human fossils dating back millions of years have been found here"
+        ]
+    },
+    {
+        answer: "CUBA",
+        alternatives: ["REPUBLIC OF CUBA"],
+        clues: [
+            "This Caribbean island had a revolution in 1959",
+            "Fidel Castro ruled from 1959 to 2008",
+            "The Bay of Pigs invasion occurred in 1961",
+            "It was a Spanish colony until 1898",
+            "The Cuban Missile Crisis happened in 1962",
+            "It has been under a US embargo since 1960",
+            "It's the largest island in the Caribbean",
+            "José Martí is considered a national hero"
+        ]
+    },
+    {
+        answer: "THAILAND",
+        alternatives: ["SIAM", "KINGDOM OF THAILAND"],
+        clues: [
+            "This Southeast Asian country was never colonized",
+            "It changed its name from Siam in 1939",
+            "It's a constitutional monarchy with a king as head of state",
+            "Bangkok is its capital and largest city",
+            "It was a buffer state between British and French colonies",
+            "It experienced a military coup in 2014",
+            "The ancient kingdoms of Sukhothai and Ayutthaya existed here",
+            "It remained neutral during most of World War II"
+        ]
+    },
+    {
+        answer: "INDONESIA",
+        alternatives: ["REPUBLIC OF INDONESIA"],
+        clues: [
+            "This archipelago nation declared independence in 1945",
+            "It was colonized by the Netherlands as the Dutch East Indies",
+            "Sukarno was its first president",
+            "It's the world's largest island country",
+            "The Bandung Conference was held here in 1955",
+            "It experienced the 1965-66 mass killings",
+            "It has over 17,000 islands",
+            "It's the world's most populous Muslim-majority country"
+        ]
+    },
+    {
+        answer: "UKRAINE",
+        alternatives: ["УКРАЇНА"],
+        clues: [
+            "This Eastern European country gained independence in 1991",
+            "The Chernobyl disaster occurred here in 1986",
+            "It was part of the Soviet Union from 1922 to 1991",
+            "The Orange Revolution took place in 2004",
+            "It was known as the breadbasket of the Soviet Union",
+            "Kyiv was the center of Kyivan Rus'",
+            "It experienced the Holodomor famine in 1932-33",
+            "The Crimean Peninsula was annexed in 2014"
+        ]
+    },
+    {
+        answer: "PHILIPPINES",
+        alternatives: ["REPUBLIC OF THE PHILIPPINES"],
+        clues: [
+            "This archipelago was named after King Philip II of Spain",
+            "It gained independence from the United States in 1946",
+            "It was a Spanish colony for over 300 years",
+            "Ferdinand Marcos ruled as dictator from 1965 to 1986",
+            "The People Power Revolution occurred in 1986",
+            "It's the only Asian Catholic-majority country",
+            "The Battle of Manila in 1945 was particularly destructive",
+            "It's located in the Pacific Ring of Fire"
+        ]
+    },
+    {
+        answer: "COLOMBIA",
+        alternatives: ["REPUBLIC OF COLOMBIA"],
+        clues: [
+            "This South American country was named after Christopher Columbus",
+            "Simón Bolívar helped liberate it from Spain",
+            "It experienced a civil war called La Violencia from 1948 to 1958",
+            "The FARC insurgency lasted from 1964 to 2016",
+            "It's the world's leading producer of emeralds",
+            "It lost Panama in 1903",
+            "It has coastlines on both the Pacific and Caribbean",
+            "The Medellín and Cali cartels were based here"
+        ]
+    },
+    {
+        answer: "MOROCCO",
+        alternatives: ["KINGDOM OF MOROCCO"],
+        clues: [
+            "This North African country was a French and Spanish protectorate",
+            "It gained independence in 1956",
+            "The Green March took place in 1975",
+            "It has disputed territory in Western Sahara",
+            "The Alaouite dynasty has ruled since 1631",
+            "It was the first country to recognize the United States in 1777",
+            "Casablanca is its largest city",
+            "It's the only African country not in the African Union until 2017"
+        ]
+    },
+    {
+        answer: "PAKISTAN",
+        alternatives: ["ISLAMIC REPUBLIC OF PAKISTAN"],
+        clues: [
+            "This South Asian country was created as a Muslim homeland in 1947",
+            "It was formed from the partition of British India",
+            "East Pakistan became Bangladesh in 1971",
+            "It's a nuclear power since 1998",
+            "Muhammad Ali Jinnah is its founder",
+            "It has had multiple military coups",
+            "The Khyber Pass connects it to Afghanistan",
+            "It's the world's second-largest Muslim-majority country"
+        ]
+    },
+    {
+        answer: "BANGLADESH",
+        alternatives: ["PEOPLE'S REPUBLIC OF BANGLADESH"],
+        clues: [
+            "This South Asian country gained independence from Pakistan in 1971",
+            "It was formerly known as East Pakistan",
+            "The Language Movement of 1952 was a key event",
+            "Sheikh Mujibur Rahman is its founding leader",
+            "It's one of the world's most densely populated countries",
+            "The Bengal Famine of 1943 affected this region",
+            "It's vulnerable to climate change and cyclones",
+            "The Sundarbans mangrove forest is located here"
+        ]
+    },
+    {
+        answer: "VENEZUELA",
+        alternatives: ["BOLIVARIAN REPUBLIC OF VENEZUELA"],
+        clues: [
+            "This South American country has the world's largest oil reserves",
+            "Simón Bolívar liberated it from Spanish rule",
+            "Hugo Chávez served as president from 1999 to 2013",
+            "It experienced an economic crisis in the 2010s",
+            "It was one of the world's richest countries in the 20th century",
+            "The Battle of Carabobo secured its independence",
+            "It's a founding member of OPEC",
+            "Angel Falls is the world's highest waterfall"
+        ]
+    },
+    {
+        answer: "MYANMAR",
+        alternatives: ["BURMA", "REPUBLIC OF THE UNION OF MYANMAR"],
+        clues: [
+            "This Southeast Asian country was known as Burma until 1989",
+            "It gained independence from Britain in 1948",
+            "Aung San Suu Kyi was placed under house arrest for years",
+            "It was ruled by a military junta from 1962 to 2011",
+            "The Saffron Revolution occurred in 2007",
+            "It has ethnic conflicts with the Rohingya people",
+            "The ancient kingdoms of Pagan and Ava existed here",
+            "It's rich in jade and gemstones"
+        ]
+    },
+    {
+        answer: "NEPAL",
+        alternatives: ["FEDERAL DEMOCRATIC REPUBLIC OF NEPAL"],
+        clues: [
+            "This Himalayan country was a monarchy until 2008",
+            "Mount Everest is located on its border with China",
+            "It was never colonized",
+            "The 2001 royal massacre killed most of the royal family",
+            "It ended a civil war in 2006",
+            "It's the birthplace of Gautama Buddha",
+            "The Gurkhas are renowned soldiers from here",
+            "It became a republic after abolishing its monarchy"
+        ]
+    },
+    {
+        answer: "CHILE",
+        alternatives: ["REPUBLIC OF CHILE"],
+        clues: [
+            "This long, narrow South American country stretches along the Andes",
+            "Salvador Allende was overthrown in a 1973 coup",
+            "Augusto Pinochet ruled as dictator from 1973 to 1990",
+            "It fought the War of the Pacific from 1879 to 1884",
+            "It's the world's largest copper producer",
+            "The Atacama Desert is the driest place on Earth",
+            "It returned to democracy in 1990",
+            "Easter Island (Rapa Nui) is part of this country"
         ]
     }
 ];
+
+// COMMING SOON! Additional harder countries could include:
+/*
+- Afghanistan
+- North Korea
+- Sri Lanka
+- Sudan/South Sudan
+- Iraq
+- Syria
+- Lebanon
+- Jordan
+- Kazakhstan
+- Uzbekistan
+- Angola
+- Democratic Republic of Congo
+- Rwanda
+- Somalia
+- Algeria
+- Tunisia
+- Libya
+- Yemen
+- Oman
+- Qatar
+- United Arab Emirates
+- Kuwait
+- Bahrain
+- Mongolia (already included)
+- Bhutan
+- Laos
+- Cambodia
+- Brunei
+- East Timor
+- Papua New Guinea
+- Fiji
+- Iceland
+- Norway
+- Sweden
+- Finland
+- Denmark
+- Netherlands
+- Belgium
+- Luxembourg
+- Austria
+- Czech Republic
+- Slovakia
+- Hungary
+- Romania
+- Bulgaria
+- Serbia
+- Croatia
+- Bosnia and Herzegovina
+- Albania
+- North Macedonia
+- Slovenia
+- Montenegro
+- Kosovo
+- Portugal
+- Spain
+- Andorra
+- San Marino
+- Vatican City
+- Monaco
+- Liechtenstein
+- Malta
+- Cyprus
+- Belarus
+- Lithuania
+- Latvia
+- Estonia
+- Moldova
+- Georgia
+- Armenia
+- Azerbaijan
+- Turkmenistan
+- Tajikistan
+- Kyrgyzstan
+- Madagascar
+- Mauritius
+- Seychelles
+- Comoros
+- Malawi
+- Zambia
+- Zimbabwe
+- Botswana
+- Namibia
+- Mozambique
+- Tanzania
+- Uganda
+- Ghana
+- Ivory Coast
+- Senegal
+- Mali
+- Burkina Faso
+- Niger
+- Chad
+- Cameroon
+- Gabon
+- Republic of Congo
+- Central African Republic
+- South Sudan
+- Eritrea
+- Djibouti
+- Sierra Leone
+- Liberia
+- Togo
+- Benin
+- Guinea
+- Guinea-Bissau
+- The Gambia
+- Cape Verde
+- São Tomé and Príncipe
+- Equatorial Guinea
+- Mauritania
+- Western Sahara (disputed)
+- Palestine (partially recognized)
+- Taiwan (disputed)
+- Hong Kong (SAR of China)
+- Macau (SAR of China)
+- Greenland (autonomous territory)
+- Puerto Rico (US territory)
+- Bermuda (British territory)
+- French Guiana (French territory)
+- Guadeloupe (French territory)
+- Martinique (French territory)
+- Réunion (French territory)
+- Mayotte (French territory)
+- New Caledonia (French territory)
+- French Polynesia (French territory)
+- Wallis and Futuna (French territory)
+- Saint Pierre and Miquelon (French territory)
+- Aruba (Dutch territory)
+- Curaçao (Dutch territory)
+- Sint Maarten (Dutch territory)
+- Bonaire (Dutch territory)
+- Saba (Dutch territory)
+- Sint Eustatius (Dutch territory)
+- Cayman Islands (British territory)
+- British Virgin Islands (British territory)
+- Anguilla (British territory)
+- Montserrat (British territory)
+- Turks and Caicos Islands (British territory)
+- Gibraltar (British territory)
+- Falkland Islands (British territory)
+- Saint Helena, Ascension and Tristan da Cunha (British territory)
+- Pitcairn Islands (British territory)
+- British Indian Ocean Territory
+- South Georgia and the South Sandwich Islands (British territory)
+- Åland Islands (Finnish autonomy)
+- Faroe Islands (Danish autonomy)
+- Svalbard (Norwegian territory)
+- Jan Mayen (Norwegian territory)
+- Bouvet Island (Norwegian territory)
+- Peter I Island (Norwegian claim)
+- Queen Maud Land (Norwegian claim)
+- Australian Antarctic Territory
+- Ross Dependency (New Zealand claim)
+- Adélie Land (French claim)
+- Chilean Antarctic Territory
+- Argentine Antarctica
+- British Antarctic Territory
+- Unclaimed sectors of Antarctica
+*/
