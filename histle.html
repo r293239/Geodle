@@ -830,19 +830,28 @@
             color: #2C3E50;
         }
 
+        .mode-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
         .mode-btn {
             background: rgba(52, 73, 94, 0.1);
             color: #2C3E50;
             border: 2px solid rgba(52, 73, 94, 0.2);
-            padding: 14px 24px;
-            margin: 0 8px 12px 8px;
-            border-radius: 14px;
+            padding: 12px 18px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             display: inline-block;
+            text-align: center;
+            min-width: 120px;
         }
 
         .mode-btn:hover {
@@ -1128,6 +1137,16 @@
             .tutorial-btn {
                 width: 100%;
             }
+            
+            .mode-buttons-container {
+                gap: 6px;
+            }
+            
+            .mode-btn {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1143,11 +1162,15 @@
                 padding: 20px 16px;
             }
             
+            .mode-buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
             .mode-btn {
-                display: block;
-                margin: 12px auto;
                 width: 90%;
                 max-width: 280px;
+                margin-bottom: 8px;
             }
             
             #tutorial-content {
@@ -1405,18 +1428,29 @@
 <!-- Mode Selector -->
 <div class="mode-selector">
     <h3>Game Modes</h3>
-    <a href="https://r293239.github.io/Geodle/index.html" class="mode-btn active" id="geodleModeBtn">
-        Geodle
-    </a>
-    <a href="https://r293239.github.io/Geodle/path-mode.html" class="mode-btn" id="pathModeBtn">
-        Routele
-    </a>
-    <a href="https://r293239.github.io/Geodle/country-mode.html" class="mode-btn" id="countryModeBtn">
-        Countryle
-    </a>
-    <a href="https://r293239.github.io/Geodle/flag-mode.html" class="mode-btn" id="flagModeBtn">
-        Flagle
-    </a>
+    <div class="mode-buttons-container">
+        <a href="index.html" class="mode-btn" id="geodleModeBtn">
+            Geodle
+        </a>
+        <a href="civile.html" class="mode-btn" id="civileModeBtn">
+            Civile
+        </a>
+        <a href="path-mode.html" class="mode-btn" id="pathModeBtn">
+            Routele
+        </a>
+        <a href="country-mode.html" class="mode-btn" id="countryModeBtn">
+            Countryle
+        </a>
+        <a href="flag-mode.html" class="mode-btn" id="flagModeBtn">
+            Flagle
+        </a>
+        <a href="bordle.html" class="mode-btn" id="bordleModeBtn">
+            Bordle
+        </a>
+        <a href="histle.html" class="mode-btn active" id="histleModeBtn">
+            Histle
+        </a>
+    </div>
     <div class="mode-description">
         Guess the country using historical clues like independence years, former empires, and historical events!
     </div>
@@ -2083,6 +2117,17 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             initGame();
         }, 600);
+    });
+    
+    // Highlight the current mode button
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        const href = btn.getAttribute('href');
+        if (href === currentPath) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
     });
     
     // Show initial loading screen
