@@ -38,7 +38,7 @@
         }
 
         .game-container {
-            max-width: 550px;
+            max-width: 580px;
             width: 100%;
             background: var(--surface);
             border-radius: 20px;
@@ -110,6 +110,29 @@
         }
         .diff-btn:hover {
             opacity: 0.85;
+        }
+
+        /* Topic Display */
+        .topic-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 5px 0;
+            flex-wrap: wrap;
+        }
+        .topic-badge {
+            background: #2a2a3a;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .topic-badge .topic-emoji {
+            font-size: 1rem;
         }
 
         /* Hangman Drawing */
@@ -323,6 +346,11 @@
             </div>
         </div>
 
+        <!-- Topic Badge -->
+        <div class="topic-display" id="topicDisplay">
+            <span class="topic-badge"><span class="topic-emoji">🎯</span> <span id="topicName">Random Topic</span></span>
+        </div>
+
         <!-- Hangman Drawing -->
         <div class="hangman-area">
             <svg class="hangman-svg" viewBox="0 0 140 160" id="hangmanSvg">
@@ -386,31 +414,137 @@
 
     <script>
         (function() {
-            // ==================== WORD BANKS ====================
+            // ==================== EXPANDED WORD BANKS ====================
             const wordBanks = {
                 easy: {
-                    "Capital Cities": ["PARIS", "TOKYO", "LIMA", "SEOUL", "CAIRO", "ROME", "BERN", "OSLO", "LISBON", "MADRID", "BEIJING", "HANOI", "QUITO", "ACCRA", "RABAT"],
-                    "Countries": ["PERU", "CHILE", "SPAIN", "JAPAN", "KENYA", "CANADA", "ITALY", "FRANCE", "BRAZIL", "INDIA", "CHINA", "EGYPT", "MEXICO", "CUBA", "MALTA"],
-                    "Major Cities": ["MIAMI", "DUBAI", "SYDNEY", "MUNICH", "MILAN", "LYON", "PORTO", "ZURICH", "VIENNA", "PRAGUE"],
-                    "Islands": ["FIJI", "MALTA", "CUBA", "CRETE", "BALI", "MALTA", "CAPRI", "ARUBA", "TAHITI", "SICILY"],
-                    "Mountains": ["FUJI", "ETNA", "KENYA", "ELBRUS", "HOOD", "RAINIER", "SHASTA", "WHITNEY"],
-                    "Rivers": ["NILE", "GANGES", "DANUBE", "AMAZON", "VOLGA", "RHINE", "THAMES", "YUKON"]
+                    "Capital Cities": {
+                        emoji: "🏛️",
+                        words: ["PARIS", "TOKYO", "LIMA", "SEOUL", "CAIRO", "ROME", "BERN", "OSLO", "MADRID", "BEIJING", "HANOI", "QUITO", "ACCRA", "RABAT", "ANKARA", "ATHENS", "BOGOTA", "BRUSSELS", "BUCHAREST", "BUDAPEST", "BUENOS AIRES", "CAIRO", "CANBERRA", "CARACAS", "COPENHAGEN", "DUBLIN", "HAVANA", "HELSINKI", "JAKARTA", "KIEV", "LISBON", "LONDON", "MANILA", "MOSCOW", "NAIROBI", "NEW DELHI", "OTTAWA", "PRAGUE", "RIYADH", "SOFIA", "STOCKHOLM", "TAIPEI", "TEHRAN", "WARSAW", "WELLINGTON"]
+                    },
+                    "Countries": {
+                        emoji: "🌍",
+                        words: ["PERU", "CHILE", "SPAIN", "JAPAN", "KENYA", "CANADA", "ITALY", "FRANCE", "BRAZIL", "INDIA", "CHINA", "EGYPT", "MEXICO", "CUBA", "MALTA", "GHANA", "NEPAL", "SAMOA", "TONGA", "YEMEN", "SUDAN", "NIGER", "CHAD", "GABON", "HAITI", "FIJI", "IRAN", "IRAQ", "OMAN", "MALI", "TOGO", "LAOS", "PERU", "CHILE", "QATAR", "NEPAL", "BHUTAN", "SYRIA", "LIBYA", "ANGOLA", "ZAMBIA", "MALAWI", "RWANDA", "BURUNDI", "SENEGAL", "GAMBIA", "GUINEA", "KOSOVO", "BELIZE"]
+                    },
+                    "US States": {
+                        emoji: "🇺🇸",
+                        words: ["TEXAS", "OHIO", "UTAH", "IOWA", "MAINE", "IDAHO", "NEVADA", "ALASKA", "HAWAII", "KANSAS", "OREGON", "MONTANA", "VERMONT", "WYOMING", "DELAWARE", "FLORIDA", "GEORGIA", "ALABAMA", "ARIZONA", "ARKANSAS", "COLORADO", "ILLINOIS", "INDIANA", "KENTUCKY", "MARYLAND", "MICHIGAN", "MISSOURI", "NEBRASKA", "NEW YORK", "OKLAHOMA", "VIRGINIA", "WISCONSIN"]
+                    },
+                    "Major Cities": {
+                        emoji: "🏙️",
+                        words: ["MIAMI", "DUBAI", "SYDNEY", "MUNICH", "MILAN", "LYON", "PORTO", "ZURICH", "VIENNA", "PRAGUE", "SEOUL", "OSAKA", "KYOTO", "DELHI", "MUMBAI", "CHENNAI", "LAGOS", "CAIRO", "QUITO", "CUSCO", "MEDELLIN", "RECIFE", "MANAUS", "OPORTO", "GDANSK", "KRAKOW", "SEVILLE", "BILBAO", "NAPLES", "TURIN", "GENOA", "BREMEN", "LEIPZIG", "DORTMUND"]
+                    },
+                    "Islands": {
+                        emoji: "🏝️",
+                        words: ["FIJI", "MALTA", "CUBA", "CRETE", "BALI", "CAPRI", "ARUBA", "TAHITI", "SICILY", "CYPRUS", "HAWAII", "EASTER", "JAVA", "SUMATRA", "BORNEO", "CEBU", "CORFU", "RHODES", "LESBOS", "SKYROS", "IOS", "MYKONOS", "SANTORINI", "IBIZA", "MINORCA", "MAJORCA", "LANZAROTE", "AZORES", "BERMUDA", "BAHAMAS", "JAMAICA", "BARBADOS", "GRENADA", "DOMINICA"]
+                    },
+                    "Mountains": {
+                        emoji: "⛰️",
+                        words: ["FUJI", "ETNA", "KENYA", "ELBRUS", "HOOD", "RAINIER", "SHASTA", "WHITNEY", "MATTERHORN", "EVEREST", "K2", "MAKALU", "LHOTSE", "DENALI", "ACONCAGUA", "VESUVIUS", "STROMBOLI", "HEKLA", "KRAKATOA", "PINATUBO", "MAUNA LOA", "MAUNA KEA", "KILAUEA", "EREBUS", "FUJIYAMA", "OLYMPUS", "ARARAT", "SINAI"]
+                    },
+                    "Rivers & Lakes": {
+                        emoji: "🌊",
+                        words: ["NILE", "GANGES", "DANUBE", "AMAZON", "VOLGA", "RHINE", "THAMES", "YUKON", "CONGO", "NIGER", "ZAMBEZI", "MEKONG", "YANGTZE", "MISSISSIPPI", "MISSOURI", "COLORADO", "RIO GRANDE", "SEINE", "TIBER", "EUPHRATES", "TIGRIS", "INDUS", "LAKE VICTORIA", "LAKE TAHOE", "LAKE BAIKAL", "CASPIAN", "DEAD SEA"]
+                    },
+                    "Deserts": {
+                        emoji: "🏜️",
+                        words: ["SAHARA", "GOBI", "MOJAVE", "SONORAN", "ATACAMA", "KALAHARI", "NAMIB", "THAR", "ARABIAN", "SYRIAN", "PATAGONIAN", "GREAT BASIN", "CHIHUAHUAN", "KARAKUM", "KYZYLKUM", "TAKLAMAKAN", "GIBSON", "TANAMI"]
+                    },
+                    "Oceans & Seas": {
+                        emoji: "🌊",
+                        words: ["PACIFIC", "ATLANTIC", "INDIAN", "ARCTIC", "SOUTHERN", "CARIBBEAN", "MEDITERRANEAN", "BALTIC", "NORTH SEA", "BLACK SEA", "RED SEA", "CASPIAN", "ARABIAN SEA", "CORAL SEA", "TASMAN SEA", "BERING SEA", "JAVA SEA", "SULU SEA"]
+                    },
+                    "Continents": {
+                        emoji: "🌏",
+                        words: ["ASIA", "AFRICA", "EUROPE", "AMERICA", "OCEANIA", "ANTARCTICA", "EURASIA", "AUSTRALIA"]
+                    },
+                    "Famous Landmarks": {
+                        emoji: "🗽",
+                        words: ["TAJ MAHAL", "EIFFEL TOWER", "BIG BEN", "COLOSSEUM", "ACROPOLIS", "MACHU PICCHU", "STONEHENGE", "PYRAMIDS", "SPHINX", "ALHAMBRA", "VERSAILLES", "PANTHEON", "PARTHENON", "NOTRE DAME", "LOUVRE", "SAGRADA FAMILIA", "LEANING TOWER", "STATUE OF LIBERTY"]
+                    }
                 },
                 medium: {
-                    "Capital Cities": ["ULAANBAATAR", "BRATISLAVA", "LJUBLJANA", "KATHMANDU", "REYKJAVIK", "OUAGADOUGOU", "ANTANANARIVO", "BANDAR SERI BEGAWAN", "PHNOM PENH", "PORT MORESBY"],
-                    "Countries": ["AZERBAIJAN", "BANGLADESH", "PHILIPPINES", "MADAGASCAR", "KAZAKHSTAN", "UZBEKISTAN", "MOZAMBIQUE", "ARGENTINA", "INDONESIA", "VENEZUELA"],
-                    "Major Cities": ["CASABLANCA", "ALBUQUERQUE", "HYDERABAD", "VANCOUVER", "BARCELONA", "MARSEILLE", "FRANKFURT", "EDINBURGH"],
-                    "Islands": ["GREENLAND", "SUMATRA", "TASMANIA", "SARDINIA", "GALAPAGOS", "BORNEO", "HONSHU", "SICILY"],
-                    "Mountains": ["KILIMANJARO", "MATTERHORN", "ANNAPURNA", "VESUVIUS", "DENALI", "ACONCAGUA", "MAKALU", "CITLALTEPETL"],
-                    "Deserts": ["SAHARA", "ATACAMA", "KALAHARI", "GOBI", "NAMIB", "THAR", "MOJAVE", "SONORAN"]
+                    "Capital Cities": {
+                        emoji: "🏛️",
+                        words: ["ULAANBAATAR", "BRATISLAVA", "LJUBLJANA", "KATHMANDU", "REYKJAVIK", "OUAGADOUGOU", "ANTANANARIVO", "PHNOM PENH", "PORT MORESBY", "ADDIS ABABA", "BANDAR SERI BEGAWAN", "DAR ES SALAAM", "HO CHI MINH", "KUWAIT CITY", "KUALA LUMPUR", "SAN SALVADOR", "SANTO DOMINGO", "SAO PAULO", "RIO DE JANEIRO", "BUENOS AIRES", "MONTEVIDEO", "ASUNCION", "LA PAZ", "SAN JOSE", "GUATEMALA CITY", "TEGUCIGALPA", "MANAGUA", "PANAMA CITY", "PORT AU PRINCE", "SAN JUAN", "KINGSTON", "NASSAU", "PORT OF SPAIN"]
+                    },
+                    "Countries": {
+                        emoji: "🌍",
+                        words: ["AZERBAIJAN", "BANGLADESH", "PHILIPPINES", "MADAGASCAR", "KAZAKHSTAN", "UZBEKISTAN", "MOZAMBIQUE", "ARGENTINA", "INDONESIA", "VENEZUELA", "COLOMBIA", "MALAYSIA", "SINGAPORE", "THAILAND", "VIETNAM", "CAMBODIA", "MYANMAR", "PAKISTAN", "AFGHANISTAN", "TAJIKISTAN", "KYRGYZSTAN", "TURKMENISTAN", "GEORGIA", "ARMENIA", "MOLDOVA", "UKRAINE", "BELARUS", "LITHUANIA", "LATVIA", "ESTONIA", "SLOVENIA", "SLOVAKIA", "CROATIA", "SERBIA", "BOSNIA", "MONTENEGRO", "MACEDONIA", "ALBANIA", "BULGARIA", "ROMANIA", "HUNGARY", "AUSTRIA", "SWITZERLAND", "NETHERLANDS", "BELGIUM", "LUXEMBOURG", "PORTUGAL", "MOROCCO", "TUNISIA", "ALGERIA"]
+                    },
+                    "Major Cities": {
+                        emoji: "🏙️",
+                        words: ["CASABLANCA", "ALBUQUERQUE", "HYDERABAD", "VANCOUVER", "BARCELONA", "MARSEILLE", "FRANKFURT", "EDINBURGH", "AMSTERDAM", "ROTTERDAM", "ANTWERP", "GENEVA", "ZURICH", "INNSBRUCK", "SALZBURG", "HELSINKI", "OSLO", "BERGEN", "GOTHENBURG", "MALMO", "AARHUS", "GDANSK", "WROCLAW", "POZNAN", "BRNO", "OSTRAVA", "DEBRECEN", "CLUJ", "TIMISOARA", "IZMIR", "ANKARA", "BURSA", "ADANA", "ALEPPO", "DAMASCUS", "BEIRUT", "AMMAN", "MUSCAT", "DOHA", "ABU DHABI", "SHARJAH", "ISFAHAN", "SHIRAZ", "TBILISI", "BAKU"]
+                    },
+                    "Islands": {
+                        emoji: "🏝️",
+                        words: ["GREENLAND", "SUMATRA", "TASMANIA", "SARDINIA", "GALAPAGOS", "BORNEO", "HONSHU", "SICILY", "NEWFOUNDLAND", "PRINCE EDWARD", "VANCOUVER ISLAND", "BAFFIN", "ELLESMERE", "VICTORIA ISLAND", "DEVON", "AXEL HEIBERG", "MELVILLE", "SOUTHAMPTON", "SPITSBERGEN", "NOVAYA ZEMLYA", "SEVERNAYA", "WRANGEL", "SAKHALIN", "HOKKAIDO", "KYUSHU", "SHIKOKU", "OKINAWA", "LUZON", "MINDANAO", "VISAYAS", "PALAWAN", "BOHOL"]
+                    },
+                    "Mountains": {
+                        emoji: "⛰️",
+                        words: ["KILIMANJARO", "MATTERHORN", "ANNAPURNA", "VESUVIUS", "DENALI", "ACONCAGUA", "MAKALU", "CITLALTEPETL", "KANGCHENJUNGA", "LHOTSE", "DHAULAGIRI", "MANASLU", "CHO OYU", "NANGA PARBAT", "GASHERBRUM", "BROAD PEAK", "GASHERBRUM II", "SHISHAPANGMA", "GYACHUNG KANG", "ANNAPURNA II", "MAKALU II", "LHOTSE SHAR", "LHOTSE MIDDLE", "YUAN FENG", "SHARTSE", "CHANGTSE", "NUPTSE", "BARUNTSE", "CHAMAR", "LANGTANG LIRUNG"]
+                    },
+                    "Rivers & Lakes": {
+                        emoji: "🌊",
+                        words: ["BRAHMAPUTRA", "ORINOCO", "MEKONG", "YENISEI", "LENA", "OB", "PARANA", "SALWEEN", "IRRAWADDY", "AMUR", "HUDSON", "MACKENZIE", "SASKATCHEWAN", "NELSON", "CHURCHILL", "BACK", "KOBUK", "NOATAK", "COLVILLE", "PEACE", "ATHABASCA", "FRASER", "THOMPSON", "CLARK FORK", "SNAKE", "WILLAMETTE", "SACRAMENTO", "SAN JOAQUIN", "TRINITY", "KLAMATH", "ROGUE", "UMPQUA", "SKAGIT", "PEND OREILLE"]
+                    },
+                    "Deserts & Landforms": {
+                        emoji: "🏜️",
+                        words: ["GREAT SANDY", "GREAT VICTORIA", "GIBSON", "TANAMI", "SIMPSON", "STURT STONY", "TIRARI", "PEDIRKA", "STRZELECKI", "RUB AL KHALI", "AN NAFUD", "AD DAHNA", "SYRIAN", "DASHT E LUT", "DASHT E KAVIR", "THAR", "CHOLISTAN", "THAL", "KARAKUM", "KYZYLKUM", "BETPAK DALA", "USTYURT", "MANGYSHLAK", "REGISTAN", "MARGOW", "LOP", "TAKLAMAKAN", "GOBI", "ORDOS", "BADAIN JARAN", "TENGER", "MU US", "KUBUQI"]
+                    },
+                    "Seas & Gulfs": {
+                        emoji: "🌊",
+                        words: ["ANDAMAN SEA", "GULF OF ADEN", "GULF OF OMAN", "PERSIAN GULF", "GULF OF MEXICO", "GULF OF CALIFORNIA", "HUDSON BAY", "GULF OF ST LAWRENCE", "BAY OF FUNDY", "CHESAPEAKE BAY", "DELAWARE BAY", "SAN FRANCISCO BAY", "PUGET SOUND", "STRAIT OF GIBRALTAR", "STRAIT OF MALACCA", "STRAIT OF HORMUZ", "BAB EL MANDEB", "SUEZ CANAL", "PANAMA CANAL", "CORINTH CANAL"]
+                    },
+                    "National Parks": {
+                        emoji: "🏞️",
+                        words: ["YELLOWSTONE", "YOSEMITE", "SEQUOIA", "KINGS CANYON", "JOSHUA TREE", "DEATH VALLEY", "GRAND CANYON", "ZION", "BRYCE CANYON", "ARCHES", "CANYONLANDS", "CAPITOL REEF", "GREAT BASIN", "CRATER LAKE", "MOUNT RAINIER", "OLYMPIC", "GLACIER", "BANFF", "JASPER", "ROCKY MOUNTAIN", "GREAT SMOKY MOUNTAINS", "ACADIA", "EVERGLADES", "DENALI", "GATES OF THE ARCTIC", "KATMAI", "KOBUK VALLEY", "LAKE CLARK"]
+                    },
+                    "Regions & Territories": {
+                        emoji: "🗺️",
+                        words: ["SIBERIA", "PATAGONIA", "MESOPOTAMIA", "TRANSYLVANIA", "LAPLAND", "BENGAL", "PUNJAB", "RAJASTHAN", "KASHMIR", "BALOCHISTAN", "KURDISTAN", "BANAT", "SLAVONIA", "DALMATIA", "ISTRIA", "KRAJINA", "VOJVODINA", "BUKOVINA", "BESSARABIA", "PODOLIA", "VOLHYNIA", "GALICIA", "CATALONIA", "ANDALUSIA", "BURGUNDY", "NORMANDY", "BRITTANY", "ALSACE", "LORRAINE"]
+                    }
                 },
                 hard: {
-                    "Capital Cities": ["YAMOUSSOUKRO", "THIMPHU", "BANDAR SERI BEGAWAN", "OUAGADOUGOU", "ANTANANARIVO", "BRAZZAVILLE", "LILONGWE", "MASERU", "MBABANE", "PODGORICA"],
-                    "Countries": ["KYRGYZSTAN", "TAJIKISTAN", "TURKMENISTAN", "LIECHTENSTEIN", "GUINEA BISSAU", "PAPUA NEW GUINEA", "TRINIDAD AND TOBAGO", "SAINT VINCENT AND THE GRENADINES"],
-                    "Mountains": ["KHUITEN", "GANGKHAR PUENSUM", "NANGA PARBAT", "KANGCHENJUNGA", "LHOTSE", "DHAULAGIRI", "MANASLU", "CHO OYU"],
-                    "Islands": ["SPITSBERGEN", "SAKHALIN", "VANUATU", "KIRIBATI", "MAURITIUS", "SEYCHELLES", "COMOROS", "ZANZIBAR"],
-                    "Rivers": ["BRAHMAPUTRA", "ORINOCO", "MEKONG", "YENISEI", "LENA", "OB", "PARANA", "SALWEEN"],
-                    "Rare Geography": ["SVALBARD", "KAMCHATKA", "PATAGONIA", "MESOPOTAMIA", "TRANSYLVANIA", "LAPLAND", "MACEDONIA", "BENGAL"]
+                    "Capital Cities": {
+                        emoji: "🏛️",
+                        words: ["YAMOUSSOUKRO", "THIMPHU", "BANDAR SERI BEGAWAN", "OUAGADOUGOU", "ANTANANARIVO", "BRAZZAVILLE", "LILONGWE", "MASERU", "MBABANE", "PODGORICA", "ASHGABAT", "BISHKEK", "DUSHANBE", "NUR SULTAN", "TASHKENT", "ULAANBAATAR", "VIENTIANE", "BANDAR SERI BEGAWAN", "PHNOM PENH", "PORT MORESBY", "HONIARA", "FUNAFUTI", "TARAWA", "MAJURO", "PALIKIR", "NGERULMUD", "YAREN", "VADUZ", "ANDORRA LA VELLA", "SAN MARINO", "VATICAN CITY", "VALLETTA", "LUXEMBOURG CITY", "REYKJAVIK", "OSLO", "HELSINKI", "TALLINN", "RIGA", "VILNIUS", "MINSK", "CHISINAU", "TBILISI", "YEREVAN", "BAKU"]
+                    },
+                    "Countries": {
+                        emoji: "🌍",
+                        words: ["KYRGYZSTAN", "TAJIKISTAN", "TURKMENISTAN", "LIECHTENSTEIN", "GUINEA BISSAU", "PAPUA NEW GUINEA", "TRINIDAD AND TOBAGO", "SAINT VINCENT AND THE GRENADINES", "SAO TOME AND PRINCIPE", "BOSNIA AND HERZEGOVINA", "UNITED ARAB EMIRATES", "DOMINICAN REPUBLIC", "CENTRAL AFRICAN REPUBLIC", "EQUATORIAL GUINEA", "GUINEA BISSAU", "BURKINA FASO", "COTE D IVOIRE", "SIERRA LEONE", "GUINEA BISSAU", "CAPE VERDE", "SAO TOME", "COMOROS", "MAURITIUS", "SEYCHELLES", "MALDIVES", "SRI LANKA", "BANGLADESH", "BHUTAN", "NEPAL", "MONGOLIA", "LAOS", "CAMBODIA", "BRUNEI", "TIMOR LESTE", "PALAU", "MICRONESIA", "MARSHALL ISLANDS", "KIRIBATI", "NAURU", "TUVALU", "SAMOA", "TONGA", "VANUATU", "SOLOMON ISLANDS", "FEDERATED STATES OF MICRONESIA"]
+                    },
+                    "Mountains & Volcanoes": {
+                        emoji: "⛰️",
+                        words: ["KHUITEN", "GANGKHAR PUENSUM", "NANGA PARBAT", "KANGCHENJUNGA", "LHOTSE", "DHAULAGIRI", "MANASLU", "CHO OYU", "ANNAPURNA I", "MAKALU", "GASHERBRUM I", "BROAD PEAK", "GASHERBRUM II", "SHISHAPANGMA", "GYACHUNG KANG", "ANNAPURNA II", "HIMALCHULI", "DISTEGHIL SAR", "NANGA PARBAT", "MASHerBRUM", "RAKAPOSHI", "KANJUT SAR", "SALTORO KANGRI", "K2 MOUNTAIN", "CHOGOLISA", "BALTORO KANGRI", "SIACHEN KANGRI", "TERAM KANGRI", "MOMHIL SAR", "SINGHI KANGRI", "PANMAH MUSTAGH", "NOBAR MUSTAGH", "KHURDOPIN", "YUTMARU SAR", "KUNJUT KHUN", "BATURA", "DISTAGHIL", "TRIVOR", "LUPGHAR", "DURAN KOH", "BALTISTAN", "MASHERBRUM", "SASER KANGRI", "CHOGOLISA", "BIACHEDI", "MITRE PEAK", "KHOSAR GANG", "LINK SAR", "K6 MOUNTAIN", "GIYONG"]
+                    },
+                    "Islands & Archipelagos": {
+                        emoji: "🏝️",
+                        words: ["SPITSBERGEN", "SAKHALIN", "VANUATU", "KIRIBATI", "MAURITIUS", "SEYCHELLES", "COMOROS", "ZANZIBAR", "REUNION", "MAYOTTE", "WALLIS AND FUTUNA", "SAINT PIERRE AND MIQUELON", "GREENLAND", "FAROE ISLANDS", "SHETLAND", "ORKNEY", "HEBRIDES", "ISLE OF MAN", "ISLE OF WIGHT", "CHANNEL ISLANDS", "SCILLY ISLES", "AZORES", "MADEIRA", "CANARY ISLANDS", "CAPE VERDE", "SAO TOME", "ASCENSION", "SAINT HELENA", "TRISTAN DA CUNHA", "FALKLAND ISLANDS", "SOUTH GEORGIA", "SOUTH SANDWICH", "SOUTH ORKNEY", "SOUTH SHETLAND", "BOUVET ISLAND", "PETER I ISLAND", "ALEXANDER ISLAND", "BERKNER ISLAND", "THURSTON ISLAND", "CARNEGIE ISLAND", "ROOSEVELT ISLAND", "ROSS ISLAND", "DELLBRIDGE ISLANDS", "JOINVILLE ISLAND", "DUNDEE ISLAND"]
+                    },
+                    "Rivers & Waterways": {
+                        emoji: "🌊",
+                        words: ["BRAHMAPUTRA", "ORINOCO", "MEKONG", "YENISEI", "LENA", "OB", "PARANA", "SALWEEN", "IRRAWADDY", "AMUR", "HUDSON", "MACKENZIE", "SASKATCHEWAN", "NELSON", "CHURCHILL", "BACK RIVER", "KOBUK", "NOATAK", "COLVILLE", "PEACE RIVER", "ATHABASCA", "FRASER", "THOMPSON", "PEND OREILLE", "KUUSKOKWIM", "SUSITNA", "MATANUSKA", "KENAI", "RUSSIAN RIVER", "KLAMATH", "TRINITY", "EEL RIVER", "RUSSIAN", "SACRAMENTO", "SAN JOAQUIN", "KERN", "OWENS", "MOJAVE", "COLORADO", "GREEN RIVER", "SAN JUAN", "LITTLE COLORADO", "VIRGIN", "GILA", "SALT RIVER", "VERDE", "HUMBOLDT", "REESE", "TRUCKEE", "WALKER"]
+                    },
+                    "Deserts & Extreme Landscapes": {
+                        emoji: "🏜️",
+                        words: ["TAKLAMAKAN", "GOBI", "ORDOS", "BADAIN JARAN", "TENGER", "MU US", "KUBUQI", "LOP NOR", "ARAL KUM", "KARAKUM", "KYZYLKUM", "BETPAK DALA", "USTYURT", "MANGYSHLAK", "REGISTAN", "MARGOW", "DASHT E LUT", "DASHT E KAVIR", "RUB AL KHALI", "AN NAFUD", "AD DAHNA", "WAHIBA SANDS", "NEGEV", "SINAI", "WADI RUM", "WHITE DESERT", "BLACK DESERT", "CRYSTAL DESERT", "MOON VALLEY", "DEATH VALLEY", "BADWATER", "DANTES VIEW", "ZABRISKIE POINT", "RACETRACK PLAYA", "EUREKA VALLEY", "SALINE VALLEY", "PANAMINT", "AMARGOSA", "MOJAVE", "SONORAN", "CHIHUAHUAN", "GREAT BASIN", "PAINTED DESERT", "PETRIFIED FOREST"]
+                    },
+                    "Geological Features": {
+                        emoji: "⚒️",
+                        words: ["MARIANAS TRENCH", "RING OF FIRE", "MID ATLANTIC RIDGE", "EAST PACIFIC RISE", "SAN ANDREAS FAULT", "NEW MADRID FAULT", "WASATCH FAULT", "HAYWARD FAULT", "NEWPORT INGLEWOOD", "CASCADIA SUBDUCTION", "ALEUTIAN TRENCH", "JAPAN TRENCH", "KURIL TRENCH", "PHILIPPINE TRENCH", "TONGA TRENCH", "KERMADEC TRENCH", "PERU CHILE TRENCH", "MIDDLE AMERICA TRENCH", "PUERTO RICO TRENCH", "ROMANCHE TRENCH", "SOUTH SANDWICH TRENCH", "JAVA TRENCH", "SUMATRA TRENCH", "MAKRAN TRENCH", "CALABRIAN ARC", "HELLENIC TRENCH", "VITIAZ TRENCH", "NEW HEBRIDES TRENCH", "BOUGAINVILLE TRENCH", "MANUS TRENCH", "NEW BRITAIN TRENCH"]
+                    },
+                    "Historical Regions & Ancient Civilizations": {
+                        emoji: "🏺",
+                        words: ["MESOPOTAMIA", "BABYLONIA", "ASSYRIA", "SUMER", "AKKAD", "HITTITE EMPIRE", "PHOENICIA", "CARTHAGE", "BYZANTIUM", "CONSTANTINOPLE", "ALEXANDRIA", "ANTIOCH", "JERUSALEM", "BETHLEHEM", "NAZARETH", "PETRA", "PALMYRA", "BABYLON", "NINEVEH", "PERSEPOLIS", "TROY", "MYCENAE", "KNOSSOS", "SPARTA", "THEBES", "MEMPHIS", "LUXOR", "KARNAK", "ABYDOS", "DENDERA", "EDFU", "PHILAE", "ABU SIMBEL", "VALLEY OF KINGS", "VALLEY OF QUEENS", "DEIR EL MEDINA", "BENI HASAN", "EL LAHUN", "HAWARA", "MAZGHUNA", "SAQQARA"]
+                    },
+                    "Climate Zones & Biomes": {
+                        emoji: "🌡️",
+                        words: ["TUNDRA", "TAIGA", "STEPPE", "PRAIRIE", "SAVANNA", "PAMPAS", "LLANOS", "CERRADO", "CAATINGA", "MATA ATLANTICA", "PANTANAL", "CHACO", "MONTE", "ESPINAL", "MATORRAL", "FYNBOS", "VELD", "HIGHVELD", "LOWVELD", "BUSHVELD", "KAROO", "SUCCULENT KAROO", "NAMA KAROO", "RENOSTERVELD", "STRANDVELD", "ALBANY THICKET", "MAPUTALAND PONDOLAND", "DRAKENSBERG", "GREAT ESCARPMENT", "GREAT KAROO", "LITTLE KAROO"]
+                    },
+                    "Ethnic & Cultural Regions": {
+                        emoji: "👥",
+                        words: ["LAPLAND", "SAMI", "CATALONIA", "BASQUE COUNTRY", "GALICIA", "ANDALUSIA", "BRITTANY", "NORMANDY", "ALSACE", "LORRAINE", "CORSICA", "SARDINIA", "SICILY", "LOMBARDY", "TUSCANY", "UMBRIA", "VENETO", "FRIULI", "TRENTINO", "SUDTIROL", "AOsta VALLEY", "PIEDMONT", "LIGURIA", "EMILIA ROMAGNA", "MARCHE", "ABRUZZO", "MOLISE", "PUGLIA", "BASILICATA", "CALABRIA", "CAMPANIA", "LAZIO", "WALLONIA", "FLANDERS", "FRISIA", "GRONINGEN", "LIMBURG", "BRABANT", "ZEELAND", "HOLLAND", "GELDERLAND", "OVERIJSSEL", "DRENTHE", "FLEVOLAND", "UTRECHT", "ZUID HOLLAND", "NOORD HOLLAND"]
+                    }
                 }
             };
 
@@ -419,6 +553,7 @@
                 difficulty: 'easy',
                 word: '',
                 category: '',
+                topicEmoji: '🎯',
                 guessedLetters: new Set(),
                 wrongGuesses: 0,
                 maxWrong: 6,
@@ -434,6 +569,7 @@
             const keyboard = document.getElementById('keyboard');
             const message = document.getElementById('message');
             const categoryHint = document.getElementById('categoryHint');
+            const topicName = document.getElementById('topicName');
             const wrongCount = document.getElementById('wrongCount');
             const guessCount = document.getElementById('guessCount');
             const streakCount = document.getElementById('streakCount');
@@ -449,16 +585,20 @@
                 const bank = wordBanks[difficulty];
                 const categories = Object.keys(bank);
                 const category = categories[Math.floor(Math.random() * categories.length)];
-                const words = bank[category];
+                const topicData = bank[category];
+                const words = topicData.words;
                 const word = words[Math.floor(Math.random() * words.length)];
-                return { word: word.toUpperCase(), category };
+                return {
+                    word: word.toUpperCase(),
+                    category: category,
+                    emoji: topicData.emoji || '🎯'
+                };
             }
 
             function updateHangman() {
                 const bodyParts = hangmanSvg.querySelectorAll('.body-part:not(.face-x)');
                 const faceX = hangmanSvg.querySelectorAll('.face-x');
 
-                // Show body parts based on wrong guesses
                 bodyParts.forEach((part, index) => {
                     if (index < gameState.wrongGuesses) {
                         part.classList.remove('hidden');
@@ -467,7 +607,6 @@
                     }
                 });
 
-                // Show X eyes only on game over (6 wrong)
                 faceX.forEach(x => {
                     if (gameState.wrongGuesses >= gameState.maxWrong && gameState.gameOver && !gameState
                         .won) {
@@ -490,7 +629,6 @@
                     } else {
                         box.className = 'letter-box';
                         const letter = char.toUpperCase();
-                        // Show first letter on easy mode
                         const shouldReveal = gameState.guessedLetters.has(letter) ||
                             (gameState.firstLetterShown && i === 0 && gameState.difficulty === 'easy') ||
                             gameState.gameOver;
@@ -555,18 +693,15 @@
                 gameState.guessedLetters.add(letter);
 
                 if (gameState.word.includes(letter)) {
-                    // Correct guess
                     checkWin();
                 } else {
-                    // Wrong guess
                     gameState.wrongGuesses++;
                     updateHangman();
 
-                    // Reveal hint after 3 wrong guesses on medium/hard
                     if (gameState.wrongGuesses >= 3 && !gameState.hintRevealed &&
                         (gameState.difficulty === 'medium' || gameState.difficulty === 'hard')) {
                         gameState.hintRevealed = true;
-                        categoryHint.textContent = `🗺️ ${gameState.category}`;
+                        categoryHint.textContent = `${gameState.topicEmoji} ${gameState.category}`;
                     }
 
                     if (gameState.wrongGuesses >= gameState.maxWrong) {
@@ -613,17 +748,18 @@
                 wrongCount.textContent = `${gameState.wrongGuesses}/${gameState.maxWrong}`;
                 guessCount.textContent = gameState.guessedLetters.size;
                 streakCount.textContent = gameState.streak;
+                topicName.textContent = gameState.category;
             }
 
             function generateShareResult() {
                 let result = `🌍 GeoHangman (${gameState.difficulty.toUpperCase()})\n`;
+                result += `${gameState.topicEmoji} Topic: ${gameState.category}\n`;
                 result += `📝 Word: ${gameState.word}\n`;
                 result += `🎯 Result: ${gameState.won ? 'WON ✅' : 'LOST ❌'}\n`;
                 result += `❌ Wrong: ${gameState.wrongGuesses}/${gameState.maxWrong}\n`;
                 result += `🔤 Guesses: ${gameState.guessedLetters.size}\n`;
                 result += `🔥 Streak: ${gameState.streak}\n`;
 
-                // Emoji grid representation
                 let emojiRow = '';
                 for (let i = 0; i < gameState.maxWrong; i++) {
                     emojiRow += i < gameState.wrongGuesses ? '💀' : '⬜';
@@ -639,7 +775,6 @@
                 shareArea.textContent = result;
                 shareArea.classList.add('visible');
 
-                // Copy to clipboard
                 navigator.clipboard.writeText(result).then(() => {
                     message.textContent = '📋 Copied to clipboard!';
                     message.className = 'message win';
@@ -650,18 +785,17 @@
             }
 
             function startNewGame(difficulty) {
-                // Only reset streak if changing difficulty mid-streak? No, keep streak.
-                const { word, category } = getRandomWord(difficulty);
+                const { word, category, emoji } = getRandomWord(difficulty);
                 gameState.difficulty = difficulty;
                 gameState.word = word.toUpperCase();
                 gameState.category = category;
+                gameState.topicEmoji = emoji;
                 gameState.guessedLetters = new Set();
                 gameState.wrongGuesses = 0;
                 gameState.gameOver = false;
                 gameState.won = false;
                 gameState.hintRevealed = false;
 
-                // Set max wrong based on difficulty
                 if (difficulty === 'easy') {
                     gameState.maxWrong = 8;
                     gameState.firstLetterShown = true;
@@ -673,9 +807,8 @@
                     gameState.firstLetterShown = false;
                 }
 
-                // Show category immediately on easy
                 if (difficulty === 'easy') {
-                    categoryHint.textContent = `🗺️ ${category}`;
+                    categoryHint.textContent = `${emoji} ${category}`;
                     gameState.hintRevealed = true;
                 } else {
                     categoryHint.textContent = '';
@@ -690,11 +823,12 @@
                 updateHangman();
                 updateUI();
 
-                // Add first letter to guessed on easy
                 if (gameState.firstLetterShown) {
                     const firstLetter = word.charAt(0).toUpperCase();
                     gameState.guessedLetters.add(firstLetter);
                 }
+
+                topicName.textContent = category;
             }
 
             function setDifficulty(difficulty) {
@@ -716,7 +850,6 @@
 
             shareBtn.addEventListener('click', shareResult);
 
-            // Keyboard support
             document.addEventListener('keydown', (e) => {
                 if (gameState.gameOver) return;
                 const key = e.key.toUpperCase();
