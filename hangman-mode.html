@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoHangman - Geography Word Game</title>
+    <style>
+        :root {
+            --bg: #121213;
+            --surface: #1a1a2e;
+            --text: #e0e0e0;
+            --easy: #538d4e;
+            --medium: #b59f3b;
+            --hard: #8b3a3a;
+            --accent: #3a7ca5;
+            --wrong: #3a3a3c;
+            --correct: #538d4e;
+            --key-bg: #818384;
+            --key-wrong: #3a3a3c;
+            --key-correct: #538d4e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .game-container {
+            max-width: 550px;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        .title .geo {
+            color: #4caf50;
+        }
+        .title .hangman {
+            color: #ff6b6b;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 6px;
+        }
+
+        .diff-btn {
+            padding: 6px 14px;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            background: #2a2a3a;
+            color: #aaa;
+        }
+        .diff-btn.easy {
+            border-color: var(--easy);
+            color: var(--easy);
+        }
+        .diff-btn.medium {
+            border-color: var(--medium);
+            color: var(--medium);
+        }
+        .diff-btn.hard {
+            border-color: var(--hard);
+            color: var(--hard);
+        }
+        .diff-btn.active.easy {
+            background: var(--easy);
+            color: #fff;
+        }
+        .diff-btn.active.medium {
+            background: var(--medium);
+            color: #fff;
+        }
+        .diff-btn.active.hard {
+            background: var(--hard);
+            color: #fff;
+        }
+        .diff-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Hangman Drawing */
+        .hangman-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 160px;
+            margin: 10px 0;
+        }
+
+        .hangman-svg {
+            width: 140px;
+            height: 160px;
+        }
+        .hangman-svg line,
+        .hangman-svg circle {
+            stroke: #ddd;
+            stroke-width: 3;
+            stroke-linecap: round;
+            fill: none;
+        }
+        .hangman-svg .hidden {
+            display: none;
+        }
+
+        /* Word Display */
+        .category-hint {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 6px;
+            min-height: 20px;
+        }
+
+        .word-display {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .letter-box {
+            width: 40px;
+            height: 48px;
+            border-bottom: 3px solid #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            color: #fff;
+        }
+        .letter-box.revealed {
+            border-bottom-color: var(--correct);
+            color: #fff;
+        }
+        .letter-box.space {
+            border-bottom: none;
+            width: 20px;
+        }
+
+        /* Keyboard */
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .key {
+            width: 36px;
+            height: 44px;
+            border-radius: 6px;
+            border: none;
+            background: var(--key-bg);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.15s;
+        }
+        .key:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        .key:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+        }
+        .key.correct {
+            background: var(--key-correct);
+        }
+        .key.wrong {
+            background: var(--key-wrong);
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #333;
+            color: #fff;
+        }
+        .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        /* Message */
+        .message {
+            min-height: 30px;
+            margin: 10px 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .message.win {
+            color: #4caf50;
+        }
+        .message.lose {
+            color: #ff6b6b;
+        }
+
+        /* Share modal */
+        .share-area {
+            margin-top: 8px;
+            padding: 10px;
+            background: #2a2a3a;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            display: none;
+            text-align: center;
+            color: #ccc;
+        }
+        .share-area.visible {
+            display: block;
+        }
+
+        @media (max-width: 400px) {
+            .letter-box {
+                width: 30px;
+                height: 38px;
+                font-size: 1.3rem;
+            }
+            .key {
+                width: 28px;
+                height: 36px;
+                font-size: 0.8rem;
+            }
+            .keyboard {
+                gap: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title"><span class="geo">GEO</span><span class="hangman">HANGMAN</span></div>
+            <div class="difficulty-selector">
+                <button class="diff-btn easy active" data-diff="easy">🌍 Easy</button>
+                <button class="diff-btn medium" data-diff="medium">🗺️ Medium</button>
+                <button class="diff-btn hard" data-diff="hard">🏔️ Hard</button>
+            </div>
+        </div>
+
+        <!-- Hangman Drawing -->
+        <div class="hangman-area">
+            <svg class="hangman-svg" viewBox="0 0 140 160" id="hangmanSvg">
+                <!-- Gallows base -->
+                <line x1="10" y1="155" x2="90" y2="155" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                <line x1="30" y1="155" x2="30" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                <line x1="30" y1="15" x2="90" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                <line x1="90" y1="15" x2="90" y2="35" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                <!-- Body parts (hidden by default) -->
+                <circle class="body-part hidden" cx="90" cy="45" r="12" stroke="#ff6b6b" stroke-width="2.5"/>
+                <line class="body-part hidden" x1="90" y1="57" x2="90" y2="95" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                <line class="body-part hidden" x1="90" y1="65" x2="70" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                <line class="body-part hidden" x1="90" y1="65" x2="110" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                <line class="body-part hidden" x1="90" y1="95" x2="72" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                <line class="body-part hidden" x1="90" y1="95" x2="108" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Face (X eyes when dead) -->
+                <line class="body-part hidden face-x" x1="84" y1="41" x2="88" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                <line class="body-part hidden face-x" x1="88" y1="41" x2="84" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                <line class="body-part hidden face-x" x1="92" y1="41" x2="96" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                <line class="body-part hidden face-x" x1="96" y1="41" x2="92" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+            </svg>
+        </div>
+
+        <!-- Category Hint -->
+        <div class="category-hint" id="categoryHint"></div>
+
+        <!-- Word Display -->
+        <div class="word-display" id="wordDisplay"></div>
+
+        <!-- Message -->
+        <div class="message" id="message"></div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-value" id="streakCount">0</span>
+                <span class="stat-label">STREAK</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="wrongCount">0/6</span>
+                <span class="stat-label">WRONG</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="guessCount">0</span>
+                <span class="stat-label">GUESSES</span>
+            </div>
+        </div>
+
+        <!-- Keyboard -->
+        <div class="keyboard" id="keyboard"></div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="newGameBtn">🔄 New Game</button>
+            <button class="btn btn-secondary" id="shareBtn" style="display:none;">📋 Share Result</button>
+        </div>
+
+        <!-- Share Area -->
+        <div class="share-area" id="shareArea"></div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== WORD BANKS ====================
+            const wordBanks = {
+                easy: {
+                    "Capital Cities": ["PARIS", "TOKYO", "LIMA", "SEOUL", "CAIRO", "ROME", "BERN", "OSLO", "LISBON", "MADRID", "BEIJING", "HANOI", "QUITO", "ACCRA", "RABAT"],
+                    "Countries": ["PERU", "CHILE", "SPAIN", "JAPAN", "KENYA", "CANADA", "ITALY", "FRANCE", "BRAZIL", "INDIA", "CHINA", "EGYPT", "MEXICO", "CUBA", "MALTA"],
+                    "Major Cities": ["MIAMI", "DUBAI", "SYDNEY", "MUNICH", "MILAN", "LYON", "PORTO", "ZURICH", "VIENNA", "PRAGUE"],
+                    "Islands": ["FIJI", "MALTA", "CUBA", "CRETE", "BALI", "MALTA", "CAPRI", "ARUBA", "TAHITI", "SICILY"],
+                    "Mountains": ["FUJI", "ETNA", "KENYA", "ELBRUS", "HOOD", "RAINIER", "SHASTA", "WHITNEY"],
+                    "Rivers": ["NILE", "GANGES", "DANUBE", "AMAZON", "VOLGA", "RHINE", "THAMES", "YUKON"]
+                },
+                medium: {
+                    "Capital Cities": ["ULAANBAATAR", "BRATISLAVA", "LJUBLJANA", "KATHMANDU", "REYKJAVIK", "OUAGADOUGOU", "ANTANANARIVO", "BANDAR SERI BEGAWAN", "PHNOM PENH", "PORT MORESBY"],
+                    "Countries": ["AZERBAIJAN", "BANGLADESH", "PHILIPPINES", "MADAGASCAR", "KAZAKHSTAN", "UZBEKISTAN", "MOZAMBIQUE", "ARGENTINA", "INDONESIA", "VENEZUELA"],
+                    "Major Cities": ["CASABLANCA", "ALBUQUERQUE", "HYDERABAD", "VANCOUVER", "BARCELONA", "MARSEILLE", "FRANKFURT", "EDINBURGH"],
+                    "Islands": ["GREENLAND", "SUMATRA", "TASMANIA", "SARDINIA", "GALAPAGOS", "BORNEO", "HONSHU", "SICILY"],
+                    "Mountains": ["KILIMANJARO", "MATTERHORN", "ANNAPURNA", "VESUVIUS", "DENALI", "ACONCAGUA", "MAKALU", "CITLALTEPETL"],
+                    "Deserts": ["SAHARA", "ATACAMA", "KALAHARI", "GOBI", "NAMIB", "THAR", "MOJAVE", "SONORAN"]
+                },
+                hard: {
+                    "Capital Cities": ["YAMOUSSOUKRO", "THIMPHU", "BANDAR SERI BEGAWAN", "OUAGADOUGOU", "ANTANANARIVO", "BRAZZAVILLE", "LILONGWE", "MASERU", "MBABANE", "PODGORICA"],
+                    "Countries": ["KYRGYZSTAN", "TAJIKISTAN", "TURKMENISTAN", "LIECHTENSTEIN", "GUINEA BISSAU", "PAPUA NEW GUINEA", "TRINIDAD AND TOBAGO", "SAINT VINCENT AND THE GRENADINES"],
+                    "Mountains": ["KHUITEN", "GANGKHAR PUENSUM", "NANGA PARBAT", "KANGCHENJUNGA", "LHOTSE", "DHAULAGIRI", "MANASLU", "CHO OYU"],
+                    "Islands": ["SPITSBERGEN", "SAKHALIN", "VANUATU", "KIRIBATI", "MAURITIUS", "SEYCHELLES", "COMOROS", "ZANZIBAR"],
+                    "Rivers": ["BRAHMAPUTRA", "ORINOCO", "MEKONG", "YENISEI", "LENA", "OB", "PARANA", "SALWEEN"],
+                    "Rare Geography": ["SVALBARD", "KAMCHATKA", "PATAGONIA", "MESOPOTAMIA", "TRANSYLVANIA", "LAPLAND", "MACEDONIA", "BENGAL"]
+                }
+            };
+
+            // ==================== GAME STATE ====================
+            let gameState = {
+                difficulty: 'easy',
+                word: '',
+                category: '',
+                guessedLetters: new Set(),
+                wrongGuesses: 0,
+                maxWrong: 6,
+                gameOver: false,
+                won: false,
+                streak: parseInt(localStorage.getItem('geoHangmanStreak') || '0'),
+                hintRevealed: false,
+                firstLetterShown: false,
+            };
+
+            // ==================== DOM ELEMENTS ====================
+            const wordDisplay = document.getElementById('wordDisplay');
+            const keyboard = document.getElementById('keyboard');
+            const message = document.getElementById('message');
+            const categoryHint = document.getElementById('categoryHint');
+            const wrongCount = document.getElementById('wrongCount');
+            const guessCount = document.getElementById('guessCount');
+            const streakCount = document.getElementById('streakCount');
+            const shareBtn = document.getElementById('shareBtn');
+            const shareArea = document.getElementById('shareArea');
+            const newGameBtn = document.getElementById('newGameBtn');
+            const diffBtns = document.querySelectorAll('.diff-btn');
+            const hangmanSvg = document.getElementById('hangmanSvg');
+
+            // ==================== FUNCTIONS ====================
+
+            function getRandomWord(difficulty) {
+                const bank = wordBanks[difficulty];
+                const categories = Object.keys(bank);
+                const category = categories[Math.floor(Math.random() * categories.length)];
+                const words = bank[category];
+                const word = words[Math.floor(Math.random() * words.length)];
+                return { word: word.toUpperCase(), category };
+            }
+
+            function updateHangman() {
+                const bodyParts = hangmanSvg.querySelectorAll('.body-part:not(.face-x)');
+                const faceX = hangmanSvg.querySelectorAll('.face-x');
+
+                // Show body parts based on wrong guesses
+                bodyParts.forEach((part, index) => {
+                    if (index < gameState.wrongGuesses) {
+                        part.classList.remove('hidden');
+                    } else {
+                        part.classList.add('hidden');
+                    }
+                });
+
+                // Show X eyes only on game over (6 wrong)
+                faceX.forEach(x => {
+                    if (gameState.wrongGuesses >= gameState.maxWrong && gameState.gameOver && !gameState
+                        .won) {
+                        x.classList.remove('hidden');
+                    } else {
+                        x.classList.add('hidden');
+                    }
+                });
+            }
+
+            function renderWord() {
+                wordDisplay.innerHTML = '';
+                for (let i = 0; i < gameState.word.length; i++) {
+                    const char = gameState.word[i];
+                    const box = document.createElement('div');
+
+                    if (char === ' ') {
+                        box.className = 'letter-box space';
+                        box.textContent = '';
+                    } else {
+                        box.className = 'letter-box';
+                        const letter = char.toUpperCase();
+                        // Show first letter on easy mode
+                        const shouldReveal = gameState.guessedLetters.has(letter) ||
+                            (gameState.firstLetterShown && i === 0 && gameState.difficulty === 'easy') ||
+                            gameState.gameOver;
+
+                        if (shouldReveal) {
+                            box.textContent = letter;
+                            if (gameState.guessedLetters.has(letter)) {
+                                box.classList.add('revealed');
+                            } else if (gameState.gameOver && !gameState.won) {
+                                box.style.color = '#ff6b6b';
+                            }
+                        }
+                    }
+                    wordDisplay.appendChild(box);
+                }
+            }
+
+            function renderKeyboard() {
+                keyboard.innerHTML = '';
+                const rows = [
+                    'QWERTYUIOP',
+                    'ASDFGHJKL',
+                    'ZXCVBNM'
+                ];
+
+                rows.forEach(row => {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.style.display = 'flex';
+                    rowDiv.style.gap = '5px';
+                    rowDiv.style.justifyContent = 'center';
+
+                    row.split('').forEach(letter => {
+                        const key = document.createElement('button');
+                        key.className = 'key';
+                        key.textContent = letter;
+                        key.dataset.letter = letter;
+
+                        if (gameState.guessedLetters.has(letter)) {
+                            key.disabled = true;
+                            if (gameState.word.includes(letter)) {
+                                key.classList.add('correct');
+                            } else {
+                                key.classList.add('wrong');
+                            }
+                        }
+
+                        if (gameState.gameOver) {
+                            key.disabled = true;
+                        }
+
+                        key.addEventListener('click', () => handleGuess(letter));
+                        rowDiv.appendChild(key);
+                    });
+                    keyboard.appendChild(rowDiv);
+                });
+            }
+
+            function handleGuess(letter) {
+                if (gameState.gameOver) return;
+                if (gameState.guessedLetters.has(letter)) return;
+
+                gameState.guessedLetters.add(letter);
+
+                if (gameState.word.includes(letter)) {
+                    // Correct guess
+                    checkWin();
+                } else {
+                    // Wrong guess
+                    gameState.wrongGuesses++;
+                    updateHangman();
+
+                    // Reveal hint after 3 wrong guesses on medium/hard
+                    if (gameState.wrongGuesses >= 3 && !gameState.hintRevealed &&
+                        (gameState.difficulty === 'medium' || gameState.difficulty === 'hard')) {
+                        gameState.hintRevealed = true;
+                        categoryHint.textContent = `🗺️ ${gameState.category}`;
+                    }
+
+                    if (gameState.wrongGuesses >= gameState.maxWrong) {
+                        gameState.gameOver = true;
+                        gameState.won = false;
+                        message.textContent = `😢 Game Over! The answer was: ${gameState.word}`;
+                        message.className = 'message lose';
+                        shareBtn.style.display = 'inline-block';
+                        updateStreak(false);
+                    }
+                }
+
+                updateUI();
+            }
+
+            function checkWin() {
+                const allRevealed = gameState.word.split('').every(char =>
+                    char === ' ' || gameState.guessedLetters.has(char.toUpperCase())
+                );
+
+                if (allRevealed) {
+                    gameState.gameOver = true;
+                    gameState.won = true;
+                    message.textContent = '🎉 You Won! Amazing!';
+                    message.className = 'message win';
+                    shareBtn.style.display = 'inline-block';
+                    updateStreak(true);
+                }
+            }
+
+            function updateStreak(won) {
+                if (won) {
+                    gameState.streak++;
+                } else {
+                    gameState.streak = 0;
+                }
+                localStorage.setItem('geoHangmanStreak', gameState.streak);
+                streakCount.textContent = gameState.streak;
+            }
+
+            function updateUI() {
+                renderWord();
+                renderKeyboard();
+                wrongCount.textContent = `${gameState.wrongGuesses}/${gameState.maxWrong}`;
+                guessCount.textContent = gameState.guessedLetters.size;
+                streakCount.textContent = gameState.streak;
+            }
+
+            function generateShareResult() {
+                let result = `🌍 GeoHangman (${gameState.difficulty.toUpperCase()})\n`;
+                result += `📝 Word: ${gameState.word}\n`;
+                result += `🎯 Result: ${gameState.won ? 'WON ✅' : 'LOST ❌'}\n`;
+                result += `❌ Wrong: ${gameState.wrongGuesses}/${gameState.maxWrong}\n`;
+                result += `🔤 Guesses: ${gameState.guessedLetters.size}\n`;
+                result += `🔥 Streak: ${gameState.streak}\n`;
+
+                // Emoji grid representation
+                let emojiRow = '';
+                for (let i = 0; i < gameState.maxWrong; i++) {
+                    emojiRow += i < gameState.wrongGuesses ? '💀' : '⬜';
+                }
+                result += `\n${emojiRow}\n`;
+                result += `\nPlay at: [GeoHangman]`;
+
+                return result;
+            }
+
+            function shareResult() {
+                const result = generateShareResult();
+                shareArea.textContent = result;
+                shareArea.classList.add('visible');
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(result).then(() => {
+                    message.textContent = '📋 Copied to clipboard!';
+                    message.className = 'message win';
+                }).catch(() => {
+                    message.textContent = '📋 Share text ready (tap to select)';
+                    message.className = 'message';
+                });
+            }
+
+            function startNewGame(difficulty) {
+                // Only reset streak if changing difficulty mid-streak? No, keep streak.
+                const { word, category } = getRandomWord(difficulty);
+                gameState.difficulty = difficulty;
+                gameState.word = word.toUpperCase();
+                gameState.category = category;
+                gameState.guessedLetters = new Set();
+                gameState.wrongGuesses = 0;
+                gameState.gameOver = false;
+                gameState.won = false;
+                gameState.hintRevealed = false;
+
+                // Set max wrong based on difficulty
+                if (difficulty === 'easy') {
+                    gameState.maxWrong = 8;
+                    gameState.firstLetterShown = true;
+                } else if (difficulty === 'medium') {
+                    gameState.maxWrong = 6;
+                    gameState.firstLetterShown = false;
+                } else {
+                    gameState.maxWrong = 5;
+                    gameState.firstLetterShown = false;
+                }
+
+                // Show category immediately on easy
+                if (difficulty === 'easy') {
+                    categoryHint.textContent = `🗺️ ${category}`;
+                    gameState.hintRevealed = true;
+                } else {
+                    categoryHint.textContent = '';
+                }
+
+                message.textContent = '';
+                message.className = 'message';
+                shareBtn.style.display = 'none';
+                shareArea.classList.remove('visible');
+                shareArea.textContent = '';
+
+                updateHangman();
+                updateUI();
+
+                // Add first letter to guessed on easy
+                if (gameState.firstLetterShown) {
+                    const firstLetter = word.charAt(0).toUpperCase();
+                    gameState.guessedLetters.add(firstLetter);
+                }
+            }
+
+            function setDifficulty(difficulty) {
+                diffBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.diff-btn[data-diff="${difficulty}"]`).classList.add('active');
+                startNewGame(difficulty);
+            }
+
+            // ==================== EVENT LISTENERS ====================
+            diffBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setDifficulty(btn.dataset.diff);
+                });
+            });
+
+            newGameBtn.addEventListener('click', () => {
+                startNewGame(gameState.difficulty);
+            });
+
+            shareBtn.addEventListener('click', shareResult);
+
+            // Keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (gameState.gameOver) return;
+                const key = e.key.toUpperCase();
+                if (/^[A-Z]$/.test(key) && !gameState.guessedLetters.has(key)) {
+                    handleGuess(key);
+                }
+            });
+
+            // ==================== INIT ====================
+            streakCount.textContent = gameState.streak;
+            startNewGame('easy');
+        })();
+    </script>
+</body>
+</html>
