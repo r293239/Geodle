@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoHangman - Geography Word Game</title>
+    <title>Hangle - Geography Hangman | Geodle Games</title>
+    <meta name="description" content="Hangle - The geography hangman game from the Geodle family. Guess geographic words before the hangman is complete!">
     <style>
         :root {
             --bg: #121213;
@@ -18,6 +19,10 @@
             --key-bg: #818384;
             --key-wrong: #3a3a3c;
             --key-correct: #538d4e;
+            --brand-green: #4caf50;
+            --brand-red: #ff6b6b;
+            --brand-blue: #2196F3;
+            --brand-orange: #FF9800;
         }
 
         * {
@@ -36,6 +41,9 @@
             min-height: 100vh;
             padding: 10px;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(76, 175, 80, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(33, 150, 243, 0.05) 0%, transparent 50%);
         }
 
         .game-container {
@@ -47,6 +55,25 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             text-align: center;
             animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--brand-green), var(--brand-blue), var(--brand-orange), var(--brand-red));
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         @keyframes slideIn {
@@ -110,6 +137,11 @@
             100% { transform: translateY(-20px); opacity: 0; }
         }
 
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(76, 175, 80, 0.6), 0 0 40px rgba(33, 150, 243, 0.3); }
+        }
+
         .shake {
             animation: shake 0.5s ease-in-out;
         }
@@ -118,6 +150,7 @@
             animation: winCelebration 0.6s ease-in-out;
         }
 
+        /* Header with Logo */
         .header {
             display: flex;
             justify-content: space-between;
@@ -127,17 +160,40 @@
             gap: 8px;
         }
 
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         .title {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 800;
+            letter-spacing: 3px;
+            animation: logoGlow 2s ease-in-out infinite;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--brand-green), var(--brand-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            color: #666;
             letter-spacing: 2px;
-            animation: pulse 2s ease-in-out infinite;
+            text-transform: uppercase;
+            margin-top: -2px;
         }
-        .title .geo {
-            color: #4caf50;
-        }
-        .title .hangman {
-            color: #ff6b6b;
+
+        .geodle-badge {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(33, 150, 243, 0.2));
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            color: #888;
+            letter-spacing: 1px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         .difficulty-selector {
@@ -428,12 +484,13 @@
             height: 300px;
         }
         .btn-primary {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--brand-green), var(--brand-blue));
             color: #fff;
         }
         .btn-secondary {
             background: #333;
             color: #fff;
+            border: 1px solid #555;
         }
         .btn:hover {
             transform: translateY(-2px);
@@ -458,9 +515,6 @@
         .message.lose {
             color: #ff6b6b;
             animation: shake 0.5s ease-in-out;
-        }
-        .message.float {
-            animation: floatUp 1s ease-out forwards;
         }
 
         /* Share modal */
@@ -498,6 +552,22 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
+        /* Footer */
+        .footer {
+            margin-top: 15px;
+            font-size: 0.65rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer a:hover {
+            color: var(--brand-green);
+        }
+
         @media (max-width: 400px) {
             .letter-box {
                 width: 30px;
@@ -521,18 +591,27 @@
             .game-container {
                 padding: 20px 10px;
             }
+            .title {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="game-container" id="gameContainer">
-        <!-- Header -->
+        <!-- Header with Logo -->
         <div class="header">
-            <div class="title"><span class="geo">GEO</span><span class="hangman">HANGMAN</span></div>
-            <div class="difficulty-selector">
-                <button class="diff-btn easy active" data-diff="easy">🌍 Easy</button>
-                <button class="diff-btn medium" data-diff="medium">🗺️ Medium</button>
-                <button class="diff-btn hard" data-diff="hard">🏔️ Hard</button>
+            <div class="logo-area">
+                <div class="title">HANGLE</div>
+                <div class="subtitle">Geography Hangman</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                <span class="geodle-badge">GEODLE GAMES</span>
+                <div class="difficulty-selector">
+                    <button class="diff-btn easy active" data-diff="easy">🌍 Easy</button>
+                    <button class="diff-btn medium" data-diff="medium">🗺️ Medium</button>
+                    <button class="diff-btn hard" data-diff="hard">🏔️ Hard</button>
+                </div>
             </div>
         </div>
 
@@ -595,11 +674,16 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
             <button class="btn btn-primary" id="newGameBtn">🔄 New Game</button>
-            <button class="btn btn-secondary" id="shareBtn" style="display:none;">📋 Share Result</button>
+            <button class="btn btn-secondary" id="shareBtn" style="display:none;">📋 Share Hangle</button>
         </div>
 
         <!-- Share Area -->
         <div class="share-area" id="shareArea"></div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            Hangle • Part of the <span style="color: #4caf50;">Geodle</span> Games Family
+        </div>
     </div>
 
     <script>
@@ -749,7 +833,7 @@
                 maxWrong: 6,
                 gameOver: false,
                 won: false,
-                streak: parseInt(localStorage.getItem('geoHangmanStreak') || '0'),
+                streak: parseInt(localStorage.getItem('hangleStreak') || '0'),
                 hintRevealed: false,
                 firstLetterShown: false,
             };
@@ -803,9 +887,8 @@
                 bodyParts.forEach((part, index) => {
                     if (index < gameState.wrongGuesses) {
                         part.classList.remove('hidden');
-                        // Reset animation
                         part.style.animation = 'none';
-                        part.offsetHeight; // Trigger reflow
+                        part.offsetHeight;
                         part.style.animation = 'bodyPartAppear 0.5s ease-out forwards';
                     } else {
                         part.classList.add('hidden');
@@ -825,7 +908,6 @@
             function renderWord() {
                 wordDisplay.innerHTML = '';
                 
-                // Split word into groups by spaces
                 const wordGroups = gameState.word.split(' ');
                 
                 wordGroups.forEach((word, groupIndex) => {
@@ -856,7 +938,6 @@
                     
                     wordDisplay.appendChild(wordGroup);
                     
-                    // Add a space between word groups (except the last one)
                     if (groupIndex < wordGroups.length - 1) {
                         const spaceBox = document.createElement('div');
                         spaceBox.className = 'letter-box space';
@@ -910,14 +991,12 @@
                 gameState.guessedLetters.add(letter);
 
                 if (gameState.word.includes(letter)) {
-                    // Correct guess
                     const correctCount = gameState.word.split('').filter(c => c === letter).length;
                     if (correctCount > 0) {
                         showToast(`✅ Found ${correctCount} "${letter}"!`, 1500);
                     }
                     checkWin();
                 } else {
-                    // Wrong guess
                     gameState.wrongGuesses++;
                     gameContainer.classList.add('shake');
                     setTimeout(() => gameContainer.classList.remove('shake'), 500);
@@ -950,7 +1029,6 @@
 
                 updateUI();
                 
-                // Animate stat updates
                 [wrongCount, guessCount].forEach(el => {
                     el.classList.add('updated');
                     setTimeout(() => el.classList.remove('updated'), 500);
@@ -988,7 +1066,7 @@
                 } else {
                     gameState.streak = 0;
                 }
-                localStorage.setItem('geoHangmanStreak', gameState.streak);
+                localStorage.setItem('hangleStreak', gameState.streak);
                 streakCount.textContent = gameState.streak;
                 streakCount.classList.add('updated');
                 setTimeout(() => streakCount.classList.remove('updated'), 500);
@@ -1004,7 +1082,7 @@
             }
 
             function generateShareResult() {
-                let result = `🌍 GeoHangman (${gameState.difficulty.toUpperCase()})\n`;
+                let result = `🎯 Hangle #${gameState.streak} (${gameState.difficulty.toUpperCase()})\n`;
                 result += `${gameState.topicEmoji} Topic: ${gameState.category}\n`;
                 result += `📝 Word: ${gameState.word}\n`;
                 result += `🎯 Result: ${gameState.won ? 'WON ✅' : 'LOST ❌'}\n`;
@@ -1017,7 +1095,7 @@
                     emojiRow += i < gameState.wrongGuesses ? '💀' : '⬜';
                 }
                 result += `\n${emojiRow}\n`;
-                result += `\nPlay at: [GeoHangman]`;
+                result += `\n🌍 Play Hangle - Geodle Games`;
 
                 return result;
             }
@@ -1088,7 +1166,7 @@
                 }
 
                 topicName.textContent = category;
-                showToast(`🎯 New game! Topic: ${category}`, 2000);
+                showToast(`🎯 New Hangle! Topic: ${category}`, 2000);
             }
 
             function setDifficulty(difficulty) {
@@ -1123,7 +1201,6 @@
                 const key = e.key.toUpperCase();
                 if (/^[A-Z]$/.test(key) && !gameState.guessedLetters.has(key)) {
                     handleGuess(key);
-                    // Animate the corresponding key
                     const keyElement = document.querySelector(`.key[data-letter="${key}"]`);
                     if (keyElement) {
                         keyElement.style.transform = 'scale(0.9)';
