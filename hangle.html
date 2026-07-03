@@ -46,6 +46,120 @@
                 radial-gradient(circle at 80% 80%, rgba(33, 150, 243, 0.05) 0%, transparent 50%);
         }
 
+        .game-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 580px;
+            width: 100%;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: var(--surface);
+            border-radius: 15px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+        }
+        
+        .nav-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--brand-green), var(--brand-blue), var(--brand-orange), var(--brand-red));
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease infinite;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .nav-label {
+            font-size: 0.65rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-right: 4px;
+        }
+        
+        .nav-link {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        
+        .nav-link:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-1px);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(33, 150, 243, 0.2));
+            color: #fff;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .nav-link.geodle { color: #4caf50; }
+        .nav-link.geodle:hover { background: rgba(76, 175, 80, 0.15); }
+        
+        .nav-link.bordle { color: #8B4513; }
+        .nav-link.bordle:hover { background: rgba(139, 69, 19, 0.15); }
+        
+        .nav-link.civile { color: #2196F3; }
+        .nav-link.civile:hover { background: rgba(33, 150, 243, 0.15); }
+        
+        .nav-link.countryle { color: #FF9800; }
+        .nav-link.countryle:hover { background: rgba(255, 152, 0, 0.15); }
+        
+        .nav-link.routele { color: #9C27B0; }
+        .nav-link.routele:hover { background: rgba(156, 39, 176, 0.15); }
+        
+        .nav-link.flagle { color: #f44336; }
+        .nav-link.flagle:hover { background: rgba(244, 67, 54, 0.15); }
+        
+        .nav-link.histle { color: #FFD700; }
+        .nav-link.histle:hover { background: rgba(255, 215, 0, 0.15); }
+        
+        .nav-link.hangle { 
+            color: #fff;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(33, 150, 243, 0.3));
+            font-weight: 700;
+        }
+
         .game-container {
             max-width: 580px;
             width: 100%;
@@ -194,6 +308,16 @@
             color: #888;
             letter-spacing: 1px;
             border: 1px solid rgba(76, 175, 80, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .geodle-badge:hover {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(33, 150, 243, 0.3));
+            border-color: rgba(76, 175, 80, 0.5);
+            transform: translateY(-1px);
         }
 
         .difficulty-selector {
@@ -550,6 +674,7 @@
             z-index: 1000;
             animation: slideIn 0.3s ease-out, floatUp 2s ease-out 1.5s forwards;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            pointer-events: none;
         }
 
         /* Footer */
@@ -566,6 +691,52 @@
         }
         .footer a:hover {
             color: var(--brand-green);
+        }
+        
+        /* Mobile Nav Toggle */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: 1px solid #555;
+            color: #aaa;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-toggle:hover {
+            color: #fff;
+            border-color: #888;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-links.collapsed {
+            display: none;
+        }
+
+        @media (max-width: 580px) {
+            .nav-bar {
+                padding: 6px 8px;
+                gap: 4px;
+            }
+            
+            .nav-link {
+                font-size: 0.7rem;
+                padding: 4px 7px;
+            }
+            
+            .nav-label {
+                font-size: 0.6rem;
+            }
         }
 
         @media (max-width: 400px) {
@@ -594,100 +765,154 @@
             .title {
                 font-size: 1.8rem;
             }
+            
+            .nav-bar {
+                padding: 6px;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+            }
+            
+            .nav-links.expanded {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-link {
+                text-align: center;
+                padding: 8px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="game-container" id="gameContainer">
-        <!-- Header with Logo -->
-        <div class="header">
-            <div class="logo-area">
-                <div class="title">HANGLE</div>
-                <div class="subtitle">Geography Hangman</div>
+    <div class="game-wrapper">
+        <!-- Navigation Bar -->
+        <nav class="nav-bar">
+            <span class="nav-label">🎮 Geodle Games</span>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰ Games</button>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link geodle" title="Geodle - Daily Geography">🌍 Geodle</a>
+                <a href="bordle.html" class="nav-link bordle" title="Bordle - Border Challenge">🗺️ Bordle</a>
+                <a href="civile.html" class="nav-link civile" title="Civile - Civilization Quiz">🏛️ Civile</a>
+                <a href="country-mode.html" class="nav-link countryle" title="Countryle - Country Guessing">🏴 Countryle</a>
+                <a href="path-mode.html" class="nav-link routele" title="Routele - Route Finding">🛤️ Routele</a>
+                <a href="flag-mode.html" class="nav-link flagle" title="Flagle - Flag Challenge">🚩 Flagle</a>
+                <a href="histle.html" class="nav-link histle" title="Histle - History Game">📜 Histle</a>
+                <span class="nav-link hangle active" title="Hangle - Geography Hangman">🎯 Hangle</span>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                <span class="geodle-badge">GEODLE GAMES</span>
-                <div class="difficulty-selector">
-                    <button class="diff-btn easy active" data-diff="easy">🌍 Easy</button>
-                    <button class="diff-btn medium" data-diff="medium">🗺️ Medium</button>
-                    <button class="diff-btn hard" data-diff="hard">🏔️ Hard</button>
+        </nav>
+        
+        <!-- Game Container -->
+        <div class="game-container" id="gameContainer">
+            <!-- Header with Logo -->
+            <div class="header">
+                <div class="logo-area">
+                    <div class="title">HANGLE</div>
+                    <div class="subtitle">Geography Hangman</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                    <a href="index.html" class="geodle-badge" title="Back to Geodle">GEODLE GAMES</a>
+                    <div class="difficulty-selector">
+                        <button class="diff-btn easy active" data-diff="easy">🌍 Easy</button>
+                        <button class="diff-btn medium" data-diff="medium">🗺️ Medium</button>
+                        <button class="diff-btn hard" data-diff="hard">🏔️ Hard</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Topic Badge -->
-        <div class="topic-display" id="topicDisplay">
-            <span class="topic-badge"><span class="topic-emoji">🎯</span> <span id="topicName">Random Topic</span></span>
-        </div>
-
-        <!-- Hangman Drawing -->
-        <div class="hangman-area">
-            <svg class="hangman-svg" viewBox="0 0 140 160" id="hangmanSvg">
-                <!-- Gallows base -->
-                <line x1="10" y1="155" x2="90" y2="155" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
-                <line x1="30" y1="155" x2="30" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
-                <line x1="30" y1="15" x2="90" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
-                <line x1="90" y1="15" x2="90" y2="35" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
-                <!-- Body parts (hidden by default) -->
-                <circle class="body-part hidden" cx="90" cy="45" r="12" stroke="#ff6b6b" stroke-width="2.5"/>
-                <line class="body-part hidden" x1="90" y1="57" x2="90" y2="95" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
-                <line class="body-part hidden" x1="90" y1="65" x2="70" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
-                <line class="body-part hidden" x1="90" y1="65" x2="110" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
-                <line class="body-part hidden" x1="90" y1="95" x2="72" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
-                <line class="body-part hidden" x1="90" y1="95" x2="108" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
-                <!-- Face (X eyes when dead) -->
-                <line class="body-part hidden face-x" x1="84" y1="41" x2="88" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
-                <line class="body-part hidden face-x" x1="88" y1="41" x2="84" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
-                <line class="body-part hidden face-x" x1="92" y1="41" x2="96" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
-                <line class="body-part hidden face-x" x1="96" y1="41" x2="92" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
-            </svg>
-        </div>
-
-        <!-- Category Hint -->
-        <div class="category-hint" id="categoryHint"></div>
-
-        <!-- Word Display -->
-        <div class="word-display" id="wordDisplay"></div>
-
-        <!-- Message -->
-        <div class="message" id="message"></div>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat">
-                <span class="stat-value" id="streakCount">0</span>
-                <span class="stat-label">STREAK</span>
+            <!-- Topic Badge -->
+            <div class="topic-display" id="topicDisplay">
+                <span class="topic-badge"><span class="topic-emoji">🎯</span> <span id="topicName">Random Topic</span></span>
             </div>
-            <div class="stat">
-                <span class="stat-value" id="wrongCount">0/6</span>
-                <span class="stat-label">WRONG</span>
+
+            <!-- Hangman Drawing -->
+            <div class="hangman-area">
+                <svg class="hangman-svg" viewBox="0 0 140 160" id="hangmanSvg">
+                    <!-- Gallows base -->
+                    <line x1="10" y1="155" x2="90" y2="155" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="30" y1="155" x2="30" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="30" y1="15" x2="90" y2="15" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="90" y1="15" x2="90" y2="35" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Body parts (hidden by default) -->
+                    <circle class="body-part hidden" cx="90" cy="45" r="12" stroke="#ff6b6b" stroke-width="2.5"/>
+                    <line class="body-part hidden" x1="90" y1="57" x2="90" y2="95" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                    <line class="body-part hidden" x1="90" y1="65" x2="70" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                    <line class="body-part hidden" x1="90" y1="65" x2="110" y2="80" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                    <line class="body-part hidden" x1="90" y1="95" x2="72" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                    <line class="body-part hidden" x1="90" y1="95" x2="108" y2="125" stroke="#ff9800" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- Face (X eyes when dead) -->
+                    <line class="body-part hidden face-x" x1="84" y1="41" x2="88" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                    <line class="body-part hidden face-x" x1="88" y1="41" x2="84" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                    <line class="body-part hidden face-x" x1="92" y1="41" x2="96" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                    <line class="body-part hidden face-x" x1="96" y1="41" x2="92" y2="45" stroke="#ff6b6b" stroke-width="1.5"/>
+                </svg>
             </div>
-            <div class="stat">
-                <span class="stat-value" id="guessCount">0</span>
-                <span class="stat-label">GUESSES</span>
+
+            <!-- Category Hint -->
+            <div class="category-hint" id="categoryHint"></div>
+
+            <!-- Word Display -->
+            <div class="word-display" id="wordDisplay"></div>
+
+            <!-- Message -->
+            <div class="message" id="message"></div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="streakCount">0</span>
+                    <span class="stat-label">STREAK</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="wrongCount">0/6</span>
+                    <span class="stat-label">WRONG</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="guessCount">0</span>
+                    <span class="stat-label">GUESSES</span>
+                </div>
             </div>
-        </div>
 
-        <!-- Keyboard -->
-        <div class="keyboard" id="keyboard"></div>
+            <!-- Keyboard -->
+            <div class="keyboard" id="keyboard"></div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-primary" id="newGameBtn">🔄 New Game</button>
-            <button class="btn btn-secondary" id="shareBtn" style="display:none;">📋 Share Hangle</button>
-        </div>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="newGameBtn">🔄 New Game</button>
+                <button class="btn btn-secondary" id="shareBtn" style="display:none;">📋 Share Hangle</button>
+            </div>
 
-        <!-- Share Area -->
-        <div class="share-area" id="shareArea"></div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            Hangle • Part of the <span style="color: #4caf50;">Geodle</span> Games Family
+            <!-- Share Area -->
+            <div class="share-area" id="shareArea"></div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                Hangle • Part of the <a href="index.html" style="color: #4caf50;">Geodle</a> Games Family
+            </div>
         </div>
     </div>
 
     <script>
         (function() {
+            // ==================== NAVIGATION TOGGLE ====================
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (navToggle && navLinks) {
+                navToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('expanded');
+                    navToggle.textContent = navLinks.classList.contains('expanded') ? '✕ Close' : '☰ Games';
+                });
+            }
+            
             // ==================== EXPANDED WORD BANKS ====================
             const wordBanks = {
                 easy: {
